@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<control xmlns:def="Definition" xmlns="http://www.sitecore.net/content">
+  <Mappings>
+
+    <FormPage Header="Template mappings">
+      <CodeBeside Type="GatherContent.Connector.Website.Shell.Mappings, GatherContent.Connector.Website" />
+
+
+      <Listview ID="ProjectTemplateMappings" View="Details" Width="100%" Background="white">
+        <ListviewHeader>
+          <ListviewHeaderItem Name="name" Header="GC Project" />
+          <ListviewHeaderItem Name="path" Header="GC Template" />
+          <ListviewHeaderItem Name="language" Header="Sc Template" />
+          <ListviewHeaderItem Name="version" Header="Last Mapped" />
+          <ListviewHeaderItem Name="lastUpdatedGcDate" Header="Last updated in GC" />
+          <ListviewHeaderItem Name="buttons" Header="" />
+        </ListviewHeader>
+      </Listview>
+      
+      
+      <Button ID="AddMore" runat="server"/>
+    </FormPage>
+  </Mappings>
+</control>
+
+
+
+
+
+

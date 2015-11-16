@@ -1,0 +1,3 @@
+﻿5940 11:57:07 INFO  Warming and Caching your search indexes
+5940 11:57:07 INFO  /******* Warming Queries ********/
+5940 11:57:07 INFO  /*************************/

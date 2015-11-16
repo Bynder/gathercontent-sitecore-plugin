@@ -1,0 +1,63 @@
+﻿@using System.Globalization
+@using Newtonsoft.Json
+@using Sitecore
+@using Sitecore.Data.Items
+@using Sitecore.Mvc
+@using Sitecore.Mvc.Presentation
+@using Sitecore.PathAnalyzer.Localization
+@using Sitecore.PathAnalyzer.Client.Sitecore.Shell.Client.Applications.PathAnalyzer.Common.Layouts.Renderings.Shared
+@using Sitecore.Web.UI.Controls.Common.Renderings
+@using Sitecore.Web.UI.Controls.Common.UserControls
+@using Sitecore.PathAnalyzer.Client.Sitecore.Shell.Client.Applications.PathAnalyzer
+@using UserControl = Sitecore.Web.UI.Controls.Common.UserControls.UserControl
+
+<script>
+    function getToken()
+    {
+        return document.getElementsByName("__RequestVerificationToken")[0].value;
+    }
+</script>
+
+@model RenderingModel
+@{
+    var rendering = Html.Sitecore().Controls().GetUserControl(Model.Rendering);
+
+    rendering.Class = "sc-PathAnalyzerApp";
+    rendering.Requires.Script("pathanalyzer", "PathAnalyzerApp.js");
+    rendering.Attributes.Add("data-bind", "visible: isVisible");
+
+    var parametersHelper = new AppDefaultParametersHelper(Model.Rendering.Item);
+
+    var selectedTreeDefinitionId = parametersHelper.GetSelectedTreeDefinitionId();
+
+    var dates = parametersHelper.GetSelectedDateRange();
+    var initialStartDate = DateUtil.ToIsoDate(dates.Item1);
+    var initialEndDate = DateUtil.ToIsoDate(dates.Item2);
+
+    var nodeGroupingOption = parametersHelper.GetSelectedNodeGroupingOption().ToString();
+
+    var pathSignificanceFilter = parametersHelper.GetSelectedPathSignificanceFilterOption().ToString();
+
+    rendering.HasNestedComponents = true;
+}
+
+@EmbedPathAnalyzerApp(rendering, selectedTreeDefinitionId.ToString(), initialStartDate, initialEndDate, nodeGroupingOption, pathSignificanceFilter)
+
+@helper EmbedPathAnalyzerApp(UserControl rendering, string initialTreeDefinitionId, string initialStartDate, string initialEndDate, string nodeGroupingOption, string pathSignificanceFilter)
+{
+    var renderingId = rendering.ControlId;
+    var helper = new RenderingHelper(Html, renderingId);
+
+    var initParams = string.Format("DefaultTreeDefinitionId={0},InitialStartDate={1},InitialEndDate={2},Culture={3},ColorBlind=false,InitialNodeGroupingOption={4},InitialPathSignificanceFilter={5}", initialTreeDefinitionId, initialStartDate, initialEndDate, Sitecore.Context.Language.CultureInfo.Name, nodeGroupingOption, pathSignificanceFilter);
+    const string silverlightSource = "/sitecore/shell/ClientBin/Sitecore.PathAnalyzer.PathExplorer.xap";
+    const string splashScreenSource = "/sitecore/shell/ClientBin/EmptySplashScreen.xaml";
+    helper.MakeSilverlightFrame("SilverlightApp", renderingId + "ContentWrapper", silverlightSource, initParams, splashScreenSource, string.Empty, true, "scSilverlightPathExplorer", string.Empty, string.Empty, true, "100%", "100%", "onSilverlightError", "5.0.61118.0");
+
+    // Rendering
+    <div @rendering.HtmlAttributes>
+        @Html.Sitecore().Controls().Rendering(Html, "{F6C9F461-FCAF-47DC-AA01-C8C64C2EFFB8}", renderingId + "ContentWrapper", "", new
+        {
+            UsePadding = false
+        })
+    </div>
+}

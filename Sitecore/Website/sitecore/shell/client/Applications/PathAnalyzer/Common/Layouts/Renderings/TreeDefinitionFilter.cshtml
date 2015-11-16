@@ -1,0 +1,71 @@
+﻿@using Newtonsoft.Json
+@using Sitecore
+@using Sitecore.Data
+@using Sitecore.Data.Items
+@using Sitecore.Mvc
+@using Sitecore.PathAnalyzer
+@using Sitecore.PathAnalyzer.Localization
+@using Sitecore.PathAnalyzer.Client.Sitecore.Shell.Client.Applications.PathAnalyzer.Common.Layouts.Renderings.Shared
+@using Sitecore.Web.UI.Controls.Common.Renderings
+@using Sitecore.Web.UI.Controls.Common.Texts
+@using Sitecore.Web.UI.Controls.Common.UserControls
+@model Sitecore.Mvc.Presentation.RenderingModel
+@{
+    var rendering = Html.Sitecore().Controls().GetUserControl(Model.Rendering);
+
+    rendering.Class = "sc-TreeDefinitionFilter";
+    rendering.Requires.Script("pathanalyzer", "TreeDefinitionFilter.js");
+    rendering.Attributes.Add("data-bind", "visible: isVisible");
+    rendering.HasNestedComponents = true;
+
+    var initialItemId = rendering.GetString("DefaultTreeDefinition");
+
+    Item initialItem = null;
+    if (!string.IsNullOrWhiteSpace(initialItemId))
+    {
+        var helper = new Helper();
+        initialItem = helper.Configuration.ContentDatabase.GetItem(initialItemId);
+        if (initialItem != null)
+        {
+            rendering.Attributes.Add("data-sc-initialitem", initialItem.DisplayName + "," + initialItem.Database.Name + "," + initialItem.ID);
+        }
+    }
+
+    Guid rootItemId;
+    var defaultMapRoot = rendering.GetString("DefaultMapRoot");
+    if (string.IsNullOrEmpty(defaultMapRoot) || !Guid.TryParse(defaultMapRoot, out rootItemId))
+    {
+        rootItemId = Sitecore.PathAnalyzer.Constants.ItemIDs.MapsRoot.Guid;
+    }
+
+    var errorMessages = new
+    {
+        InvalidTreeDefinition = new Helper().GetTextValue(PathAnalyzerTexts.MapFilterInvalidMap)
+    };
+    rendering.Attributes.Add("data-sc-errormessages", JsonConvert.SerializeObject(errorMessages));
+}
+
+@EmbedTreeDefinitionFilter(rendering, initialItem, new ID(rootItemId))
+
+@helper EmbedTreeDefinitionFilter(Sitecore.Web.UI.Controls.Common.UserControls.UserControl rendering, Item initialItem, ID rootItemId)
+{
+    var renderingId = rendering.ControlId;
+    var renderingHelper = new RenderingHelper(Html, renderingId);
+
+    renderingHelper.MakeRow("ControlsRow", renderingId + "ContentWrapper", true, controlsRow =>
+    {
+        renderingHelper.MakeText("TreeDefinitionText", controlsRow, new Helper().GetTextValue(PathAnalyzerTexts.MapFilterTitle), TextType.Title);
+
+        var preloadPath = initialItem != null ? rootItemId + initialItem.Paths.GetPath(rootItemId.ToString(), "/", ItemPathType.ItemID) : string.Empty;
+        var dbName = initialItem != null ? initialItem.Database.Name : ClientHost.Databases.ContentDatabase.Name;
+        renderingHelper.MakeTreeView("TreeDefinitionTreeView", controlsRow, rootItemId, preloadPath, 1, false, dbName);
+    });
+
+    // Rendering
+    <div @rendering.HtmlAttributes>
+        @Html.Sitecore().Controls().Rendering(Html, "{F6C9F461-FCAF-47DC-AA01-C8C64C2EFFB8}", renderingId + "ContentWrapper", "", new
+        {
+            UsePadding = false
+        })
+    </div>
+}

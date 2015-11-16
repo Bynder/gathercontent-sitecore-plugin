@@ -1,0 +1,9 @@
+﻿5544 10:50:44 INFO  Warming and Caching your search indexes
+5544 10:50:44 INFO  /******* Warming Queries ********/
+5544 10:50:44 INFO  /*************************/
+4872 10:53:12 INFO  ExecuteQueryAgainstLucene (sitecore_testing_index): host:110d559fdea542ea9c1c8a5df7e70ef9en - Filter : 
+4872 10:53:13 INFO  ExecuteQueryAgainstLucene (sitecore_testing_index): +host:110d559fdea542ea9c1c8a5df7e70ef9en +__is_running:1 - Filter : 
+4872 10:53:13 INFO  ExecuteQueryAgainstLucene (sitecore_testing_index): +__is_running:1 +SpanWildcardQuery(datasourceitems:*110d559fdea542ea9c1c8a5df7e70ef9*) - Filter : 
+9076 10:53:47 INFO  ExecuteQueryAgainstLucene (sitecore_testing_index): host:4d43a0a294fa42a084fb31363ebe4a54en - Filter : 
+9076 10:53:47 INFO  ExecuteQueryAgainstLucene (sitecore_testing_index): +host:4d43a0a294fa42a084fb31363ebe4a54en +__is_running:1 - Filter : 
+9076 10:53:47 INFO  ExecuteQueryAgainstLucene (sitecore_testing_index): +__is_running:1 +SpanWildcardQuery(datasourceitems:*4d43a0a294fa42a084fb31363ebe4a54*) - Filter : 

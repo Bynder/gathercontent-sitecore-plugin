@@ -1,0 +1,3 @@
+﻿7596 11:19:40 INFO  Warming and Caching your search indexes
+7596 11:19:40 INFO  /******* Warming Queries ********/
+7596 11:19:40 INFO  /*************************/

@@ -1,0 +1,22 @@
+﻿@using Sitecore.Mvc
+@using Sitecore.PathAnalyzer.Client.Sitecore.Shell.Client.Applications.PathAnalyzer.Common.Layouts.Renderings.Shared
+@using Sitecore.PathAnalyzer.Localization
+@using Sitecore.Web.UI.Controls.Common.UserControls
+@model Sitecore.Mvc.Presentation.RenderingModel
+@{
+    var userControl = Html.Sitecore().Controls().GetUserControl(Model.Rendering);
+    userControl.Class = "sc-pathbreadcrumb";
+    userControl.DataBind = "visible: isVisible";
+    userControl.Requires.Script("pathanalyzer", "pathbreadcrumb.js");
+
+    var htmlAttributes = userControl.HtmlAttributes;
+
+    var textHelper = new Helper();
+}
+<div @htmlAttributes>
+    <div id="breadcrumb">
+        <ol class="breadcrumb">
+            <li>@textHelper.GetTextValue(PathAnalyzerTexts.PleaseSelectAPath)</li>
+        </ol>
+    </div>
+</div>

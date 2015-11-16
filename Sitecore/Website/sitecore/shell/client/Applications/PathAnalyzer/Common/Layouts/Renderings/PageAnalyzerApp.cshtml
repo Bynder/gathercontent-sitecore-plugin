@@ -1,0 +1,88 @@
+﻿@using Sitecore
+@using Sitecore.Mvc
+@using Sitecore.PathAnalyzer.Client.Sitecore.Shell.Client.Applications.PathAnalyzer.Common.Layouts.Renderings.Shared
+@using Sitecore.Web.UI.Controls.Common.UserControls
+
+@model Sitecore.Mvc.Presentation.RenderingModel
+@{
+    var rendering = Html.Sitecore().Controls().GetUserControl(Model.Rendering);
+    rendering.Class = "sc-PageAnalyzerApp";
+    rendering.Requires.Script("pathanalyzer", "PageAnalyzerApp.js");
+    rendering.Attributes.Add("data-bind", "visible: isVisible");
+    rendering.HasNestedComponents = true;
+
+    var parametersHelper = new AppDefaultParametersHelper(Model.Rendering.Item);
+
+    var initialItemId = parametersHelper.GetSelectedTreeDefinitionId();
+    rendering.Attributes.Add("data-sc-treeid", initialItemId.ToString());
+
+    var dates = parametersHelper.GetSelectedDateRange();
+    var initialStartDate = DateUtil.ToIsoDate(dates.Item1);
+    var initialEndDate = DateUtil.ToIsoDate(dates.Item2);
+    rendering.Attributes.Add("data-sc-initialstartdate", initialStartDate);
+    rendering.Attributes.Add("data-sc-initialenddate", initialEndDate);
+
+    var nodeGroupingOption = parametersHelper.GetSelectedNodeGroupingOption();
+    rendering.Attributes.Add("data-sc-nodegroupingoption", nodeGroupingOption.ToString());
+
+    var pathSignificanceFilterValue = parametersHelper.GetSelectedPathSignificanceFilterOption();
+    rendering.Attributes.Add("data-sc-pathsignificancefiltervalue", pathSignificanceFilterValue.ToString());
+
+    const string userProfileKey = "pageAnalyzer";
+    var userProfileValue = ClientHost.Context.User.Profile.GetCustomProperty(userProfileKey);
+    rendering.Attributes["data-sc-appstate"] = string.IsNullOrEmpty(userProfileValue) ? "[]" : userProfileValue;
+    rendering.Attributes.Add("data-sc-userprofilekey", userProfileKey);
+}
+
+<style>
+    /* adding this in .css file doesn't affect the positioning during initial load */
+    .sc-progressindicator-inner {
+        top: 405px;
+        left: 455px;
+    }
+
+    /* adding these styles here as a workaround for FF not being able to show SVG fill via # pattern reference (#350) */
+    circle.current {
+        stroke: none !important;
+        fill: url(#icon);
+    }
+
+    circle.current.dimmed {
+        fill: url(#icon-dimmed);
+        stroke-width: 0;
+    }
+
+    circle.current.selected {
+        fill: url(#icon);
+        stroke-width: 0;
+    }
+
+    .back {
+        fill: url(#back);
+        stroke: none !important;
+    }
+
+    .back:hover {
+        fill: url(#back-hover);
+        stroke: none !important;
+     }
+</style>
+
+<div @rendering.HtmlAttributes>
+    <svg id="viz" width="900" height="590">
+        <defs id="mdef">
+            <pattern id="icon" x="0" y="0" height="26" width="26">
+                <image x="0" y="0" width="26" height="26" xlink:href="/Sitecore/Shell/client/Applications/PathAnalyzer/img/icon.png"></image>
+            </pattern>
+            <pattern id="icon-dimmed" x="0" y="0" height="26" width="26">
+                <image x="0" y="0" width="26" height="26" xlink:href="/Sitecore/Shell/client/Applications/PathAnalyzer/img/icon_dimmed.png"></image>
+            </pattern>
+            <pattern id="back" x="0" y="0" height="36" width="36">
+                <image x="0" y="0" width="36" height="36" xlink:href="/Sitecore/Shell/client/Applications/PathAnalyzer/img/back_button.png"></image>
+            </pattern>
+            <pattern id="back-hover" x="0" y="0" height="36" width="36">
+                <image x="0" y="0" width="36" height="36" xlink:href="/Sitecore/Shell/client/Applications/PathAnalyzer/img/back_hover.png"></image>
+            </pattern>
+        </defs>
+    </svg>
+</div>

@@ -1,0 +1,17 @@
+﻿7840 16:26:06 INFO  [Recovery]: Setting default publish recovery strategy.
+7840 16:26:06 INFO  [Recovery]: Publish Recovery Enabled - False
+7840 16:26:06 INFO  [Recovery]: Publish Recovery Strategy - DatabasePublishRecoveryStrategy
+7840 16:26:06 INFO  Settings.Publishing.AutoScheduleSmartPublish:True
+7840 16:26:06 INFO  Settings.Publishing.CheckSecurity:False
+7840 16:26:06 INFO  Settings.Publishing.CompareRevisions:True
+7840 16:26:06 INFO  Settings.Publishing.DisableDatabaseCaches:False
+7840 16:26:06 INFO  Settings.Publishing.ExecuteInManagedThreadPool:False
+7840 16:26:06 INFO  Settings.Publishing.LogInterval:0
+7840 16:26:06 INFO  Settings.Publishing.MaxDegreeOfParallelism:1
+7840 16:26:06 INFO  Settings.Publishing.PublishDialogPollingInterval:500
+7840 16:26:06 INFO  Settings.Publishing.PublishEmptyItems:False
+7840 16:26:06 INFO  Settings.Publishing.PublishingInstance:BRIMIT-DPA-GatherContent.dev
+7840 16:26:06 INFO  Settings.Publishing.RequireTargetDeleteRightWhenCheckingSecurity:True
+7840 16:26:06 INFO  Settings.Publishing.StatusUpdateInterval:00:00:02
+7840 16:26:06 INFO  Settings.Publishing.ThreadPriority:BelowNormal
+7840 16:26:06 INFO  Settings.Publishing.TimeBeforeStatusExpires:02:00:00

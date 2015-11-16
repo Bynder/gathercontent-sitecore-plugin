@@ -41,7 +41,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Sitecore.Kernel, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Sitecore.Kernel.dll</HintPath>
+      <HintPath>..\..\References\Sitecore\Sitecore.Kernel.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />

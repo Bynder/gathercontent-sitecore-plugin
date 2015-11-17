@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<control xmlns:def="Definition" xmlns="http://schemas.sitecore.net/Visual-Studio-Intellisense">
+  <Import>
+    <Stylesheet Src="/sitecore/shell/Applications/GatherConnect/Import/Import.css" />
+    <FormPage Header="Import" Text="Click Browse to select the file that you want to upload.">
+      
+      <Script Type="text/javascript" Language="javascript" Src="/sitecore/shell/client/Speak/Assets/lib/ui/2.0/deps/jquery-2.1.1.min.js"></Script>
+      <Script Type="text/javascript" Language="javascript" Src="/sitecore/shell/Applications/GatherConnect/Import/Import.js"></Script>
+      <Script Type="text/javascript" Language="javascript" Src="/js/knockout-3.4.0.js"></Script>
+      <Script Type="text/javascript">
+        $.noConflict();
+        jQuery(document).ready(function () { importManager.init(); }
+      </Script>
+      
+      <div id="importList" class="reveal-modal large open">
+        DD
+      </div>
+
+    </FormPage>
+  </Import>
+</control>

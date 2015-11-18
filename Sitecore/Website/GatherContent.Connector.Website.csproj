@@ -80,8 +80,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References\Sitecore\System.Web.Http.WebHost.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
@@ -127,12 +127,12 @@
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\Mappings.css" />
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\Mappings.js" />
     <Content Include="sitecore modules\Shell\GatherContent\SyncBar.xml" />
+    <Content Include="sitecore\shell\Applications\GatherConnect\Import\Import.html" />
     <Content Include="sitecore\shell\Controls\Browser.js" />
     <Content Include="sitecore\shell\Controls\Lib\Prototype\prototype.js" />
     <Content Include="sitecore\shell\Controls\Sitecore.js" />
     <Content Include="sitecore\shell\Applications\GatherConnect\Import\Import.css" />
     <Content Include="sitecore\shell\Applications\GatherConnect\Import\Import.js" />
-    <Content Include="sitecore\shell\Applications\GatherConnect\Import\Import.xml" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -141,10 +141,16 @@
     <Compile Include="Commands\AddTemplateCommand.cs" />
     <Compile Include="Commands\MappingsCommand.cs" />
     <Compile Include="Commands\UpdateCommand.cs" />
+    <Compile Include="Controllers\ImportController.cs" />
     <Compile Include="Controllers\MappingsController.cs" />
     <Compile Include="Extensions\GcAccountExtension.cs" />
     <Compile Include="Managers\SitecoreDataManager.cs" />
     <Compile Include="Models\GcSettings.cs" />
+    <Compile Include="Models\Import\ImportResponseModel.cs" />
+    <Compile Include="Models\Import\ItemModel.cs" />
+    <Compile Include="Models\Import\ProjectModel.cs" />
+    <Compile Include="Models\Import\StatusModel.cs" />
+    <Compile Include="Models\Import\TemplateModel.cs" />
     <Compile Include="Models\MappingModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shell\ImportItems.cs" />

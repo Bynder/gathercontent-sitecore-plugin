@@ -18,6 +18,12 @@ namespace GatherContent.Connector.Website
                 controller = "Mappings",
                 action = "Get"
             });
+
+            routes.MapHttpRoute("ImportCommand", "sitecore/api/import", new
+            {
+                controller = "Import",
+                action = "Get"
+            });
         }
     }
 }

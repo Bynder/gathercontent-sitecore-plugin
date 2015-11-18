@@ -8,7 +8,7 @@ using Sitecore.Web.UI.Sheer;
 
 namespace GatherContent.Connector.Website.Commands
 {
-    public class MappingsCommand : Command
+    public class AddTemplateCommand : Command
     {
         public override void Execute(CommandContext context)
         {
@@ -32,7 +32,7 @@ namespace GatherContent.Connector.Website.Commands
             }
             catch (Exception ex)
             {
-                Log.Error(ex.Message, ex, typeof(MappingsCommand));
+                Log.Error(ex.Message, ex, typeof(AddTemplateCommand));
                 SheerResponse.Alert("Sync failed. See log for details.");
             }
         }
@@ -44,17 +44,18 @@ namespace GatherContent.Connector.Website.Commands
             var id = args.Parameters["id"].Replace("{", "").Replace("}", "");
             var language = Language.Parse(args.Parameters["language"]);
             var version = args.Parameters["version"];
-            var uri = "/sitecore modules/shell/gathercontent/mappings/mappings.html";
-            var path = string.Format("{0}?id={1}&l={2}&v={3}", uri, id, language, version);
+            var uri = "/sitecore modules/shell/gathercontent/AddTemplate/AddTemplate.html";
+            //var uri = "/sitecore/shell/default.aspx?xmlcontrol=AddTemplate";
+            var path = string.Format("{0}&id={1}&l={2}&v={3}", uri, id, language, version);
 
             var options = new ModalDialogOptions(path)
             {
                 Width = "800",
-                Height = "400",
+                Height = "600",
                 MinWidth = "600",
-                MinHeight = "300",
+                MinHeight = "400",
                 Maximizable = false,
-                Header = "Manage template mappings"
+                Header = "Add template"
             };
 
             Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(options), "Shell");

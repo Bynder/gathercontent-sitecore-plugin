@@ -1,0 +1,24 @@
+﻿.mappings-dialog h1 {
+    margin-left: 20px;
+    padding-bottom: 5px;
+    display: block;
+    font-weight: bold;
+    font-size: 100%;
+}
+
+.mappings-dialog h2 {
+    margin-left: 20px;
+    padding-bottom: 5px;
+    display: block;
+    font-weight: bold;
+    font-size: 100%;
+    color: gray;
+}
+
+.mappings-btn {
+    margin-left: 20px;
+    padding-bottom: 5px;
+    display: block;
+    font-weight: bold;
+    font-size: 100%;
+}

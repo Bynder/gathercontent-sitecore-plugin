@@ -1,0 +1,104 @@
+﻿<script src="/sitecore modules/shell/GatherContent/jquery_2.1.1.min.js"></script>
+<script src="/sitecore/shell/Controls/Lib/Prototype/prototype.js"></script>
+<script src="/sitecore/shell/Controls/Browser.js"></script>
+<script src="/sitecore/shell/Controls/Sitecore.js"></script>
+<!--<script src="/sitecore modules/shell/GatherContent/Mappings/Mappings.js"></script>-->
+<script src="/js/knockout-3.4.0.js"></script>
+<link href="Mappings.css" rel="stylesheet" />
+<script type="text/javascript">
+    $.noConflict();
+</script>
+<script type="text/JavaScript" language="javascript">
+    if (!window.scSitecore) {
+        scSitecore = function () { };
+    }
+    scSitecore.prototype.Settings = {};
+    scSitecore.prototype.Settings.SessionTimeout = 1200000;
+</script>
+
+<div class="mappings-dialog">
+    <h1>
+        Manage template mappings
+    </h1>
+    <h2>
+        Choose which template you wish to manage. If the template you wish to work with isn't showing up please
+    </h2>
+
+    <table style="width:100%">
+        <thead>
+            <tr>
+                <th>GC Project</th>
+                <th>GC template</th>
+                <th>Sitecore Template</th>
+                <th>Last mapped</th>
+                <th>Last updated in GC</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: mappings">
+            <tr>
+                <td data-bind="text: GcProjectName">GC Project</td>
+                <td data-bind="text: GcTemplateName">GC template</td>
+                <td data-bind="text: ScTemplateName">Sitecore Template</td>
+                <td data-bind="text: LastMappedDateTime">Last mapped</td>
+                <td data-bind="text: LastUpdatedDate">Last updated in GC</td>
+                <td><a href="#">Edit</a></td>
+            </tr>
+        </tbody>
+    </table>
+    <input class="mappings-btn" id="AddMore" type="button" value="Add more template" />
+    <h2>
+        Don't see the template you want to map? Make sure yau are in the right project, and try adding it from GC
+    </h2>
+</div>
+
+<script>
+
+    // console.log(window.frameElement.src);
+    console.log(location.href);
+
+    function getUrlVars() {
+        var vars = [], hash;
+        var hashes = location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for (var i = 0; i < hashes.length; i++) {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+    }
+
+    var id = getUrlVars()["id"];
+    jQuery.getJSON('/sitecore/api/mappings?id={' + id + '}', null, function (data) {
+        var viewModel = {
+            mappings: ko.observableArray(data)
+        };
+        ko.applyBindings(viewModel);
+    });
+
+
+    jQuery(document).ready(function () {
+    jQuery(document).on("click", "#AddMore", function (e) {
+        openTemplateWindow();
+        e.preventDefault();
+    });
+
+
+
+    function openTemplateWindow() {
+        var id = getUrlVars()["id"];
+        var language = getUrlVars()["l"];
+        //var database = getUrlVars()["d"];
+        var version = getUrlVars()["v"];
+
+        // open window
+        var query = "gc:addtemplate(id=" + id + ", language = " + language + ", version = " + version + ")";
+        //var query = "gc:addtemplate(id=" + id + ", language = " + language + ", database = " + database
+        //+ ", version = " + version + ")";
+        
+        scForm.postRequest("", "", "", query);
+    };
+    });
+
+
+</script>

@@ -121,55 +121,7 @@ namespace GatherContent.Connector.Website.Controllers
         }
 
 
-        public AddMappingModel GetMapping(string id, string projectName)
-        {
-            var model = new AddMappingModel { GcProjectName = projectName };
-
-            var db = Sitecore.Configuration.Factory.GetDatabase("master");
-            var accountItem = db.GetItem(AccountItemId);
-            var gcSettings = GcAccountExtension.GetSettings(accountItem);
-            var service = new GatherContentService(gcSettings.ApiUrl, gcSettings.Username, gcSettings.ApiKey);
-            var template = service.GetSingleTemplate(id);
-            var scTemplates = db.GetItem(SitecoreTemplateId).Axes.GetDescendants().Where(item => item.TemplateName == "Template").ToList();
-
-            model.GcTemplateName = template.Data.Name;
-            foreach (var config in template.Data.Config)
-            {
-                var tab = new TemplateTab { TabName = config.Label };
-                foreach (var element in config.Elements)
-                {
-                    tab.Fields.Add(new TemplateField { FieldName = element.Label });
-                }
-                model.Tabs.Add(tab);
-
-            }
-            foreach (var scTemplate in scTemplates)
-            {
-                var sitecoreTemplate = new SitecoreTemplate
-                {
-                    SitrecoreTemplateName = scTemplate.Name,
-                    SitrecoreTemplateId = scTemplate.ID.ToString()
-                };
-
-
-                var fields = TemplateManager.GetTemplate(scTemplate.ID, Factory.GetDatabase("master")).GetFields();
-                sitecoreTemplate.SitecoreFields.AddRange(
-                    from f in fields
-                    where !f.Name.StartsWith("__")
-                    select new SitecoreTemplateField
-                    {
-                        SitrecoreFieldName = f.Name,
-                        SitecoreFieldId = f.ID.ToString()
-                    });
-
-
-                model.SitecoreTemplates.Add(sitecoreTemplate);
-            }
-
-
-            return model;
-
-        }
+      
 
 
 

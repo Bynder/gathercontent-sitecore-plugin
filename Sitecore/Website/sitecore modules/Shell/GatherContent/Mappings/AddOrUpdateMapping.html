@@ -1,0 +1,135 @@
+﻿<script src="/sitecore modules/shell/GatherContent/jquery_2.1.1.min.js"></script>
+<script src="/sitecore/shell/Controls/Lib/Prototype/prototype.js"></script>
+<script src="/sitecore/shell/Controls/Browser.js"></script>
+<script src="/sitecore/shell/Controls/Sitecore.js"></script>
+<script src="/js/knockout-3.4.0.js"></script>
+<script src="/sitecore modules/shell/GatherContent/GatherContent.js"></script>
+<link href="/sitecore modules/shell/GatherContent/GatherContent.css" rel="stylesheet" />
+<script type="text/javascript">
+    $.noConflict();
+</script>
+<script type="text/JavaScript" language="javascript">
+    if (!window.scSitecore) {
+        scSitecore = function () { };
+    }
+    scSitecore.prototype.Settings = {};
+    scSitecore.prototype.Settings.SessionTimeout = 1200000;
+</script>
+
+<div class="gathercontent-dialog">
+    <h1>
+        Mapping
+    </h1>
+    <h2>
+        Choose the fields you wish to map from GatherContent intp Sitecore. Only map the fields you need to import
+    </h2>
+    <div style="float: left;">
+        <span data-bind="text: GcProjectName"></span>
+        <div data-bind="text: GcTemplateName"></div>
+    </div>
+    <div style="float: right;">
+        <div>Sitecore:</div>
+        <select data-bind="options: SitecoreTemplates, optionsText: 'SitrecoreTemplateName', value: firstValue"></select>
+        <select data-bind="options: SitecoreFields, optionsText: 'SitrecoreFieldName'"></select>
+    </div>
+    <div style="clear: both;"></div>
+    <div data-bind="foreach: { data: Tabs, as: 'tab' } ">
+        <div data-bind="text: tab.TabName" style="padding-bottom: 15px;padding-top: 15px;"></div>
+        <div data-bind="foreach: { data: Fields, as: 'field' }">
+            <div>
+                <input type="text" data-bind="value: field.FieldName" disabled />
+                <span>-------------></span>
+                <select></select>
+            </div>
+        </div>
+    </div>
+    <input class="mappings-btn" id="AddMore" type="button" value="Save mapping configuration" data-bind="click: saveMapping" style="margin-top: 15px;" />
+    <h2>
+        Remember you can always make changes to this configuration later
+    </h2>
+</div>
+
+<script>
+    var id = getUrlVars()["id"];
+    var name = getUrlVars()["name"];
+    var url = '/sitecore/api/mapping/' + id + '?projectName=' + name;
+
+
+
+    function ViewModel() {
+        var self = this;
+        this.firstValue = ko.observable();
+        this.GcProjectName = ko.observable();
+        this.GcTemplateName = ko.observable();
+        this.SitecoreTemplates = ko.observableArray();
+        this.SitecoreFields = ko.observableArray([{}]);
+        this.Tabs = ko.observableArray();
+        this.tmpTemplates = ko.observableArray();
+
+        jQuery.getJSON(url, null, function (data) {
+            self.GcProjectName("GatherContent project:" + " " + data.GcProjectName);
+            self.GcTemplateName("Template:" + " " + data.GcTemplateName);
+            self.SitecoreTemplates(data.SitecoreTemplates),
+            self.Tabs(data.Tabs);
+
+
+     
+
+       
+            });
+
+
+            this.saveMapping = function () {
+                parent.location.reload();
+                window.top.dialogClose();
+            };
+
+
+
+
+
+
+
+
+            self.SitecoreFields = ko.computed(function () {
+               
+                if (self.firstValue() !== undefined) {
+                    console.log(self.firstValue());
+                    console.log(self.SitecoreFields());
+                    if (self.SitecoreFields() !== undefined) {
+                        self.SitecoreFields.removeAll();
+                        console.log(self.SitecoreFields());
+                        self.SitecoreFields(val.SitecoreFields);
+                        console.log(self.SitecoreFields());
+                    }
+                }
+                //if (!val) {
+                //    return self.array();
+                //} else {
+                //    var array;
+                //    jQuery.each(data.SitecoreTemplates, function (key, value) {
+                //        if (value.SitrecoreTemplateId == val) {
+                //            array = value.SitecoreFields;
+                //        }
+                //    });
+
+                //    console.log(array);
+                //    return array;
+
+                //}
+            }, this);
+
+
+
+
+
+
+
+
+
+
+        };
+
+        ko.applyBindings(new ViewModel());
+
+</script>

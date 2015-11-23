@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using GatherContent.Connector.Service.Entities;
+using GatherContent.Connector.Website.Models;
 using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.Globalization;
@@ -76,8 +77,8 @@ namespace GatherContent.Connector.Website.Managers
             var projectsFolder = parentItem.Axes.SelectSingleItem(String.Format("./descendant::*[@@templatename='{0}']", ProjectFolderTemplateName));
             if (projectsFolder != null)
             {
-                var folders = projectsFolder.Axes.GetDescendants().Select(item => item.Name).ToList();
-                if (!folders.Contains(project.Name))
+                var folders = projectsFolder.Axes.GetDescendants();
+                if (!folders.Select(item => item.Name).ToList().Contains(project.Name))
                 {
                     using (new SecurityDisabler())
                     {
@@ -97,12 +98,67 @@ namespace GatherContent.Connector.Website.Managers
                         return createdItem;
                     }
                 }
+                return folders.FirstOrDefault(item => item.Name == project.Name);
             }
             return null;
         }
 
+        public void CreateTemplate(string id, Template template)
+        {
+            var parentItem = GetItem(id);
+            var templatesFolder = parentItem.Children.FirstOrDefault(item => item.Name == TemplatesFolderName);
+            if (templatesFolder != null)
+            {
+                var folders = templatesFolder.Axes.GetDescendants().Select(item => item.Name).ToList();
+                if (!folders.Contains(template.Name))
+                {
+                    using (new SecurityDisabler())
+                    {
+                        var scTemplate = _contextDatabase.GetTemplate(new ID(GcTemplate));
+                        var validFolderName = ItemUtil.ProposeValidItemName(template.Name);
+                        var createdItem = templatesFolder.Add(validFolderName, scTemplate);
+                        using (new SecurityDisabler())
+                        {
+                            createdItem.Editing.BeginEdit();
+                            createdItem.Fields["Temaplate Id"].Value = template.Id.ToString();
+                            createdItem.Fields["Template Name"].Value = template.Name;
+                            createdItem.Editing.EndEdit();
+                        }
+                    }
+                }
+            }
+        }
 
-        internal void CreateStatus(string id, Status status)
+        public void CreateTemplate(string id, GcTemplateModel gcTemplate)
+        {
+            var parentItem = GetItem(id);
+            var statusesFolder = parentItem.Children.FirstOrDefault(item => item.Name == TemplatesFolderName);
+            if (statusesFolder != null)
+            {
+                var folders = statusesFolder.Axes.GetDescendants().Select(item => item.Name).ToList();
+                if (!folders.Contains(gcTemplate.TemplateName))
+                {
+                    using (new SecurityDisabler())
+                    {
+                        var template = _contextDatabase.GetTemplate(new ID(GcTemplate));
+                        var validFolderName = ItemUtil.ProposeValidItemName(gcTemplate.TemplateName);
+                        var createdItem = statusesFolder.Add(validFolderName, template);
+                        using (new SecurityDisabler())
+                        {
+                            createdItem.Editing.BeginEdit();
+                            createdItem.Fields["Temaplate Id"].Value = gcTemplate.TemplateId.ToString();
+                            createdItem.Fields["Template Name"].Value = gcTemplate.TemplateName;
+                            createdItem.Editing.EndEdit();
+                        }
+
+                        //return createdItem;
+                    }
+                }
+            }
+            //return null;
+        }
+
+        public void CreateStatus(string id, Status status)
         {
             var parentItem = GetItem(id);
             var statusesFolder = parentItem.Children.FirstOrDefault(item => item.Name == StatusFolderName);
@@ -131,33 +187,5 @@ namespace GatherContent.Connector.Website.Managers
             }
             //return null;
         }
-
-        internal void CreateTemplate(string id, Template template)
-        {
-            var parentItem = GetItem(id);
-            var templatesFolder = parentItem.Children.FirstOrDefault(item => item.Name == TemplatesFolderName);
-            if (templatesFolder != null)
-            {
-                var folders = templatesFolder.Axes.GetDescendants().Select(item => item.Name).ToList();
-                if (!folders.Contains(template.Name))
-                {
-                    using (new SecurityDisabler())
-                    {
-                        var scTemplate = _contextDatabase.GetTemplate(new ID(GcTemplate));
-                        var validFolderName = ItemUtil.ProposeValidItemName(template.Name);
-                        var createdItem = templatesFolder.Add(validFolderName, scTemplate);
-                        using (new SecurityDisabler())
-                        {
-                            createdItem.Editing.BeginEdit();
-                            createdItem.Fields["Temaplate Id"].Value = template.Id.ToString();
-                            createdItem.Fields["Template Name"].Value = template.Name;
-                            createdItem.Editing.EndEdit();
-                        }
-                    }
-                }
-            }
-        }
-
-     
     }
 }

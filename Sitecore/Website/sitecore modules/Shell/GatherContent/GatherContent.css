@@ -1,0 +1,24 @@
+﻿.gathercontent-dialog h1 {
+    margin-left: 20px;
+    padding-bottom: 5px;
+    display: block;
+    font-weight: bold;
+    font-size: 100%;
+}
+
+.gathercontent-dialog h2 {
+    margin-left: 20px;
+    padding-bottom: 5px;
+    display: block;
+    font-weight: bold;
+    font-size: 100%;
+    color: gray;
+}
+
+.add-template-btn {
+    margin-left: 20px;
+    padding-bottom: 5px;
+    display: block;
+    font-weight: bold;
+    font-size: 100%;
+}

@@ -18,7 +18,27 @@ namespace GatherContent.Connector.Website
                 controller = "Mappings",
                 action = "Get"
             });
-
+            routes.MapHttpRoute("SitecoreGatherContentMap", "sitecore/api/mapping/{id}", new
+            {
+                controller = "Mappings",
+                action = "GetMapping",
+                id = RouteParameter.Optional
+            });
+            routes.MapHttpRoute("PostMapping", "sitecore/api/postmappings", new
+            {
+                controller = "Mappings",
+                action = "Post"
+            });
+            routes.MapHttpRoute("TemplatesCommand", "sitecore/api/templates", new
+            {
+                controller = "TemplatesMapping",
+                action = "Get"
+            });
+            routes.MapHttpRoute("PostTemplateMapping", "sitecore/api/posttemplates", new
+            {
+                controller = "TemplatesMapping",
+                action = "Post"
+            });
             routes.MapHttpRoute("ImportCommand", "sitecore/api/getItemsForImort", new
             {
                 controller = "Import",

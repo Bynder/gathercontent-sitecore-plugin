@@ -2,9 +2,9 @@
 <script src="/sitecore/shell/Controls/Lib/Prototype/prototype.js"></script>
 <script src="/sitecore/shell/Controls/Browser.js"></script>
 <script src="/sitecore/shell/Controls/Sitecore.js"></script>
-<!--<script src="/sitecore modules/shell/GatherContent/Mappings/Mappings.js"></script>-->
+<script src="/sitecore modules/shell/GatherContent/GatherContent.js"></script>
 <script src="/js/knockout-3.4.0.js"></script>
-<link href="Mappings.css" rel="stylesheet" />
+<link href="/sitecore modules/shell/GatherContent/GatherContent.css" rel="stylesheet" />
 <script type="text/javascript">
     $.noConflict();
 </script>
@@ -16,89 +16,73 @@
     scSitecore.prototype.Settings.SessionTimeout = 1200000;
 </script>
 
-<div class="mappings-dialog">
+<div class="gathercontent-dialog">
     <h1>
-        Manage template mappings
+        Choose template to map to Sitecore
     </h1>
+    <small>You can map templates from multiple GatherContent projects into Sitecore</small>
     <h2>
-        Choose which template you wish to manage. If the template you wish to work with isn't showing up please
+        If you need help with setting this up please contact support@gathercontent.com
     </h2>
 
-    <table style="width:100%">
-        <thead>
-            <tr>
-                <th>GC Project</th>
-                <th>GC template</th>
-                <th>Sitecore Template</th>
-                <th>Last mapped</th>
-                <th>Last updated in GC</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody data-bind="foreach: mappings">
-            <tr>
-                <td data-bind="text: GcProjectName">GC Project</td>
-                <td data-bind="text: GcTemplateName">GC template</td>
-                <td data-bind="text: ScTemplateName">Sitecore Template</td>
-                <td data-bind="text: LastMappedDateTime">Last mapped</td>
-                <td data-bind="text: LastUpdatedDate">Last updated in GC</td>
-                <td><a href="#">Edit</a></td>
-            </tr>
-        </tbody>
-    </table>
-    <input class="mappings-btn" id="AddMore" type="button" value="Add more template" />
+
+    <ul data-bind="foreach: { data: Projects }" style="list-style: none;">
+        <li class="project-item">
+            <span data-bind="text: ProjectName"> </span>
+            <ul data-bind="foreach: { data: Templates, as: 'item' }" style="display: none; list-style: none;">
+                <li>
+                    <div>
+                        <input type="checkbox" data-bind="value:item.TemplateId, checked: $root.Selected, attr: { id: item.TemplateName}" />
+                        <!--<input type="checkbox" data-bind="value:item.TemplateId, checked: $parent.selectedOptions, attr: { id: item.TemplateName}" />-->
+                        <label data-bind="text: item.TemplateName, attr: {for: item.TemplateName}" />
+                    </div>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <div data-bind="text: Selected().length" style="display: inline;padding-right: 5px;"></div><span>templates selected</span>
+    <div style="clear: both"></div>
+    <input class="add-template-btn" id="Select-template" type="button" value="Select" data-bind="click: addTemplateMapping" />
     <h2>
-        Don't see the template you want to map? Make sure yau are in the right project, and try adding it from GC
+        Remember, you don't need to map all of your templates at once. You can update and add new templates later
     </h2>
 </div>
 
 <script>
 
-    // console.log(window.frameElement.src);
-    console.log(location.href);
-
-    function getUrlVars() {
-        var vars = [], hash;
-        var hashes = location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-        for (var i = 0; i < hashes.length; i++) {
-            hash = hashes[i].split('=');
-            vars.push(hash[0]);
-            vars[hash[0]] = hash[1];
-        }
-        return vars;
-    }
-
     var id = getUrlVars()["id"];
-    jQuery.getJSON('/sitecore/api/mappings?id={' + id + '}', null, function (data) {
+    jQuery.getJSON('/sitecore/api/templates?id={' + id + '}', null, function (data) {
         var viewModel = {
-            mappings: ko.observableArray(data)
+            Projects: ko.observableArray(data.Projects),
+            Selected: ko.observableArray(data.Selected)
         };
         ko.applyBindings(viewModel);
     });
 
 
-    jQuery(document).ready(function () {
-    jQuery(document).on("click", "#AddMore", function (e) {
-        openTemplateWindow();
-        e.preventDefault();
-    });
+   
 
-
-
-    function openTemplateWindow() {
-        var id = getUrlVars()["id"];
-        var language = getUrlVars()["l"];
-        //var database = getUrlVars()["d"];
-        var version = getUrlVars()["v"];
-
-        // open window
-        var query = "gc:addtemplate(id=" + id + ", language = " + language + ", version = " + version + ")";
-        //var query = "gc:addtemplate(id=" + id + ", language = " + language + ", database = " + database
-        //+ ", version = " + version + ")";
-        
-        scForm.postRequest("", "", "", query);
+    addTemplateMapping = function () {
+        var dataObject = ko.toJSON(this);
+ 
+        jQuery.ajax({
+            url: '/sitecore/api/posttemplates',
+            type: 'post',
+            data: dataObject,
+            contentType: 'application/json',
+            success: function () {
+                parent.location.reload();
+                window.top.dialogClose();
+            }
+        });
     };
-    });
 
+    //TODO use KO
+    jQuery(document).ready(function() {
+        jQuery(document).on("click", ".project-item", function () {
+            jQuery(".project-item").children('ul').hide();
+            jQuery(this).children('ul').show();
+        });
+    });
 
 </script>

@@ -1,7 +1,10 @@
-﻿<link src="/sitecore/shell/Applications/GatherConnect/Import/Import.css" rel="stylesheet" />
+﻿<link href="/sitecore/shell/Applications/GatherConnect/Import/Import.css" rel="stylesheet" />
+<link href="/css/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+
 <script src="/sitecore/shell/client/Speak/Assets/lib/core/1.1/deps/jQuery/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" language="javascript" src="/js/knockout-3.4.0.js"></script>
 <script type="text/javascript" language="javascript" src="/sitecore/shell/Applications/GatherConnect/Import/Import.js"></script>
+<script src="/css/bootstrap/js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
     jQuery.noConflict();
@@ -10,8 +13,7 @@
     });
 </script>
 
-<div data-bind="visible: getMode(1)">
-    1
+<div data-bind="if: getMode(1)">
     <select data-bind="options: projects, optionsText: 'Name', optionsValue: 'Id', value: project, event:{ change: $root.projectChanged}"></select>
 
     <div>
@@ -25,7 +27,7 @@
     </div>
 
     <div>
-        <table class="table table-bordered">
+        <table class="table table-hover">
             <thead>
                 <tr>
                     <th><input type="checkbox" data-bind="checked: AllChecked" /></th>
@@ -37,9 +39,9 @@
                 </tr>
             </thead>
             <tbody data-bind="foreach: items">
-                <tr>
+                <tr data-bind="click: $root.checkRow">
                     <td><input type="checkbox" data-bind="checked: Checked" /></td>
-                    <td data-bind="text: Status.Title"></td>
+                    <td data-bind="text: Status.Title, style: { color: Status.Color }"></td>
                     <td data-bind="text: Title"></td>
                     <td data-bind="text: LastUpdatedInGC"></td>
                     <td data-bind="text: LastImported"></td>
@@ -52,20 +54,19 @@
             <span data-bind="text: getCheckedCount"></span> Items selected
         </div>
 
-        <input type="button" value="Next" data-bind="click: buttonClick.bind($data, 2)" />
-        <input type="button" value="Close" data-bind="click: buttonClick.bind($data, 5)" />
+        <input type="button" value="Next>" data-bind="click: buttonClick.bind($data, 2)" />
+        <input type="button" value="Close" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" />
     </div>
 </div>
 
-<div data-bind="visible: getMode(2)">
-    2
+<div data-bind="if: getMode(2)">
     <div>
         Confirm import selection (<span data-bind="text: getCheckedCount"></span> items)<br />
         Please review your import selection before importing
     </div>
 
     <div>
-        <table class="table table-bordered">
+        <table class="table table-hover">
             <thead>
                 <tr>
                     <th></th>
@@ -75,7 +76,7 @@
             </thead>
             <tbody data-bind="foreach: items">
                 <tr>
-                    <td data-bind="text: Status.Title"></td>
+                    <td data-bind="text: Status.Title, style: { color: Status.Color }"></td>
                     <td data-bind="text: Title"></td>
                     <td data-bind="text: Template.Title"></td>
                 </tr>
@@ -83,15 +84,15 @@
         </table>
 
         <div>
-            After successful import change status of item to [<select data-bind="options: statuses, optionsText: 'Title', optionsValue: 'Id', value: statusFilter"></select>] inside your GatherContent account
+            After successful import change status of item to [<select data-bind="options: statuses, optionsText: 'Title', optionsValue: 'Id', value: statusFilter, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender"></select>] inside your GatherContent account
         </div>
-        <input type="button" value="Import" data-bind="click: buttonClick.bind($data, 3)" />
-        <input type="button" value="Close" data-bind="click: buttonClick.bind($data, 5)" />
+        <input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 1)" />
+        <input type="button" value="Import>" data-bind="click: buttonClick.bind($data, 3)" />
+        <input type="button" class="closeButton" value="Close" data-bind="click: buttonClick.bind($data, 5)" />
     </div>
 </div>
 
-<div data-bind="visible: getMode(3)">
-    3
+<div data-bind="if: getMode(3)">
     <div>
         Import in progress<br />
         Please do not close your browser. Depending on the number of items, this can take some time.
@@ -99,12 +100,11 @@
     <input type="button" value="Next" data-bind="click: buttonClick.bind($data, 4)" />
 </div>
 
-<div data-bind="visible: getMode(4)">
-    4
+<div data-bind="if: getMode(4)">
     <div>Import complete: Results</div>
 
     <div>
-        <table class="table table-bordered">
+        <table class="table table-hover">
             <thead>
                 <tr>
                     <th></th>
@@ -115,7 +115,7 @@
             </thead>
             <tbody data-bind="foreach: items">
                 <tr>
-                    <td data-bind="text: Status.Title"></td>
+                    <td data-bind="text: Status.Title, style: { color: Status.Color }"></td>
                     <td data-bind="text: Title"></td>
                     <td data-bind="text: Title"></td>
                     <td data-bind="text: Template.Title"></td>
@@ -123,6 +123,6 @@
             </tbody>
         </table>
 
-        <input type="button" value="Close" data-bind="click: buttonClick.bind($data, 5)" />
+        <input type="button" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" value="Close"/>
     </div>
 </div>

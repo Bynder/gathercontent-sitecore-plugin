@@ -24,7 +24,7 @@
 
     self.init = function () {
         var id = getUrlVars()["id"];
-        jQuery.getJSON('/sitecore/api/import?id={' + id + '}&projectId=0', null, function (results) {
+        jQuery.getJSON('/sitecore/api/getItemsForImort?id={' + id + '}&projectId=0', null, function (results) {
             var items = MapItems(results.Items);
             self.items(items);
             allItems = items.slice(0);
@@ -41,7 +41,7 @@
     self.projectChanged = function (obj, event) {
         if (event.originalEvent) {
             var id = getUrlVars()["id"];
-            jQuery.getJSON('/sitecore/api/import?id={' + id + '}&projectId=' + self.project(), null, function (results) {
+            jQuery.getJSON('/sitecore/api/getItemsForImort?id={' + id + '}&projectId=' + self.project(), null, function (results) {
                 var items = MapItems(results.Items);
                 self.items(items);
                 allItems = items.slice(0);
@@ -126,7 +126,8 @@
                 return false;
 
             var firstUnchecked = ko.utils.arrayFirst(items, function (item) {
-                return item.Checked() === false;
+                if (item.Checked)
+                    return item.Checked() === false;
             });
 
             return firstUnchecked == null;
@@ -138,43 +139,73 @@
         }
     });
 
-    self.getCheckedCount = ko.computed(function() {
+    self.getCheckedCount = ko.computed(function () {
         var counter = 0;
-        ko.utils.arrayForEach(self.items(), function(item) {
-            if (item.Checked() === true)
+        ko.utils.arrayForEach(self.items(), function (item) {
+            if (item.Checked && item.Checked() === true)
                 counter++;
         });
 
         return counter;
     });
 
-    self.switchToCheckItemsBeforeImport = function() {
-        var result = [];
-        ko.utils.arrayForEach(self.items(), function (item) {
-            if (item.Checked() === true)
-                result.push(item);
+    self.afterStatusesSelectRender = function (option, status) {
+        if (status.Color) {
+            option.style.color = status.Color;
+        }
+    };
+
+    self.getSelectedStatusColor = function () {
+        var result = "";
+        ko.utils.arrayForEach(self.statuses(), function (status) {
+            if (status.Id.toLowerCase() === self.statusFilter()) {
+                result = status.Color;
+                return;
+            }
         });
 
-        self.items(result);
-        allItems = result;
+        return result;
     }
 
-    self.import = function() {
+    self.checkRow = function() {
+        this.Checked(!this.Checked());
+    }
+    
+    self.query.subscribe(self.filter);
+
+    self.switchToCheckItemsBeforeImport = function () {
         var result = [];
         ko.utils.arrayForEach(self.items(), function (item) {
-            if (item.Checked() === true)
+            if (item.Checked && item.Checked() === true)
                 result.push(item);
         });
 
         self.items(result);
-        allItems = result;
+    }
+
+    self.import = function () {
+        var id = getUrlVars()["id"];
+        var items = self.items();
+        var status = self.statusFilter();
+        jQuery.ajax
+        ({
+            type: "POST",
+            url: '/sitecore/api/import?id={' + id + '}&statusId=' + status,
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(items),
+            success: function (response) {
+                self.buttonClick(MODE.ImportResult);
+                self.items(response.Items);
+            }
+        });
     }
 
     self.close = function () {
-
+        window.top.dialogClose();
     }
 
-    self.buttonClick = function(newMode) {
+    self.buttonClick = function (newMode) {
         self.currentMode(newMode);
         if (newMode === MODE.CheckItemsBeforeImport)
             self.switchToCheckItemsBeforeImport();
@@ -182,16 +213,20 @@
             self.import();
         else if (newMode === MODE.Close)
             self.close();
+        else if (newMode === MODE.ChooseItmesForImort)
+            self.backButtonClick();
     }
 
-    self.getMode = function(section) {
+    self.getMode = function (section) {
         if (self.currentMode() === section) {
             return true;
         }
         return false;
     }
 
-    self.query.subscribe(self.filter);
+    self.backButtonClick = function() {
+        self.items(allItems);
+    }
 
     self.init();
 }

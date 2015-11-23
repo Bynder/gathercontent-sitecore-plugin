@@ -19,6 +19,7 @@ namespace GatherContent.Connector.Website.Commands
             try
             {
                 Assert.ArgumentNotNull(context, "context");
+
                 if (context.Items.Length != 1)
                 {
                     return;

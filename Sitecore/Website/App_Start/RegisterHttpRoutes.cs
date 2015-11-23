@@ -19,10 +19,16 @@ namespace GatherContent.Connector.Website
                 action = "Get"
             });
 
-            routes.MapHttpRoute("ImportCommand", "sitecore/api/import", new
+            routes.MapHttpRoute("ImportCommand", "sitecore/api/getItemsForImort", new
             {
                 controller = "Import",
                 action = "Get"
+            });
+
+            routes.MapHttpRoute("ImportCommand1", "sitecore/api/import", new
+            {
+                controller = "Import",
+                action = "ImportItems"
             });
         }
     }

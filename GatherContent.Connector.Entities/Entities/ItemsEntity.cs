@@ -8,10 +8,10 @@ namespace GatherContent.Connector.Entities.Entities
     {
 
         [JsonProperty(PropertyName = "data")]
-        public List<Item> Data { get; set; }
+        public List<GCItem> Data { get; set; }
     }
 
-    public class Item
+    public class GCItem
     {
 
         [JsonProperty(PropertyName = "id")]

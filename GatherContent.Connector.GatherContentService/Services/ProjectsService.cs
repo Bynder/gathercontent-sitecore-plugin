@@ -5,7 +5,7 @@ using GatherContent.Connector.GatherContentService.Services.Abstract;
 
 namespace GatherContent.Connector.GatherContentService.Services
 {
-    class ProjectsService : BaseService
+    public class ProjectsService : BaseService
     {
         protected override string ServiceUrl
         {

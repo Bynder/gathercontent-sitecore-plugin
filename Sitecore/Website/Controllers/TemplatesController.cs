@@ -55,7 +55,7 @@ namespace GatherContent.Connector.Website.Controllers
 
         public HttpResponseMessage Post(TemplateMappingModel model)
         {
-            var db = Sitecore.Configuration.Factory.GetDatabase("master");
+            var db = Sitecore.Client.ContentDatabase;
 
             var accountItem = db.GetItem(AccountItemId);
 

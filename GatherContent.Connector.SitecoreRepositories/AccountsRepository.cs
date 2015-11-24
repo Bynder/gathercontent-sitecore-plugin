@@ -7,9 +7,7 @@ namespace GatherContent.Connector.SitecoreRepositories
 {
     public class AccountsRepository : BaseSitecoreRepository, IAccountsRepository
     {
-        public AccountsRepository(Database contextDatabase, Language contextLanguage)
-            : base(contextDatabase, contextLanguage)
-        { }
+        public AccountsRepository() : base() { }
 
         public GCAccountSettings GetAccountSettings()
         {

@@ -10,9 +10,7 @@ namespace GatherContent.Connector.SitecoreRepositories
 {
     public class TemplatesRepository : BaseSitecoreRepository, ITemplatesRepository
     {
-        public TemplatesRepository(Database contextDatabase, Language contextLanguage)
-            : base(contextDatabase, contextLanguage)
-        { }
+        public TemplatesRepository() : base() { }
 
         public void CreateTemplate(string id, Template template)
         {

@@ -130,7 +130,6 @@
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\AddOrUpdateMapping.html" />
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\Mappings.css" />
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\Mappings.js" />
-    <Content Include="sitecore modules\Shell\GatherContent\SyncBar.xml" />
     <Content Include="sitecore modules\Shell\GatherContent\Import\Import.html" />
     <Content Include="sitecore\shell\Controls\Browser.js" />
     <Content Include="sitecore\shell\Controls\Lib\Prototype\prototype.js" />
@@ -150,18 +149,11 @@
     <Compile Include="Controllers\MappingsController.cs" />
     <Compile Include="Extensions\GcAccountExtension.cs" />
     <Compile Include="Managers\SitecoreDataManager.cs" />
-    <Compile Include="Models\Import\ImportResponseModel.cs" />
-    <Compile Include="Models\Import\ItemModel.cs" />
-    <Compile Include="Models\Import\ProjectModel.cs" />
-    <Compile Include="Models\Import\StatusModel.cs" />
-    <Compile Include="Models\Import\TemplateModel.cs" />
     <Compile Include="Models\AddMappingModel.cs" />
     <Compile Include="Models\GcSettings.cs" />
     <Compile Include="Models\MappingModel.cs" />
     <Compile Include="Models\TemplateMappingModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Shell\Mappings.cs" />
-    <Compile Include="Shell\SyncBar.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Config\Include\GatherContent.HttpRoutesConfig.config">
@@ -196,6 +188,10 @@
     <ProjectReference Include="..\..\GatherContent.Connector.GatherContentService\GatherContent.Connector.GatherContentService.csproj">
       <Project>{42b1ccbc-1fc4-4601-9d53-63b69afab68d}</Project>
       <Name>GatherContent.Connector.GatherContentService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\GatherContent.Connector.Managers\GatherContent.Connector.Managers.csproj">
+      <Project>{06887722-f39a-4f95-81bc-653334bc7636}</Project>
+      <Name>GatherContent.Connector.Managers</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

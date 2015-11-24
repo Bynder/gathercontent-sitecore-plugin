@@ -15,12 +15,12 @@
 </script>
 
 <div data-bind="if: getMode(1)">
-    <select data-bind="options: projects, optionsText: 'Name', optionsValue: 'Id', value: project, event:{ change: $root.projectChanged}"></select>
+    <select data-bind="options: projects, optionsText: 'name', optionsValue: 'id', value: project, event:{ change: $root.projectChanged}"></select>
 
     <div>
         <div>FILTER</div>
-        <select data-bind="options: statuses, optionsText: 'Title', optionsValue: 'Id', value: statusFilter, optionsCaption: 'STATUS', event:{ change: $root.filter }"></select>
-        <select data-bind="options: templates, optionsText: 'Title', optionsValue: 'Id', value: templateFilter, optionsCaption: 'TEMPLATE', event:{ change: $root.filter }"></select>
+        <select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, optionsCaption: 'STATUS', event:{ change: $root.filter }"></select>
+        <select data-bind="options: templates, optionsText: 'name', optionsValue: 'id', value: templateFilter, optionsCaption: 'TEMPLATE', event:{ change: $root.filter }"></select>
     </div>
 
     <div>
@@ -35,18 +35,18 @@
                     <th>Select All</th>
                     <th>Title</th>
                     <th>Last updated in GC</th>
-                    <th>Last imported</th>
+                    <th>Path</th>
                     <th>Template</th>
                 </tr>
             </thead>
             <tbody data-bind="foreach: items">
                 <tr data-bind="click: $root.checkRow">
                     <td><input type="checkbox" data-bind="checked: Checked" /></td>
-                    <td data-bind="text: Status.Title, style: { color: Status.Color }"></td>
+                    <td data-bind="text: Status.name, style: { color: Status.color }"></td>
                     <td data-bind="text: Title"></td>
                     <td data-bind="text: LastUpdatedInGC"></td>
-                    <td data-bind="text: LastImported"></td>
-                    <td data-bind="text: Template.Title"></td>
+                    <td data-bind="text: Breadcrumb"></td>
+                    <td data-bind="text: Template.name"></td>
                 </tr>
             </tbody>
         </table>
@@ -72,20 +72,22 @@
                 <tr>
                     <th></th>
                     <th>Title</th>
+                    <th>Path</th>
                     <th>Template</th>
                 </tr>
             </thead>
             <tbody data-bind="foreach: items">
                 <tr>
-                    <td data-bind="text: Status.Title, style: { color: Status.Color }"></td>
+                    <td data-bind="text: Status.name, style: { color: Status.color }"></td>
                     <td data-bind="text: Title"></td>
-                    <td data-bind="text: Template.Title"></td>
+                    <td data-bind="text: Breadcrumb"></td>
+                    <td data-bind="text: Template.name"></td>
                 </tr>
             </tbody>
         </table>
 
         <div>
-            After successful import change status of item to [<select data-bind="options: statuses, optionsText: 'Title', optionsValue: 'Id', value: statusFilter, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender"></select>] inside your GatherContent account
+            After successful import change status of item to [<select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender"></select>] inside your GatherContent account
         </div>
         <input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 1)" />
         <input type="button" value="Import>" data-bind="click: buttonClick.bind($data, 3)" />
@@ -116,10 +118,10 @@
             </thead>
             <tbody data-bind="foreach: items">
                 <tr>
-                    <td data-bind="text: Status.Title, style: { color: Status.Color }"></td>
+                    <td data-bind="text: Status.name, style: { color: Status.color }"></td>
                     <td data-bind="text: Title"></td>
                     <td data-bind="text: Title"></td>
-                    <td data-bind="text: Template.Title"></td>
+                    <td data-bind="text: Template.name"></td>
                 </tr>
             </tbody>
         </table>

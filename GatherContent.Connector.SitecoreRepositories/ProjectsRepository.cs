@@ -12,9 +12,7 @@ namespace GatherContent.Connector.SitecoreRepositories
 {
     public class ProjectsRepository : BaseSitecoreRepository, IProjectsRepository
     {
-        public ProjectsRepository(Database contextDatabase, Language contextLanguage)
-            : base(contextDatabase, contextLanguage)
-        { }
+        public ProjectsRepository() : base() { }
 
         private void CreateProjectFolders(string id)
         {

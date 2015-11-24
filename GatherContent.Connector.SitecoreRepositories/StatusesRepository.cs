@@ -10,9 +10,7 @@ namespace GatherContent.Connector.SitecoreRepositories
 {
     public class StatusesRepository : BaseSitecoreRepository, IStatusesRepository
     {
-        public StatusesRepository(Database contextDatabase, Language contextLanguage)
-            : base(contextDatabase, contextLanguage)
-        { }
+        public StatusesRepository() : base() { }
 
         public void CreateStatus(string id, Status status)
         {

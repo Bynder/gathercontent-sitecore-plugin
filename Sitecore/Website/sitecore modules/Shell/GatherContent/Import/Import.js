@@ -40,16 +40,16 @@
      }
 
     self.initVariables = function (response) {
-        var items = self.setupWatcher(response.Items);
+        var items = self.setupWatcher(response.Data.Items);
         self.items(items);
         allItems = items.slice(0);
 
-        self.projects(response.Projects);
-        self.project(response.Project);
+        self.projects(response.Filters.Projects);
+        self.project(response.Filters.Project);
 
-        self.statuses(response.Statuses);
+        self.statuses(response.Filters.Statuses);
 
-        self.templates(response.Templates);
+        self.templates(response.Filters.Templates);
     }
 
     self.projectChanged = function (obj, event) {
@@ -103,7 +103,7 @@
             resultCollection = [];
             for (var i = 0; i < currentCollection.length; i++) {
                 var currentElement = currentCollection[i];
-                if (currentElement.Status.Id.toLowerCase() === value.toLowerCase()) {
+                if (currentElement.Status.id === value) {
                     resultCollection.push(currentElement);
                 }
             }
@@ -119,7 +119,7 @@
             resultCollection = [];
             for (var i = 0; i < currentCollection.length; i++) {
                 var currentElement = currentCollection[i];
-                if (currentElement.Template.Id.toLowerCase() === value.toLowerCase()) {
+                if (currentElement.Template.id === value) {
                     resultCollection.push(currentElement);
                 }
             }
@@ -160,16 +160,16 @@
     });
 
     self.afterStatusesSelectRender = function (option, status) {
-        if (status.Color) {
-            option.style.color = status.Color;
+        if (status.color) {
+            option.style.color = status.color;
         }
     };
 
     self.getSelectedStatusColor = function () {
         var result = "";
         ko.utils.arrayForEach(self.statuses(), function (status) {
-            if (status.Id.toLowerCase() === self.statusFilter()) {
-                result = status.Color;
+            if (status.id.toLowerCase() === self.statusFilter()) {
+                result = status.color;
                 return;
             }
         });

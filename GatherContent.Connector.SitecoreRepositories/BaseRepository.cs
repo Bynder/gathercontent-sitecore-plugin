@@ -1,5 +1,4 @@
 ﻿using System;
-using Sitecore;
 using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.Globalization;
@@ -11,11 +10,10 @@ namespace GatherContent.Connector.SitecoreRepositories
         protected readonly Database ContextDatabase;
         protected readonly Language ContextLanguage;
 
-        protected BaseSitecoreRepository(Database contextDatabase, Language contextLanguage)
+        protected BaseSitecoreRepository()
         {
-            var a = Sitecore.Context.Database;
-            ContextDatabase = contextDatabase;
-            ContextLanguage = contextLanguage;
+            ContextDatabase = Sitecore.Configuration.Factory.GetDatabase("master");
+            ContextLanguage = Sitecore.Context.Language;
         }
 
         public Item GetItem(string sitecoreId)

@@ -149,10 +149,13 @@
     <Compile Include="Controllers\MappingsController.cs" />
     <Compile Include="Extensions\GcAccountExtension.cs" />
     <Compile Include="Managers\SitecoreDataManager.cs" />
-    <Compile Include="Models\AddMappingModel.cs" />
+    <Compile Include="Models\Mapping\AddMappingModel.cs" />
+    <Compile Include="Models\Mapping\FieldMapping.cs" />
+    <Compile Include="Models\Mapping\GcScMapModel.cs" />
     <Compile Include="Models\GcSettings.cs" />
-    <Compile Include="Models\MappingModel.cs" />
-    <Compile Include="Models\TemplateMappingModel.cs" />
+    <Compile Include="Models\Mapping\MappingModel.cs" />
+    <Compile Include="Models\Mapping\TemplateMapping.cs" />
+    <Compile Include="Models\Template\TemplateMappingModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

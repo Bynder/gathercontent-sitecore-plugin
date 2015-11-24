@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GatherContent.Connector.Website.Models
+namespace GatherContent.Connector.Website.Models.Mapping
 {
     public class MappingModel
     {

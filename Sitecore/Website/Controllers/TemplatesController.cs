@@ -4,7 +4,7 @@ using System.Net.Http;
 using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.Website.Extensions;
 using GatherContent.Connector.Website.Managers;
-using GatherContent.Connector.Website.Models;
+using GatherContent.Connector.Website.Models.Template;
 using Sitecore.Services.Infrastructure.Web.Http;
 
 namespace GatherContent.Connector.Website.Controllers
@@ -61,15 +61,6 @@ namespace GatherContent.Connector.Website.Controllers
 
             var manager = new SitecoreDataManager(accountItem.Database, accountItem.Language);
             
-            //foreach (var selected in model.Selected)
-            //{
-            //    var pr = model.Projects;
-            //    foreach (var gcProjectModel in pr)
-            //    {
-            //        var t = gcProjectModel.Templates.FirstOrDefault(i => i.TemplateId == selected);
-            //    }
-            //}
-
 
             foreach (var project in model.Projects)
             {

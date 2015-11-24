@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using GatherContent.Connector.Entities.Entities;
 
 namespace GatherContent.Connector.Website.Models.Import
 {
@@ -11,10 +8,13 @@ namespace GatherContent.Connector.Website.Models.Import
 
         public string Title { get; set; }
 
-        public TemplateModel (string id)
+        public TemplateModel(Template template)
         {
-            Id = id;
-            Title = "new template " + id;
+            if (template != null)
+            {
+                Id = template.Id.ToString();
+                Title = template.Name;
+            }
         }
     }
 }

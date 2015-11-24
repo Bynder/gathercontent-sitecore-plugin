@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using GatherContent.Connector.Service.Entities;
+using GatherContent.Connector.Entities.Entities;
 
 namespace GatherContent.Connector.Website.Models.Import
 {
@@ -18,12 +18,13 @@ namespace GatherContent.Connector.Website.Models.Import
 
         public IEnumerable<TemplateModel> Templates { get; set; }
 
-        public ImportResponseModel(Project project, ItemsEntity items, ProjectsEntity projects)
+        public ImportResponseModel(Project project, ItemsEntity items, ProjectsEntity projects, TemplatesEntity templates)
         {
             Project = new ProjectModel(project);
-            Items = items.Data.Select(i => new ItemModel(i));
+            items.Data = items.Data.Where(i => !string.IsNullOrEmpty(i.TemplateId.ToString())).ToList();
+            Items = items.Data.Select(i => new ItemModel(i, templates.Data.FirstOrDefault(j => j.Id == i.TemplateId)));
             Statuses = project.Statuses.Data.Select(i => new StatusModel(i));
-            Templates = items.Data.Select(i => new TemplateModel(i.TemplateId.ToString())).Distinct();
+            Templates = templates.Data.Select(i => new TemplateModel(i));
             Projects = projects.Data.Select(i => new ProjectModel(i));
         }
     }

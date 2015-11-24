@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using GatherContent.Connector.Service.Entities;
+using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.Website.Models;
 using Sitecore.Data;
 using Sitecore.Data.Items;
@@ -15,13 +15,13 @@ namespace GatherContent.Connector.Website.Managers
 
         #region const
 
-        private const string GcProject = "{AC94D4A6-A684-44EA-A97A-5A49128DB470}";
-        private const string GcStatus = "{B2132F07-5488-4BEF-8C0D-300072C7D64C}";
-        private const string GcTemplate = "{A7E151EC-BA54-4804-B282-AEAF6AF039A1}";
         private const string Folder = "{A87A00B1-E6DB-45AB-8B54-636FEC3B5523}";
         private const string ProjectFolderTemplateName = "GC Projects Folder";
+        private const string GcProject = "{AC94D4A6-A684-44EA-A97A-5A49128DB470}";
+        private const string GcStatus = "{B2132F07-5488-4BEF-8C0D-300072C7D64C}";
         private const string StatusFolderName = "GC Statuses";
         private const string TemplatesFolderName = "GC Templates";
+        private const string GcTemplate = "{A7E151EC-BA54-4804-B282-AEAF6AF039A1}";
         private const string MappingFolderName = "Mappings";
 
         #endregion
@@ -30,15 +30,20 @@ namespace GatherContent.Connector.Website.Managers
 
         private readonly Database _contextDatabase;
         private readonly Language _contextLanguage;
-
-
-
+        
         public SitecoreDataManager(Database contextDatabase, Language contextLanguage)
         {
             _contextDatabase = contextDatabase;
             _contextLanguage = contextLanguage;
         }
-
+        
+        public Item GetItem(string sitecoreId)
+        {
+            Item resultItem = null;
+            if (!String.IsNullOrEmpty(sitecoreId))
+                resultItem = _contextDatabase.GetItem(sitecoreId, _contextLanguage);
+            return resultItem;
+        }
 
         #region Utilities
 
@@ -58,19 +63,7 @@ namespace GatherContent.Connector.Website.Managers
         }
 
         #endregion
-
-
-
-
-        public Item GetItem(string sitecoreId)
-        {
-            Item resultItem = null;
-            if (!String.IsNullOrEmpty(sitecoreId))
-                resultItem = _contextDatabase.GetItem(sitecoreId, _contextLanguage);
-            return resultItem;
-        }
-
-
+        
         public Item AddProjectFolder(string parentSitecoreId, Project project)
         {
             var parentItem = GetItem(parentSitecoreId);

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using GatherContent.Connector.Service.Services;
 using GatherContent.Connector.Website.Extensions;
 using GatherContent.Connector.Website.Managers;
 using Sitecore;
@@ -51,7 +50,7 @@ namespace GatherContent.Connector.Website.Shell
                 var item = Client.ContentDatabase.Items[_id, _language, Version.Parse(_version)];
                 var manager = new SitecoreDataManager(item.Database, item.Language);
                 var gcSettings = GcAccountExtension.GetSettings(item);
-                var service = new GatherContentService(gcSettings.ApiUrl, gcSettings.Username, gcSettings.ApiKey);
+                var service = new GatherContentService.GatherContentService(gcSettings.ApiUrl, gcSettings.Username, gcSettings.ApiKey);
                 foreach (var scProject in _items)
                 {
                     var project = Client.ContentDatabase.Items[scProject.ID.ToString(), _language, Version.Parse(_version)];

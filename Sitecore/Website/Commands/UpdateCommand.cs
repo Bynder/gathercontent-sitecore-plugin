@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.Linq;
-using GatherContent.Connector.Service.Services;
 using GatherContent.Connector.Website.Extensions;
 using GatherContent.Connector.Website.Managers;
 using Sitecore;
@@ -68,7 +67,7 @@ namespace GatherContent.Connector.Website.Commands
                 var manager = new SitecoreDataManager(item.Database, item.Language);
                 var gcSettings = GcAccountExtension.GetSettings(item);
 
-                var service = new GatherContentService(gcSettings.ApiUrl, gcSettings.Username, gcSettings.ApiKey);
+                var service = new GatherContentService.GatherContentService(gcSettings.ApiUrl, gcSettings.Username, gcSettings.ApiKey);
                 var accounts = service.GetAccounts();
 
                 var account = accounts.Data.FirstOrDefault();

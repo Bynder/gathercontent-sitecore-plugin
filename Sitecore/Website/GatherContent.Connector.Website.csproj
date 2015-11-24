@@ -112,38 +112,31 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\GatherContent.Connector.Service\GatherContent.Connector.Service.csproj">
-      <Project>{d860f6db-8dd5-4257-b97c-e54e8c88808b}</Project>
-      <Name>GatherContent.Connector.Service</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="css\bootstrap\css\bootstrap-theme.css" />
-    <Content Include="css\bootstrap\css\bootstrap-theme.min.css" />
-    <Content Include="css\bootstrap\css\bootstrap.css" />
-    <Content Include="css\bootstrap\css\bootstrap.min.css" />
-    <Content Include="css\bootstrap\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="css\bootstrap\js\bootstrap.js" />
-    <Content Include="css\bootstrap\js\bootstrap.min.js" />
-    <Content Include="css\bootstrap\js\npm.js" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\css\bootstrap-theme.css" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\css\bootstrap-theme.min.css" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\css\bootstrap.css" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\css\bootstrap.min.css" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\js\bootstrap.js" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\js\bootstrap.min.js" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\js\npm.js" />
     <Content Include="Global.asax" />
-    <Content Include="js\knockout-3.4.0.js" />
-    <Content Include="sitecore modules\Shell\GatherContent\GatherContent.css" />
+    <Content Include="sitecore modules\Shell\GatherContent\js\knockout-3.4.0.js" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\GatherContent.css" />
     <Content Include="sitecore modules\Shell\GatherContent\AddTemplate\AddTemplate.html" />
     <Content Include="sitecore modules\Shell\GatherContent\AddTemplate\AddTemplate.css" />
-    <Content Include="sitecore modules\Shell\GatherContent\GatherContent.js" />
-    <Content Include="sitecore modules\Shell\GatherContent\jquery_2.1.1.min.js" />
+    <Content Include="sitecore modules\Shell\GatherContent\js\GatherContent.js" />
+    <Content Include="sitecore modules\Shell\GatherContent\js\jquery_2.1.1.min.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\AddOrUpdateMapping.html" />
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\Mappings.css" />
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\Mappings.js" />
     <Content Include="sitecore modules\Shell\GatherContent\SyncBar.xml" />
-    <Content Include="sitecore\shell\Applications\GatherConnect\Import\Import.html" />
+    <Content Include="sitecore modules\Shell\GatherContent\Import\Import.html" />
     <Content Include="sitecore\shell\Controls\Browser.js" />
     <Content Include="sitecore\shell\Controls\Lib\Prototype\prototype.js" />
     <Content Include="sitecore\shell\Controls\Sitecore.js" />
-    <Content Include="sitecore\shell\Applications\GatherConnect\Import\Import.css" />
-    <Content Include="sitecore\shell\Applications\GatherConnect\Import\Import.js" />
-    <Content Include="sitecore\shell\Applications\GatherConnect\Import\Import.xml" />
+    <Content Include="sitecore modules\Shell\GatherContent\Import\Import.css" />
+    <Content Include="sitecore modules\Shell\GatherContent\Import\Import.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -167,7 +160,6 @@
     <Compile Include="Models\MappingModel.cs" />
     <Compile Include="Models\TemplateMappingModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Shell\ImportItems.cs" />
     <Compile Include="Shell\Mappings.cs" />
     <Compile Include="Shell\SyncBar.cs" />
   </ItemGroup>
@@ -187,14 +179,24 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="css\bootstrap\css\bootstrap-theme.css.map" />
-    <Content Include="css\bootstrap\css\bootstrap.css.map" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\css\bootstrap-theme.css.map" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\css\bootstrap.css.map" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="css\bootstrap\fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="css\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="css\bootstrap\fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="css\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\GatherContent.Connector.Entities\GatherContent.Connector.Entities.csproj">
+      <Project>{a40787e3-7df6-41b9-90c0-41704aea2be3}</Project>
+      <Name>GatherContent.Connector.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\GatherContent.Connector.GatherContentService\GatherContent.Connector.GatherContentService.csproj">
+      <Project>{42b1ccbc-1fc4-4601-9d53-63b69afab68d}</Project>
+      <Name>GatherContent.Connector.GatherContentService</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

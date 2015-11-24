@@ -39,13 +39,13 @@ namespace GatherContent.Connector.Website
                 controller = "TemplatesMapping",
                 action = "Post"
             });
-            routes.MapHttpRoute("ImportCommand", "sitecore/api/getItemsForImort", new
+            routes.MapHttpRoute("GetItemsForImport", "sitecore/api/getItemsForImort", new
             {
                 controller = "Import",
                 action = "Get"
             });
 
-            routes.MapHttpRoute("ImportCommand1", "sitecore/api/import", new
+            routes.MapHttpRoute("ImportItems", "sitecore/api/import", new
             {
                 controller = "Import",
                 action = "ImportItems"

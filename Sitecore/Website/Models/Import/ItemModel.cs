@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using GatherContent.Connector.Service.Entities;
+using GatherContent.Connector.Entities.Entities;
 
 namespace GatherContent.Connector.Website.Models.Import
 {
@@ -22,8 +19,11 @@ namespace GatherContent.Connector.Website.Models.Import
 
         public TemplateModel Template { get; set; }
 
+        public ItemModel()
+        {
+        }
 
-        public ItemModel(Item item)
+        public ItemModel(Item item, Template template)
         {
             Checked = false;
             if (item != null)
@@ -33,12 +33,7 @@ namespace GatherContent.Connector.Website.Models.Import
                 Id = item.Id.ToString();
                 LastUpdatedInGC = GetLastUpdatedInGC(item.Updated);
                 LastImported = GetLastImportedDate(item.Id.ToString());
-                if (item.TemplateId != null)
-                    Template = new TemplateModel(item.TemplateId.Value.ToString());
-                else
-                {
-                    Template = new TemplateModel("1111");
-                }
+                Template = new TemplateModel(template);
             }
         }
 

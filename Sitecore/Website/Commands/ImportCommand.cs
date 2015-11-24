@@ -49,7 +49,7 @@ namespace GatherContent.Connector.Website.Commands
             var id = args.Parameters["id"].Replace("{", "").Replace("}", "");
             var language = Language.Parse(args.Parameters["language"]);
             var version = args.Parameters["version"];
-            var uri = "/sitecore/shell/applications/gatherconnect/import/import.html";
+            var uri = "/sitecore modules/shell/gathercontent/import/import.html";
             var path = string.Format("{0}?id={1}&l={2}&v={3}", uri, id, language, version);
 
             var options = new ModalDialogOptions(path)

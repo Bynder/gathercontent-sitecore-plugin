@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using GatherContent.Connector.Service.Entities;
+﻿using GatherContent.Connector.Entities.Entities;
 
 namespace GatherContent.Connector.Website.Models.Import
 {

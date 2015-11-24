@@ -1,20 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using GatherContent.Connector.Service.Entities;
-using GatherContent.Connector.Service.Services;
 using GatherContent.Connector.Website.Extensions;
-using GatherContent.Connector.Website.Managers;
 using GatherContent.Connector.Website.Models;
-using System;
 using Sitecore.Configuration;
-using Sitecore.Data;
-using Sitecore.Data.Items;
 using Sitecore.Data.Managers;
-using Sitecore.Globalization;
 using Sitecore.Services.Infrastructure.Web.Http;
-using Sitecore.Sites;
-using Sitecore.Web;
 
 namespace GatherContent.Connector.Website.Controllers
 {
@@ -77,7 +68,7 @@ namespace GatherContent.Connector.Website.Controllers
             var db = Sitecore.Configuration.Factory.GetDatabase("master");
             var accountItem = db.GetItem(AccountItemId);
             var gcSettings = GcAccountExtension.GetSettings(accountItem);
-            var service = new GatherContentService(gcSettings.ApiUrl, gcSettings.Username, gcSettings.ApiKey);
+            var service = new GatherContentService.GatherContentService(gcSettings.ApiUrl, gcSettings.Username, gcSettings.ApiKey);
             var template = service.GetSingleTemplate(id);
             var scTemplates = db.GetItem(SitecoreTemplateId).Axes.GetDescendants().Where(item => item.TemplateName == "Template").ToList();
 

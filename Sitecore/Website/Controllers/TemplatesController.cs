@@ -1,19 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Data;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using System.Net.Http;
-using GatherContent.Connector.Service.Entities;
-using GatherContent.Connector.Service.Services;
+using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.Website.Extensions;
 using GatherContent.Connector.Website.Managers;
 using GatherContent.Connector.Website.Models;
-using System;
-using Sitecore.Data;
-using Sitecore.Data.Items;
-using Sitecore.Globalization;
 using Sitecore.Services.Infrastructure.Web.Http;
-using Sitecore.Web;
 
 namespace GatherContent.Connector.Website.Controllers
 {
@@ -30,7 +22,7 @@ namespace GatherContent.Connector.Website.Controllers
 
             var gcSettings = GcAccountExtension.GetSettings(item);
 
-            var service = new GatherContentService(gcSettings.ApiUrl, gcSettings.Username, gcSettings.ApiKey);
+            var service = new GatherContentService.GatherContentService(gcSettings.ApiUrl, gcSettings.Username, gcSettings.ApiKey);
             var accounts = service.GetAccounts();
 
             var account = accounts.Data.FirstOrDefault();

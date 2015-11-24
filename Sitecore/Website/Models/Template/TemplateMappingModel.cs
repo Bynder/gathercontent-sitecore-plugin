@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 
-namespace GatherContent.Connector.Website.Models
+namespace GatherContent.Connector.Website.Models.Template
 {
     public class TemplateMappingModel
     {

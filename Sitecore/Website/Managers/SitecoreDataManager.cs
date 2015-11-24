@@ -2,6 +2,8 @@
 using System.Linq;
 using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.Website.Models;
+using GatherContent.Connector.Website.Models.Mapping;
+using GatherContent.Connector.Website.Models.Template;
 using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.Globalization;
@@ -22,6 +24,8 @@ namespace GatherContent.Connector.Website.Managers
         private const string StatusFolderName = "GC Statuses";
         private const string TemplatesFolderName = "GC Templates";
         private const string GcTemplate = "{A7E151EC-BA54-4804-B282-AEAF6AF039A1}";
+        private const string GcMapping = "{F47BB0E8-B2BB-4415-9D34-77D99D85BF2A}";
+        private const string GcFieldMapping = "{24FE0F34-5B16-44ED-A845-D6C502F08AA9}";
         private const string MappingFolderName = "Mappings";
 
         #endregion
@@ -30,13 +34,13 @@ namespace GatherContent.Connector.Website.Managers
 
         private readonly Database _contextDatabase;
         private readonly Language _contextLanguage;
-        
+
         public SitecoreDataManager(Database contextDatabase, Language contextLanguage)
         {
             _contextDatabase = contextDatabase;
             _contextLanguage = contextLanguage;
         }
-        
+
         public Item GetItem(string sitecoreId)
         {
             Item resultItem = null;
@@ -63,7 +67,7 @@ namespace GatherContent.Connector.Website.Managers
         }
 
         #endregion
-        
+
         public Item AddProjectFolder(string parentSitecoreId, Project project)
         {
             var parentItem = GetItem(parentSitecoreId);
@@ -146,6 +150,66 @@ namespace GatherContent.Connector.Website.Managers
 
                         //return createdItem;
                     }
+                }
+            }
+            //return null;
+        }
+
+        public Item CreateTemplateMapping(string id, TemplateMapping templateMapping)
+        {
+            var parentItem = GetItem(id);
+            var mappingsFolder = parentItem.Children.FirstOrDefault(item => item.Name == MappingFolderName);
+            if (mappingsFolder != null)
+            {
+                var mappings = mappingsFolder.Axes.GetDescendants();
+                if (!mappings.Select(item => item.Name).ToList().Contains(templateMapping.Name))
+                {
+                    using (new SecurityDisabler())
+                    {
+                        var mapping = _contextDatabase.GetTemplate(new ID(GcMapping));
+                        var validFolderName = ItemUtil.ProposeValidItemName(templateMapping.Name);
+                        var createdItem = mappingsFolder.Add(validFolderName, mapping);
+                        using (new SecurityDisabler())
+                        {
+                            createdItem.Editing.BeginEdit();
+                            createdItem.Fields["Sitecore Template"].Value = templateMapping.SitecoreTemplateId;
+                            createdItem.Fields["GC Template"].Value = templateMapping.GcTemplateId;
+                            createdItem.Fields["GC Project"].Value = templateMapping.GcProjectId;
+                            createdItem.Fields["Last Mapped Date"].Value = DateTime.Now.ToString();
+                            createdItem.Fields["Last Updated in GC"].Value = templateMapping.LastUpdated;
+                            createdItem.Editing.EndEdit();
+                        }
+
+                        return createdItem;
+                    }
+                }
+                return mappings.FirstOrDefault(item => item.Name == templateMapping.Name);
+            }
+            return null;
+        }
+
+        public void CreateFieldMapping(string id, FieldMapping fieldMapping)
+        {
+            var parentItem = GetItem(id);
+            if (parentItem != null)
+            {
+                var mappings = parentItem.Axes.GetDescendants();
+                if (!mappings.Select(item => item.Name).ToList().Contains(fieldMapping.GcField))
+                {
+                    using (new SecurityDisabler())
+                    {
+                        var mapping = _contextDatabase.GetTemplate(new ID(GcFieldMapping));
+                        var validFolderName = ItemUtil.ProposeValidItemName(fieldMapping.GcField);
+                        var createdItem = parentItem.Add(validFolderName, mapping);
+                        using (new SecurityDisabler())
+                        {
+                            createdItem.Editing.BeginEdit();
+                            createdItem.Fields["GC Field"].Value = fieldMapping.GcField;
+                            createdItem.Fields["Sitecore Field"].Value = fieldMapping.SitecoreFieldId;
+                            createdItem.Editing.EndEdit();
+                        }
+                    }
+                    //return createdItem;
                 }
             }
             //return null;

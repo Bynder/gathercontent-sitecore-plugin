@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Sitecore.Web.UI.HtmlControls;
+﻿using System.Collections.Generic;
 
-namespace GatherContent.Connector.Website.Models
+namespace GatherContent.Connector.Website.Models.Mapping
 {
-    public class AddMappingModel
+    public class GcScMapModel
     {
-        public AddMappingModel()
+        public GcScMapModel()
         {
             Tabs = new List<TemplateTab>();
             SitecoreTemplates = new List<SitecoreTemplate>();
         }
 
         public string GcProjectName { get; set; }
-
         public string GcTemplateName { get; set; }
+        public string SelectedTemplateId { get; set; }
+        public int GcTemplateId { get; set; }
         public List<TemplateTab> Tabs { get; set; }
         public List<SitecoreTemplate> SitecoreTemplates { get; set; }
+        
     }
 
     public class TemplateTab
@@ -29,13 +27,13 @@ namespace GatherContent.Connector.Website.Models
         }
 
         public string TabName { get; set; }
-
         public List<TemplateField> Fields { get; set; }
     }
 
     public class TemplateField
     {
         public string FieldName { get; set; }
+        public string SelectedField { get; set; }
     }
 
     public class SitecoreTemplate
@@ -53,8 +51,6 @@ namespace GatherContent.Connector.Website.Models
     public class SitecoreTemplateField
     {
         public string SitrecoreFieldName { get; set; }
-
         public string SitecoreFieldId { get; set; }
     }
-
 }

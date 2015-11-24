@@ -1,5 +1,4 @@
-﻿using GatherContent.Connector.Entities.Entities;
-
+﻿
 namespace GatherContent.Connector.Website.Models.Import
 {
     public class TemplateModel
@@ -8,7 +7,7 @@ namespace GatherContent.Connector.Website.Models.Import
 
         public string Title { get; set; }
 
-        public TemplateModel(Template template)
+        public TemplateModel(GatherContent.Connector.Entities.Entities.Template template)
         {
             if (template != null)
             {

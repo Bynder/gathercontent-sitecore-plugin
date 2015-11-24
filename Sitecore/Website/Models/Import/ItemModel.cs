@@ -23,7 +23,7 @@ namespace GatherContent.Connector.Website.Models.Import
         {
         }
 
-        public ItemModel(Item item, Template template)
+        public ItemModel(Item item, GatherContent.Connector.Entities.Entities.Template template)
         {
             Checked = false;
             if (item != null)

@@ -1,13 +1,11 @@
 ﻿.gathercontent-dialog h1 {
-    margin-left: 20px;
     padding-bottom: 5px;
     display: block;
     font-weight: bold;
-    font-size: 100%;
+    font-size: 1.5em;
 }
 
 .gathercontent-dialog h2 {
-    margin-left: 20px;
     padding-bottom: 5px;
     display: block;
     font-weight: bold;
@@ -21,4 +19,181 @@
     display: block;
     font-weight: bold;
     font-size: 100%;
+}
+body{
+    margin: 0;
+}
+.gathercontent-dialog{
+    padding:10px 20px;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+/*.gathercontent-dialog table thead tr{*/
+    /*color: white;*/
+/*}*/
+/*.gathercontent-dialog table thead tr th{*/
+    /*background-color: #5e5e5e;*/
+    /*border: none;*/
+    /*color: #fff;*/
+    /*padding: 14px 10px;*/
+    /*text-align: left;*/
+    /*font-weight: 500;*/
+    /*position: relative;*/
+/*}*/
+/*.gathercontent-dialog table thead tr th:after {*/
+    /*content: "";*/
+    /*width: 0;*/
+    /*border-right: 1px solid #fff;*/
+    /*height: 17px;*/
+    /*position: absolute;*/
+    /*right: 0px;*/
+/*}*/
+/*.gathercontent-dialog table thead tr th:last-child:after{*/
+    /*content: none;*/
+/*}*/
+.gathercontent-dialog table tbody tr:nth-child(even){
+    background-color: #f7f7f7;
+}
+.gathercontent-dialog table tbody tr:nth-child(odd){
+    background-color: #fff;
+}
+.gathercontent-dialog table tbody tr:hover{
+    background-color: #e3e3e3;
+}
+.gathercontent-dialog table tbody tr td{
+    color: #808080;
+    cursor: default;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-top: none;
+    font-size: 0.9em;
+}
+.gathercontent-dialog table tbody tr td:last-child{
+    text-align: right;
+    white-space: nowrap;
+}
+.gathercontent-dialog table tbody tr td:nth-child(1),.gathercontent-dialog table tbody tr td:nth-child(2){
+    font-size: 1em;
+}
+.gathercontent-dialog table tbody tr td a{
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 700;
+    color:#00B6FF;
+}
+.gathercontent-dialog .table_mappings_wrapper{
+    position: relative;
+    padding-top: 36px;
+    background: #5e5e5e;
+}
+.gathercontent-dialog .table_mappings_scroll{
+    max-height: 135px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #fff;
+}
+.gathercontent-dialog table thead th div{
+    position: absolute;
+    background: transparent;
+    color: #fff;
+    margin: 9px 0;
+    top: 0;
+    line-height: normal;
+    border-left: 1px solid #fff;
+    padding-left: 3px;
+    min-height: 18px;
+}
+.gathercontent-dialog table thead th:first-child div{
+    border-left:none;
+}
+.gathercontent-dialog table thead th {
+    height: 0;
+    line-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    color: transparent;
+    border: none;
+    white-space: nowrap;
+    padding: 0 8px 0 0;
+}
+
+.gathercontent-dialog .mappings-btn{
+    border: none;
+    margin-top: 20px;
+    padding: 10px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+.mapping_tabs_wrapper .tabs_mapping .row_mapping_tab input,.tabs_mapping .row_mapping_tab select{
+    border: 1px solid #808080;
+    background: #fff;
+    margin-bottom: 15px;
+    width: calc(50% - 50px);
+    border: 1px solid #808080;
+    background: #fff;
+    margin-bottom: 15px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    float: left;
+    height: 30px;
+    vertical-align: middle;
+    color: #808080;
+
+}
+.tabs_mapping .row_mapping_tab select{
+    -webkit-appearance: none;
+    background-image: url('mappings/img/arrow_select.png');
+    background-position-y:  center;
+    background-repeat: no-repeat;
+    -ms-background-position-x:;
+    background-position-x:95%;
+    -webkit-background-size:;
+    background-size:8px;
+    /* for FF */
+    -moz-appearance: none;
+    /* for IE */
+    -ms-appearance: none;
+    appearance: none!important;
+}
+select::-ms-expand {
+    display: none;
+}
+.mapping_tabs_wrapper .tabs_mapping .title_mapping{
+    color: #000;
+    font-size: 1.1em;
+    border-bottom: 2px solid #808080;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    padding-top: 15px;
+    font-weight: 700;
+}
+.mapping_tabs_wrapper .tabs_mapping .row_mapping_tab .arrow{
+    width: 80px;
+    height: 15px;
+    float: left;
+    background-image: url("mappings/img/arrow.png");
+    margin: 7px 10px;
+}
+.mapping_tabs_wrapper .title_lvl3{
+    font-size: 1.1em;
+    font-weight: 700;
+}
+.mapping_tabs_wrapper{
+    width: 90%;
+    margin: 0 auto;
+    color: #808080;
+}
+.mapping_tabs_wrapper:after,.tabs_mapping:after,.row_mapping_tab:after{
+    content: "";
+    display: table;
+    clear: both;
+    width: 0;
+    height: 0;
+}
+.tabs_mapping{
+    width: 80%;
+    margin: 0 auto;
 }

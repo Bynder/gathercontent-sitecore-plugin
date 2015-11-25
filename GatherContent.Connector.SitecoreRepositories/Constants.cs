@@ -12,7 +12,10 @@
 
         public const string StatusFolderName = "GC Statuses";
         public const string TemplatesFolderName = "GC Templates";
+        public const string ProjectsFolderName = "GC Projects";
         public const string ProjectFolderTemplateName = "GC Projects Folder";
+
+        public const string MappingFolderTemplateName = "GC Mapping";
 
     }
 }

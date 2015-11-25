@@ -4,9 +4,9 @@ namespace GatherContent.Connector.Managers.Models.ImportItems
 {
     public class ImportResultModel
     {
-        public List<ItemModel> Items { get; set; }
+        public List<ImportResultItemModel> Items { get; set; }
 
-        public ImportResultModel(List<ItemModel> items)
+        public ImportResultModel(List<ImportResultItemModel> items)
         {
             Items = items;
         }

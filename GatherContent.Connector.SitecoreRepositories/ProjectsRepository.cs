@@ -4,9 +4,7 @@ using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.IRepositories.Interfaces;
 using Sitecore.Data;
 using Sitecore.Data.Items;
-using Sitecore.Globalization;
 using Sitecore.SecurityModel;
-using Item = Sitecore.Data.Items.Item;
 
 namespace GatherContent.Connector.SitecoreRepositories
 {

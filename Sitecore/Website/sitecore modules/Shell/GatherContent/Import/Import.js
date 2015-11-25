@@ -198,16 +198,18 @@
         var id = getUrlVars()["id"];
         var items = self.items();
         var status = self.statusFilter();
+        var project = self.project();
+
         jQuery.ajax
         ({
             type: "POST",
-            url: '/sitecore/api/import?id={' + id + '}&statusId=' + status,
+            url: '/sitecore/api/import?id={' + id + '}&projectId=' + project + '&statusId=' + status,
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(items),
             success: function (response) {
-                self.buttonClick(MODE.ImportResult);
                 self.items(response.Items);
+                self.buttonClick(MODE.ImportResult);
             }
         });
     }

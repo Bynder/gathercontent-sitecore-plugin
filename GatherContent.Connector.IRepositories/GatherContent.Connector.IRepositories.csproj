@@ -44,9 +44,15 @@
   <ItemGroup>
     <Compile Include="Interfaces\IAccountsRepository.cs" />
     <Compile Include="Interfaces\IItemsRepository.cs" />
+    <Compile Include="Interfaces\IMappingRepository.cs" />
     <Compile Include="Interfaces\IProjectsRepository.cs" />
     <Compile Include="Interfaces\IStatusesRepository.cs" />
     <Compile Include="Interfaces\ITemplatesRepository.cs" />
+    <Compile Include="Models\ImportCMSFiled.cs" />
+    <Compile Include="Models\ImportCMSItem.cs" />
+    <Compile Include="Models\ImportItemsResponseModel.cs" />
+    <Compile Include="Models\MappingFieldModel.cs" />
+    <Compile Include="Models\MappingTemplateModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

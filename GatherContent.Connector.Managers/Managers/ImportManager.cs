@@ -2,6 +2,7 @@
 using System.Linq;
 using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.GatherContentService.Services;
+using GatherContent.Connector.IRepositories.Models;
 using GatherContent.Connector.Managers.Models.ImportItems;
 using GatherContent.Connector.SitecoreRepositories;
 
@@ -15,6 +16,8 @@ namespace GatherContent.Connector.Managers.Managers
         private readonly ProjectsService _projectsService;
         private readonly TemplatesService _templatesService;
 
+        private readonly MappingManager _mappingManager;
+
         public ImportManager()
         {
             _itemsRepository = new ItemsRepository();
@@ -26,6 +29,8 @@ namespace GatherContent.Connector.Managers.Managers
             _accountsService = new AccountsService(accountSettings);
             _projectsService = new ProjectsService(accountSettings);
             _templatesService = new TemplatesService(accountSettings);
+
+            _mappingManager = new MappingManager();
         }
 
         public SelectImportItemsModel GetModelForSelectImportItemsDialog(string itemId, string projectId)
@@ -86,7 +91,12 @@ namespace GatherContent.Connector.Managers.Managers
 
         private List<Template> GetTemplates(int projectId)
         {
-            TemplatesEntity templates = _templatesService.GetTemplates(projectId.ToString());
+            return GetTemplates(projectId.ToString());
+        }
+
+        private List<Template> GetTemplates(string projectId)
+        {
+            TemplatesEntity templates = _templatesService.GetTemplates(projectId);
             return templates.Data;
         }
 
@@ -101,32 +111,63 @@ namespace GatherContent.Connector.Managers.Managers
 
         private List<GCItem> MapItems(List<ItemModel> items)
         {
-            var result = new List<GCItem>();
-
+            List<GCItem> result = items.Select(i => _itemsService.GetSingleItem(i.Id.ToString()).Data).ToList();
             return result;
         }
 
-        public ImportResultItemModel ImportItems(string itemId, List<ItemModel> items, string statusId)
+        public ImportResultModel ImportItems(string itemId, List<ItemModel> items, string projectId, string statusId)
         {
-            List<GCItem> gcItems = MapItems(items);
-            ImportNewItems(itemId, gcItems);
-            PostNewStatusesForItems(gcItems, statusId);
-            return GetImportResultModel(gcItems);
+            //List<GCItem> gcItems = MapItems(items);
+            //List<ImportItemsResponseModel> importResult = ImportNewItems(itemId, projectId, gcItems);
+
+            //if (!string.IsNullOrEmpty(statusId))
+            //{
+            //    List<GCItem> successfulImportedItems = GetSuccessfulImportedItems(importResult);
+            //    //PostNewStatusesForItems(successfulImportedItems, statusId);
+            //}
+
+            //return GetImportResultModel(importResult, projectId);
+
+            return new ImportResultModel(new List<ImportResultItemModel>());
         }
 
-        private void ImportNewItems(string itemId, List<GCItem> items)
+        private List<ImportItemsResponseModel> ImportNewItems(string itemId, string projectId, List<GCItem> items)
         {
-            Dictionary<GCItem, bool> importResult = _itemsRepository.ImportItems(itemId, items);
+            List<ImportCMSItem> cmsItems = _mappingManager.MappingItems(items, projectId);
+
+            List<ImportItemsResponseModel> importResult = _itemsRepository.ImportItems(itemId, cmsItems);
+            
+            return importResult;
+        }
+
+        private List<GCItem> GetSuccessfulImportedItems(List<ImportItemsResponseModel> importResult)
+        {
+            return importResult.Where(i => i.IsImportSuccessful).Select(i => i.Item).ToList();
         }
 
         private void PostNewStatusesForItems(List<GCItem> items, string statusId)
         {
-
+            foreach (GCItem item in items)
+            {
+                _itemsService.ChooseStatusForItem(item.Id.ToString(), statusId);
+            }
         }
 
-        private ImportResultItemModel GetImportResultModel(List<GCItem> items)
+        private ImportResultModel GetImportResultModel(List<ImportItemsResponseModel> importResult, string projectId)
         {
-            var result = new ImportResultItemModel();
+            var importedItemResult = new List<ImportResultItemModel>();
+
+            List<Template> templates = GetTemplates(projectId);
+
+            foreach (ImportItemsResponseModel model in importResult)
+            {
+                Template template = templates.FirstOrDefault(templ => templ.Id == model.Item.TemplateId);
+
+                var itemRes = new ImportResultItemModel(model.Item, template, model.IsImportSuccessful, model.Message);
+                importedItemResult.Add(itemRes);
+            }
+
+            var result = new ImportResultModel(importedItemResult);
 
             return result;
         }

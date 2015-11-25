@@ -13,10 +13,10 @@ namespace GatherContent.Connector.Website.Controllers
             return importManager.GetModelForSelectImportItemsDialog(id, projectId);
         }
 
-        public ImportResultItemModel ImportItems(string id, string statusId, List<ItemModel> items)
+        public ImportResultModel ImportItems(string id, string projectId, string statusId, List<ItemModel> items)
         {
             var importManager = new ImportManager();
-            return importManager.ImportItems(id, items, statusId);
+            return importManager.ImportItems(id, items, projectId, statusId);
         }
     }
 }

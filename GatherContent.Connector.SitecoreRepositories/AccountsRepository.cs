@@ -1,7 +1,5 @@
 ﻿using GatherContent.Connector.Entities;
 using GatherContent.Connector.IRepositories.Interfaces;
-using Sitecore.Data;
-using Sitecore.Globalization;
 
 namespace GatherContent.Connector.SitecoreRepositories
 {

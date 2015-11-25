@@ -50,6 +50,7 @@
     <Compile Include="BaseRepository.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="ItemsRepository.cs" />
+    <Compile Include="MappingRepository.cs" />
     <Compile Include="ProjectsRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StatusesRepository.cs" />

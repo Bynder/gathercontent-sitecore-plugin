@@ -1,3 +1,0 @@
-﻿5704 14:18:37 FATAL WebDAV License file 'D:\projects\GatherContent\Sitecore\Website\data\webdav.lic' not found.
-8964 15:41:09 INFO  WebDAV feature is supported for Internet Explorer browser only.
-8964 15:41:09 INFO  WebDAV feature is supported for Internet Explorer browser only.

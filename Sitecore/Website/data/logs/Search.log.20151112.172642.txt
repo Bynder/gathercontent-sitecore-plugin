@@ -1,6 +1,0 @@
-﻿6356 17:26:48 INFO  Warming and Caching your search indexes
-6356 17:26:48 INFO  /******* Warming Queries ********/
-6356 17:26:48 INFO  /*************************/
-8424 17:27:39 INFO  ExecuteQueryAgainstLucene (sitecore_testing_index): host:b99d89bd56ab4f41bb02121d116e5145en - Filter : 
-8424 17:27:39 INFO  ExecuteQueryAgainstLucene (sitecore_testing_index): +host:b99d89bd56ab4f41bb02121d116e5145en +__is_running:1 - Filter : 
-8424 17:27:39 INFO  ExecuteQueryAgainstLucene (sitecore_testing_index): +__is_running:1 +SpanWildcardQuery(datasourceitems:*b99d89bd56ab4f41bb02121d116e5145*) - Filter : 

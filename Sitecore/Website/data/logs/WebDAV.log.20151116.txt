@@ -1,1 +1,0 @@
-﻿8800 10:27:24 FATAL WebDAV License file 'D:\projects\GatherContent\Sitecore\Website\data\webdav.lic' not found.

@@ -1,3 +1,0 @@
-﻿8024 16:23:30 INFO  Warming and Caching your search indexes
-8024 16:23:30 INFO  /******* Warming Queries ********/
-8024 16:23:30 INFO  /*************************/

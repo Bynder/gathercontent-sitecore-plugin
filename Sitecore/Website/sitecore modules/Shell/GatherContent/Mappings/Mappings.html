@@ -24,29 +24,49 @@
     <h2>
         Choose which template you wish to manage. If the template you wish to work with isn't showing up please
     </h2>
-
-    <table style="width:100%">
-        <thead>
-            <tr>
-                <th>GC Project</th>
-                <th>GC template</th>
-                <th>Sitecore Template</th>
-                <th>Last mapped</th>
-                <th>Last updated in GC</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody data-bind="foreach: mappings">
-            <tr>
-                <td data-bind="text: GcProjectName, style: { color: ScTemplateName == 'Not mapped' ? 'red': 'black' }"></td>
-                <td data-bind="text: GcTemplateName, style: { color: ScTemplateName == 'Not mapped' ? 'red': 'black' }"></td>
-                <td data-bind="text: ScTemplateName, style: { color: ScTemplateName == 'Not mapped' ? 'red': 'black' }"></td>
-                <td data-bind="text: LastMappedDateTime, style: { color: ScTemplateName == 'Not mapped' ? 'red': 'black' }"></td>
-                <td data-bind="text: LastUpdatedDate"></td>
-                <td><a href="#" data-bind="click: editMapping, text: EditButtonTitle">Edit</a></td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="table_mappings_wrapper">
+        <div class="table_mappings_scroll">
+            <table style="width:100%">
+                <thead>
+                    <tr>
+                        <th>
+                            GC Project
+                            <div>GC Project</div>
+                        </th>
+                        <th>
+                            GC template
+                            <div>GC template</div>
+                        </th>
+                        <th>
+                            Sitecore Template
+                            <div>Sitecore Template</div>
+                        </th>
+                        <th>
+                            Last mapped
+                            <div>Last mapped</div>
+                        </th>
+                        <th>
+                            Last updated in GC
+                            <div>Last updated in GC</div>
+                        </th>
+                        <th>
+                            <div></div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: mappings">
+                    <tr>
+                        <td data-bind="text: GcProjectName, style: { color: IsMapped ? 'black': 'red' }"></td>
+                        <td data-bind="text: GcTemplateName, style: { color: IsMapped ? 'black': 'red' }"></td>
+                        <td data-bind="text: ScTemplateName, style: { color: IsMapped ? 'black': 'red' }"></td>
+                        <td data-bind="text: LastMappedDateTime, style: { color: IsMapped ? 'black': 'red' }"></td>
+                        <td data-bind="text: LastUpdatedDate"></td>
+                        <td><a href="#" data-bind="click: editMapping, text: EditButtonTitle">Edit</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
     <input class="mappings-btn" id="AddMore" type="button" value="Add more template" data-bind="click: addMoreTemplates" />
     <h2>
         Don't see the template you want to map? Make sure yau are in the right project, and try adding it from GC
@@ -67,46 +87,29 @@
     });
 
 
-    //jQuery(document).ready(function () {
-    //    jQuery(document).on("click", "#AddMore", function (e) {
-    //        openTemplateWindow();
-    //        e.preventDefault();
-    //    });
-
-    self.editMapping = function () {
+    editMapping = function () {
         var id = this.GcTemplateId;
-        var name = this.GcProjectName;
-            openMappingWindow(id,name);
-        }
-
-      
-        addMoreTemplates = function () {
-            //self.people.remove(this);
-            openTemplateWindow();
-        }
-
-     
-
-        function openTemplateWindow() {
-            var id = getUrlVars()["id"];
-            var language = getUrlVars()["l"];
-            //var database = getUrlVars()["d"];
-            var version = getUrlVars()["v"];
-
-            // open window
-            var query = "gc:addtemplate(id=" + id + ", language = " + language + ", version = " + version + ")";
-
-            scForm.showModalDialog("/sitecore modules/shell/gathercontent/AddTemplate/AddTemplate.html?id=" + id, null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:400;dialogMinWidth:600;dialogWidth:800;dialogHeight:600;header: Setup template mapping");
-            // scForm.postRequest("", "", "", query);
-        };
+        openMappingWindow(id);
+    }
 
 
-        function openMappingWindow(id, name) {
-           // var id = getUrlVars()["id"];
-            scForm.showModalDialog("/sitecore modules/shell/gathercontent/Mappings/AddOrUpdateMapping.html?id=" + id + "&name=" + name,
-                null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:400;dialogMinWidth:600;dialogWidth:800;dialogHeight:600;header: Manage template mappings");
-        };
+    addMoreTemplates = function () {
+        openTemplateWindow();
+    }
 
-  
+
+
+    function openTemplateWindow() {
+        var id = getUrlVars()["id"];
+        scForm.showModalDialog("/sitecore modules/shell/gathercontent/AddTemplate/AddTemplate.html?id=" + id, null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:400;dialogMinWidth:600;dialogWidth:800;dialogHeight:600;header: Setup template mapping");
+    };
+
+
+    function openMappingWindow(id) {
+        scForm.showModalDialog("/sitecore modules/shell/gathercontent/Mappings/AddOrUpdateMapping.html?id=" + id,
+            null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:400;dialogMinWidth:600;dialogWidth:800;dialogHeight:600;header: Manage template mappings");
+    };
+
+
 
 </script>

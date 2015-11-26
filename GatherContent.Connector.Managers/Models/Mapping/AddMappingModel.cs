@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GatherContent.Connector.Website.Models.Mapping
+namespace GatherContent.Connector.Managers.Models.Mapping
 {
     public class AddMappingModel
     {

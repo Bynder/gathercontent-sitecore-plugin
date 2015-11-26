@@ -1,29 +1,107 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
+using GatherContent.Connector.GatherContentService.Services;
 using GatherContent.Connector.IRepositories.Models;
+using GatherContent.Connector.IRepositories.Models.Mapping;
+using GatherContent.Connector.Managers.Models.Mapping;
 using GatherContent.Connector.SitecoreRepositories;
+using TemplateMapModel = GatherContent.Connector.Managers.Models.Mapping.TemplateMapModel;
+using TemplateTab = GatherContent.Connector.Managers.Models.Mapping.TemplateTab;
 
 namespace GatherContent.Connector.Managers.Managers
 {
     public class MappingManager
     {
         private const string TEXT_TYPE = "Single-Line Text";
-        private MappingRepository _mappingRepository { get; set; }
+
+
+        private readonly MappingRepository _mappingRepository;
+        private readonly TemplatesRepository _templatesRepository;
+        private readonly ProjectsRepository _projectsRepository;
+
+
+        private readonly AccountsService _accountsService;
+        private readonly TemplatesService _templateService;
+        private readonly ProjectsService _projectService;
+
+
+        private readonly GCAccountSettings _accountSettings;
 
         public MappingManager()
         {
+            var accountsRepository = new AccountsRepository();
+            _accountSettings = accountsRepository.GetAccountSettings();
+
             _mappingRepository = new MappingRepository();
+            _projectsRepository = new ProjectsRepository();
+            _templatesRepository = new TemplatesRepository();
+
+            _accountsService = new AccountsService(_accountSettings);
+            _templateService = new TemplatesService(_accountSettings);
+            _projectService = new ProjectsService(_accountSettings);
         }
 
-        public List<ImportCMSItem> MappingItems(List<GCItem> items, string projectId)
+
+
+        #region Utilities
+
+        private IEnumerable<SitecoreTemplate> MapSitecoreTemplates(IEnumerable<CmsTemplate> scTemplates)
         {
-            List<MappingTemplateModel> templates = _mappingRepository.GetTemplateMappings(projectId);
+            var templates = new List<SitecoreTemplate>();
 
-            List<ImportCMSItem> result = MapItems(items, templates);
-
-            return result;
+            foreach (var cmsTemplate in scTemplates)
+            {
+                var st = new SitecoreTemplate
+                {
+                    SitrecoreTemplateName = cmsTemplate.CmsTemplateName,
+                    SitrecoreTemplateId = cmsTemplate.CmsTemplateId
+                };
+                foreach (var field in cmsTemplate.CmsFields)
+                {
+                    var scField = new SitecoreTemplateField
+                    {
+                        SitrecoreFieldName = field.CmsFieldName,
+                        SitecoreFieldId = field.CmsFieldId
+                    };
+                    st.SitecoreFields.Add(scField);
+                }
+                templates.Add(st);
+            }
+            return templates;
         }
+
+
+        private AddMappingModel MapAddMappingModel(AddMapping addMappingModel)
+        {
+
+            var addSitecoreMappingModel = new AddMappingModel
+            {
+                IsEdit = addMappingModel.IsEdit,
+                GcTemplateId = addMappingModel.GcTemplateId,
+                SelectedTemplateId = addMappingModel.SelectedTemplateId,
+            };
+
+
+            foreach (var cmsTab in addMappingModel.Tabs)
+            {
+                var tab = new TemplateTab
+                {
+                    TabName = cmsTab.TabName
+                };
+
+                tab.Fields.AddRange(from t in cmsTab.Fields
+                                    select new TemplateField
+                                    {
+                                        FieldName = t.FieldName,
+                                        SelectedField = t.SelectedField
+                                    });
+                addSitecoreMappingModel.Tabs.Add(tab);
+            }
+            return addSitecoreMappingModel;
+        }
+
 
         private List<ImportCMSItem> MapItems(List<GCItem> items, List<MappingTemplateModel> templates)
         {
@@ -66,6 +144,43 @@ namespace GatherContent.Connector.Managers.Managers
         {
             MappingFieldModel field = fields.FirstOrDefault(i => i.GCField == gcField.Name);
             return field != null ? field.CMSField : string.Empty;
+        }
+
+
+        #endregion
+
+
+
+        public List<ImportCMSItem> MappingItems(List<GCItem> items, string projectId)
+        {
+            List<MappingTemplateModel> templates = _mappingRepository.GetTemplateMappings(projectId);
+
+            List<ImportCMSItem> result = MapItems(items, templates);
+
+            return result;
+        }
+
+
+        public TemplateMapModel GetMappingModel(string id)
+        {
+            var model = new TemplateMapModel();        
+           
+            var template = _templateService.GetSingleTemplate(id);
+            var project = _projectService.GetSingleProject(template.Data.ProjectId.ToString());
+
+            model.GcProjectName = project.Data.Name;
+            model.GcTemplateName = template.Data.Name;
+
+            var scTemplates = _templatesRepository.GetTemplatesModel(_accountSettings.TemplateFolderId);
+            var addMappingModel = _mappingRepository.GetAddMappingModel(project.Data.Id.ToString(), template);
+            
+            var templates = MapSitecoreTemplates(scTemplates);           
+            var addSitecoreMappingModel = MapAddMappingModel(addMappingModel);
+
+            model.SitecoreTemplates.AddRange(templates);
+            model.AddMappingModel = addSitecoreMappingModel;
+
+            return model;
         }
 
     }

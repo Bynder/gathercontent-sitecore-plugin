@@ -145,7 +145,7 @@ table {
 }
 .tabs_mapping .row_mapping_tab select{
     -webkit-appearance: none;
-    background-image: url('mappings/img/arrow_select.png');
+    background-image: url('img/arrow_select.png');
     background-position-y:  center;
     background-repeat: no-repeat;
     -ms-background-position-x:;
@@ -174,7 +174,7 @@ select::-ms-expand {
     width: 80px;
     height: 15px;
     float: left;
-    background-image: url("mappings/img/arrow.png");
+    background-image: url("img/arrow.png");
     margin: 7px 10px;
 }
 .mapping_tabs_wrapper .title_lvl3{

@@ -76,7 +76,7 @@ namespace GatherContent.Connector.Website.Commands
                     var projects = service.GetProjects(account.Id);
                     foreach (var project in projects.Data)
                     {
-                        manager.AddProjectFolder(item.ID.ToString(), project);
+                        manager.GetOrCreateProjectFolder(item.ID.ToString(), project);
                     }
                 }
 

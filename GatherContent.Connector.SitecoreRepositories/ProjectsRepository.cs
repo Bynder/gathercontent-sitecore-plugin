@@ -58,5 +58,16 @@ namespace GatherContent.Connector.SitecoreRepositories
             }
             return null;
         }
+
+        //public Item GetProjectFolderByName(string name)
+        //{
+        //    var parentItem = GetItem(Constants.AccountItemId);
+        //    var projectsFolder = parentItem.Axes.SelectSingleItem(String.Format("./descendant::*[@@templatename='{0}']", Constants.ProjectFolderTemplateName));
+        //    if (projectsFolder != null)
+        //    {
+        //        return projectsFolder.Axes.GetDescendant(name);
+        //    }
+        //    return null;
+        //}
     }
 }

@@ -7,5 +7,7 @@
         public string Username { get; set; }
 
         public string ApiKey { get; set; }
+
+        public string TemplateFolderId { get; set; }
     }
 }

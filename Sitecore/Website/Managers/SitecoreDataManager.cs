@@ -173,18 +173,18 @@ namespace GatherContent.Connector.Website.Managers
             return parentItem.Axes.GetDescendant(name);
         }
 
-        public void UpdateTemplateMapping(Item template, TemplateMapping templateMapping)
-        {
-            using (new SecurityDisabler())
-            {
-                template.Editing.BeginEdit();
-                template.Fields["Sitecore Template"].Value = templateMapping.SitecoreTemplateId;
-                //template.Fields["GC Template"].Value = templateMapping.GcTemplateId;
-                template.Fields["Last Mapped Date"].Value = DateTime.Now.ToString();
-                //template.Fields["Last Updated in GC"].Value = templateMapping.LastUpdated;
-                template.Editing.EndEdit();
-            }
-        }
+        //public void UpdateTemplateMapping(Item template, TemplateMapping templateMapping)
+        //{
+        //    using (new SecurityDisabler())
+        //    {
+        //        template.Editing.BeginEdit();
+        //        template.Fields["Sitecore Template"].Value = templateMapping.SitecoreTemplateId;
+        //        //template.Fields["GC Template"].Value = templateMapping.GcTemplateId;
+        //        template.Fields["Last Mapped Date"].Value = DateTime.Now.ToString();
+        //        //template.Fields["Last Updated in GC"].Value = templateMapping.LastUpdated;
+        //        template.Editing.EndEdit();
+        //    }
+        //}
 
 
 
@@ -198,37 +198,37 @@ namespace GatherContent.Connector.Website.Managers
             }
         }
 
-        public Item CreateTemplateMapping(string id, TemplateMapping templateMapping)
-        {
-            var parentItem = GetItem(id);
-            var mappingsFolder = parentItem.Children.FirstOrDefault(item => item.Name == MappingFolderName);
-            if (mappingsFolder != null)
-            {
-                var mappings = mappingsFolder.Axes.GetDescendants();
-                if (!mappings.Select(item => item.Name).ToList().Contains(templateMapping.Name))
-                {
-                    using (new SecurityDisabler())
-                    {
-                        var mapping = _contextDatabase.GetTemplate(new ID(GcMapping));
-                        var validFolderName = ItemUtil.ProposeValidItemName(templateMapping.Name);
-                        var createdItem = mappingsFolder.Add(validFolderName, mapping);
-                        using (new SecurityDisabler())
-                        {
-                            createdItem.Editing.BeginEdit();
-                            createdItem.Fields["Sitecore Template"].Value = templateMapping.SitecoreTemplateId;
-                            createdItem.Fields["GC Template"].Value = templateMapping.GcTemplateId;
-                            createdItem.Fields["Last Mapped Date"].Value = DateTime.Now.ToString();
-                            createdItem.Fields["Last Updated in GC"].Value = templateMapping.LastUpdated;
-                            createdItem.Editing.EndEdit();
-                        }
+        //public Item CreateTemplateMapping(string id, TemplateMapping templateMapping)
+        //{
+        //    var parentItem = GetItem(id);
+        //    var mappingsFolder = parentItem.Children.FirstOrDefault(item => item.Name == MappingFolderName);
+        //    if (mappingsFolder != null)
+        //    {
+        //        var mappings = mappingsFolder.Axes.GetDescendants();
+        //        if (!mappings.Select(item => item.Name).ToList().Contains(templateMapping.Name))
+        //        {
+        //            using (new SecurityDisabler())
+        //            {
+        //                var mapping = _contextDatabase.GetTemplate(new ID(GcMapping));
+        //                var validFolderName = ItemUtil.ProposeValidItemName(templateMapping.Name);
+        //                var createdItem = mappingsFolder.Add(validFolderName, mapping);
+        //                using (new SecurityDisabler())
+        //                {
+        //                    createdItem.Editing.BeginEdit();
+        //                    createdItem.Fields["Sitecore Template"].Value = templateMapping.SitecoreTemplateId;
+        //                    createdItem.Fields["GC Template"].Value = templateMapping.GcTemplateId;
+        //                    createdItem.Fields["Last Mapped Date"].Value = DateTime.Now.ToString();
+        //                    createdItem.Fields["Last Updated in GC"].Value = templateMapping.LastUpdated;
+        //                    createdItem.Editing.EndEdit();
+        //                }
 
-                        return createdItem;
-                    }
-                }
-                return mappings.FirstOrDefault(item => item.Name == templateMapping.Name);
-            }
-            return null;
-        }
+        //                return createdItem;
+        //            }
+        //        }
+        //        return mappings.FirstOrDefault(item => item.Name == templateMapping.Name);
+        //    }
+        //    return null;
+        //}
 
         public void CreateFieldMapping(string id, FieldMapping fieldMapping)
         {

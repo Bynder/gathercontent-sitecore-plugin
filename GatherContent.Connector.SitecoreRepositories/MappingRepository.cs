@@ -6,15 +6,17 @@ using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.IRepositories.Models;
 using GatherContent.Connector.IRepositories.Models.Mapping;
 using Sitecore.Data.Items;
+using Sitecore.SecurityModel;
 
 namespace GatherContent.Connector.SitecoreRepositories
 {
     public class MappingRepository : BaseSitecoreRepository, IMappingRepository
     {
-       // private readonly ProjectsRepository _projectsRepository;
-        
+        // private readonly ProjectsRepository _projectsRepository;
 
-        public MappingRepository() : base()
+
+        public MappingRepository()
+            : base()
         {
             //_projectsRepository = new ProjectsRepository();
         }
@@ -45,7 +47,7 @@ namespace GatherContent.Connector.SitecoreRepositories
         private Item GetTemplateMapping(string projectId, string gcTemplateId)
         {
             var project = GetProjectFolder(projectId);
-            
+
             if (project != null)
             {
                 return project.Axes.GetDescendants()
@@ -56,6 +58,23 @@ namespace GatherContent.Connector.SitecoreRepositories
             }
             return null;
         }
+
+        private Item GetFieldMappingItem(string templateMappingId, string name)
+        {
+            var parentItem = GetItem(templateMappingId);
+            return parentItem.Axes.GetDescendant(name);
+        }
+
+        private void UpdateFieldMapping(Item field, string sitecoreFieldId)
+        {
+            using (new SecurityDisabler())
+            {
+                field.Editing.BeginEdit();
+                field.Fields["Sitecore Field"].Value = sitecoreFieldId;
+                field.Editing.EndEdit();
+            }
+        }
+
 
         private IEnumerable<MappingTemplateModel> ConvertSitecoreTemplatesToModel(IEnumerable<Item> templates)
         {
@@ -88,6 +107,17 @@ namespace GatherContent.Connector.SitecoreRepositories
         private Item GetFieldMapping(Item mapping, string fieldName)
         {
             return mapping.Axes.GetDescendants().FirstOrDefault(item => item["GC Field"] == fieldName);
+        }
+
+        private void UpdateTemplateMapping(Item template, TemplateMapping templateMapping)
+        {
+            using (new SecurityDisabler())
+            {
+                template.Editing.BeginEdit();
+                template.Fields["Sitecore Template"].Value = templateMapping.SitecoreTemplateId;
+                template.Fields["Last Mapped Date"].Value = DateTime.Now.ToString();
+                template.Editing.EndEdit();
+            }
         }
 
         #endregion
@@ -186,6 +216,35 @@ namespace GatherContent.Connector.SitecoreRepositories
                 model.Tabs.Add(tab);
             }
             return model;
+        }
+
+
+        public object CreateMapping(TemplateMapping templateMapping)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+        public void UpdateMapping(int projectId, int templateId, TemplateMapping templateMappingModel, List<CmsTemplateField> fields)
+        {
+            var scProject = GetProjectFolder(projectId.ToString());
+
+            var templateMapping = GetTemplateMapping(scProject.ID.ToString(), templateId.ToString());
+
+            if (templateMapping != null)
+            {
+                UpdateTemplateMapping(templateMapping, templateMappingModel);
+
+                foreach (var templateField in fields)
+                {               
+                        var field = GetFieldMappingItem(templateMapping.ID.ToString(), templateField.FieldName);
+                        if (field != null)
+                        {
+                            UpdateFieldMapping(field, templateField.SelectedField);
+                        }
+                }
+            }
         }
 
     }

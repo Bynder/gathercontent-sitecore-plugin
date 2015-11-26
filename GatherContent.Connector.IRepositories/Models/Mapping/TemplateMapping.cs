@@ -1,7 +1,6 @@
-﻿
-namespace GatherContent.Connector.Website.Models.Mapping
+﻿namespace GatherContent.Connector.IRepositories.Models.Mapping
 {
-    public class TemplateMapping
+   public class TemplateMapping
     {
         public string Name { get; set; }
         public string SitecoreTemplateId { get; set; }

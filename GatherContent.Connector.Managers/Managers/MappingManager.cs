@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.GatherContentService.Services;
@@ -190,6 +191,55 @@ namespace GatherContent.Connector.Managers.Managers
             model.AddMappingModel = addSitecoreMappingModel;
 
             return model;
+        }
+
+
+        public void PostMapping(AddMappingModel model)
+        {
+            var template = _templateService.GetSingleTemplate(model.GcTemplateId);
+            var project = _projectService.GetSingleProject(template.Data.ProjectId.ToString());
+            
+            if (model.IsEdit)
+            {
+                var list = (from tab in model.Tabs
+                    from templateField in tab.Fields
+                    select new CmsTemplateField
+                    {
+                        FieldName = templateField.FieldName, SelectedField = templateField.SelectedField,
+                    }).ToList();
+                _mappingRepository.UpdateMapping(project.Data.Id, template.Data.Id, new TemplateMapping
+                {
+                    SitecoreTemplateId = model.SelectedTemplateId,
+                    Name = template.Data.Name,
+                }, list);
+
+            }
+            else
+            {
+                //var tm = _mappingRepository.CreateMapping(new TemplateMapping());
+                //var templateMapping = CreateTemplateMapping(scProject.ID.ToString(), new TemplateMapping
+                //{
+                //    GcTemplateId = model.GcTemplateId,
+                //    SitecoreTemplateId = model.SelectedTemplateId,
+                //    Name = template.Data.Name,
+                //    LastUpdated = template.Data.Updated.ToString()
+                //});
+
+
+                //foreach (var tab in model.Tabs)
+                //{
+                //    foreach (var templateField in tab.Fields)
+                //    {
+                //        manager.CreateFieldMapping(templateMapping.ID.ToString(), new FieldMapping
+                //        {
+                //            GcField = templateField.FieldName,
+                //            SitecoreFieldId = templateField.SelectedField,
+                //        });
+                //    }
+                //}
+
+            }
+            
         }
 
     }

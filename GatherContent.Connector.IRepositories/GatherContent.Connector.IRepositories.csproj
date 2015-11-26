@@ -59,6 +59,7 @@
     <Compile Include="Models\Mapping\CmsTemplateField.cs" />
     <Compile Include="Models\Mapping\CmsTemplateTab.cs" />
     <Compile Include="Models\Mapping\CmsMappingModel.cs" />
+    <Compile Include="Models\Mapping\TemplateMapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

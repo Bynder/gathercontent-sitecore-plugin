@@ -14,52 +14,71 @@
     });
 </script>
 
-<div data-bind="if: getMode(1)">
-    <select data-bind="options: projects, optionsText: 'name', optionsValue: 'id', value: project, event:{ change: $root.projectChanged}"></select>
-
+<div data-bind="if: getMode(1)" class="gathercontent-import">
     <div>
-        <div>FILTER</div>
-        <select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, optionsCaption: 'STATUS', event:{ change: $root.filter }"></select>
-        <select data-bind="options: templates, optionsText: 'name', optionsValue: 'id', value: templateFilter, optionsCaption: 'TEMPLATE', event:{ change: $root.filter }"></select>
+        <select data-bind="options: projects, optionsText: 'name', optionsValue: 'id', value: project, event:{ change: $root.projectChanged}"></select>
     </div>
-
-    <div>
-        <input placeholder="FILTER BY ITEM NAME(SEARCH)" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
-    </div>
-
-    <div>
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th><input type="checkbox" data-bind="checked: AllChecked" /></th>
-                    <th>Select All</th>
-                    <th>Title</th>
-                    <th>Last updated in GC</th>
-                    <th>Path</th>
-                    <th>Template</th>
-                </tr>
-            </thead>
-            <tbody data-bind="foreach: items">
-                <tr data-bind="click: $root.checkRow">
-                    <td><input type="checkbox" data-bind="checked: Checked" /></td>
-                    <td data-bind="text: Status.name, style: { color: Status.color }"></td>
-                    <td data-bind="text: Title"></td>
-                    <td data-bind="text: LastUpdatedInGC"></td>
-                    <td data-bind="text: Breadcrumb"></td>
-                    <td data-bind="text: Template.name"></td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div>
-            <span data-bind="text: getCheckedCount"></span> Items selected
+    <div class="filter_wrapper">
+        <div class="filter_wrapper_import">
+            <div>FILTER</div>
+            <select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, optionsCaption: 'STATUS', event:{ change: $root.filter }"></select>
+            <select data-bind="options: templates, optionsText: 'name', optionsValue: 'id', value: templateFilter, optionsCaption: 'TEMPLATE', event:{ change: $root.filter }"></select>
         </div>
+        <div class="search_filter">
+            <input placeholder="FILTER BY ITEM NAME(SEARCH)" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
+        </div>
+    </div>
+    <div class="table_import_wrapper">
+        <div class="table_import_scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            <div><input type="checkbox" data-bind="checked: AllChecked" /></div>
+                        </th>
+                        <th>
+                            Select All
+                            <div>Select All</div>
+                        </th>
+                        <th>
+                            Title
+                            <div>Title</div>
+                        </th>
+                        <th>
+                            Last updated in GC
+                            <div>Last updated in GC</div>
+                        </th>
+                        <th>
+                            Last imported
+                            <div> Last imported</div>
+                        </th>
+                        <th>
+                            Template
+                            <div>Template</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: items">
+                    <tr data-bind="click: $root.checkRow">
+                        <td><input type="checkbox" data-bind="checked: Checked" /></td>
+                        <td data-bind="text: Status.name, style: { color: Status.color }"></td>
+                        <td data-bind="text: Title"></td>
+                        <td data-bind="text: LastUpdatedInGC"></td>
+                        <td data-bind="text: Breadcrumb"></td>
+                        <td data-bind="text: Template.name"></td>
+                    </tr>
+                </tbody>
+            </table>
 
-        <input type="button" value="Next>" data-bind="click: buttonClick.bind($data, 2)" />
-        <input type="button" value="Close" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" />
+            <div>
+                <span data-bind="text: getCheckedCount"></span> Items selected
+            </div>
+
+            <input type="button" value="Next>" data-bind="click: buttonClick.bind($data, 2)" />
+            <input type="button" value="Close" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" />
+        </div>
     </div>
 </div>
-
 <div data-bind="if: getMode(2)">
     <div>
         Confirm import selection (<span data-bind="text: getCheckedCount"></span> items)<br />
@@ -72,16 +91,14 @@
                 <tr>
                     <th></th>
                     <th>Title</th>
-                    <th>Path</th>
                     <th>Template</th>
                 </tr>
             </thead>
             <tbody data-bind="foreach: items">
                 <tr>
-                    <td data-bind="text: Status.name, style: { color: Status.color }"></td>
+                    <td data-bind="text: Status.Title, style: { color: Status.Color }"></td>
                     <td data-bind="text: Title"></td>
-                    <td data-bind="text: Breadcrumb"></td>
-                    <td data-bind="text: Template.name"></td>
+                    <td data-bind="text: Template.Title"></td>
                 </tr>
             </tbody>
         </table>
@@ -118,14 +135,14 @@
             </thead>
             <tbody data-bind="foreach: items">
                 <tr>
-                    <td data-bind="text: Status.name, style: { color: Status.color }"></td>
+                    <td data-bind="text: Status.Title, style: { color: Status.Color }"></td>
                     <td data-bind="text: Title"></td>
-                    <td data-bind="text: ResultMessage"></td>
-                    <td data-bind="text: Template.name"></td>
+                    <td data-bind="text: Title"></td>
+                    <td data-bind="text: Template.Title"></td>
                 </tr>
             </tbody>
         </table>
 
-        <input type="button" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" value="Close"/>
+        <input type="button" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" value="Close" />
     </div>
 </div>

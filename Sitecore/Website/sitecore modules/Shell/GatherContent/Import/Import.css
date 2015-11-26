@@ -1,3 +1,132 @@
 ﻿.closeButton {
     float: right;
 }
+.gathercontent-import{
+    padding:10px 20px;
+}
+.filter_wrapper_import{
+    display: inline-block;
+    height: 40px;
+    background-color: silver;
+    line-height: 40px;
+    padding-left: 20px;
+    font-weight: 700;
+    font-size: 0.9em;
+
+}
+.filter_wrapper{
+    margin: 20px 0;
+}
+.filter_wrapper_import >*{
+    float: left;
+
+}
+.search_filter{
+    float: right;
+}
+.filter_wrapper_import>select{
+    -webkit-appearance: none;
+    background: url('img/arrow_select.png') 90% center no-repeat, url("img/bkt_right.png")100% center no-repeat, url("img/bkt_left.png")0% center no-repeat;
+    /* for FF */
+    -moz-appearance: none;
+    /* for IE */
+    -ms-appearance: none;
+    appearance: none!important;
+    border: none;
+    display: block;
+    margin: 0 20px;
+    background-color: transparent;
+    padding-left: 10px;
+    font-weight: 700;
+    width: auto;
+}
+.filter_wrapper_import>select:before{
+    content: "[";
+    display: inline-block;
+}
+.filter_wrapper_import>select:focus{
+    outline: none;
+}
+.filter_wrapper_import>select::-ms-expand {
+    display: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+ table tbody tr:nth-child(even){
+    background-color: #f7f7f7;
+}
+ table tbody tr:nth-child(odd){
+    background-color: #fff;
+}
+ table tbody tr:hover{
+    background-color: #e3e3e3;
+}
+table tbody tr td{
+    color: #808080;
+    cursor: default;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-top: none;
+    font-size: 0.9em;
+}
+table tbody tr td:last-child{
+    text-align: right;
+    white-space: nowrap;
+}
+ table tbody tr td:nth-child(1), table tbody tr td:nth-child(2){
+    font-size: 1em;
+}
+ table tbody tr td a{
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 700;
+    color:#00B6FF;
+}
+ .table_import_wrapper{
+    position: relative;
+    padding-top: 36px;
+    background: #5e5e5e;
+}
+ .table_import_scroll{
+    max-height: 545px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #fff;
+}
+ table thead th div{
+    position: absolute;
+    background: transparent;
+    color: #fff;
+    margin: 9px 0;
+    top: 0;
+    line-height: normal;
+    border-left: 1px solid #fff;
+    padding-left: 5px;
+    min-height: 18px;
+}
+ table thead th:first-child div {
+     border-left: none;
+     text-align: center;
+ }
+table thead th {
+    height: 0;
+    line-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    color: transparent;
+    border: none;
+    white-space: nowrap;
+    padding: 0 8px 0 0;
+}
+input[type="button"]{
+    border: none;
+    margin: 20px;
+    padding: 10px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    font-weight: 700;
+
+}
+

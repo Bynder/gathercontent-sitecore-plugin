@@ -128,6 +128,9 @@
     <Content Include="sitecore modules\Shell\GatherContent\js\GatherContent.js" />
     <Content Include="sitecore modules\Shell\GatherContent\js\jquery_2.1.1.min.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\AddOrUpdateMapping.html" />
+    <Content Include="sitecore modules\Shell\GatherContent\Mappings\AddOrUpdateMapping.js" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\img\arrow.png" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\img\arrow_select.png" />
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\Mappings.css" />
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\Mappings.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Import\Import.html" />
@@ -149,12 +152,8 @@
     <Compile Include="Controllers\MappingsController.cs" />
     <Compile Include="Extensions\GcAccountExtension.cs" />
     <Compile Include="Managers\SitecoreDataManager.cs" />
-    <Compile Include="Models\Mapping\AddMappingModel.cs" />
     <Compile Include="Models\Mapping\FieldMapping.cs" />
-    <Compile Include="Models\Mapping\GcScMapModel.cs" />
     <Compile Include="Models\GcSettings.cs" />
-    <Compile Include="Models\Mapping\MappingModel.cs" />
-    <Compile Include="Models\Mapping\TemplateMapping.cs" />
     <Compile Include="Models\Template\TemplateMappingModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -196,6 +195,10 @@
       <Project>{06887722-f39a-4f95-81bc-653334bc7636}</Project>
       <Name>GatherContent.Connector.Managers</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\Import\" />
+    <Folder Include="Shell\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

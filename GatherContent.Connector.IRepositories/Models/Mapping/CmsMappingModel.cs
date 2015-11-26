@@ -1,15 +1,14 @@
-﻿using System;
-
-namespace GatherContent.Connector.Website.Models.Mapping
+﻿namespace GatherContent.Connector.IRepositories.Models.Mapping
 {
-    public class MappingModel
+    public class CmsMappingModel
     {
         public string GcProjectName { get; set; }
         public string GcTemplateId { get; set; }
         public string GcTemplateName { get; set; }
-        public string ScTemplateName { get; set; }
+        public string CmsTemplateName { get; set; }
         public string LastMappedDateTime { get; set; }
-        public DateTime LastUpdatedDate { get; set; }
+        public string LastUpdatedDate { get; set; }
         public string EditButtonTitle { get; set; }
+        public bool IsMapped { get; set; }
     }
 }

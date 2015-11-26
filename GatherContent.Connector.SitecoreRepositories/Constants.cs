@@ -7,12 +7,16 @@
         public const string GcStatus = "{B2132F07-5488-4BEF-8C0D-300072C7D64C}";
         public const string GcTemplate = "{A7E151EC-BA54-4804-B282-AEAF6AF039A1}";
         public const string AccountItemId = "{B99D89BD-56AB-4F41-BB02-121D116E5145}";
+        public const string TemplateId = "{F47BB0E8-B2BB-4415-9D34-77D99D85BF2A}";
 
         public const string MappingFolderName = "Mappings";
 
         public const string StatusFolderName = "GC Statuses";
         public const string TemplatesFolderName = "GC Templates";
         public const string ProjectsFolderName = "GC Projects";
+        public const string ProjectTemplateName = "GC Project";
+        public const string TemplateMappingName = "GC Template Mapping";
+        public const string TemplateProxyName = "GC Template Proxy";
         public const string ProjectFolderTemplateName = "GC Projects Folder";
 
         public const string MappingFolderTemplateName = "GC Mapping";

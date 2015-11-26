@@ -53,6 +53,13 @@
     <Compile Include="Models\ImportItemsResponseModel.cs" />
     <Compile Include="Models\MappingFieldModel.cs" />
     <Compile Include="Models\MappingTemplateModel.cs" />
+    <Compile Include="Models\Mapping\AddMapping.cs" />
+    <Compile Include="Models\Mapping\CmsField.cs" />
+    <Compile Include="Models\Mapping\CmsTemplate.cs" />
+    <Compile Include="Models\Mapping\CmsTemplateField.cs" />
+    <Compile Include="Models\Mapping\CmsTemplateTab.cs" />
+    <Compile Include="Models\Mapping\CmsMappingModel.cs" />
+    <Compile Include="Models\Mapping\TemplateMapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +68,7 @@
       <Name>GatherContent.Connector.Entities</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

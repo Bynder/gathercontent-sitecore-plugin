@@ -4,9 +4,14 @@
 <script src="/sitecore/shell/Controls/Sitecore.js"></script>
 <script src="/sitecore modules/shell/GatherContent/js/knockout-3.4.0.js"></script>
 <script src="/sitecore modules/shell/GatherContent/js/GatherContent.js"></script>
+
+<script src="/sitecore modules/shell/GatherContent/Mappings/AddOrUpdateMapping.js"></script>
 <link href="/sitecore modules/shell/GatherContent/css/GatherContent.css" rel="stylesheet" />
 <script type="text/javascript">
-    $.noConflict();
+    jQuery(document).ready(function () {
+        ko.applyBindings(new ViewModel());
+    });
+   // $.noConflict();
 </script>
 <script type="text/JavaScript" language="javascript">
     if (!window.scSitecore) {
@@ -23,79 +28,31 @@
     <h2>
         Choose the fields you wish to map from GatherContent intp Sitecore. Only map the fields you need to import
     </h2>
-    <div style="float: left;">
-        <span data-bind="text: GcProjectName"></span>
-        <div data-bind="text: GcTemplateName"></div>
-    </div>
-    <div style="float: right;">
-        <div>Sitecore:</div>
-        <select data-bind="options: SitecoreTemplates, optionsText: 'SitrecoreTemplateName', value: SelectedTemplate, event:{ change: $root.templateChanged}"></select>
-    </div>
-    <div style="clear: both;"></div>
-    <div data-bind="foreach: { data: Tabs, as: 'tab' } ">
-        <div data-bind="text: tab.TabName" style="padding-bottom: 15px;padding-top: 15px;"></div>
-        <div data-bind="foreach: { data: Fields, as: 'field' }">
-            <div>
-                <input type="text" data-bind="value: field.FieldName" disabled />
-                <span>-------------></span>
-                <select data-bind="options: $root.SitecoreFields, optionsText: 'SitrecoreFieldName', optionsValue: 'SitecoreFieldId', value: SelectedField,"></select>
+    <div class="mapping_tabs_wrapper">
+        <div style="float: left;">
+            <span data-bind="text: GcProjectName" class="title_lvl2"></span>
+            <div data-bind="text: GcTemplateName" class="title_lvl3"></div>
+        </div>
+        <div style="float: right;">
+            <div>Sitecore:</div>
+            <select data-bind="options: SitecoreTemplates, optionsText: 'SitrecoreTemplateName', value: SelectedTemplate, event:{ change: $root.templateChanged}"></select>
+        </div>
+        <div style="clear: both;"></div>
+        <div data-bind="foreach: { data: Tabs, as: 'tab' } " class="tabs_mapping">
+            <div data-bind="text: tab.TabName" class="title_mapping"></div>
+            <div data-bind="foreach: { data: Fields, as: 'field' }">
+                <div class="row_mapping_tab">
+                    <input type="text" data-bind="value: field.FieldName" disabled />
+                    <div class="arrow"></div>
+                    <select data-bind="options: $root.SitecoreFields, optionsText: 'SitrecoreFieldName', optionsValue: 'SitecoreFieldId', value: SelectedField,"></select>
+                </div>
             </div>
         </div>
     </div>
+  
     <input class="mappings-btn" id="AddMore" type="button" value="Save mapping configuration" data-bind="click: saveMapping" style="margin-top: 15px;" />
     <h2>
         Remember you can always make changes to this configuration later
     </h2>
 </div>
 
-<script>
-    var id = getUrlVars()["id"];
-    var name = getUrlVars()["name"];
-    var url = '/sitecore/api/mapping/' + id + '?projectName=' + name;
-
-    function ViewModel() {
-        var self = this;
-        this.SelectedTemplate = ko.observable();
-        this.GcProjectName = ko.observable();
-        this.GcTemplateName = ko.observable();
-        this.GcTemplateId = ko.observable();
-        this.SelectedTemplateId = ko.observable();
-        this.SitecoreTemplates = ko.observableArray();
-        this.SitecoreFields = ko.observableArray();
-        this.SitecoreFields = ko.observableArray();
-        this.Tabs = ko.observableArray();
-        
-        jQuery.getJSON(url, null, function (data) {
-            self.GcProjectName("GatherContent project:" + " " + data.GcProjectName);
-            self.GcTemplateName("Template:" + " " + data.GcTemplateName);
-            self.SitecoreTemplates(data.SitecoreTemplates),
-            self.GcTemplateId(data.GcTemplateId),
-            self.Tabs(data.Tabs);
-        });
-
-
-        this.saveMapping = function () {
-            var dataObject = ko.toJSON(this);
-
-            jQuery.ajax({
-                url: '/sitecore/api/postmappings',
-                type: 'post',
-                data: dataObject,
-                contentType: 'application/json',
-                success: function () {
-                    parent.location.reload();
-                    window.top.dialogClose();
-                }
-            });
-            //parent.location.reload();
-            //window.top.dialogClose();
-        };
-        this.templateChanged = function() {
-            this.SitecoreFields(self.SelectedTemplate().SitecoreFields);
-            this.SelectedTemplateId(self.SelectedTemplate().SitrecoreTemplateId);
-        }
-    };
-
-    ko.applyBindings(new ViewModel());
-
-</script>

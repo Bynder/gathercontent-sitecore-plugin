@@ -64,7 +64,7 @@ namespace GatherContent.Connector.Website.Controllers
 
             foreach (var project in model.Projects)
             {
-                var scProject = manager.AddProjectFolder(accountItem.ID.ToString(), new Project
+                var scProject = manager.GetOrCreateProjectFolder(accountItem.ID.ToString(), new Project
                     {
                         Id = project.ProjectId,
                         Name = project.ProjectName

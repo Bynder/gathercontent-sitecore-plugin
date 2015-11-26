@@ -1,22 +1,20 @@
 ﻿using System.Collections.Generic;
 
-namespace GatherContent.Connector.Website.Models.Mapping
+namespace GatherContent.Connector.Managers.Models.Mapping
 {
-    public class GcScMapModel
+    public class TemplateMapModel
     {
-        public GcScMapModel()
+        public TemplateMapModel()
         {
-            Tabs = new List<TemplateTab>();
             SitecoreTemplates = new List<SitecoreTemplate>();
         }
 
         public string GcProjectName { get; set; }
         public string GcTemplateName { get; set; }
-        public string SelectedTemplateId { get; set; }
-        public int GcTemplateId { get; set; }
-        public List<TemplateTab> Tabs { get; set; }
         public List<SitecoreTemplate> SitecoreTemplates { get; set; }
-        
+        public SitecoreTemplate SelectedTemplate { get; set; }
+        public AddMappingModel AddMappingModel { get; set; }
+
     }
 
     public class TemplateTab

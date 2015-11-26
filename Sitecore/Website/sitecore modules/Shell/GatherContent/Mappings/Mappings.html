@@ -2,12 +2,14 @@
 <script src="/sitecore/shell/Controls/Lib/Prototype/prototype.js"></script>
 <script src="/sitecore/shell/Controls/Browser.js"></script>
 <script src="/sitecore/shell/Controls/Sitecore.js"></script>
-<!--<script src="/sitecore modules/shell/GatherContent/Mappings/Mappings.js"></script>-->
+<script src="/sitecore modules/shell/GatherContent/Mappings/Mappings.js"></script>
 <script src="/sitecore modules/shell/GatherContent/js/knockout-3.4.0.js"></script>
 <script src="/sitecore modules/shell/GatherContent/js/GatherContent.js"></script>
 <link href="/sitecore modules/shell/GatherContent/css/GatherContent.css" rel="stylesheet" />
 <script type="text/javascript">
-    $.noConflict();
+    jQuery(document).ready(function () {
+        ko.applyBindings(new ViewModel());
+    });
 </script>
 <script type="text/JavaScript" language="javascript">
     if (!window.scSitecore) {
@@ -72,44 +74,3 @@
         Don't see the template you want to map? Make sure yau are in the right project, and try adding it from GC
     </h2>
 </div>
-
-<script>
-
-    // console.log(window.frameElement.src);
-    // console.log(location.href);
-
-    var id = getUrlVars()["id"];
-    jQuery.getJSON('/sitecore/api/mappings?id={' + id + '}', null, function (data) {
-        var viewModel = {
-            mappings: ko.observableArray(data)
-        };
-        ko.applyBindings(viewModel);
-    });
-
-
-    editMapping = function () {
-        var id = this.GcTemplateId;
-        openMappingWindow(id);
-    }
-
-
-    addMoreTemplates = function () {
-        openTemplateWindow();
-    }
-
-
-
-    function openTemplateWindow() {
-        var id = getUrlVars()["id"];
-        scForm.showModalDialog("/sitecore modules/shell/gathercontent/AddTemplate/AddTemplate.html?id=" + id, null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:400;dialogMinWidth:600;dialogWidth:800;dialogHeight:600;header: Setup template mapping");
-    };
-
-
-    function openMappingWindow(id) {
-        scForm.showModalDialog("/sitecore modules/shell/gathercontent/Mappings/AddOrUpdateMapping.html?id=" + id,
-            null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:400;dialogMinWidth:600;dialogWidth:800;dialogHeight:600;header: Manage template mappings");
-    };
-
-
-
-</script>

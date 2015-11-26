@@ -1,40 +1,33 @@
-﻿function getUrlVars() {
-    var vars = [], hash;
-    var hashes = location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for (var i = 0; i < hashes.length; i++) {
-        hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
-    }
-    return vars;
-}
+﻿
+function ViewModel() {
+    var self = this;
 
-var id = getUrlVars()["id"];
-jQuery.getJSON('/sitecore/api/mappings?id={' + id + '}', null, function (data) {
-    var viewModel = {
-        mappings: ko.observableArray(data)
+    this.mappings = ko.observableArray();
+
+    jQuery.getJSON('/sitecore/api/mappings', null, function(data) {
+        self.mappings(data);
+    });
+
+
+    editMapping = function () {
+        var id = this.GcTemplateId;
+        openMappingWindow(id);
     };
-    ko.applyBindings(viewModel);
-});
 
 
-
-jQuery(document).on("click", "#AddMore", function (e) {
-    openTemplateWindow();
-    e.preventDefault();
-});
-
+    addMoreTemplates = function () {
+        openTemplateWindow();
+    }
+}
 
 
 function openTemplateWindow() {
     var id = getUrlVars()["id"];
-    var language = getUrlVars()["l"];
-    var database = getUrlVars()["d"];
-    var version = getUrlVars()["v"];
+    scForm.showModalDialog("/sitecore modules/shell/gathercontent/AddTemplate/AddTemplate.html?id=" + id, null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:400;dialogMinWidth:600;dialogWidth:800;dialogHeight:600;header: Setup template mapping");
+};
 
-    // open window
-    var query = "gc:addtemplate(id=" + id + ", language = " + language + ", database = " + database
-        + ", version = " + version + ")";
 
-    scForm.postRequest("", "", "", query);
+function openMappingWindow(id) {
+    scForm.showModalDialog("/sitecore modules/shell/gathercontent/Mappings/AddOrUpdateMapping.html?id=" + id,
+        null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:400;dialogMinWidth:600;dialogWidth:800;dialogHeight:600;header: Manage template mappings");
 };

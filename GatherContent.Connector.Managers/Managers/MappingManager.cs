@@ -160,8 +160,17 @@ namespace GatherContent.Connector.Managers.Managers
             return result;
         }
 
+        public List<MappingModel> GetMappingModel()
+        {
+            var mappings = _mappingRepository.GetMappings();
 
-        public TemplateMapModel GetMappingModel(string id)
+            return mappings.Select(cmsMappingModel => new MappingModel(cmsMappingModel.GcProjectName, cmsMappingModel.GcTemplateId,
+                cmsMappingModel.GcTemplateName, cmsMappingModel.CmsTemplateName, cmsMappingModel.LastMappedDateTime, 
+                cmsMappingModel.LastUpdatedDate, cmsMappingModel.EditButtonTitle, cmsMappingModel.IsMapped)).ToList();
+        }
+
+
+        public TemplateMapModel GetTemplateMappingModel(string id)
         {
             var model = new TemplateMapModel();        
            

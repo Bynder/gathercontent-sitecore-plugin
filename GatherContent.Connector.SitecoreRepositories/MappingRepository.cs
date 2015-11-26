@@ -93,6 +93,54 @@ namespace GatherContent.Connector.SitecoreRepositories
         #endregion
 
 
+        public List<CmsMappingModel> GetMappings()
+        {
+            var model = new List<CmsMappingModel>();
+            var scProjects = GetAllProjects();
+            var scMappings = GetAllMappings();
+
+
+            foreach (var project in scProjects)
+            {
+                var templates = project.Axes.GetDescendants().Where(i => i.TemplateName == Constants.TemplateProxyName).ToList();
+                if (templates.Count() > 0)
+                {
+                    foreach (var template in templates)
+                    {
+                        var mapping = new CmsMappingModel
+                        {
+                            GcProjectName = project.Name,
+                            GcTemplateId = template["Temaplate Id"],
+                            GcTemplateName = template.Name,
+                        };
+
+                        var m = scMappings.FirstOrDefault(map => map["GC Template"] == template["Temaplate Id"]);
+                        if (m != null)
+                        {
+                            var scTemplate = GetItem(m["Sitecore Template"]);
+                            mapping.CmsTemplateName = scTemplate != null ? scTemplate.Name : m["Sitecore Template"];
+                            mapping.LastUpdatedDate = m["Last Updated in GC"];
+                            mapping.LastMappedDateTime = m["Last Mapped Date"];
+                            mapping.EditButtonTitle = "Edit";
+                            mapping.IsMapped = true;
+                        }
+                        else
+                        {
+                            mapping.CmsTemplateName = "Not mapped";
+                            mapping.LastMappedDateTime = "never";
+                            mapping.EditButtonTitle = "Setup mapping";
+                            mapping.IsMapped = false;
+                        }
+
+                        model.Add(mapping);
+                    }
+                }
+            }
+
+            return model;
+        }
+
+
         public List<MappingTemplateModel> GetTemplateMappings(string projectId)
         {
             Item projectFolder = GetProjectFolder(projectId);

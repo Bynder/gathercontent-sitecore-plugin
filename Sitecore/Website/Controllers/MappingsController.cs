@@ -16,8 +16,7 @@ namespace GatherContent.Connector.Website.Controllers
     public class MappingsController : ServicesApiController
     {
         private const string AccountItemId = "{B99D89BD-56AB-4F41-BB02-121D116E5145}";
-        private const string SitecoreTemplateId = "{6E9920D6-B60E-4518-822E-4D57CD426148}";//"{3C1715FE-6A13-4FCF-845F-DE308BA9741D}";
-
+       
         private readonly MappingManager _mappingManager;
 
         public MappingsController()
@@ -26,59 +25,17 @@ namespace GatherContent.Connector.Website.Controllers
         }
 
 
-        public List<MappingModel> Get(string id)
+        public List<MappingModel> Get()
         {
-            var model = new List<MappingModel>();
-          
-            var db = Sitecore.Configuration.Factory.GetDatabase("master");
-            var item = db.GetItem(id);
-            var mappings = item.Axes.GetDescendants().Where(i => i.TemplateName == "GC Template Mapping").ToList();
-            var projects = item.Axes.GetDescendants().Where(i => i.TemplateName == "GC Project");
-
-            foreach (var project in projects)
-            {
-                var templates = project.Axes.GetDescendants().Where(i => i.TemplateName == "GC Template Proxy").ToList();
-                if (templates.Count() > 0)
-                {
-                    foreach (var template in templates)
-                    {
-                        var mapping = new MappingModel
-                        {
-                            GcProjectName = project.Name,
-                            GcTemplateId = template["Temaplate Id"],
-                            GcTemplateName = template.Name,
-                        };
-
-                        var m = mappings.FirstOrDefault(map => map["GC Template"] == template["Temaplate Id"]);
-                        if (m != null)
-                        {
-                            var scTemplate = db.GetItem(m["Sitecore Template"]);
-                            mapping.ScTemplateName = scTemplate != null ? scTemplate.Name : m["Sitecore Template"];
-                            mapping.LastUpdatedDate = m["Last Updated in GC"];
-                            mapping.LastMappedDateTime = m["Last Mapped Date"];
-                            mapping.EditButtonTitle = "Edit";
-                            mapping.IsMapped = true;
-                        }
-                        else
-                        {
-                            mapping.ScTemplateName = "Not mapped";
-                            mapping.LastMappedDateTime = "never";
-                            mapping.EditButtonTitle = "Setup mapping";
-                            mapping.IsMapped = false;
-                        }
-
-                        model.Add(mapping);
-                    }
-                }
-            }
-
+            var model = _mappingManager.GetMappingModel();
             return model;
-
         }
+
+
 
         public TemplateMapModel GetMapping(string id)
         {
-            var model = _mappingManager.GetMappingModel(id);
+            var model = _mappingManager.GetTemplateMappingModel(id);
             return model;
         }
 

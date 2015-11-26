@@ -156,7 +156,6 @@
     <Compile Include="Models\Mapping\FieldMapping.cs" />
     <Compile Include="Models\Mapping\GcScMapModel.cs" />
     <Compile Include="Models\GcSettings.cs" />
-    <Compile Include="Models\Mapping\MappingModel.cs" />
     <Compile Include="Models\Mapping\TemplateMapping.cs" />
     <Compile Include="Models\Template\TemplateMappingModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.IRepositories.Models.Mapping;
@@ -20,6 +21,7 @@ namespace GatherContent.Connector.SitecoreRepositories
 
         #region Utilities
 
+      
 
         private IEnumerable<Item> GetTemplates(string id)
         {
@@ -34,6 +36,9 @@ namespace GatherContent.Connector.SitecoreRepositories
 
 
         #endregion
+
+
+      
 
         public void CreateTemplate(string id, Template template)
         {

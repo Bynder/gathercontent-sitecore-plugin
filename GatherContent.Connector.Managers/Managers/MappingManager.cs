@@ -59,6 +59,7 @@ namespace GatherContent.Connector.Managers.Managers
                     SitrecoreTemplateName = cmsTemplate.CmsTemplateName,
                     SitrecoreTemplateId = cmsTemplate.CmsTemplateId
                 };
+                st.SitecoreFields.Add(new SitecoreTemplateField { SitecoreFieldId = "0", SitrecoreFieldName = "Do not map" });
                 foreach (var field in cmsTemplate.CmsFields)
                 {
                     var scField = new SitecoreTemplateField
@@ -166,15 +167,15 @@ namespace GatherContent.Connector.Managers.Managers
             var mappings = _mappingRepository.GetMappings();
 
             return mappings.Select(cmsMappingModel => new MappingModel(cmsMappingModel.GcProjectName, cmsMappingModel.GcTemplateId,
-                cmsMappingModel.GcTemplateName, cmsMappingModel.CmsTemplateName, cmsMappingModel.LastMappedDateTime, 
+                cmsMappingModel.GcTemplateName, cmsMappingModel.CmsTemplateName, cmsMappingModel.LastMappedDateTime,
                 cmsMappingModel.LastUpdatedDate, cmsMappingModel.EditButtonTitle, cmsMappingModel.IsMapped)).ToList();
         }
 
 
         public TemplateMapModel GetTemplateMappingModel(string id)
         {
-            var model = new TemplateMapModel();        
-           
+            var model = new TemplateMapModel();
+
             var template = _templateService.GetSingleTemplate(id);
             var project = _projectService.GetSingleProject(template.Data.ProjectId.ToString());
 
@@ -183,8 +184,8 @@ namespace GatherContent.Connector.Managers.Managers
 
             var scTemplates = _templatesRepository.GetTemplatesModel(_accountSettings.TemplateFolderId);
             var addMappingModel = _mappingRepository.GetAddMappingModel(project.Data.Id.ToString(), template);
-            
-            var templates = MapSitecoreTemplates(scTemplates);           
+
+            var templates = MapSitecoreTemplates(scTemplates);
             var addSitecoreMappingModel = MapAddMappingModel(addMappingModel);
 
             model.SitecoreTemplates.AddRange(templates);
@@ -198,48 +199,38 @@ namespace GatherContent.Connector.Managers.Managers
         {
             var template = _templateService.GetSingleTemplate(model.GcTemplateId);
             var project = _projectService.GetSingleProject(template.Data.ProjectId.ToString());
-            
+
+            var list = (from tab in model.Tabs
+                        from templateField in tab.Fields
+                        select new CmsTemplateField
+                        {
+                            FieldName = templateField.FieldName,
+                            SelectedField = templateField.SelectedField,
+                        }).ToList();
+
             if (model.IsEdit)
             {
-                var list = (from tab in model.Tabs
-                    from templateField in tab.Fields
-                    select new CmsTemplateField
-                    {
-                        FieldName = templateField.FieldName, SelectedField = templateField.SelectedField,
-                    }).ToList();
+
                 _mappingRepository.UpdateMapping(project.Data.Id, template.Data.Id, new TemplateMapping
                 {
                     SitecoreTemplateId = model.SelectedTemplateId,
                     Name = template.Data.Name,
+                    GcTemplateId = template.Data.Id.ToString()
                 }, list);
 
             }
             else
             {
-                //var tm = _mappingRepository.CreateMapping(new TemplateMapping());
-                //var templateMapping = CreateTemplateMapping(scProject.ID.ToString(), new TemplateMapping
-                //{
-                //    GcTemplateId = model.GcTemplateId,
-                //    SitecoreTemplateId = model.SelectedTemplateId,
-                //    Name = template.Data.Name,
-                //    LastUpdated = template.Data.Updated.ToString()
-                //});
-
-
-                //foreach (var tab in model.Tabs)
-                //{
-                //    foreach (var templateField in tab.Fields)
-                //    {
-                //        manager.CreateFieldMapping(templateMapping.ID.ToString(), new FieldMapping
-                //        {
-                //            GcField = templateField.FieldName,
-                //            SitecoreFieldId = templateField.SelectedField,
-                //        });
-                //    }
-                //}
+                _mappingRepository.CreateMapping(project.Data.Id, new TemplateMapping
+                {
+                    SitecoreTemplateId = model.SelectedTemplateId,
+                    Name = template.Data.Name,
+                    GcTemplateId = template.Data.Id.ToString(),
+                    LastUpdated = template.Data.Updated.ToString()
+                }, list);
 
             }
-            
+
         }
 
     }

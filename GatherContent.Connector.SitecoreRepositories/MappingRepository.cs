@@ -5,6 +5,7 @@ using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.IRepositories.Models;
 using GatherContent.Connector.IRepositories.Models.Mapping;
+using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.SecurityModel;
 
@@ -12,18 +13,17 @@ namespace GatherContent.Connector.SitecoreRepositories
 {
     public class MappingRepository : BaseSitecoreRepository, IMappingRepository
     {
-        // private readonly ProjectsRepository _projectsRepository;
 
-
-        public MappingRepository()
-            : base()
-        {
-            //_projectsRepository = new ProjectsRepository();
-        }
+        public MappingRepository() : base() { }
 
 
         #region Utilities
 
+        /// <summary>
+        /// Get project folder by gatherContent Id
+        /// </summary>
+        /// <param name="projectId">GC project Id</param>
+        /// <returns>Project folder Item</returns>
         private Item GetProjectFolder(string projectId)
         {
             var accountSettingItem = ContextDatabase.GetItem(Constants.AccountItemId, ContextLanguage);
@@ -44,16 +44,22 @@ namespace GatherContent.Connector.SitecoreRepositories
             return mappingFolder.Children;
         }
 
-        private Item GetTemplateMapping(string projectId, string gcTemplateId)
+        /// <summary>
+        /// Get template mapping by GC project ID and GC template ID
+        /// </summary>
+        /// <param name="gcProjectId">GC project ID</param>
+        /// <param name="gcTemplateId">GC template ID</param>
+        /// <returns>Template mapping Item</returns>
+        private Item GetTemplateMapping(string gcProjectId, string gcTemplateId)
         {
-            var project = GetProjectFolder(projectId);
+            var project = GetProjectFolder(gcProjectId);
 
             if (project != null)
             {
                 return project.Axes.GetDescendants()
                     .FirstOrDefault(item => item["GC Template"] == gcTemplateId &
                                             item.TemplateID ==
-                                            new Sitecore.Data.ID(Constants.TemplateId));
+                                            new ID(Constants.GcTemplateMapping));
 
             }
             return null;
@@ -62,7 +68,33 @@ namespace GatherContent.Connector.SitecoreRepositories
         private Item GetFieldMappingItem(string templateMappingId, string name)
         {
             var parentItem = GetItem(templateMappingId);
-            return parentItem.Axes.GetDescendant(name);
+            return parentItem.Axes.GetDescendants().FirstOrDefault(item => item["GC Field"] == name);
+        }
+
+        /// <summary>
+        /// Create filed mapping
+        /// </summary>
+        /// <param name="field">Template mapping Item</param>
+        /// <param name="fieldMapping"></param>
+        private void CreateFieldMapping(Item field, CmsTemplateField fieldMapping)
+        {
+            var mappings = field.Axes.GetDescendants();
+            if (!mappings.Select(item => item.Name).ToList().Contains(fieldMapping.FieldName))
+            {
+                using (new SecurityDisabler())
+                {
+                    var mapping = ContextDatabase.GetTemplate(new ID(Constants.GcFieldMapping));
+                    var validName = ItemUtil.ProposeValidItemName(fieldMapping.FieldName);
+                    var createdItem = field.Add(validName, mapping);
+                    using (new SecurityDisabler())
+                    {
+                        createdItem.Editing.BeginEdit();
+                        createdItem.Fields["GC Field"].Value = fieldMapping.FieldName;
+                        createdItem.Fields["Sitecore Field"].Value = fieldMapping.SelectedField;
+                        createdItem.Editing.EndEdit();
+                    }
+                }
+            }
         }
 
         private void UpdateFieldMapping(Item field, string sitecoreFieldId)
@@ -72,6 +104,15 @@ namespace GatherContent.Connector.SitecoreRepositories
                 field.Editing.BeginEdit();
                 field.Fields["Sitecore Field"].Value = sitecoreFieldId;
                 field.Editing.EndEdit();
+            }
+        }
+
+
+        private void RemoveFieldMapping(Item field)
+        {
+            using (new SecurityDisabler())
+            {
+                field.Delete();
             }
         }
 
@@ -107,6 +148,44 @@ namespace GatherContent.Connector.SitecoreRepositories
         private Item GetFieldMapping(Item mapping, string fieldName)
         {
             return mapping.Axes.GetDescendants().FirstOrDefault(item => item["GC Field"] == fieldName);
+        }
+
+        /// <summary>
+        /// Create template mapping
+        /// </summary>
+        /// <param name="projectId">Gather content project Id</param>
+        /// <param name="templateMapping"></param>
+        /// <returns>Template mapping item</returns>
+        private Item CreateTemplateMapping(string projectId, TemplateMapping templateMapping)
+        {
+            var scProject = GetProjectFolder(projectId);
+            var mappingsFolder = GetMappingFolder(scProject);
+            if (mappingsFolder != null)
+            {
+                var mappings = mappingsFolder.Axes.GetDescendants();
+                if (!mappings.Select(item => item.Name).ToList().Contains(templateMapping.Name))
+                {
+                    using (new SecurityDisabler())
+                    {
+                        var mapping = ContextDatabase.GetTemplate(new ID(Constants.GcTemplateMapping));
+                        var validFolderName = ItemUtil.ProposeValidItemName(templateMapping.Name);
+                        var createdItem = mappingsFolder.Add(validFolderName, mapping);
+                        using (new SecurityDisabler())
+                        {
+                            createdItem.Editing.BeginEdit();
+                            createdItem.Fields["Sitecore Template"].Value = templateMapping.SitecoreTemplateId;
+                            createdItem.Fields["GC Template"].Value = templateMapping.GcTemplateId;
+                            createdItem.Fields["Last Mapped Date"].Value = DateTime.Now.ToString();
+                            createdItem.Fields["Last Updated in GC"].Value = templateMapping.LastUpdated;
+                            createdItem.Editing.EndEdit();
+                        }
+
+                        return createdItem;
+                    }
+                }
+                return mappings.FirstOrDefault(item => item.Name == templateMapping.Name);
+            }
+            return null;
         }
 
         private void UpdateTemplateMapping(Item template, TemplateMapping templateMapping)
@@ -219,33 +298,65 @@ namespace GatherContent.Connector.SitecoreRepositories
         }
 
 
-        public object CreateMapping(TemplateMapping templateMapping)
+        /// <summary>
+        /// Create mappings
+        /// </summary>
+        /// <param name="projectId">Gc project ID</param>
+        /// <param name="templateMappingModel"></param>
+        /// <param name="fields"></param>
+        public void CreateMapping(int projectId, TemplateMapping templateMappingModel, List<CmsTemplateField> fields)
         {
-            throw new NotImplementedException();
+            var templateMapping = CreateTemplateMapping(projectId.ToString(), templateMappingModel);
+
+            foreach (var templateField in fields)
+            {
+                if (templateField.SelectedField != "0")
+                {
+                    CreateFieldMapping(templateMapping, templateField);
+                }
+            }
         }
 
 
-
+        /// <summary>
+        /// Update mappings
+        /// </summary>
+        /// <param name="projectId">Gc project ID</param>
+        /// <param name="templateId">Gc template ID</param>
+        /// <param name="templateMappingModel"></param>
+        /// <param name="fields"></param>
         public void UpdateMapping(int projectId, int templateId, TemplateMapping templateMappingModel, List<CmsTemplateField> fields)
         {
-            var scProject = GetProjectFolder(projectId.ToString());
-
-            var templateMapping = GetTemplateMapping(scProject.ID.ToString(), templateId.ToString());
+            var templateMapping = GetTemplateMapping(projectId.ToString(), templateId.ToString());
 
             if (templateMapping != null)
             {
                 UpdateTemplateMapping(templateMapping, templateMappingModel);
 
                 foreach (var templateField in fields)
-                {               
-                        var field = GetFieldMappingItem(templateMapping.ID.ToString(), templateField.FieldName);
-                        if (field != null)
+                {
+                    if (string.IsNullOrEmpty(templateField.FieldName)) continue;
+                    var field = GetFieldMappingItem(templateMapping.ID.ToString(), templateField.FieldName);
+                    if (field != null)
+                    {
+                        if (templateField.SelectedField == "0")
+                        {
+                            RemoveFieldMapping(field);
+                        }
+                        else
                         {
                             UpdateFieldMapping(field, templateField.SelectedField);
                         }
+                    }
+                    else
+                    {
+                        if (templateField.SelectedField != "0")
+                        {
+                            CreateFieldMapping(templateMapping, templateField);
+                        }
+                    }
                 }
             }
         }
-
     }
 }

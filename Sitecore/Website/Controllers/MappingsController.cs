@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.Managers.Managers;
 using GatherContent.Connector.Managers.Models.Mapping;
-using GatherContent.Connector.Website.Extensions;
-using GatherContent.Connector.Website.Managers;
-using GatherContent.Connector.Website.Models.Mapping;
+using Sitecore.Diagnostics;
 using Sitecore.Services.Infrastructure.Web.Http;
 
 
@@ -40,16 +36,8 @@ namespace GatherContent.Connector.Website.Controllers
 
 
 
-        public HttpResponseMessage Post(Connector.Managers.Models.Mapping.AddMappingModel model)
+        public HttpResponseMessage Post(AddMappingModel model)
         {
-            //var db = Sitecore.Configuration.Factory.GetDatabase("master");
-            //var accountItem = db.GetItem(AccountItemId);
-
-            //var manager = new SitecoreDataManager(accountItem.Database, accountItem.Language);
-            //var gcSettings = GcAccountExtension.GetSettings(accountItem);
-            //var service = new GatherContentService.GatherContentService(gcSettings.ApiUrl, gcSettings.Username,
-            //    gcSettings.ApiKey);
-
             try
             {
                 _mappingManager.PostMapping(model);
@@ -58,7 +46,7 @@ namespace GatherContent.Connector.Website.Controllers
             }
             catch (Exception e)
             {
-                //Add logging
+                Log.Error(e.Message, e);
                 var response = Request.CreateResponse(HttpStatusCode.InternalServerError, model);
                 return response;
             }

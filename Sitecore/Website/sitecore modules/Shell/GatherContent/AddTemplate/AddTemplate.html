@@ -21,16 +21,17 @@
     <h1>
         Choose template to map to Sitecore
     </h1>
-    <small>You can map templates from multiple GatherContent projects into Sitecore</small>
+    <p>You can map templates from multiple GatherContent projects into Sitecore</p>
     <h2>
         If you need help with setting this up please contact support@gathercontent.com
     </h2>
 
 
-    <ul data-bind="foreach: { data: Projects }" style="list-style: none;">
-        <li class="project-item">
+    <ul data-bind="foreach: { data: Projects }" class="template_list">
+        <!-- ko if: $index()===0 -->
+        <li class="project-item active">
             <span data-bind="text: ProjectName"> </span>
-            <ul data-bind="foreach: { data: Templates, as: 'item' }" style="display: none; list-style: none;">
+            <ul data-bind="foreach: { data: Templates, as: 'item' }" class="template_items">
                 <li>
                     <div>
                         <input type="checkbox" data-bind="value:item.TemplateId, checked: $root.Selected, attr: { id: item.TemplateName}" />
@@ -40,10 +41,25 @@
                 </li>
             </ul>
         </li>
+        <!-- /ko -->
+        <!-- ko if: $index()!==0 -->
+        <li class="project-item">
+            <span data-bind="text: ProjectName"> </span>
+            <ul data-bind="foreach: { data: Templates, as: 'item' }" class="template_items">
+                <li>
+                    <div>
+                        <input type="checkbox" data-bind="value:item.TemplateId, checked: $root.Selected, attr: { id: item.TemplateName}" />
+                        <!--<input type="checkbox" data-bind="value:item.TemplateId, checked: $parent.selectedOptions, attr: { id: item.TemplateName}" />-->
+                        <label data-bind="text: item.TemplateName, attr: {for: item.TemplateName}" />
+                    </div>
+                </li>
+            </ul>
+        </li>
+        <!-- /ko -->
     </ul>
-    <div data-bind="text: Selected().length" style="display: inline;padding-right: 5px;"></div><span>templates selected</span>
+    <div data-bind="text: Selected().length" style="display: inline-block;padding-right: 5px; padding-bottom: 20px"></div><span>templates selected</span>
     <div style="clear: both"></div>
-    <input class="add-template-btn" id="Select-template" type="button" value="Select" data-bind="click: addTemplateMapping" />
+    <input class="add-template-select-btn " id="Select-template" type="button" value="Select" data-bind="click: addTemplateMapping" />
     <h2>
         Remember, you don't need to map all of your templates at once. You can update and add new templates later
     </h2>
@@ -61,11 +77,11 @@
     });
 
 
-   
+
 
     addTemplateMapping = function () {
         var dataObject = ko.toJSON(this);
- 
+
         jQuery.ajax({
             url: '/sitecore/api/posttemplates',
             type: 'post',
@@ -79,10 +95,14 @@
     };
 
     //TODO use KO
-    jQuery(document).ready(function() {
+
+    jQuery(document).ready(function () {
         jQuery(document).on("click", ".project-item", function () {
             jQuery(".project-item").children('ul').hide();
             jQuery(this).children('ul').show();
+            jQuery(".project-item").removeClass("active");
+            jQuery(this).addClass("active");
+
         });
     });
 

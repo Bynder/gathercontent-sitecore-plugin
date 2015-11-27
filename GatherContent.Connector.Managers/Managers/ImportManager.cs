@@ -8,7 +8,7 @@ using GatherContent.Connector.SitecoreRepositories;
 
 namespace GatherContent.Connector.Managers.Managers
 {
-    public class ImportManager
+    public class ImportManager //: BaseManager
     {
         private readonly ItemsRepository _itemsRepository;
         private readonly ItemsService _itemsService;
@@ -18,7 +18,7 @@ namespace GatherContent.Connector.Managers.Managers
 
         private readonly MappingManager _mappingManager;
 
-        public ImportManager()
+        public ImportManager() 
         {
             _itemsRepository = new ItemsRepository();
 
@@ -52,20 +52,19 @@ namespace GatherContent.Connector.Managers.Managers
             return result;
         }
 
-        private Account GetAccount()
+        protected Account GetAccount()
         {
-            AccountEntity accounts = _accountsService.GetAccounts();
-            Account account = accounts.Data.FirstOrDefault();
+            var accounts = _accountsService.GetAccounts();
+            return accounts.Data.FirstOrDefault();
 
-            return account;
         }
 
-        private List<Project> GetProjects(int accountId)
+        protected List<Project> GetProjects(int accountId)
         {
-            ProjectsEntity projects = _projectsService.GetProjects(accountId);
-
+            var projects = _projectsService.GetProjects(accountId);
             return projects.Data;
         }
+
 
         private Project GetProject(List<Project> projects, string projectIdStr)
         {

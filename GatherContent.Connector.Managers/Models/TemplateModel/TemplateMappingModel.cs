@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GatherContent.Connector.Website.Models.Template
+namespace GatherContent.Connector.Managers.Models.TemplateModel
 {
     public class TemplateMappingModel
     {
@@ -10,7 +10,7 @@ namespace GatherContent.Connector.Website.Models.Template
             Projects = new List<GcProjectModel>();
             Selected = new List<int>();
         }
-     
+
 
         public List<GcProjectModel> Projects { get; set; }
         public List<int> Selected { get; set; }

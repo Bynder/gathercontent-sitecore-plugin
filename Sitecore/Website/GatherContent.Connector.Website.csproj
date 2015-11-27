@@ -112,6 +112,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="sitecore modules\Shell\GatherContent\AddTemplate\AddTemplate.js" />
     <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\css\bootstrap-theme.css" />
     <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\css\bootstrap-theme.min.css" />
     <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\css\bootstrap.css" />
@@ -124,14 +125,12 @@
     <Content Include="sitecore modules\Shell\GatherContent\js\knockout-3.4.0.js" />
     <Content Include="sitecore modules\Shell\GatherContent\css\GatherContent.css" />
     <Content Include="sitecore modules\Shell\GatherContent\AddTemplate\AddTemplate.html" />
-    <Content Include="sitecore modules\Shell\GatherContent\AddTemplate\AddTemplate.css" />
     <Content Include="sitecore modules\Shell\GatherContent\js\GatherContent.js" />
     <Content Include="sitecore modules\Shell\GatherContent\js\jquery_2.1.1.min.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\AddOrUpdateMapping.html" />
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\AddOrUpdateMapping.js" />
     <Content Include="sitecore modules\Shell\GatherContent\css\img\arrow.png" />
     <Content Include="sitecore modules\Shell\GatherContent\css\img\arrow_select.png" />
-    <Content Include="sitecore modules\Shell\GatherContent\Mappings\Mappings.css" />
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\Mappings.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Import\Import.html" />
     <Content Include="sitecore\shell\Controls\Browser.js" />
@@ -154,7 +153,6 @@
     <Compile Include="Managers\SitecoreDataManager.cs" />
     <Compile Include="Models\Mapping\FieldMapping.cs" />
     <Compile Include="Models\GcSettings.cs" />
-    <Compile Include="Models\Template\TemplateMappingModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -13,7 +13,7 @@ using TemplateTab = GatherContent.Connector.Managers.Models.Mapping.TemplateTab;
 
 namespace GatherContent.Connector.Managers.Managers
 {
-    public class MappingManager
+    public class MappingManager : BaseManager
     {
         private const string TEXT_TYPE = "Single-Line Text";
 

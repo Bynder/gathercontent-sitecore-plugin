@@ -42,5 +42,18 @@ namespace GatherContent.Connector.SitecoreRepositories
 
             return projectsFolder.Axes.GetDescendants().Where(i => i.TemplateName == Constants.TemplateMappingName).ToList();
         }
+
+        /// <summary>
+        /// Get project folder by gatherContent Id
+        /// </summary>
+        /// <param name="projectId">GC project Id</param>
+        /// <returns>Project folder Item</returns>
+        protected Item GetProjectFolder(string projectId)
+        {
+            var accountSettingItem = ContextDatabase.GetItem(Constants.AccountItemId, ContextLanguage);
+            var projectsFolder = accountSettingItem.Axes.SelectSingleItem(String.Format("./descendant::*[@@templatename='{0}']", Constants.ProjectFolderTemplateName));
+            var project = projectsFolder.Axes.GetDescendants().FirstOrDefault(i => i["Id"] == projectId);
+            return project;
+        }
     }
 }

@@ -40,9 +40,9 @@ namespace GatherContent.Connector.SitecoreRepositories
 
       
 
-        public void CreateTemplate(string id, Template template)
+        public void CreateTemplate(string projectId, Template template)
         {
-            var parentItem = GetItem(id);
+            var parentItem = GetProjectFolder(projectId);
             var templatesFolder = parentItem.Children.FirstOrDefault(item => item.Name == Constants.TemplatesFolderName);
             if (templatesFolder != null)
             {
@@ -65,6 +65,7 @@ namespace GatherContent.Connector.SitecoreRepositories
                 }
             }
         }
+
 
         public List<CmsTemplate> GetTemplatesModel(string id)
         {

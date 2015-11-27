@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Linq;
 using GatherContent.Connector.Entities.Entities;
-using GatherContent.Connector.Website.Models;
+using GatherContent.Connector.Managers.Models.TemplateModel;
 using GatherContent.Connector.Website.Models.Mapping;
-using GatherContent.Connector.Website.Models.Template;
 using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.Globalization;

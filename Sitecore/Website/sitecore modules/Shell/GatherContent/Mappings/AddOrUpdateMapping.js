@@ -16,7 +16,7 @@ function ViewModel() {
     this.Tabs = ko.observableArray();
 
     jQuery.getJSON(url, null, function (data) {
-        self.GcProjectName("GatherContent project:" + " " + data.GcProjectName);
+        self.GcProjectName("Project:" + " " + data.GcProjectName);
         self.GcTemplateName("Template:" + " " + data.GcTemplateName);    
         self.SitecoreTemplates(data.SitecoreTemplates),
         self.SelectedTemplate(self.find("SitrecoreTemplateId", data.AddMappingModel.SelectedTemplateId));
@@ -24,6 +24,7 @@ function ViewModel() {
         self.GcTemplateId(data.AddMappingModel.GcTemplateId),
         self.Tabs(data.AddMappingModel.Tabs);
         self.IsEdit(data.AddMappingModel.IsEdit);
+        jQuery(".preloader").hide();
     });
 
 
@@ -37,7 +38,7 @@ function ViewModel() {
             data: dataObject,
             contentType: 'application/json',
             success: function () {
-                parent.location.reload();
+                //parent.location.reload();
                 window.top.dialogClose();
             }
         });

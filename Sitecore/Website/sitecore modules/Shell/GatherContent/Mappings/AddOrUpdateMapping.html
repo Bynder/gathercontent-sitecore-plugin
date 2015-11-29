@@ -11,7 +11,7 @@
     jQuery(document).ready(function () {
         ko.applyBindings(new ViewModel());
     });
-   // $.noConflict();
+
 </script>
 <script type="text/JavaScript" language="javascript">
     if (!window.scSitecore) {
@@ -22,20 +22,18 @@
 </script>
 
 <div class="gathercontent-dialog">
-    <h1>
-        Mapping
-    </h1>
     <h2>
         Choose the fields you wish to map from GatherContent intp Sitecore. Only map the fields you need to import
     </h2>
     <div class="mapping_tabs_wrapper">
+        <div><span><strong>GatherContent:</strong></span></div>
         <div style="float: left;">
             <span data-bind="text: GcProjectName" class="title_lvl2"></span>
-            <div data-bind="text: GcTemplateName" class="title_lvl3"></div>
+            <div data-bind="text: GcTemplateName" class="title_lvl2"></div>
         </div>
         <div style="float: right;">
-            <div>Sitecore:</div>
-            <select data-bind="options: SitecoreTemplates, optionsText: 'SitrecoreTemplateName', value: SelectedTemplate, event:{ change: $root.templateChanged}"></select>
+            <div><span><strong>Sitecore:</strong></span></div>
+            <select class="custom_selected" style="width: 200px;" data-bind="options: SitecoreTemplates, optionsText: 'SitrecoreTemplateName', value: SelectedTemplate, event:{ change: $root.templateChanged}"></select>
         </div>
         <div style="clear: both;"></div>
         <div data-bind="foreach: { data: Tabs, as: 'tab' } " class="tabs_mapping">
@@ -44,7 +42,7 @@
                 <div class="row_mapping_tab">
                     <input type="text" data-bind="value: field.FieldName" disabled />
                     <div class="arrow"></div>
-                    <select data-bind="options: $root.SitecoreFields, optionsText: 'SitrecoreFieldName', optionsValue: 'SitecoreFieldId', value: SelectedField,"></select>
+                    <select class="custom_selected" data-bind="options: $root.SitecoreFields, optionsText: 'SitrecoreFieldName', optionsValue: 'SitecoreFieldId', value: SelectedField,"></select>
                 </div>
             </div>
         </div>
@@ -55,4 +53,4 @@
         Remember you can always make changes to this configuration later
     </h2>
 </div>
-
+<div class="preloader"></div>

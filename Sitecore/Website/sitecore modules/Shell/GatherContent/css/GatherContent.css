@@ -25,6 +25,19 @@ body{
     font-family: Arial, Helvetica, sans-serif;
     font-size: 0.8em;
 }
+.preloader{
+    top: 0;
+    left: 0;
+    -webkit-background-size: 40px;
+    background-size: 40px;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-image: url("/sitecore/shell/themes/standard/images/sc-spinner32.gif");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-color: #fff;
+}
 .gathercontent-dialog{
     padding:10px 20px;
     height: 100%;
@@ -85,16 +98,18 @@ table {
     border: 1px solid #ccc;
     border-top: none;
     font-size: 0.8em;
-    height: 26px;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 120px;
 }
 .gathercontent-dialog table tbody tr td:last-child{
-    text-align: right;
+    text-align: left;
     white-space: nowrap;
     text-decoration: underline;
 }
 .gathercontent-dialog table tbody tr td:nth-child(1),.gathercontent-dialog table tbody tr td:nth-child(2){
-    font-size: 0.9em;
+    font-size: 0.8em;
 }
 .gathercontent-dialog table tbody tr td a{
     text-decoration: none;
@@ -123,10 +138,10 @@ table {
     border-left: 1px solid #fff;
     padding-left: 3px;
     min-height: 18px;
+    text-align: center;
 }
-.gathercontent-dialog table thead th:first-child div{
-    border-left:none;
-}
+
+
 .gathercontent-dialog table thead th {
     height: 0;
     line-height: 0;
@@ -136,6 +151,8 @@ table {
     border: none;
     white-space: nowrap;
     padding: 0 8px 0 0;
+    font-size: 0.8em;
+    text-indent: 5px;
 }
 
 .gathercontent-dialog .mappings-btn{
@@ -145,25 +162,34 @@ table {
     font-size: 0.9em;
     text-transform: uppercase;
     font-weight: 700;
+    box-shadow:inset 1px 1px 2px #BBB;
 }
 /*mapping*/
-.mapping_tabs_wrapper .tabs_mapping .row_mapping_tab input,.tabs_mapping .row_mapping_tab select{
+.custom_selected{
     border: 1px solid #808080;
     background: #fff;
+    border: 1px solid #808080;
+    box-sizing: border-box;
+    height: 30px;
+    color: #808080;
+}
+.mapping_tabs_wrapper .tabs_mapping .row_mapping_tab input,.tabs_mapping .row_mapping_tab .custom_selected{
     margin-bottom: 15px;
     width: calc(50% - 50px);
+    margin-bottom: 15px;
     border: 1px solid #808080;
     background: #fff;
-    margin-bottom: 15px;
-    padding: 0 10px;
+    border: 1px solid #808080;
     box-sizing: border-box;
-    float: left;
     height: 30px;
+    color: #808080;
+    float: left;
     vertical-align: middle;
     color: #808080;
+    padding-left: 5px;
 
 }
-.tabs_mapping .row_mapping_tab select{
+.tabs_mapping .row_mapping_tab .custom_selected,.custom_selected{
     -webkit-appearance: none;
     background-image: url('img/arrow_select.png');
     background-position-y:  center;
@@ -178,7 +204,7 @@ table {
     -ms-appearance: none;
     appearance: none!important;
 }
-select::-ms-expand {
+.custom_selected::-ms-expand {
     display: none;
 }
 .mapping_tabs_wrapper .tabs_mapping .title_mapping{
@@ -260,7 +286,7 @@ select::-ms-expand {
     overflow-y: auto;
     box-sizing: border-box;
 }
-.template_list > li:first-child .template_items{
+.template_list > li:first-child .template_items{ 
     display: block;
 }
 .template_items>li{
@@ -276,4 +302,7 @@ select::-ms-expand {
 }
 .template_items input:focus,.add-template-select-btn:focus{
     outline: none;
+}
+.gathercontent-dialog table {
+    max-width: calc(100% - 1px);
 }

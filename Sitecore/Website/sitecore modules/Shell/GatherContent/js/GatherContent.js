@@ -8,3 +8,6 @@
     }
     return vars;
 }
+
+jQuery(function() {
+})

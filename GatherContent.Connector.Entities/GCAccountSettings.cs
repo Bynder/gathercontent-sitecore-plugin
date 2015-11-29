@@ -9,5 +9,7 @@
         public string ApiKey { get; set; }
 
         public string TemplateFolderId { get; set; }
+
+        public string AccountItemId { get; set; }
     }
 }

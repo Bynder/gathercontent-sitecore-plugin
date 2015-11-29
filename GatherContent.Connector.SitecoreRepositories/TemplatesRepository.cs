@@ -42,8 +42,8 @@ namespace GatherContent.Connector.SitecoreRepositories
 
         public void CreateTemplate(string projectId, Template template)
         {
-            var parentItem = GetProjectFolder(projectId);
-            var templatesFolder = parentItem.Children.FirstOrDefault(item => item.Name == Constants.TemplatesFolderName);
+            var project = GetProject(projectId);
+            var templatesFolder = project.Children.FirstOrDefault(item => item.Name == Constants.TemplatesFolderName);
             if (templatesFolder != null)
             {
                 var folders = templatesFolder.Axes.GetDescendants().Select(item => item.Name).ToList();

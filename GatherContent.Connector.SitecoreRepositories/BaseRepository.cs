@@ -30,17 +30,17 @@ namespace GatherContent.Connector.SitecoreRepositories
         protected IEnumerable<Item> GetAllProjects()
         {
             var accountSettingItem = ContextDatabase.GetItem(Constants.AccountItemId, ContextLanguage);
-            var projectsFolder = accountSettingItem.Axes.SelectSingleItem(String.Format("./descendant::*[@@templatename='{0}']", Constants.ProjectFolderTemplateName));
+            var projects = accountSettingItem.Axes.SelectItems(String.Format("./descendant::*[@@templatename='{0}']", Constants.ProjectTemplateName));
 
-            return projectsFolder.Axes.GetDescendants().Where(i => i.TemplateName == Constants.ProjectTemplateName).ToList();
+            return projects == null ? Enumerable.Empty<Item>() : projects.ToList();
         }
 
-        protected List<Item> GetAllMappings()
+        protected IEnumerable<Item> GetAllMappings()
         {
             var accountSettingItem = ContextDatabase.GetItem(Constants.AccountItemId, ContextLanguage);
-            var projectsFolder = accountSettingItem.Axes.SelectSingleItem(String.Format("./descendant::*[@@templatename='{0}']", Constants.ProjectFolderTemplateName));
+            var mappings = accountSettingItem.Axes.SelectItems(String.Format("./descendant::*[@@templatename='{0}']", Constants.TemplateMappingName));
 
-            return projectsFolder.Axes.GetDescendants().Where(i => i.TemplateName == Constants.TemplateMappingName).ToList();
+            return mappings == null ? Enumerable.Empty<Item>() : mappings.ToList(); 
         }
 
         /// <summary>
@@ -48,11 +48,11 @@ namespace GatherContent.Connector.SitecoreRepositories
         /// </summary>
         /// <param name="projectId">GC project Id</param>
         /// <returns>Project folder Item</returns>
-        protected Item GetProjectFolder(string projectId)
+        protected Item GetProject(string projectId)
         {
             var accountSettingItem = ContextDatabase.GetItem(Constants.AccountItemId, ContextLanguage);
-            var projectsFolder = accountSettingItem.Axes.SelectSingleItem(String.Format("./descendant::*[@@templatename='{0}']", Constants.ProjectFolderTemplateName));
-            var project = projectsFolder.Axes.GetDescendants().FirstOrDefault(i => i["Id"] == projectId);
+            var projects = accountSettingItem.Axes.SelectItems(String.Format("./descendant::*[@@templatename='{0}']", Constants.ProjectTemplateName));
+            var project = projects.FirstOrDefault(i => i["Id"] == projectId);
             return project;
         }
     }

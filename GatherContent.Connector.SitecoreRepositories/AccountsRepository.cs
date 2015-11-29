@@ -17,7 +17,8 @@ namespace GatherContent.Connector.SitecoreRepositories
                     ApiUrl = accountSettingItem["API Url"],
                     Username = accountSettingItem["Username"],
                     ApiKey = accountSettingItem["API Key"],
-                    TemplateFolderId = accountSettingItem["Template folder ID"],
+                    TemplateFolderId = accountSettingItem["Templates Root Folder"],
+                    AccountItemId = accountSettingItem.ID.ToString()
                 };
 
             }

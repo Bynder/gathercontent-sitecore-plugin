@@ -6,13 +6,25 @@
 }
 .filter_wrapper_import{
     display: inline-block;
-    height: 40px;
-    background-color: silver;
-    line-height: 40px;
-    padding-left: 20px;
+    height: 30px;
+    line-height: 30px;
     font-weight: 700;
     font-size: 0.9em;
 
+}
+body{
+    font-family: Arial, Helvetica, sans-serif;
+}
+.footer_btn{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 10px 20px 0;
+    width: 100%;
+}
+.gathercontent-import{
+    position: relative;
+    height: 100%;
 }
 .filter_wrapper{
     margin: 20px 0;
@@ -24,35 +36,70 @@
 .search_filter{
     float: right;
 }
-.filter_wrapper_import>select{
+.search_filter input{
+    height: 30px;
+    padding-left: 10px;
+    color: #333333;
+    font-weight: 500;
+    min-width: 270px;
+    width: 30%;
+}
+.search_filter input::-webkit-input-placeholder {color:#333333;}
+.search_filter input::-moz-placeholder          {color:#333333;}/* Firefox 19+ */
+.search_filter input:-moz-placeholder           {color:#333333;}/* Firefox 18- */
+.search_filter input:-ms-input-placeholder      {color:#333333;}
+.custom_select{
     -webkit-appearance: none;
-    background: url('img/arrow_select.png') 90% center no-repeat, url("img/bkt_right.png")100% center no-repeat, url("img/bkt_left.png")0% center no-repeat;
+    background-image: url('img/arrow_select.png');
+    background-position-y:  center;
+    background-repeat: no-repeat;
+    -ms-background-position-x:95%;
+    background-position-x:95%;
+    -webkit-background-size:95%;
+    background-size:8px;
     /* for FF */
     -moz-appearance: none;
     /* for IE */
     -ms-appearance: none;
     appearance: none!important;
-    border: none;
     display: block;
+    width: 210px;
+    border: 1px solid #808080;
+    background-color: #fff;
+    box-sizing: border-box;
+    height: 30px;
+    color: #808080;
+    vertical-align: middle;
+    font-weight: 500;
+
+}
+.filter_wrapper_import>.custom_select{
     margin: 0 20px;
-    background-color: transparent;
-    padding-left: 10px;
-    font-weight: 700;
-    width: auto;
 }
-.filter_wrapper_import>select:before{
-    content: "[";
-    display: inline-block;
-}
-.filter_wrapper_import>select:focus{
+.filter_wrapper_import>.custom_select:focus,.custom_select:focus{
     outline: none;
 }
-.filter_wrapper_import>select::-ms-expand {
+.filter_wrapper_import>.custom_select::-ms-expand,.custom_select::-ms-expand {
     display: none;
+}
+.preloader{
+    top: 0;
+    left: 0;
+    -webkit-background-size: 40px;
+    background-size: 40px;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-image: url("/sitecore/shell/themes/standard/images/sc-spinner16.gif");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-color: #fff;
 }
 table {
     border-collapse: collapse;
     border-spacing: 0;
+    width: 100%;
+    font-size: 0.9em;
 }
  table tbody tr:nth-child(even){
     background-color: #f7f7f7;
@@ -69,7 +116,7 @@ table tbody tr td{
     padding: 5px;
     border: 1px solid #ccc;
     border-top: none;
-    font-size: 0.9em;
+
 }
 table tbody tr td:last-child{
     text-align: right;
@@ -77,6 +124,14 @@ table tbody tr td:last-child{
 }
  table tbody tr td:nth-child(1), table tbody tr td:nth-child(2){
     font-size: 1em;
+}
+table tbody tr td:nth-child(2):before {
+    content: "";
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-color: currentColor;
+    margin-right: 4px;
 }
  table tbody tr td a{
     text-decoration: none;
@@ -90,7 +145,7 @@ table tbody tr td:last-child{
     background: #5e5e5e;
 }
  .table_import_scroll{
-    max-height: 545px;
+    max-height:calc(100% - 250px);
     overflow-y: auto;
     overflow-x: hidden;
     background: #fff;
@@ -119,6 +174,10 @@ table thead th {
     border: none;
     white-space: nowrap;
     padding: 0 8px 0 0;
+}
+table thead th>input{
+    width: 0;
+    height: 0;
 }
 input[type="button"]{
     border: none;

@@ -11,6 +11,7 @@
         public const string GcTemplateMapping = "{F47BB0E8-B2BB-4415-9D34-77D99D85BF2A}";
         public const string GcFieldMapping = "{24FE0F34-5B16-44ED-A845-D6C502F08AA9}";
         public const string AccountItemId = "{B99D89BD-56AB-4F41-BB02-121D116E5145}";
+        public const string GcFolderId = "{5342D6D1-0ACF-4FE6-9AA2-613EDDDBEED0}";
 
         #endregion
 
@@ -21,6 +22,7 @@
         public const string StatusFolderName = "GC Statuses";
         public const string TemplatesFolderName = "GC Templates";
         public const string ProjectsFolderName = "GC Projects";
+        public const string ProjectFolderName = "GC Project";
 
         #endregion
 

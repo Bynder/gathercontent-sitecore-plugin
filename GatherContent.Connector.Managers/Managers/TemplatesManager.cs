@@ -84,11 +84,17 @@ namespace GatherContent.Connector.Managers.Managers
         {
             foreach (var project in model.Projects)
             {
-
-                foreach (var gcTemplateModel in project.Templates.Where(gcTemplateModel => model.Selected.Contains(gcTemplateModel.TemplateId)))
+                var gcSelectedTemplates = project.Templates.Where(gcTemplateModel => model.Selected.Contains(gcTemplateModel.TemplateId)).ToList();
+                if (gcSelectedTemplates.Any())
                 {
-                    _templatesRepository.CreateTemplate(project.ProjectId.ToString(), new Template{Name = gcTemplateModel.TemplateName, Id = gcTemplateModel.TemplateId});
-                }
+                    _projectsRepository.CreateOrGetProject(_accountSettings.AccountItemId, new Project { Name = project.ProjectName, Id = project.ProjectId });
+
+                    foreach (var gcTemplate in gcSelectedTemplates)
+                    {
+                        var newTemplate = new Template {Name = gcTemplate.TemplateName, Id = gcTemplate.TemplateId};
+                        _templatesRepository.CreateTemplate(project.ProjectId.ToString(), newTemplate);
+                    }
+                } 
             }
         }
     }

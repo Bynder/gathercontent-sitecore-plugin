@@ -24,7 +24,7 @@ namespace GatherContent.Connector.SitecoreRepositories
 
         private Item GetMappingFolder(Item projectFolder)
         {
-            Item mappingFolder = projectFolder.Children.FirstOrDefault(i => i.Template.Name == Constants.MappingFolderTemplateName);
+            Item mappingFolder = projectFolder.Children.FirstOrDefault(i => i.Name == Constants.MappingFolderName);
             return mappingFolder;
         }
 
@@ -41,7 +41,7 @@ namespace GatherContent.Connector.SitecoreRepositories
         /// <returns>Template mapping Item</returns>
         private Item GetTemplateMapping(string gcProjectId, string gcTemplateId)
         {
-            var project = GetProjectFolder(gcProjectId);
+            var project = GetProject(gcProjectId);
 
             if (project != null)
             {
@@ -147,7 +147,7 @@ namespace GatherContent.Connector.SitecoreRepositories
         /// <returns>Template mapping item</returns>
         private Item CreateTemplateMapping(string projectId, TemplateMapping templateMapping)
         {
-            var scProject = GetProjectFolder(projectId);
+            var scProject = GetProject(projectId);
             var mappingsFolder = GetMappingFolder(scProject);
             if (mappingsFolder != null)
             {
@@ -241,7 +241,7 @@ namespace GatherContent.Connector.SitecoreRepositories
 
         public List<MappingTemplateModel> GetTemplateMappings(string projectId)
         {
-            Item projectFolder = GetProjectFolder(projectId);
+            Item projectFolder = GetProject(projectId);
             Item mappingFolder = GetMappingFolder(projectFolder);
             IEnumerable<Item> mappings = GetTemplateMappings(mappingFolder);
 

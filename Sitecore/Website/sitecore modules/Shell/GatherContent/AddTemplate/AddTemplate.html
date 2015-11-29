@@ -21,13 +21,7 @@
 </script>
 
 <div class="gathercontent-dialog">
-    <h1>
-        Choose template to map to Sitecore
-    </h1>
     <p>You can map templates from multiple GatherContent projects into Sitecore</p>
-    <h2>
-        If you need help with setting this up please contact support@gathercontent.com
-    </h2>
 
 
     <ul data-bind="foreach: { data: Projects }" class="template_list">
@@ -61,10 +55,13 @@
         <!-- /ko -->
     </ul>
     <div data-bind="text: Selected().length" style="display: inline-block;padding-right: 5px; padding-bottom: 20px"></div><span>templates selected</span>
-    <div style="clear: both"></div>
-    <input class="add-template-select-btn " id="Select-template" type="button" value="Select" data-bind="click: addTemplateMapping" />
-    <h2>
-        Remember, you don't need to map all of your templates at once. You can update and add new templates later
-    </h2>
-</div>
+    <div class="footer_btn">
+        <input class="mappings-btn " id="Select-template" type="button" value="Select" data-bind="click: addTemplateMapping"/>
+        <input class="mappings-btn " id="Close-dialog" type="button" value="Close" data-bind="click: closeDialog" />
+        <h2>
+            Remember, you don't need to map all of your templates at once. You can update and add new templates later
+        </h2>
+        </div>
 
+</div>
+<div class="preloader"></div>

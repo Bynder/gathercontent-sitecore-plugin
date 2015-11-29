@@ -4,14 +4,23 @@ function ViewModel() {
 
     this.mappings = ko.observableArray();
 
-    jQuery.getJSON('/sitecore/api/mappings', null, function(data) {
-        self.mappings(data);
+
+    jQuery.ajax({
+        type: 'GET',
+        url: '/sitecore/api/mappings',
+        dataType: 'json',
+        success: function (data) {
+            self.mappings(data);
+            jQuery(".preloader").hide();
+        },
+        async: false
     });
 
 
     editMapping = function () {
         var id = this.GcTemplateId;
-        openMappingWindow(id);
+        var name = this.GcProjectName;
+        openMappingWindow(id,name);
     };
 
 
@@ -23,11 +32,11 @@ function ViewModel() {
 
 function openTemplateWindow() {
     var id = getUrlVars()["id"];
-    scForm.showModalDialog("/sitecore modules/shell/gathercontent/AddTemplate/AddTemplate.html?id=" + id, null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:400;dialogMinWidth:600;dialogWidth:800;dialogHeight:600;header: Setup template mapping");
+    scForm.showModalDialog("/sitecore modules/shell/gathercontent/AddTemplate/AddTemplate.html?id=" + id, null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:495;dialogMinWidth:600;dialogWidth:800;dialogHeight:495;header: Setup template mapping");
 };
 
 
-function openMappingWindow(id) {
-    scForm.showModalDialog("/sitecore modules/shell/gathercontent/Mappings/AddOrUpdateMapping.html?id=" + id,
-        null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:400;dialogMinWidth:600;dialogWidth:800;dialogHeight:600;header: Manage template mappings");
+function openMappingWindow(id, name) {
+    scForm.showModalDialog("/sitecore modules/shell/gathercontent/Mappings/AddOrUpdateMapping.html?id=" + id + "&name=" + name,
+        null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:600;dialogMinWidth:700;dialogWidth:700;dialogHeight:800;header: Manage template mappings");
 };

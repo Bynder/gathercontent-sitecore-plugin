@@ -5,12 +5,22 @@ function ViewModel() {
     this.Projects = ko.observableArray();
     this.Selected = ko.observableArray();
 
-    jQuery.getJSON('/sitecore/api/templates', null, function (data) {
-        self.Projects(data.Projects);
-        self.Selected(data.Selected);
+    jQuery.ajax({
+        type: 'GET',
+        url: '/sitecore/api/templates',
+        dataType: 'json',
+        success: function (data) {
+            self.Projects(data.Projects);
+            self.Selected(data.Selected);
+            jQuery(".preloader").hide();
+        },
+        async: true
     });
 
-
+    closeDialog = function() {
+        setTimeout(window.top.dialogClose(), 1000);
+    }
+    
     addTemplateMapping = function () {
         var dataObject = ko.toJSON(this);
         jQuery.ajax({
@@ -19,13 +29,12 @@ function ViewModel() {
             data: dataObject,
             contentType: 'application/json',
             success: function () {
-                parent.location.reload();
+                //window.parent.location.reload();
+                //setTimeout(window.top.dialogClose(), 1000);
                 window.top.dialogClose();
             }
         });
     };
-
-
 }
 
 

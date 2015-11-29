@@ -20,12 +20,9 @@
 </script>
 
 <div class="gathercontent-dialog">
-    <h1>
-        Manage template mappings
-    </h1>
-    <h2>
+    <p>
         Choose which template you wish to manage. If the template you wish to work with isn't showing up please
-    </h2>
+    </p>
     <div class="table_mappings_wrapper">
         <div class="table_mappings_scroll">
             <table style="width:100%">
@@ -43,15 +40,13 @@
                             Sitecore Template
                             <div>Sitecore Template</div>
                         </th>
-                        <th>
-                            Last mapped
+                        <th style="width: 130px;">
                             <div>Last mapped</div>
                         </th>
-                        <th>
-                            Last updated in GC
+                        <th style="width: 130px;">
                             <div>Last updated in GC</div>
                         </th>
-                        <th>
+                        <th style="width: 100px;">
                             <div></div>
                         </th>
                     </tr>
@@ -69,8 +64,11 @@
             </table>
         </div>
     </div>
-    <input class="mappings-btn" id="AddMore" type="button" value="Add more template" data-bind="click: addMoreTemplates" />
-    <h2>
-        Don't see the template you want to map? Make sure yau are in the right project, and try adding it from GC
-    </h2>
+    <div class="footer_btn">
+        <input class="mappings-btn" style="width: 160px;" id="AddMore" type="button" value="Add more templates" data-bind="click: addMoreTemplates" />
+        <p>
+            Don't see the template you want to map? Make sure yau are in the right project, and try adding it from GC
+        </p>
+    </div>
 </div>
+<div class="preloader"></div>

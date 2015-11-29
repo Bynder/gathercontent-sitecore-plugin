@@ -36,6 +36,7 @@
 
          jQuery.getJSON('/sitecore/api/getItemsForImort?id={' + id + '}&projectId=' + project, null, function (response) {
              callbackFunction(response);
+             jQuery(".preloader").hide();
          });
      }
 

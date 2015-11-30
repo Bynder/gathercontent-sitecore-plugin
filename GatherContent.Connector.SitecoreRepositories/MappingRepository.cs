@@ -229,7 +229,7 @@ namespace GatherContent.Connector.SitecoreRepositories
                             if (Double.TryParse(m["Last Updated in GC"], out d))
                             {
                                 var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
-                                gcUpdateDate = posixTime.AddMilliseconds(d).ToString(_accountSettings.DateFormat);
+                                gcUpdateDate = posixTime.AddMilliseconds(d * 1000).ToString(_accountSettings.DateFormat);
                             }
                            
 

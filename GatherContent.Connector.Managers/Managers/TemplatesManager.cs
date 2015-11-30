@@ -71,7 +71,8 @@ namespace GatherContent.Connector.Managers.Managers
                         p.Templates.Add(new GcTemplateModel
                         {
                             TemplateName = template.Name,
-                            TemplateId = template.Id
+                            TemplateId = template.Id,
+                            Enabled = _templatesRepository.TemplateIsEnabled(project.Id, template.Id)
                         });
                     }
                     model.Projects.Add(p);

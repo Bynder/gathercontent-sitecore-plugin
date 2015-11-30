@@ -10,6 +10,8 @@
 
         public string TemplateFolderId { get; set; }
 
+        public string DateFormat { get; set; }
+
         public string AccountItemId { get; set; }
     }
 }

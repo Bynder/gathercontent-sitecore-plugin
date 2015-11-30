@@ -32,5 +32,6 @@ namespace GatherContent.Connector.Managers.Models.TemplateModel
     {
         public string TemplateName { get; set; }
         public int TemplateId { get; set; }
+        public bool Enabled { get; set; }
     }
 }

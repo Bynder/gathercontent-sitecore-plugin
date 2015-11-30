@@ -21,7 +21,20 @@ namespace GatherContent.Connector.SitecoreRepositories
 
         #region Utilities
 
-      
+        private Item GetTemplate(string gcProjectId, string gcTemplateId)
+        {
+            var project = GetProject(gcProjectId);
+
+            if (project != null)
+            {
+                return project.Axes.GetDescendants()
+                    .FirstOrDefault(item => item["Temaplate Id"] == gcTemplateId &
+                                            item.TemplateID ==
+                                            new ID(Constants.GcTemplate));
+
+            }
+            return null;
+        }
 
         private IEnumerable<Item> GetTemplates(string id)
         {
@@ -92,6 +105,13 @@ namespace GatherContent.Connector.SitecoreRepositories
                 model.Add(sitecoreTemplate);
             }
             return model;
+        }
+
+
+        public bool TemplateIsEnabled(int projectId, int templateId)
+        {
+            var template = GetTemplate(projectId.ToString(), templateId.ToString());
+            return template == null;
         }
     }
 }

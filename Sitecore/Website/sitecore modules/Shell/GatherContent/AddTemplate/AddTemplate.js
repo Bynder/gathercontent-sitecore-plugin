@@ -29,7 +29,7 @@ function ViewModel() {
             data: dataObject,
             contentType: 'application/json',
             success: function () {
-                //window.parent.location.reload();
+                window.opener.location.reload(true);
                 //setTimeout(window.top.dialogClose(), 1000);
                 window.top.dialogClose();
             }

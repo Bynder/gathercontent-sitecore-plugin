@@ -38,7 +38,7 @@ function ViewModel() {
             data: dataObject,
             contentType: 'application/json',
             success: function () {
-                //parent.location.reload();
+                window.opener.location.reload(true);
                 window.top.dialogClose();
             }
         });

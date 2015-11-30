@@ -122,6 +122,9 @@
     <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\js\bootstrap.min.js" />
     <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\js\npm.js" />
     <Content Include="Global.asax" />
+    <Content Include="sitecore modules\Shell\GatherContent\Import\img\arrow_select.png" />
+    <Content Include="sitecore modules\Shell\GatherContent\Import\img\bkt_left.png" />
+    <Content Include="sitecore modules\Shell\GatherContent\Import\img\bkt_right.png" />
     <Content Include="sitecore modules\Shell\GatherContent\js\knockout-3.4.0.js" />
     <Content Include="sitecore modules\Shell\GatherContent\css\GatherContent.css" />
     <Content Include="sitecore modules\Shell\GatherContent\AddTemplate\AddTemplate.html" />
@@ -133,6 +136,12 @@
     <Content Include="sitecore modules\Shell\GatherContent\css\img\arrow_select.png" />
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\Mappings.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Import\Import.html" />
+    <Content Include="sitecore modules\Shell\GatherContent\Update\img\arrow_select.png" />
+    <Content Include="sitecore modules\Shell\GatherContent\Update\img\bkt_left.png" />
+    <Content Include="sitecore modules\Shell\GatherContent\Update\img\bkt_right.png" />
+    <Content Include="sitecore modules\Shell\GatherContent\Update\Update.css" />
+    <Content Include="sitecore modules\Shell\GatherContent\Update\Update.html" />
+    <Content Include="sitecore modules\Shell\GatherContent\Update\Update.js" />
     <Content Include="sitecore\shell\Controls\Browser.js" />
     <Content Include="sitecore\shell\Controls\Lib\Prototype\prototype.js" />
     <Content Include="sitecore\shell\Controls\Sitecore.js" />
@@ -149,6 +158,7 @@
     <Compile Include="Controllers\TemplatesController.cs" />
     <Compile Include="Controllers\ImportController.cs" />
     <Compile Include="Controllers\MappingsController.cs" />
+    <Compile Include="Controllers\UpdateController.cs" />
     <Compile Include="Extensions\GcAccountExtension.cs" />
     <Compile Include="Managers\SitecoreDataManager.cs" />
     <Compile Include="Models\Mapping\FieldMapping.cs" />
@@ -197,6 +207,9 @@
   <ItemGroup>
     <Folder Include="Models\Import\" />
     <Folder Include="Shell\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\acc.pubxml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

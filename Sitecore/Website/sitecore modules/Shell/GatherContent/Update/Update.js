@@ -1,4 +1,4 @@
-﻿var ImportManager = function () {
+﻿var UpdateManager = function () {
     var MODE = {
         ChooseItmesForImort: 1,
         CheckItemsBeforeImport: 2,
@@ -15,7 +15,7 @@
     self.items = ko.observableArray([]),
     self.statuses = ko.observableArray([]),
     self.templates = ko.observableArray([]),
-    self.statusPostState = ko.observable(),
+
     self.project = ko.observable(),
     self.statusFilter = ko.observable(),
     self.templateFilter = ko.observable(),
@@ -34,7 +34,7 @@
          var project = self.project();
          project = project ? project : 0;
 
-         jQuery.getJSON('/sitecore/api/getItemsForImport?id={' + id + '}&projectId=' + project, null, function (response) {
+         jQuery.getJSON('/sitecore/api/getItemsForUpdate?id={' + id + '}&projectId=' + project, null, function (response) {
              callbackFunction(response);
              jQuery(".preloader").hide();
          });
@@ -204,7 +204,7 @@
         jQuery.ajax
         ({
             type: "POST",
-            url: '/sitecore/api/import?id={' + id + '}&projectId=' + project + '&statusId=' + status,
+            url: '/sitecore/api/update?id={' + id + '}&projectId=' + project + '&statusId=' + status,
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(items),

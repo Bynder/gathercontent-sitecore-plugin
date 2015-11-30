@@ -13,6 +13,21 @@ namespace GatherContent.Connector.Website
         protected void Configure(HttpConfiguration configuration)
         {
             var routes = configuration.Routes;
+
+            routes.MapHttpRoute("GetItemsForUpdate", "sitecore/api/getItemsForUpdate", new
+            {
+                controller = "Update",
+                action = "Get",
+                //id = RouteParameter.Optional,
+                //projectId = RouteParameter.Optional
+            });
+
+            routes.MapHttpRoute("UpdateItems", "sitecore/api/update", new
+            {
+                controller = "Update",
+                action = "UpdateItems"
+            });
+
             routes.MapHttpRoute("MappingsCommand", "sitecore/api/mappings", new
             {
                 controller = "Mappings",
@@ -39,7 +54,7 @@ namespace GatherContent.Connector.Website
                 controller = "TemplatesMapping",
                 action = "Post"
             });
-            routes.MapHttpRoute("GetItemsForImport", "sitecore/api/getItemsForImort", new
+            routes.MapHttpRoute("GetItemsForImport", "sitecore/api/getItemsForImport", new
             {
                 controller = "Import",
                 action = "Get"
@@ -50,6 +65,7 @@ namespace GatherContent.Connector.Website
                 controller = "Import",
                 action = "ImportItems"
             });
+
         }
     }
 }

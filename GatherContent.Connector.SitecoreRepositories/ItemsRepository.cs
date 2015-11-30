@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.IRepositories.Models;
@@ -10,7 +11,7 @@ namespace GatherContent.Connector.SitecoreRepositories
     {
         public ItemsRepository() : base() { }
 
-        public List<ImportItemsResponseModel> ImportItems(string itemId, List<ImportCMSItem> items)
+        public List<ImportItemsResponseModel> ImportItems(string itemId, List<ImportItemsResponseModel> items)
         {
             Item parentItem = GetItem(itemId);
          
@@ -19,15 +20,22 @@ namespace GatherContent.Connector.SitecoreRepositories
             return result;
         }
 
-        private List<ImportItemsResponseModel> AddItems(Item parent, List<ImportCMSItem> items)
+        private List<ImportItemsResponseModel> AddItems(Item parent, List<ImportItemsResponseModel> items)
         {
             List<ImportItemsResponseModel> result = items.Select(i => AddItem(parent, i)).ToList();
             return result;
         }
 
-        private ImportItemsResponseModel AddItem(Item parent, ImportCMSItem item)
+        private ImportItemsResponseModel AddItem(Item parent, ImportItemsResponseModel item)
         {
-            var result = new ImportItemsResponseModel(item.GCItem, "View in sitecore", true);
+            return null;
+        }
+
+        public List<CMSUpdateItem> GetItems(string targetItemId)
+        {
+            Item parentItem = GetItem(targetItemId);
+            var items = parentItem.Axes.SelectItems(String.Format("./descendant::*[@@templatename='{0}']", Constants.GCLinkItemTemplate));
+            var result = items.Select(i => new CMSUpdateItem { GSItemId = i["GC Content Id"], LastUpdatedTime = DateTime.Now.AddDays(-1) }).ToList();
 
             return result;
         }

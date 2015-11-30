@@ -18,6 +18,7 @@ namespace GatherContent.Connector.Website.Commands
             try
             {
                 Assert.ArgumentNotNull(context, "context");
+
                 if (context.Items.Length != 1)
                 {
                     return;
@@ -35,7 +36,7 @@ namespace GatherContent.Connector.Website.Commands
             }
             catch (Exception ex)
             {
-                Log.Error(ex.Message, ex, typeof(UpdateCommand));
+                Log.Error(ex.Message, ex, typeof(ImportCommand));
                 SheerResponse.Alert("Sync failed. See log for details.");
             }
         }
@@ -44,69 +45,23 @@ namespace GatherContent.Connector.Website.Commands
         {
             Assert.ArgumentNotNull(args, "args");
 
-            if (!SheerResponse.CheckModified())
-            {
-                return;
-            }
-
-            string id = args.Parameters["id"];
+            var id = args.Parameters["id"].Replace("{", "").Replace("}", "");
             var language = Language.Parse(args.Parameters["language"]);
-            string version = args.Parameters["version"];
-            var item = Client.ContentDatabase.Items[id, language, Sitecore.Data.Version.Parse(version)];
+            var version = args.Parameters["version"];
+            var uri = "/sitecore modules/shell/gathercontent/update/update.html";
+            var path = string.Format("{0}?id={1}&l={2}&v={3}", uri, id, language, version);
 
-            if (item == null)
+            var options = new ModalDialogOptions(path)
             {
-                SheerResponse.Alert("Item not found.", new string[0]);
-            }
-            else
-            {
+                Width = "900",
+                Height = "700",
+                MinWidth = "600",
+                MinHeight = "400",
+                Maximizable = false,
+                Header = "Update Content from GatherContent"
+            };
 
-
-                #region Check projects
-
-                var manager = new SitecoreDataManager(item.Database, item.Language);
-                var gcSettings = GcAccountExtension.GetSettings(item);
-
-                var service = new GatherContentService.GatherContentService(gcSettings.ApiUrl, gcSettings.Username, gcSettings.ApiKey);
-                var accounts = service.GetAccounts();
-
-                var account = accounts.Data.FirstOrDefault();
-                if (account != null)
-                {
-                    var projects = service.GetProjects(account.Id);
-                    foreach (var project in projects.Data)
-                    {
-                        manager.GetOrCreateProjectFolder(item.ID.ToString(), project);
-                    }
-                }
-
-
-                #endregion
-
-
-                if (args.IsPostBack)
-                {
-                    if (args.HasResult)
-                    {
-                        if (args.Parameters["load"] == "1")
-                        {
-                            Context.ClientPage.SendMessage(this, "item:load(id=" + args.Result + ")");
-                        }
-                        else
-                        {
-                            Context.ClientPage.SendMessage(this, "media:refresh");
-                        }
-                    }
-                }
-                else
-                {
-                    var uri = "/sitecore/shell/default.aspx?xmlcontrol=SyncBar";
-                    var url = string.Format("{0}&id={1}&la={2}&v={3}", uri, id, language, version);
-
-                    Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(url), "Shell");
-                }
-
-            }
+            Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(options), "Shell");
         }
     }
 }

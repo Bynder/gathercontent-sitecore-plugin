@@ -25,7 +25,6 @@ namespace GatherContent.Connector.Managers.Managers
 
         }
 
-
         protected Account GetAccount()
         {
             var accounts = _accountsService.GetAccounts();

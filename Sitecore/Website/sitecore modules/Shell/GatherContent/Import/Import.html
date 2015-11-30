@@ -16,13 +16,13 @@
 </script>
 
 <div data-bind="if: getMode(1)" class="gathercontent-import">
-    <div>
-        <div>PROJECT</div>
+    <div class="filter_wrapper_import">
+        <div class="title_filter">PROJECT</div>
         <select class="custom_select" data-bind="options: projects, optionsText: 'name', optionsValue: 'id', value: project, event:{ change: $root.projectChanged}"></select>
     </div>
     <div class="filter_wrapper">
         <div class="filter_wrapper_import">
-            <div>FILTER</div>
+            <div class="title_filter">FILTER</div>
             <select class="custom_select" data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, optionsCaption: 'STATUS', event:{ change: $root.filter }"></select>
             <select class="custom_select" data-bind="options: templates, optionsText: 'name', optionsValue: 'id', value: templateFilter, optionsCaption: 'TEMPLATE', event:{ change: $root.filter }"></select>
         </div>
@@ -88,8 +88,8 @@
 
 <div data-bind="if: getMode(2)">
     <div>
-        <h2 class="title">Confirm import selection (<span data-bind="text: getCheckedCount"></span> items)<br /></h2>
-        Please review your import selection before importing
+        <h2 class="title">Confirm import selection (<span data-bind="text: getCheckedCount"></span> items)</h2>
+        <p>Please review your import selection before importing</p>
     </div>
 
     <div class="table_import_wrapper">
@@ -134,15 +134,16 @@
 </div>
 
 <div data-bind="if: getMode(3)">
-    <div class="preloader">
+    <div class="preloader_import text-center">
         <h2 class="title">Import in progress</h2>
         <p>Please do not close your browser. Depending on the number of items, this can take some time.</p>
+        <img src="/sitecore/shell/themes/standard/images/sc-spinner16.gif" alt="">
     </div>
     <!--<input type="button" value="Next" data-bind="click: buttonClick.bind($data, 4)" />-->
 </div>
 
 <div data-bind="if: getMode(4)">
-    <div>Import complete: Results</div>
+    <h2 class="title">Import complete: Results</h2>
 
     <div class="table_import_wrapper">
         <div class="table_import_scroll">

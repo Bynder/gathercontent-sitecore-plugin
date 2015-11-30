@@ -88,7 +88,7 @@
 
 <div data-bind="if: getMode(2)">
     <div>
-        Confirm import selection (<span data-bind="text: getCheckedCount"></span> items)<br />
+        <h2 class="title">Confirm import selection (<span data-bind="text: getCheckedCount"></span> items)<br /></h2>
         Please review your import selection before importing
     </div>
 
@@ -135,8 +135,8 @@
 
 <div data-bind="if: getMode(3)">
     <div class="preloader">
-        Import in progress<br />
-        Please do not close your browser. Depending on the number of items, this can take some time.
+        <h2 class="title">Import in progress</h2>
+        <p>Please do not close your browser. Depending on the number of items, this can take some time.</p>
     </div>
     <!--<input type="button" value="Next" data-bind="click: buttonClick.bind($data, 4)" />-->
 </div>

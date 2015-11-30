@@ -17,6 +17,7 @@
 
 <div data-bind="if: getMode(1)" class="gathercontent-import">
     <div>
+        <div>PROJECT</div>
         <select class="custom_select" data-bind="options: projects, optionsText: 'name', optionsValue: 'id', value: project, event:{ change: $root.projectChanged}"></select>
     </div>
     <div class="filter_wrapper">
@@ -87,7 +88,7 @@
 
 <div data-bind="if: getMode(2)">
     <div>
-        Confirm update selection (<span data-bind="text: getCheckedCount"></span> items)<br />
+        <h2 class="title">Confirm update selection (<span data-bind="text: getCheckedCount"></span> items)<br /></h2>
         Please review your update selection before updating
     </div>
 
@@ -133,8 +134,8 @@
 
 <div data-bind="if: getMode(3)">
     <div class="preloader">
-        Update in progress<br />
-        Please do not close your browser. Depending on the number of items, this can take some time.
+        <h2 class="title">Update in progress</h2>
+        <p>Please do not close your browser. Depending on the number of items, this can take some time.</p>
     </div>
     <!--<input type="button" value="Next" data-bind="click: buttonClick.bind($data, 4)" />-->
 </div>

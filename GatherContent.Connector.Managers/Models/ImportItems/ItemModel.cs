@@ -25,7 +25,7 @@ namespace GatherContent.Connector.Managers.Models.ImportItems
         {
         }
 
-        public ItemModel(GCItem item, Template template, List<GCItem> items)
+        public ItemModel(GCItem item, Template template, List<GCItem> items, string dateFormat)
         {
             Checked = false;
 
@@ -33,20 +33,14 @@ namespace GatherContent.Connector.Managers.Models.ImportItems
             Title = item.Name;
             Status = item.Status.Data;
             Breadcrumb = GetBreadcrumb(item, items);
-            LastUpdatedInGC = GetLastUpdatedInGC(item.Updated.Date);
+            LastUpdatedInGC = GetLastUpdatedInGC(item.Updated.Date, dateFormat);
 
             Template = template;
         }
 
-        private string GetLastUpdatedInGC(DateTime dtEvent)
+        private string GetLastUpdatedInGC(DateTime dtEvent, string format)
         {
-            int intDays = DateTime.UtcNow.Day - dtEvent.Day;
-            if (intDays > 0 && intDays < 2)
-            {
-                return String.Format("{0} - {1}", (intDays == 1) ? "Yesterday" : "Today", dtEvent.ToLongDateString());
-            }
-
-            return dtEvent.ToLongDateString();
+            return dtEvent.ToString(format);
         }
 
         private string GetBreadcrumb(GCItem item, List<GCItem> items)

@@ -81,7 +81,7 @@
         </div>
 
         <input type="button" class="mappings-btn" value="Next>" data-bind="click: buttonClick.bind($data, 2)" />
-        <input type="button" value="Close" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" />
+        <!--<input type="button" value="Close" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" />-->
     </div>
 </div>
 
@@ -125,14 +125,14 @@
         </div>-->
         <input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 1)" />
         <input type="button" value="Update>" data-bind="click: buttonClick.bind($data, 3)" />
-        <input type="button" class="closeButton" value="Close" data-bind="click: buttonClick.bind($data, 5)" />
+        <!--<input type="button" class="closeButton" value="Close" data-bind="click: buttonClick.bind($data, 5)" />-->
     </div>
 
 
 </div>
 
 <div data-bind="if: getMode(3)">
-    <div>
+    <div class="preloader">
         Update in progress<br />
         Please do not close your browser. Depending on the number of items, this can take some time.
     </div>

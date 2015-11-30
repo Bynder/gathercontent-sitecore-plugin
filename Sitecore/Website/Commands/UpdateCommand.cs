@@ -53,7 +53,7 @@ namespace GatherContent.Connector.Website.Commands
 
             var options = new ModalDialogOptions(path)
             {
-                Width = "900",
+                Width = "1200",
                 Height = "700",
                 MinWidth = "600",
                 MinHeight = "400",

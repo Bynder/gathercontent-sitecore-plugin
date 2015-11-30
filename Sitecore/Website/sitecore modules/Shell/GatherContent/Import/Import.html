@@ -17,6 +17,7 @@
 
 <div data-bind="if: getMode(1)" class="gathercontent-import">
     <div>
+        <div>PROJECT</div>
         <select class="custom_select" data-bind="options: projects, optionsText: 'name', optionsValue: 'id', value: project, event:{ change: $root.projectChanged}"></select>
     </div>
     <div class="filter_wrapper">
@@ -62,7 +63,7 @@
                 </thead>
                 <tbody data-bind="foreach: items">
                     <tr data-bind="click: $root.checkRow">
-                        <td><input type="checkbox" data-bind="checked: Checked"/></td>
+                        <td><input type="checkbox" data-bind="checked: Checked" /></td>
                         <td data-bind="text: Status.name, style: { color: Status.color }"></td>
                         <td data-bind="text: Title"></td>
                         <td data-bind="text: LastUpdatedInGC"></td>
@@ -81,11 +82,11 @@
         </div>
 
         <input type="button" class="mappings-btn" value="Next>" data-bind="click: buttonClick.bind($data, 2)" />
-        <input type="button" value="Close" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" />
+        <!--<input type="button" value="Close" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" />-->
     </div>
 </div>
 
-<div data-bind="if: getMode(2)" >
+<div data-bind="if: getMode(2)">
     <div>
         Confirm import selection (<span data-bind="text: getCheckedCount"></span> items)<br />
         Please review your import selection before importing
@@ -93,45 +94,47 @@
 
     <div class="table_import_wrapper">
         <div class="table_import_scroll">
-        <table >
-            <thead>
-                <tr>
-                    <th>
-                        <div></div>
-                    </th>
-                    <th>Title
-                        <div>Title</div>
-                    </th>
-                    <th>Template
-                        <div>Template</div>
-                    </th>
-                </tr>
-            </thead>
-            <tbody data-bind="foreach: items">
-                <tr>
-                    <td data-bind="text: Status.name, style: { color: Status.color }"></td>
-                    <td data-bind="text: Title"></td>
-                    <td data-bind="text: Template.name"></td>
-                </tr>
-            </tbody>
-        </table>
-            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            <div></div>
+                        </th>
+                        <th>
+                            Title
+                            <div>Title</div>
+                        </th>
+                        <th>
+                            Template
+                            <div>Template</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: items">
+                    <tr>
+                        <td data-bind="text: Status.name, style: { color: Status.color }"></td>
+                        <td data-bind="text: Title"></td>
+                        <td data-bind="text: Template.name"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <div class="footer_btn">
         <div>
             <input type="checkbox" data-bind="checked: statusPostState" />
-            After successful import change status of item to [<select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender"></select>] inside your GatherContent account
+            After successful import change status of item to <select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender"></select> inside your GatherContent account
         </div>
         <input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 1)" />
         <input type="button" value="Import>" data-bind="click: buttonClick.bind($data, 3)" />
-        <input type="button" class="closeButton" value="Close" data-bind="click: buttonClick.bind($data, 5)" />
+        <!--<input type="button" class="closeButton" value="Close" data-bind="click: buttonClick.bind($data, 5)" />-->
     </div>
 
 
 </div>
 
 <div data-bind="if: getMode(3)">
-    <div>
+    <div class="preloader">
         Import in progress<br />
         Please do not close your browser. Depending on the number of items, this can take some time.
     </div>
@@ -143,37 +146,39 @@
 
     <div class="table_import_wrapper">
         <div class="table_import_scroll">
-        <table >
-            <thead>
-                <tr>
-                    <th>
-                        <div></div>
-                    </th>
-                    <th>Title
-                        <div>Title</div>
-                    </th>
-                    <th>
-                        <div></div>
-                    </th>
-                    <th>Template
-                        <div>Template</div>
-                    </th>
-                </tr>
-            </thead>
-            <tbody data-bind="foreach: items">
-                <tr>
-                    <td data-bind="text: Status.name, style: { color: Status.color }"></td>
-                    <td data-bind="text: Title"></td>
-                    <td data-bind="text: Message, style: { color: $root.getImportResultMessageColor($data) }"></td>
-                    <td data-bind="text: GCTemplate, style: { color: $root.getImportResultTemplateColor($data) }"></td>
-                </tr>
-            </tbody>
-        </table>
-            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            <div></div>
+                        </th>
+                        <th>
+                            Title
+                            <div>Title</div>
+                        </th>
+                        <th>
+                            <div></div>
+                        </th>
+                        <th>
+                            Template
+                            <div>Template</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: items">
+                    <tr>
+                        <td data-bind="text: Status.name, style: { color: Status.color }"></td>
+                        <td data-bind="text: Title"></td>
+                        <td data-bind="text: Message, style: { color: $root.getImportResultMessageColor($data) }"></td>
+                        <td data-bind="text: GCTemplate, style: { color: $root.getImportResultTemplateColor($data) }"></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        <div class="footer_btn">
-            <input type="button" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" value="Close" />
-        </div>
+    </div>
+    <div class="footer_btn">
+        <input type="button" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" value="Close" />
+    </div>
 </div>
 
 <div class="preloader"></div>

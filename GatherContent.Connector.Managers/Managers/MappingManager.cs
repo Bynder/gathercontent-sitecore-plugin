@@ -215,7 +215,7 @@ namespace GatherContent.Connector.Managers.Managers
             }
 
             result = new ImportItemsResponseModel(item.Id.ToString(), item.Status.Data, item.Name, gcTemplate.Name,
-                    "View in Sitecore", true, fields, template.CMSTemplate);
+                    string.Empty, true, fields, template.CMSTemplate);
         }
 
         private TryMapItemState TryGetTemplate(List<MappingTemplateModel> templates, string templateId, out MappingTemplateModel result)

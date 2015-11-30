@@ -24,28 +24,22 @@ namespace GatherContent.Connector.Managers.Models.UpdateItems
         {
         }
 
-        public ItemModel(GCItem item, Template template, CMSUpdateItem cmsItem)
+        public ItemModel(GCItem item, Template template, CMSUpdateItem cmsItem, string dateFormat)
         {
             Checked = false;
 
             Id = item.Id.ToString();
             Title = item.Name;
             Status = item.Status.Data;
-            LastUpdatedInCMS = GetLastUpdatedInGC(cmsItem.LastUpdatedTime);
-            LastUpdatedInGC = GetLastUpdatedInGC(item.Updated.Date);
+            LastUpdatedInCMS = GetLastUpdatedInGC(cmsItem.LastUpdatedTime, dateFormat);
+            LastUpdatedInGC = GetLastUpdatedInGC(item.Updated.Date, dateFormat);
 
             Template = template;
         }
 
-        private string GetLastUpdatedInGC(DateTime dtEvent)
+        private string GetLastUpdatedInGC(DateTime dtEvent, string format)
         {
-            int intDays = DateTime.UtcNow.Day - dtEvent.Day;
-            if (intDays > 0 && intDays < 2)
-            {
-                return String.Format("{0} - {1}", (intDays == 1) ? "Yesterday" : "Today", dtEvent.ToLongDateString());
-            }
-
-            return dtEvent.ToLongDateString();
+            return dtEvent.ToString(format);
         }
     }
 }

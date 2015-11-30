@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.GatherContentService.Services;
 using GatherContent.Connector.IRepositories.Models;
@@ -15,7 +16,7 @@ namespace GatherContent.Connector.Managers.Managers
         private readonly ItemsService _itemsService;
         private readonly ProjectsService _projectsService;
         private readonly TemplatesService _templatesService;
-
+        private readonly GCAccountSettings _gcAccountSettings;
         private readonly MappingManager _mappingManager;
 
         public UpdateManager()
@@ -23,11 +24,11 @@ namespace GatherContent.Connector.Managers.Managers
             _itemsRepository = new ItemsRepository();
 
             var accountsRepository = new AccountsRepository();
-            var accountSettings = accountsRepository.GetAccountSettings();
+            _gcAccountSettings = accountsRepository.GetAccountSettings();
 
-            _itemsService = new ItemsService(accountSettings);
-            _projectsService = new ProjectsService(accountSettings);
-            _templatesService = new TemplatesService(accountSettings);
+            _itemsService = new ItemsService(_gcAccountSettings);
+            _projectsService = new ProjectsService(_gcAccountSettings);
+            _templatesService = new TemplatesService(_gcAccountSettings);
 
             _mappingManager = new MappingManager();
         }
@@ -63,7 +64,7 @@ namespace GatherContent.Connector.Managers.Managers
             foreach (var gcItem in items)
             {
                 var template = _templatesService.GetSingleTemplate(gcItem.TemplateId.ToString()).Data;
-                resultitems.Add(new ItemModel(gcItem, template, cmsItems.FirstOrDefault(i => i.GSItemId == gcItem.Id.ToString())));
+                resultitems.Add(new ItemModel(gcItem, template, cmsItems.FirstOrDefault(i => i.GSItemId == gcItem.Id.ToString()), _gcAccountSettings.DateFormat));
             }
 
             var result = new SelectImportItemsModel(resultitems, project, projects, statuses, templates);

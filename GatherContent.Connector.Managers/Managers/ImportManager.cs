@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.GatherContentService.Services;
 using GatherContent.Connector.IRepositories.Models;
@@ -16,17 +17,18 @@ namespace GatherContent.Connector.Managers.Managers
         private readonly TemplatesService _templatesService;
 
         private readonly MappingManager _mappingManager;
+        private readonly GCAccountSettings _gcAccountSettings;
 
         public ImportManager()
         {
             _itemsRepository = new ItemsRepository();
 
             var accountsRepository = new AccountsRepository();
-            var accountSettings = accountsRepository.GetAccountSettings();
+            _gcAccountSettings = accountsRepository.GetAccountSettings();
 
-            _itemsService = new ItemsService(accountSettings);
-            _projectsService = new ProjectsService(accountSettings);
-            _templatesService = new TemplatesService(accountSettings);
+            _itemsService = new ItemsService(_gcAccountSettings);
+            _projectsService = new ProjectsService(_gcAccountSettings);
+            _templatesService = new TemplatesService(_gcAccountSettings);
 
             _mappingManager = new MappingManager();
         }
@@ -87,7 +89,7 @@ namespace GatherContent.Connector.Managers.Managers
         {
             var mappedItems = items.Where(i => i.TemplateId != null).ToList();
 
-            var result = mappedItems.Select(i => new ItemModel(i, templates.FirstOrDefault(templ => templ.Id == i.TemplateId), items));
+            var result = mappedItems.Select(i => new ItemModel(i, templates.FirstOrDefault(templ => templ.Id == i.TemplateId), items, _gcAccountSettings.DateFormat));
 
             return result.ToList();
         }

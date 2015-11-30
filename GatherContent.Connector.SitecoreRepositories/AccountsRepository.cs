@@ -18,6 +18,7 @@ namespace GatherContent.Connector.SitecoreRepositories
                     Username = accountSettingItem["Username"],
                     ApiKey = accountSettingItem["API Key"],
                     TemplateFolderId = accountSettingItem["Templates Root Folder"],
+                    DateFormat = accountSettingItem["Date Format"],
                     AccountItemId = accountSettingItem.ID.ToString()
                 };
 

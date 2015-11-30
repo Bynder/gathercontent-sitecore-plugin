@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.IRepositories.Models;
 using GatherContent.Connector.IRepositories.Models.Mapping;
+using Sitecore;
 using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.SecurityModel;
@@ -14,7 +16,13 @@ namespace GatherContent.Connector.SitecoreRepositories
     public class MappingRepository : BaseSitecoreRepository, IMappingRepository
     {
 
-        public MappingRepository() : base() { }
+        private readonly GCAccountSettings _accountSettings;
+
+        public MappingRepository() : base()
+        {
+            var accountsRepository = new AccountsRepository();
+            _accountSettings = accountsRepository.GetAccountSettings();
+        }
 
 
         #region Utilities
@@ -183,7 +191,7 @@ namespace GatherContent.Connector.SitecoreRepositories
             {
                 template.Editing.BeginEdit();
                 template.Fields["Sitecore Template"].Value = templateMapping.SitecoreTemplateId;
-                template.Fields["Last Mapped Date"].Value = DateTime.Now.ToString();
+                template.Fields["Last Mapped Date"].Value = DateUtil.ToIsoDate(DateTime.Now);
                 template.Editing.EndEdit();
             }
         }
@@ -215,10 +223,20 @@ namespace GatherContent.Connector.SitecoreRepositories
                         var m = scMappings.FirstOrDefault(map => map["GC Template"] == template["Temaplate Id"]);
                         if (m != null)
                         {
+                            double d;
+                            var gcUpdateDate = string.Empty;
+                            
+                            if (Double.TryParse(m["Last Updated in GC"], out d))
+                            {
+                                var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
+                                gcUpdateDate = posixTime.AddMilliseconds(d).ToString(_accountSettings.DateFormat);
+                            }
+                           
+
                             var scTemplate = GetItem(m["Sitecore Template"]);
                             mapping.CmsTemplateName = scTemplate != null ? scTemplate.Name : m["Sitecore Template"];
-                            mapping.LastUpdatedDate = m["Last Updated in GC"];
-                            mapping.LastMappedDateTime = m["Last Mapped Date"];
+                            mapping.LastUpdatedDate = gcUpdateDate;
+                            mapping.LastMappedDateTime = DateUtil.IsoDateToDateTime(m["Last Mapped Date"]).ToString(_accountSettings.DateFormat);
                             mapping.EditButtonTitle = "Edit";
                             mapping.IsMapped = true;
                         }

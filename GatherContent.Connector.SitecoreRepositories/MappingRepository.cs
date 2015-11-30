@@ -172,7 +172,7 @@ namespace GatherContent.Connector.SitecoreRepositories
                             createdItem.Editing.BeginEdit();
                             createdItem.Fields["Sitecore Template"].Value = templateMapping.SitecoreTemplateId;
                             createdItem.Fields["GC Template"].Value = templateMapping.GcTemplateId;
-                            createdItem.Fields["Last Mapped Date"].Value = DateTime.Now.ToString();
+                            createdItem.Fields["Last Mapped Date"].Value = DateUtil.ToIsoDate(DateTime.Now);
                             createdItem.Fields["Last Updated in GC"].Value = templateMapping.LastUpdated;
                             createdItem.Editing.EndEdit();
                         }

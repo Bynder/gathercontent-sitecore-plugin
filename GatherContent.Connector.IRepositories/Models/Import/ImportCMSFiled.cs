@@ -1,4 +1,4 @@
-﻿namespace GatherContent.Connector.IRepositories.Models
+﻿namespace GatherContent.Connector.IRepositories.Models.Import
 {
     public class ImportCMSFiled
     {

@@ -21,6 +21,7 @@
         <select class="custom_select" data-bind="options: projects, optionsText: 'name', optionsValue: 'id', value: project, event:{ change: $root.projectChanged}"></select>
     </div>
     <div class="filter_wrapper">
+        
         <div class="filter_wrapper_import">
             <div>FILTER</div>
             <select class="custom_select" data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, optionsCaption: 'STATUS', event:{ change: $root.filter }"></select>

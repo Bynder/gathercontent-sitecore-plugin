@@ -221,6 +221,7 @@
 
     self.backButtonClick = function () {
         self.items(allItems);
+        self.statusFilter = ko.observable();
     }
 
     self.buttonClick = function (newMode) {

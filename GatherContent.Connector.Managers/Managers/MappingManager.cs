@@ -1,18 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.GatherContentService.Services;
 using GatherContent.Connector.IRepositories.Models;
+using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.IRepositories.Models.Mapping;
 using GatherContent.Connector.Managers.Models.Mapping;
 using GatherContent.Connector.SitecoreRepositories;
-using TemplateMapModel = GatherContent.Connector.Managers.Models.Mapping.TemplateMapModel;
-using TemplateTab = GatherContent.Connector.Managers.Models.Mapping.TemplateTab;
 
 namespace GatherContent.Connector.Managers.Managers
 {
+    public enum TryMapItemState
+    {
+        Success = 0,
+        TemplateError = 1,
+        FiledError = 2
+    }
+
     public class MappingManager : BaseManager
     {
         private const string TEXT_TYPE = "Single-Line Text";
@@ -262,13 +267,6 @@ namespace GatherContent.Connector.Managers.Managers
             name = field.CMSField;
 
             return TryMapItemState.Success;
-        }
-
-        public enum TryMapItemState
-        {
-            Success = 0,
-            TemplateError = 1,
-            FiledError = 2
         }
     }
 }

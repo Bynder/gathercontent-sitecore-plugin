@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using GatherContent.Connector.Entities.Entities;
 
-namespace GatherContent.Connector.IRepositories.Models
+namespace GatherContent.Connector.IRepositories.Models.Import
 {
     public class ImportItemsResponseModel
     {
@@ -32,7 +32,7 @@ namespace GatherContent.Connector.IRepositories.Models
             CMSTemplate = cmsTemplate;
             Fields = fields;
 
-            Message = message; 
+            Message = message;
             IsImportSuccessful = isImportSuccessful;
         }
     }

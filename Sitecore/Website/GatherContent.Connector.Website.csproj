@@ -205,7 +205,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\Import\" />
     <Folder Include="Shell\" />
   </ItemGroup>
   <ItemGroup>

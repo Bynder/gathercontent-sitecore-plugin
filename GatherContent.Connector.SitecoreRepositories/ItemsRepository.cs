@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.IRepositories.Models;
+using GatherContent.Connector.IRepositories.Models.Import;
+using Sitecore;
+using Sitecore.Data;
 using Sitecore.Data.Items;
+using Sitecore.SecurityModel;
 
 namespace GatherContent.Connector.SitecoreRepositories
 {
@@ -11,24 +15,43 @@ namespace GatherContent.Connector.SitecoreRepositories
     {
         public ItemsRepository() : base() { }
 
-        public List<ImportItemsResponseModel> ImportItems(string itemId, List<ImportItemsResponseModel> items)
+        public void ImportItems(string itemId, List<ImportItemsResponseModel> items)
         {
             Item parentItem = GetItem(itemId);
          
-            List<ImportItemsResponseModel> result = AddItems(parentItem, items);
+            AddItems(parentItem, items);
             
-            return result;
         }
 
-        private List<ImportItemsResponseModel> AddItems(Item parent, List<ImportItemsResponseModel> items)
+        private void AddItems(Item parent, List<ImportItemsResponseModel> items)
         {
-            List<ImportItemsResponseModel> result = items.Select(i => AddItem(parent, i)).ToList();
-            return result;
+            items.ForEach(i => AddItem(parent, i));
         }
 
-        private ImportItemsResponseModel AddItem(Item parent, ImportItemsResponseModel item)
+        private void AddItem(Item parent, ImportItemsResponseModel item)
         {
-            return null;
+            using (new SecurityDisabler())
+            {
+                TemplateItem template = ContextDatabase.GetTemplate(new ID(item.CMSTemplate));
+                string validName = ItemUtil.ProposeValidItemName(item.Title);
+                Item createdItem = parent.Add(validName, template);
+                using (new SecurityDisabler())
+                {
+                    createdItem.Editing.BeginEdit();
+                    
+                    foreach (ImportCMSFiled field in item.Fields)
+                    {
+                        createdItem.Fields[field.Name].Value = field.Value;
+                    }
+
+                    createdItem.Fields["GC Content Id"].Value = item.GCItemId;
+
+                    var isoDate = DateUtil.ToIsoDate(DateTime.UtcNow);
+                    createdItem.Fields["Last Sync Date"].Value = isoDate;
+
+                    createdItem.Editing.EndEdit();
+                }
+            }
         }
 
         public List<CMSUpdateItem> GetItems(string targetItemId)

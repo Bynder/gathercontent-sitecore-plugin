@@ -48,7 +48,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GatherContentService.cs" />
     <Compile Include="Services\Abstract\BaseService.cs" />
     <Compile Include="Services\AccountsService.cs" />
     <Compile Include="Services\ItemsService.cs" />

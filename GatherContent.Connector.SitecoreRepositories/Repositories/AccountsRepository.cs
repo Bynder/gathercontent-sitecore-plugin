@@ -1,7 +1,7 @@
 ﻿using GatherContent.Connector.Entities;
 using GatherContent.Connector.IRepositories.Interfaces;
 
-namespace GatherContent.Connector.SitecoreRepositories
+namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
     public class AccountsRepository : BaseSitecoreRepository, IAccountsRepository
     {

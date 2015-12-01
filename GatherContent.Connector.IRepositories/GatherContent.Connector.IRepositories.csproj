@@ -48,7 +48,7 @@
     <Compile Include="Interfaces\IProjectsRepository.cs" />
     <Compile Include="Interfaces\IStatusesRepository.cs" />
     <Compile Include="Interfaces\ITemplatesRepository.cs" />
-    <Compile Include="Models\CMSUpdateItem.cs" />
+    <Compile Include="Models\Update\CMSUpdateItem.cs" />
     <Compile Include="Models\Import\ImportCMSFiled.cs" />
     <Compile Include="Models\Import\ImportItemsResponseModel.cs" />
     <Compile Include="Models\Import\MappingFieldModel.cs" />

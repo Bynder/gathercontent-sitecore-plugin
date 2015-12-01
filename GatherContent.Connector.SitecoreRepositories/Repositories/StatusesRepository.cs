@@ -5,7 +5,7 @@ using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.SecurityModel;
 
-namespace GatherContent.Connector.SitecoreRepositories
+namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
     public class StatusesRepository : BaseSitecoreRepository, IStatusesRepository
     {

@@ -1,4 +1,4 @@
-﻿namespace GatherContent.Connector.SitecoreRepositories
+﻿namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
     public class Constants
     {

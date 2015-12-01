@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Specialized;
-using System.Linq;
-using GatherContent.Connector.Website.Extensions;
-using GatherContent.Connector.Website.Managers;
 using Sitecore;
 using Sitecore.Diagnostics;
 using Sitecore.Globalization;

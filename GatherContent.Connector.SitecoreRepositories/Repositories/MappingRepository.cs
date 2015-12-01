@@ -4,7 +4,6 @@ using System.Linq;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.IRepositories.Interfaces;
-using GatherContent.Connector.IRepositories.Models;
 using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.IRepositories.Models.Mapping;
 using Sitecore;
@@ -12,7 +11,7 @@ using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.SecurityModel;
 
-namespace GatherContent.Connector.SitecoreRepositories
+namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
     public class MappingRepository : BaseSitecoreRepository, IMappingRepository
     {
@@ -262,8 +261,8 @@ namespace GatherContent.Connector.SitecoreRepositories
         {
             Item projectFolder = GetProject(projectId);
             Item mappingFolder = GetMappingFolder(projectFolder);
-            IEnumerable<Item> mappings = GetTemplateMappings(mappingFolder);
 
+            IEnumerable<Item> mappings = GetTemplateMappings(mappingFolder);
             IEnumerable<MappingTemplateModel> result = ConvertSitecoreTemplatesToModel(mappings);
 
             return result.ToList();

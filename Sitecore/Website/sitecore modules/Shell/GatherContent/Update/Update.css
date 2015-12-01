@@ -1,5 +1,5 @@
 ﻿.closeButton {
-    float: right;
+    float: left;
 }
 .gathercontent-import{
 
@@ -10,17 +10,18 @@
     line-height: 30px;
     font-weight: 700;
     font-size: 0.9em;
-
-
 }
-body{
-    font-family: Arial, Helvetica, sans-serif;
-    padding:10px 20px;
+p{
+    margin: 12px 0;
 }
 h2.title{
     font-size: 1.5em;
     font-weight: 700;
-    margin: 10px 0 5px;
+    margin-top: 0;
+}
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    padding:10px 20px;
 }
 .footer_btn{
     position: absolute;
@@ -38,6 +39,9 @@ h2.title{
     float: left;
 
 }
+.filter_wrapper_import .title_filter{
+    min-width: 70px;
+}
 .search_filter{
     float: right;
 }
@@ -49,13 +53,13 @@ h2.title{
     min-width: 270px;
     width: 30%;
 }
-.search_filter input::-webkit-input-placeholder {color:#333333;}
-.search_filter input::-moz-placeholder          {color:#333333;}/* Firefox 19+ */
-.search_filter input:-moz-placeholder           {color:#333333;}/* Firefox 18- */
-.search_filter input:-ms-input-placeholder      {color:#333333;}
+.search_filter input::-webkit-input-placeholder {color:#777777;}
+.search_filter input::-moz-placeholder          {color:#777777;}/* Firefox 19+ */
+.search_filter input:-moz-placeholder           {color:#777777;}/* Firefox 18- */
+.search_filter input:-ms-input-placeholder      {color:#777777;}
 .custom_select{
     -webkit-appearance: none;
-    background-image: url('img/arrow_select.png');
+    background-image: url('/sitecore modules/shell/gathercontent/img/arrow_select.png');
     background-position-y:  center;
     background-repeat: no-repeat;
     -ms-background-position-x:95%;
@@ -86,6 +90,17 @@ h2.title{
 }
 .filter_wrapper_import>.custom_select::-ms-expand,.custom_select::-ms-expand {
     display: none;
+}
+.preloader_import{
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    margin-top: -140px;
+}
+.preloader_import img{
+    width: 30px;
+    margin-top: 20px;
 }
 .preloader{
     top: 0;
@@ -220,5 +235,7 @@ input[type="button"]{
     text-transform: uppercase;
     font-weight: 700;
     box-shadow:inset 1px 1px 2px #BBB;
+    width: 100px;
+    box-sizing: border-box;
 }
 

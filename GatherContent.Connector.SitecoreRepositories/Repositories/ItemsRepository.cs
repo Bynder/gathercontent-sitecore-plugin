@@ -4,12 +4,13 @@ using System.Linq;
 using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.IRepositories.Models;
 using GatherContent.Connector.IRepositories.Models.Import;
+using GatherContent.Connector.IRepositories.Models.Update;
 using Sitecore;
 using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.SecurityModel;
 
-namespace GatherContent.Connector.SitecoreRepositories
+namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
     public class ItemsRepository : BaseSitecoreRepository, IItemsRepository
     {
@@ -51,6 +52,18 @@ namespace GatherContent.Connector.SitecoreRepositories
 
                     createdItem.Editing.EndEdit();
                 }
+            }
+        }
+
+        private void TypeValueResolver(ImportCMSFiled field)
+        {
+            if (field.Type == "")
+            {
+                
+            }
+            else
+            {
+
             }
         }
 

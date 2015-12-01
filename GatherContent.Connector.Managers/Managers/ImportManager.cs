@@ -7,6 +7,7 @@ using GatherContent.Connector.IRepositories.Models;
 using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.Managers.Models.ImportItems;
 using GatherContent.Connector.SitecoreRepositories;
+using GatherContent.Connector.SitecoreRepositories.Repositories;
 
 namespace GatherContent.Connector.Managers.Managers
 {
@@ -129,7 +130,7 @@ namespace GatherContent.Connector.Managers.Managers
         {
             List<ImportItemsResponseModel> cmsItems = _mappingManager.MapItems(items, projectId);
 
-            //List<ImportItemsResponseModel> importResult = _itemsRepository.ImportItems(itemId, cmsItems);
+            _itemsRepository.ImportItems(itemId, cmsItems);
 
             return cmsItems;
         }

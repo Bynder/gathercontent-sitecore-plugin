@@ -15,7 +15,7 @@
     self.items = ko.observableArray([]),
     self.statuses = ko.observableArray([]),
     self.templates = ko.observableArray([]),
-    self.statusPostState = ko.observable(),
+    self.statusPostState = ko.observable(false),
     self.project = ko.observable(),
     self.statusFilter = ko.observable(),
     self.templateFilter = ko.observable(),
@@ -200,7 +200,8 @@
         var items = self.items();
         var status = self.statusFilter();
         var project = self.project();
-
+        if (!self.statusPostState())
+            status = "";
         jQuery.ajax
         ({
             type: "POST",

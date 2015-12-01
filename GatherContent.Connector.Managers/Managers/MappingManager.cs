@@ -8,6 +8,7 @@ using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.IRepositories.Models.Mapping;
 using GatherContent.Connector.Managers.Models.Mapping;
 using GatherContent.Connector.SitecoreRepositories;
+using GatherContent.Connector.SitecoreRepositories.Repositories;
 
 namespace GatherContent.Connector.Managers.Managers
 {
@@ -20,8 +21,6 @@ namespace GatherContent.Connector.Managers.Managers
 
     public class MappingManager : BaseManager
     {
-        private const string TEXT_TYPE = "Single-Line Text";
-
         private readonly MappingRepository _mappingRepository;
         private readonly TemplatesRepository _templatesRepository;
 
@@ -252,7 +251,7 @@ namespace GatherContent.Connector.Managers.Managers
             string cmsFieldName;
             TryMapItemState result = TryGetCMSFieldName(template.Fields, gcField, out cmsFieldName);
 
-            importCMSField = new ImportCMSFiled(TEXT_TYPE, cmsFieldName, gcField.Value);
+            importCMSField = new ImportCMSFiled(gcField.Type, cmsFieldName, gcField.Value, gcField.Options);
 
             return result;
         }

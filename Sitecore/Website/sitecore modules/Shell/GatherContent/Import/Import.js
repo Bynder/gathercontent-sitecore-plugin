@@ -220,20 +220,24 @@
     }
 
     self.backButtonClick = function () {
-        self.items(allItems);
-        self.statusFilter = ko.observable();
+        self.items(allItems.slice(0));
     }
 
     self.buttonClick = function (newMode) {
-        self.currentMode(newMode);
-        if (newMode === MODE.CheckItemsBeforeImport)
+        if (newMode === MODE.CheckItemsBeforeImport) {
+            self.currentMode(newMode);
             self.switchToCheckItemsBeforeImport();
-        else if (newMode === MODE.Import)
+        } else if (newMode === MODE.Import) {
+            self.currentMode(newMode);
             self.import();
-        else if (newMode === MODE.Close)
+        } else if (newMode === MODE.Close) {
+            self.currentMode(newMode);
             self.close();
-        else if (newMode === MODE.ChooseItmesForImort)
+        } else if (newMode === MODE.ChooseItmesForImort) {
+            self.statusFilter = ko.observable();
+            self.currentMode(newMode);
             self.backButtonClick();
+        }
     }
 
     self.getMode = function (section) {

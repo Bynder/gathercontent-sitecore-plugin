@@ -33,6 +33,8 @@ namespace GatherContent.Connector.Managers.Models.ImportItems
             Title = item.Name;
             Status = item.Status.Data;
             Breadcrumb = GetBreadcrumb(item, items);
+            //Breadcrumb += Breadcrumb;
+            //Breadcrumb += Breadcrumb;
             LastUpdatedInGC = GetLastUpdatedInGC(item.Updated.Date, dateFormat);
 
             Template = template;

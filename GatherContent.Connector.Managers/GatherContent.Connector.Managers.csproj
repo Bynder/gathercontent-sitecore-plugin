@@ -61,7 +61,6 @@
     <Compile Include="Models\Mapping\MappingModel.cs" />
     <Compile Include="Models\TemplateModel\TemplateMappingModel.cs" />
     <Compile Include="Models\UpdateItems\FiltersModel.cs" />
-    <Compile Include="Models\UpdateItems\UpdateResultItemModel.cs" />
     <Compile Include="Models\UpdateItems\UpdateResultModel.cs" />
     <Compile Include="Models\UpdateItems\UpdateListItem.cs" />
     <Compile Include="Models\UpdateItems\SelectItemsForUpdateModel.cs" />

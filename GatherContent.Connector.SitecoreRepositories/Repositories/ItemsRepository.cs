@@ -17,19 +17,19 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         private const string LAST_SYNC_DATE = "Last Sync Date";
 
         
-        public void ImportItems(string itemId, List<ImportItemResponseModel> items)
+        public void ImportItems(string itemId, List<MappingResultModel> items)
         {
             Item parentItem = GetItem(itemId);
 
             AddItems(parentItem, items);
         }
 
-        private void AddItems(Item parent, List<ImportItemResponseModel> items)
+        private void AddItems(Item parent, List<MappingResultModel> items)
         {
             items.ForEach(i => AddItem(parent, i));
         }
 
-        private void AddItem(Item parent, ImportItemResponseModel item)
+        private void AddItem(Item parent, MappingResultModel item)
         {
             using (new SecurityDisabler())
             {
@@ -40,7 +40,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-        private void SetupFields(Item updatedItem, ImportItemResponseModel item)
+        private void SetupFields(Item updatedItem, MappingResultModel item)
         {
             using (new SecurityDisabler())
             {
@@ -48,7 +48,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
                 foreach (ImportCMSField field in item.Fields)
                 {
-                    updatedItem.Fields[field.Name].Value = field.Value;
+                    updatedItem.Fields[new ID(field.Name)].Value = field.Value;
                 }
 
                 updatedItem.Fields[GC_CONTENT_ID].Value = item.GCItemId;
@@ -85,9 +85,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         }
 
 
-        public void UpdateItems(List<ImportItemResponseModel> items)
+        public void UpdateItems(List<MappingResultModel> items)
         {
-            foreach (ImportItemResponseModel item in items)
+            foreach (MappingResultModel item in items)
             {
                 Item scItem = GetItem(item.CMSId);
                 SetupFields(scItem, item);

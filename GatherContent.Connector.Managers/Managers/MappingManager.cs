@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
@@ -169,33 +168,33 @@ namespace GatherContent.Connector.Managers.Managers
         }
 
 
-        public List<ImportItemResponseModel> MapItems(List<GCItem> items, string projectId)
+        public List<MappingResultModel> MapItems(List<GCItem> items, string projectId)
         {
             List<MappingTemplateModel> templates = _mappingRepository.GetTemplateMappings(projectId);
 
-            List<ImportItemResponseModel> result = TryMapItems(items, templates);
+            List<MappingResultModel> result = TryMapItems(items, templates);
 
             return result;
         }
 
-        public List<ImportItemResponseModel> MapItems(List<GCItem> items)
+        public List<MappingResultModel> MapItems(List<GCItem> items)
         {
             List<MappingTemplateModel> templates = _mappingRepository.GetAllTemplateMappings();
-            List<ImportItemResponseModel> result = TryMapItems(items, templates);
+            List<MappingResultModel> result = TryMapItems(items, templates);
 
             return result;
         }
 
-        private List<ImportItemResponseModel> TryMapItems(List<GCItem> items, List<MappingTemplateModel> templates)
+        private List<MappingResultModel> TryMapItems(List<GCItem> items, List<MappingTemplateModel> templates)
         {
-            var result = new List<ImportItemResponseModel>();
+            var result = new List<MappingResultModel>();
             var templatesDictionary = new Dictionary<int, GCTemplate>();
 
             foreach (GCItem gcItem in items)
             {
                 GCTemplate gcTemplate = GetTemplate(gcItem.TemplateId.Value, templatesDictionary);
 
-                ImportItemResponseModel cmsItem;
+                MappingResultModel cmsItem;
                 TryMapItem(gcItem, gcTemplate, templates, out cmsItem);
                 result.Add(cmsItem);
             }
@@ -216,7 +215,7 @@ namespace GatherContent.Connector.Managers.Managers
             return gcTemplate;
         }
 
-        private void TryMapItem(GCItem item, GCTemplate gcTemplate, List<MappingTemplateModel> templates, out ImportItemResponseModel result)
+        private void TryMapItem(GCItem item, GCTemplate gcTemplate, List<MappingTemplateModel> templates, out MappingResultModel result)
         {
             List<Element> gcFields = item.Config.SelectMany(i => i.Elements).ToList();
 
@@ -225,7 +224,7 @@ namespace GatherContent.Connector.Managers.Managers
 
             if (templateMapState == TryMapItemState.TemplateError)
             {
-                result = new ImportItemResponseModel(item, null, gcTemplate.Name, null, string.Empty, "Template not mapped", false);
+                result = new MappingResultModel(item, null, gcTemplate.Name, null, string.Empty, "Template not mapped", false);
                 return;
             }
 
@@ -235,15 +234,15 @@ namespace GatherContent.Connector.Managers.Managers
             TryMapItemState mapState = TryMapFields(gcFields, groupedFields, out fields);
             if (mapState == TryMapItemState.FieldError)
             {
-                result = new ImportItemResponseModel(item, null, gcTemplate.Name, null, string.Empty, "Template fields mismatch", false);
+                result = new MappingResultModel(item, null, gcTemplate.Name, null, string.Empty, "Template fields mismatch", false);
                 return;
             }
 
             string cmsId = string.Empty;
-            if (item is GCItemWithCMSItemId)
-                cmsId = (item as GCItemWithCMSItemId).CMSId;
+            if (item is UpdateGCItem)
+                cmsId = (item as UpdateGCItem).CMSId;
 
-            result = new ImportItemResponseModel(item, fields, gcTemplate.Name, template.CMSTemplateId, cmsId);
+            result = new MappingResultModel(item, fields, gcTemplate.Name, template.CMSTemplateId, cmsId);
         }
 
         private TryMapItemState TryGetTemplate(List<MappingTemplateModel> templates, string templateId, out MappingTemplateModel result)
@@ -304,7 +303,13 @@ namespace GatherContent.Connector.Managers.Managers
 
         private List<Option> GetOptions(List<Element> fields)
         {
-            return fields.SelectMany(i => i.Options).ToList();
+            var result = new List<Option>();
+            foreach (Element field in fields)
+            {
+                if (field.Options != null)
+                    result.AddRange(field.Options);
+            }
+            return result;
         }
 
         private bool IsMappedFieldsHaveDifrentTypes(List<Element> fields)
@@ -315,7 +320,7 @@ namespace GatherContent.Connector.Managers.Managers
         private List<Element> GetFieldsForMapping(IGrouping<string, MappingFieldModel> fieldsMappig, List<Element> gcFields)
         {
             IEnumerable<string> gsFiledNames = fieldsMappig.Select(i => i.GCField);
-            IEnumerable<Element> gcFieldsForMapping = gcFields.Where(i => gsFiledNames.Contains(i.Name));
+            IEnumerable<Element> gcFieldsForMapping = gcFields.Where(i => gsFiledNames.Contains(i.Label));
 
             return gcFieldsForMapping.ToList();
         }

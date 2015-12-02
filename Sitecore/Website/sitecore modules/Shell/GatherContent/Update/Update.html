@@ -17,7 +17,6 @@
 
 <div data-bind="if: getMode(1)" class="gathercontent-import">
     <div class="filter_wrapper">
-
         <div class="filter_wrapper_import">
             <div>FILTER</div>
             <select class="custom_select" data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, optionsCaption: 'STATUS', event:{ change: $root.filter }"></select>
@@ -161,15 +160,16 @@
 </div>
 
 <div data-bind="if: getMode(3)">
-    <div class="preloader">
+    <div class="preloader_import text-center">
         <h2 class="title">Update in progress</h2>
         <p>Please do not close your browser. Depending on the number of items, this can take some time.</p>
+        <img src="/sitecore/shell/themes/standard/images/sc-spinner16.gif" alt="">
     </div>
     <!--<input type="button" value="Next" data-bind="click: buttonClick.bind($data, 4)" />-->
 </div>
 
 <div data-bind="if: getMode(4)">
-    <div>Update complete: Results</div>
+    <h2 class="title">Update complete: Results</h2>
 
     <div class="table_import_wrapper">
         <div class="table_import_scroll">

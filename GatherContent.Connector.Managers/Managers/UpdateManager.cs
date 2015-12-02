@@ -5,37 +5,11 @@ using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.GatherContentService.Services;
 using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.IRepositories.Models.Update;
-using GatherContent.Connector.Managers.Models.ImportItems;
 using GatherContent.Connector.Managers.Models.UpdateItems;
 using GatherContent.Connector.SitecoreRepositories.Repositories;
 
 namespace GatherContent.Connector.Managers.Managers
 {
-    public class GCItemWithCMSItemId : GCItem
-    {
-        public string CMSId { get; set; }
-
-        public GCItemWithCMSItemId(GCItem item, string cmsId)
-        {
-            this.CMSId = cmsId;
-            this.Config = item.Config;
-            this.Created = item.Created;
-            this.CustomStateId = item.CustomStateId;
-            this.ProjectId = item.ProjectId;
-            this.DueDates = item.DueDates;
-            this.Id = item.Id;
-            this.Name = item.Name;
-            this.Notes = item.Notes;
-            this.Overdue = item.Overdue;
-            this.Updated = item.Updated;
-            this.Type = item.Type;
-            this.ParentId = item.ParentId;
-            this.Position = item.Position;
-            this.Status = item.Status;
-            this.TemplateId = item.TemplateId;
-        }
-    }
-
     public class UpdateManager : BaseManager
     {
         private readonly ItemsRepository _itemsRepository;
@@ -138,13 +112,13 @@ namespace GatherContent.Connector.Managers.Managers
         }
 
 
-        public ImportResultModel UpdateItems(string itemId, List<UpdateListItem> models)
+        public UpdateResultModel UpdateItems(string itemId, List<UpdateListItem> models)
         {
             List<GCItem> gcItems = GetGCItemsByModels(models);
-            List<ImportItemResponseModel> resultItems = _mappingManager.MapItems(gcItems);
+            List<MappingResultModel> resultItems = _mappingManager.MapItems(gcItems);
             _itemsRepository.UpdateItems(resultItems);
 
-            var result = new ImportResultModel(resultItems);
+            var result = new UpdateResultModel(resultItems);
 
             return result;
         }
@@ -156,8 +130,8 @@ namespace GatherContent.Connector.Managers.Managers
             foreach (var item in models)
             {
                 GCItem gcItem = _itemsService.GetSingleItem(item.GCId).Data;
-                var gcItemWithCMSId = new GCItemWithCMSItemId(gcItem, item.CMSId);
-                result.Add(gcItemWithCMSId);
+                var gcItemWithCmsId = new UpdateGCItem(gcItem, item.CMSId);
+                result.Add(gcItemWithCmsId);
             }
 
             return result;

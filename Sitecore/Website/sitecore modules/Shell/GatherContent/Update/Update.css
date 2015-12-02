@@ -1,76 +1,99 @@
 ﻿.closeButton {
     float: left;
 }
-.gathercontent-import{
 
+.gathercontent-import {
 }
-.filter_wrapper_import{
+
+.filter_wrapper_import {
     display: inline-block;
     height: 30px;
     line-height: 30px;
     font-weight: 700;
     font-size: 0.9em;
 }
-p{
+
+p {
     margin: 12px 0;
 }
-h2.title{
+
+h2.title {
     font-size: 1.5em;
     font-weight: 700;
     margin-top: 0;
 }
-body{
+
+body {
     font-family: Arial, Helvetica, sans-serif;
-    padding:10px 20px;
+    padding: 10px 20px;
 }
-.footer_btn{
+
+.footer_btn {
     position: absolute;
     left: 0;
     bottom: 0;
     padding: 10px 20px 0;
     width: 100%;
 }
-.gathercontent-import{
+
+.gathercontent-import {
 }
-.filter_wrapper{
+
+.filter_wrapper {
     margin: 20px 0;
 }
-.filter_wrapper_import >*{
-    float: left;
 
+.filter_wrapper_import > * {
+    float: left;
 }
-.filter_wrapper_import .title_filter{
+
+.filter_wrapper_import .title_filter {
     min-width: 70px;
 }
-.search_filter{
+
+.search_filter {
     float: right;
 }
-.search_filter input{
-    height: 30px;
-    padding-left: 10px;
-    color: #333333;
-    font-weight: 500;
-    min-width: 270px;
-    width: 30%;
-}
-.search_filter input::-webkit-input-placeholder {color:#777777;}
-.search_filter input::-moz-placeholder          {color:#777777;}/* Firefox 19+ */
-.search_filter input:-moz-placeholder           {color:#777777;}/* Firefox 18- */
-.search_filter input:-ms-input-placeholder      {color:#777777;}
-.custom_select{
+
+    .search_filter input {
+        height: 30px;
+        padding-left: 10px;
+        color: #333333;
+        font-weight: 500;
+        min-width: 270px;
+        width: 30%;
+    }
+
+        .search_filter input::-webkit-input-placeholder {
+            color: #777777;
+        }
+
+        .search_filter input::-moz-placeholder {
+            color: #777777;
+        }
+        /* Firefox 19+ */
+        .search_filter input:-moz-placeholder {
+            color: #777777;
+        }
+        /* Firefox 18- */
+        .search_filter input:-ms-input-placeholder {
+            color: #777777;
+        }
+
+.custom_select {
     -webkit-appearance: none;
     background-image: url('/sitecore modules/shell/gathercontent/img/arrow_select.png');
-    background-position-y:  center;
+    background-position-y: center;
     background-repeat: no-repeat;
-    -ms-background-position-x:95%;
-    background-position-x:95%;
-    -webkit-background-size:95%;
-    background-size:8px;
+    -ms-background-position-x: 95%;
+    background-position-x: 95%;
+    -webkit-background-size: 95%;
+    background-size: 8px;
     /* for FF */
     -moz-appearance: none;
     /* for IE */
     -ms-appearance: none;
-    appearance: none!important;
+    appearance: none !important;
     display: block;
     width: 210px;
     border: 1px solid #808080;
@@ -80,29 +103,34 @@ body{
     color: #808080;
     vertical-align: middle;
     font-weight: 500;
-
 }
-.filter_wrapper_import>.custom_select{
+
+.filter_wrapper_import > .custom_select {
     margin: 0 20px;
 }
-.filter_wrapper_import>.custom_select:focus,.custom_select:focus{
-    outline: none;
-}
-.filter_wrapper_import>.custom_select::-ms-expand,.custom_select::-ms-expand {
-    display: none;
-}
-.preloader_import{
+
+    .filter_wrapper_import > .custom_select:focus, .custom_select:focus {
+        outline: none;
+    }
+
+    .filter_wrapper_import > .custom_select::-ms-expand, .custom_select::-ms-expand {
+        display: none;
+    }
+
+.preloader_import {
     position: absolute;
     top: 50%;
     left: 0;
     right: 0;
     margin-top: -140px;
 }
-.preloader_import img{
-    width: 30px;
-    margin-top: 20px;
-}
-.preloader{
+
+    .preloader_import img {
+        width: 30px;
+        margin-top: 20px;
+    }
+
+.preloader {
     top: 0;
     left: 0;
     -webkit-background-size: 40px;
@@ -115,85 +143,99 @@ body{
     background-position: center center;
     background-color: #fff;
 }
+
 table {
     border-collapse: collapse;
     border-spacing: 0;
     width: 100%;
     font-size: 0.9em;
 }
- table tbody tr:nth-child(even){
-    background-color: #f7f7f7;
-}
- table tbody tr:nth-child(odd){
-    background-color: #fff;
-}
- table tbody tr:hover{
-    background-color: #e3e3e3;
-}
-table tbody tr td{
-    color: #808080;
-    cursor: default;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-top: none;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 160px;
 
-}
-table tbody tr td:last-child{
-    white-space: nowrap;
-    border-right: none;
-}
-table tbody tr td:first-child{
-    border-left: none;
-}
-table tbody tr:last-child td{
-    border-bottom: none;
-}
- table tbody tr td:nth-child(1), table tbody tr td:nth-child(2){
-    font-size: 1em;
-}
-table  tbody tr td:nth-child(1):before {
-    content: "";
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    background-color: currentColor;
-    margin-right: 4px;
-}
-table.table_point  tbody tr td:nth-child(1):before{
-    content:none;
-}
-table.table_point  tbody tr td:nth-child(2):before {
-    content: "";
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    background-color: currentColor;
-    margin-right: 4px;
-}
- table tbody tr td a{
-    text-decoration: none;
-    cursor: pointer;
-    font-weight: 700;
-    color:#00B6FF;
-}
- .table_import_wrapper{
+    table tbody tr:nth-child(even) {
+        background-color: #f7f7f7;
+    }
+
+    table tbody tr:nth-child(odd) {
+        background-color: #fff;
+    }
+
+    table tbody tr:hover {
+        background-color: #e3e3e3;
+    }
+
+    table tbody tr td {
+        color: #808080;
+        cursor: default;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-top: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 160px;
+    }
+
+        table tbody tr td:last-child {
+            white-space: nowrap;
+            border-right: none;
+        }
+
+        table tbody tr td:first-child {
+            border-left: none;
+        }
+
+    table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    table tbody tr td:nth-child(1), table tbody tr td:nth-child(2) {
+        font-size: 1em;
+    }
+
+        table tbody tr td:nth-child(1):before {
+            content: "";
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: currentColor;
+            margin-right: 4px;
+        }
+
+    table.table_point tbody tr td:nth-child(1):before {
+        content: none;
+    }
+
+    table.table_point tbody tr td:nth-child(2):before {
+        content: "";
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        background-color: currentColor;
+        margin-right: 4px;
+    }
+
+    table tbody tr td a {
+        text-decoration: none;
+        cursor: pointer;
+        font-weight: 700;
+        color: #00B6FF;
+    }
+
+.table_import_wrapper {
     position: relative;
     padding-top: 36px;
     background: #5e5e5e;
-
 }
- .table_import_scroll{
-    max-height:calc(100% - 250px);
+
+.table_import_scroll {
+    max-height: calc(100% - 250px);
     overflow-y: auto;
     overflow-x: hidden;
     background: #fff;
-     border: 1px solid #ccc;
+    border: 1px solid #ccc;
 }
- table thead th div{
+
+table thead th div {
     position: absolute;
     background: transparent;
     color: #fff;
@@ -204,13 +246,16 @@ table.table_point  tbody tr td:nth-child(2):before {
     padding-left: 5px;
     min-height: 18px;
 }
- table thead th:first-child div,table.table_point thead th:nth-child(2) div {
-     border-left: none;
-     text-align: center;
- }
-table thead th:first-child div{
+
+table thead th:first-child div, table.table_point thead th:nth-child(2) div {
+    border-left: none;
+    text-align: center;
+}
+
+table thead th:first-child div {
     margin-top: 6px;
 }
+
 table thead th {
     height: 0;
     line-height: 0;
@@ -221,11 +266,13 @@ table thead th {
     white-space: nowrap;
     padding: 0 8px 0 0;
 }
-table thead th>input{
-    width: 0;
-    height: 0;
-}
-input[type="button"]{
+
+    table thead th > input {
+        width: 0;
+        height: 0;
+    }
+
+input[type="button"] {
     border: none;
     margin: 20px;
     padding: 10px;
@@ -234,8 +281,7 @@ input[type="button"]{
     font-size: 0.9em;
     text-transform: uppercase;
     font-weight: 700;
-    box-shadow:inset 1px 1px 2px #BBB;
+    box-shadow: inset 1px 1px 2px #BBB;
     width: 100px;
     box-sizing: border-box;
 }
-

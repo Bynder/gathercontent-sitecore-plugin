@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using GatherContent.Connector.IRepositories.Models.Update;
+using GatherContent.Connector.IRepositories.Models.Import;
 
 namespace GatherContent.Connector.Managers.Models.UpdateItems
 {
     public class UpdateResultModel
     {
-        public List<UpdateItemResponseModel> Items { get; set; }
+        public List<MappingResultModel> Items { get; set; }
 
-        public UpdateResultModel(List<UpdateItemResponseModel> items)
+        public UpdateResultModel(List<MappingResultModel> items)
         {
             Items = items;
         }

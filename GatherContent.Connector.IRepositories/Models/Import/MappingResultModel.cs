@@ -3,7 +3,7 @@ using GatherContent.Connector.Entities.Entities;
 
 namespace GatherContent.Connector.IRepositories.Models.Import
 {
-    public class ImportItemResponseModel
+    public class MappingResultModel
     {
         public bool IsImportSuccessful { get; set; }
 
@@ -23,7 +23,7 @@ namespace GatherContent.Connector.IRepositories.Models.Import
 
         public List<ImportCMSField> Fields { get; set; }
 
-        public ImportItemResponseModel(GCItem item, List<ImportCMSField> fields, string template, string cmsTemplate, string cmsId = "", string message = "", bool isImportSuccessful = true)
+        public MappingResultModel(GCItem item, List<ImportCMSField> fields, string template, string cmsTemplate, string cmsId = "", string message = "", bool isImportSuccessful = true)
         {
             GCItemId = item.Id.ToString();
             Status = item.Status.Data;

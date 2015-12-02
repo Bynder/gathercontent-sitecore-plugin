@@ -99,9 +99,9 @@ namespace GatherContent.Connector.Managers.Managers
         public ImportResultModel ImportItems(string itemId, List<ImportListItem> items, string projectId, string statusId)
         {
             List<GCItem> gcItems = MapItems(items);
-            List<ImportItemResponseModel> cmsItems = _mappingManager.MapItems(gcItems, projectId);
+            List<MappingResultModel> cmsItems = _mappingManager.MapItems(gcItems, projectId);
 
-            List<ImportItemResponseModel> successfulImportedItems = GetSuccessfulImportedItems(cmsItems);
+            List<MappingResultModel> successfulImportedItems = GetSuccessfulImportedItems(cmsItems);
             _itemsRepository.ImportItems(itemId, successfulImportedItems);
 
             if (!string.IsNullOrEmpty(statusId))
@@ -127,14 +127,14 @@ namespace GatherContent.Connector.Managers.Managers
             return result.Data;
         }
 
-        private List<ImportItemResponseModel> GetSuccessfulImportedItems(List<ImportItemResponseModel> importResult)
+        private List<MappingResultModel> GetSuccessfulImportedItems(List<MappingResultModel> importResult)
         {
             return importResult.Where(i => i.IsImportSuccessful).ToList();
         }
 
-        private void PostNewStatusesForItems(List<ImportItemResponseModel> items, string statusId)
+        private void PostNewStatusesForItems(List<MappingResultModel> items, string statusId)
         {
-            foreach (ImportItemResponseModel item in items)
+            foreach (MappingResultModel item in items)
             {
                 _itemsService.ChooseStatusForItem(item.GCItemId, statusId);
             }

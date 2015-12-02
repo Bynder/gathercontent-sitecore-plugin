@@ -22,23 +22,24 @@
 </script>
 
 <div class="gathercontent-dialog">
-    <h2>
+    <p>
         Choose the fields you wish to map from GatherContent intp Sitecore. Only map the fields you need to import
-    </h2>
+    </p>
     <div class="mapping_tabs_wrapper">
-        <div><span><strong>GatherContent:</strong></span></div>
-        <div style="float: left;">
-            <span data-bind="text: GcProjectName" class="title_lvl2"></span>
-            <div data-bind="text: GcTemplateName" class="title_lvl2"></div>
+
+        <div class="mapping_heading">
+            <div><span><strong>GatherContent:</strong></span></div>
+            <p data-bind="text: GcProjectName" class="title_lvl2"></p>
+            <p data-bind="text: GcTemplateName" class="title_lvl2"></p>
         </div>
-        <div style="float: right;">
+        <div style="float: right;" class="mapping_heading">
             <div><span><strong>Sitecore:</strong></span></div>
             <select class="custom_selected" style="width: 200px;" data-bind="options: SitecoreTemplates, optionsText: 'SitrecoreTemplateName', value: SelectedTemplate, event:{ change: $root.templateChanged}"></select>
         </div>
         <div style="clear: both;"></div>
         <div data-bind="foreach: { data: Tabs, as: 'tab' } " class="tabs_mapping">
-            <div data-bind="text: tab.TabName" class="title_mapping"></div>
-            <div data-bind="foreach: { data: Fields, as: 'field' }">
+            <div data-bind="text: tab.TabName" class="title_mapping open"></div>
+            <div data-bind="foreach: { data: Fields, as: 'field' }" class="content_mapping">
                 <div class="row_mapping_tab">
                     <input type="text" data-bind="value: field.FieldName" disabled />
                     <div class="arrow"></div>
@@ -47,10 +48,11 @@
             </div>
         </div>
     </div>
-  
-    <input class="mappings-btn" id="AddMore" type="button" value="Save mapping configuration" data-bind="click: saveMapping" style="margin-top: 15px;" />
-    <h2>
-        Remember you can always make changes to this configuration later
-    </h2>
+    <div class="footer_btn">
+        <input class="mappings-btn" id="AddMore" type="button" value="Save mapping configuration" data-bind="click: saveMapping" style="margin-top: 15px;" />
+        <p>
+            Remember you can always make changes to this configuration later
+        </p>
+    </div>
 </div>
 <div class="preloader"></div>

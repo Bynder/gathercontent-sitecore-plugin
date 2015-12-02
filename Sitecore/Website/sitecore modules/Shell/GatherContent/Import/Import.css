@@ -220,10 +220,12 @@ table thead th {
     border: none;
     white-space: nowrap;
     padding: 0 8px 0 0;
+    overflow: hidden;
 }
 table thead th>input{
     width: 0;
     height: 0;
+    display: none;
 }
 input[type="button"]{
     border: none;
@@ -238,4 +240,21 @@ input[type="button"]{
     width: 100px;
     box-sizing: border-box;
 }
-
+input[type="button"]:hover{
+    box-shadow: 1px 1px 4px #4A4949;;
+}
+.tooltip{
+    position:absolute;
+    z-index:999;
+    left:-9999px;
+    background-color:#dedede;
+    padding:5px;
+    border:1px solid #fff;
+    width:250px;
+}
+.tooltip p{
+    margin:0;
+    color:#fff;
+    background-color:#222;
+    padding:2px 7px;
+}

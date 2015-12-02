@@ -140,7 +140,9 @@ table {
     min-height: 18px;
     text-align: center;
 }
-
+.gathercontent-dialog table thead th:first-child div{
+    border-left: none;
+}
 
 .gathercontent-dialog table thead th {
     height: 0;
@@ -153,6 +155,7 @@ table {
     padding: 0 8px 0 0;
     font-size: 0.8em;
     text-indent: 5px;
+    overflow: hidden;
 }
 
 .gathercontent-dialog .mappings-btn{
@@ -164,6 +167,12 @@ table {
     font-weight: 700;
     box-shadow:inset 1px 1px 2px #BBB;
 }
+.mappings-btn:hover{
+    box-shadow: 1px 1px 4px #4A4949;;
+}
+.mappings-btn:focus{
+    outline: none;
+}
 /*mapping*/
 .custom_selected{
     border: 1px solid #808080;
@@ -172,6 +181,9 @@ table {
     box-sizing: border-box;
     height: 30px;
     color: #808080;
+    padding-right: 24px;
+    overflow: hidden;
+    cursor: pointer;
 }
 .mapping_tabs_wrapper .tabs_mapping .row_mapping_tab input,.tabs_mapping .row_mapping_tab .custom_selected{
     margin-bottom: 15px;
@@ -187,6 +199,19 @@ table {
     vertical-align: middle;
     color: #808080;
     padding-left: 5px;
+
+}
+.mapping_heading{
+    float: left;
+}
+.mapping_heading .title_lvl2{
+    padding-bottom: 5px;
+    display: block;
+    margin: 0;
+    color: #000;
+}
+.mapping_heading *{
+    margin-bottom: 10px;
 
 }
 .tabs_mapping .row_mapping_tab .custom_selected,.custom_selected{
@@ -208,13 +233,39 @@ table {
     display: none;
 }
 .mapping_tabs_wrapper .tabs_mapping .title_mapping{
-    color: #000;
-    font-size: 1.1em;
-    border-bottom: 2px solid #808080;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
-    padding-top: 15px;
-    font-weight: 700;
+    background-color: #969696;
+    white-space: nowrap;
+    line-height: 35px;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    border-bottom: 1px solid #CCCCCC;
+
+    padding: 0 0 0 10px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.mapping_tabs_wrapper .tabs_mapping .title_mapping:after{
+    content: "";
+    width: 15px;
+    height: 15px;
+    margin-right: 10px;
+    margin-top: 10px;
+    float: right;
+    background-image: url("/sitecore/shell/themes/standard/Images/accordion_down.png");
+}
+.mapping_tabs_wrapper .tabs_mapping .content_mapping{
+    margin-top: 15px;
+}
+.mapping_tabs_wrapper .tabs_mapping .title_mapping.open{
+    background-color: #474747;
+    border-bottom: 1px solid #474747;
+    border-left: 5px solid #DC291E;
+}
+.mapping_tabs_wrapper .tabs_mapping .title_mapping.open:after{
+    background-image: url("/sitecore/shell/themes/standard/Images/accordion_up.png");
 }
 .mapping_tabs_wrapper .tabs_mapping .row_mapping_tab .arrow{
     width: 80px;
@@ -273,6 +324,10 @@ table {
 .template_list > li.active>span{
     font-weight: 700;
 }
+.template_list > li:hover{
+    background-color: #F5F5F5;
+    cursor: pointer;
+}
 .template_items {
     display: none;
     list-style-type: none;
@@ -292,7 +347,13 @@ table {
 .template_items>li{
     line-height: 30px;
 }
-
+.template_items > li div label{
+    cursor: pointer;
+}
+.template_items > li div input:disabled+label{
+    color:#a8a7a7;
+    cursor: default;
+}
 .add-template-select-btn{
     border:1px solid red;
     color:red;

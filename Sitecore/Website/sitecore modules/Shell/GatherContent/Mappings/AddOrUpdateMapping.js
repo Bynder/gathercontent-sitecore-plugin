@@ -25,8 +25,27 @@ function ViewModel() {
         self.Tabs(data.AddMappingModel.Tabs);
         self.IsEdit(data.AddMappingModel.IsEdit);
         jQuery(".preloader").hide();
+        tabInitSlide();
     });
+    function tabInitSlide(){
+        jQuery(".content_mapping").slideUp(0);
+        jQuery(".title_mapping").removeClass("open");
+        jQuery(jQuery(".title_mapping")[0]).addClass("open");
+        jQuery(jQuery(".content_mapping")[0]).slideDown(0);
+        jQuery("body").on("click",".title_mapping",function(){
+            if(jQuery(this).hasClass("open")){
+                jQuery(this).next(".content_mapping").slideUp(200);
+                jQuery(this).removeClass("open");
+            }
+            else{
+                jQuery(".title_mapping.open").next(".content_mapping").slideUp(200);
+                jQuery(".title_mapping.open").removeClass("open");
+                jQuery(this).addClass("open");
+                jQuery(this).next(".content_mapping").slideDown(200);
 
+            }
+        })
+    }
 
 
     this.saveMapping = function () {

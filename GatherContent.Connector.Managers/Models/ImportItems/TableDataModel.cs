@@ -4,11 +4,11 @@ namespace GatherContent.Connector.Managers.Models.ImportItems
 {
     public class TableDataModel
     {
-        public List<ItemModel> Items { get; set; }
+        public List<ImportListItem> Items { get; set; }
 
         public TableDataModel() { }
 
-        public TableDataModel(List<ItemModel> items)
+        public TableDataModel(List<ImportListItem> items)
         {
             Items = items;
         }

@@ -5,6 +5,7 @@ using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.GatherContentService.Services;
 using GatherContent.Connector.Managers.Models.TemplateModel;
 using GatherContent.Connector.SitecoreRepositories;
+using GatherContent.Connector.SitecoreRepositories.Repositories;
 
 namespace GatherContent.Connector.Managers.Managers
 {
@@ -92,7 +93,7 @@ namespace GatherContent.Connector.Managers.Managers
 
                     foreach (var gcTemplate in gcSelectedTemplates)
                     {
-                        var newTemplate = new Template {Name = gcTemplate.TemplateName, Id = gcTemplate.TemplateId};
+                        var newTemplate = new GCTemplate {Name = gcTemplate.TemplateName, Id = gcTemplate.TemplateId};
                         _templatesRepository.CreateTemplate(project.ProjectId.ToString(), newTemplate);
                     }
                 } 

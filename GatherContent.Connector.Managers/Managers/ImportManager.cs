@@ -3,9 +3,9 @@ using System.Linq;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.GatherContentService.Services;
-using GatherContent.Connector.IRepositories.Models;
+using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.Managers.Models.ImportItems;
-using GatherContent.Connector.SitecoreRepositories;
+using GatherContent.Connector.SitecoreRepositories.Repositories;
 
 namespace GatherContent.Connector.Managers.Managers
 {
@@ -33,7 +33,8 @@ namespace GatherContent.Connector.Managers.Managers
             _mappingManager = new MappingManager();
         }
 
-        public SelectImportItemsModel GetModelForSelectImportItemsDialog(string itemId, string projectId)
+        
+        public SelectItemsForImportModel GetModelForSelectImportItemsDialog(string itemId, string projectId)
         {
             Account account = GetAccount();
 
@@ -41,13 +42,13 @@ namespace GatherContent.Connector.Managers.Managers
 
             Project project = GetProject(projects, projectId);
 
-            List<Template> templates = GetTemplates(project.Id);
-            List<Status> statuses = GetStatuses(project.Id);
+            List<GCTemplate> templates = GetTemplates(project.Id);
+            List<GCStatus> statuses = GetStatuses(project.Id);
             List<GCItem> items = GetItems(project.Id);
 
-            List<ItemModel> mappedItems = MapItems(items, templates);
+            List<ImportListItem> mappedItems = MapItems(items, templates);
 
-            var result = new SelectImportItemsModel(mappedItems, project, projects, statuses, templates);
+            var result = new SelectItemsForImportModel(mappedItems, project, projects, statuses, templates);
 
             return result;
         }
@@ -62,7 +63,7 @@ namespace GatherContent.Connector.Managers.Managers
             return project;
         }
 
-        private List<Status> GetStatuses(int projectId)
+        private List<GCStatus> GetStatuses(int projectId)
         {
             StatusesEntity statuses = _projectsService.GetAllStatuses(projectId.ToString());
             return statuses.Data;
@@ -74,73 +75,66 @@ namespace GatherContent.Connector.Managers.Managers
             return items.Data;
         }
 
-        private List<Template> GetTemplates(int projectId)
+        private List<GCTemplate> GetTemplates(int projectId)
         {
             return GetTemplates(projectId.ToString());
         }
 
-        private List<Template> GetTemplates(string projectId)
+        private List<GCTemplate> GetTemplates(string projectId)
         {
             TemplatesEntity templates = _templatesService.GetTemplates(projectId);
             return templates.Data;
         }
 
-        private List<ItemModel> MapItems(List<GCItem> items, List<Template> templates)
+        private List<ImportListItem> MapItems(List<GCItem> items, List<GCTemplate> templates)
         {
             var mappedItems = items.Where(i => i.TemplateId != null).ToList();
 
-            var result = mappedItems.Select(i => new ItemModel(i, templates.FirstOrDefault(templ => templ.Id == i.TemplateId), items, _gcAccountSettings.DateFormat));
+            var result = mappedItems.Select(i => new ImportListItem(i, templates.FirstOrDefault(templ => templ.Id == i.TemplateId), items, _gcAccountSettings.DateFormat));
 
             return result.ToList();
         }
 
 
-        public ImportResultModel ImportItems(string itemId, List<ItemModel> items, string projectId, string statusId)
+        public ImportResultModel ImportItems(string itemId, List<ImportListItem> items, string projectId, string statusId)
         {
             List<GCItem> gcItems = MapItems(items);
-            List<ImportItemsResponseModel> importResult = ImportNewItems(itemId, projectId, gcItems);
+            List<MappingResultModel> cmsItems = _mappingManager.MapItems(gcItems, projectId);
+
+            List<MappingResultModel> successfulImportedItems = GetSuccessfulImportedItems(cmsItems);
+            _itemsRepository.ImportItems(itemId, successfulImportedItems);
 
             if (!string.IsNullOrEmpty(statusId))
             {
-                //List<ImportItemsResponseModel> successfulImportedItems = GetSuccessfulImportedItems(importResult);
                 //PostNewStatusesForItems(successfulImportedItems, statusId);
             }
 
-            var result = new ImportResultModel(importResult);
+            var result = new ImportResultModel(cmsItems);
 
             return result;
         }
 
-        private List<GCItem> MapItems(List<ItemModel> items)
+        private List<GCItem> MapItems(List<ImportListItem> items)
         {
             List<GCItem> result = items.Select(GetGCItemByModel).ToList();
             return result;
         }
 
-        private GCItem GetGCItemByModel(ItemModel model)
+        private GCItem GetGCItemByModel(ImportListItem model)
         {
             ItemEntity result = _itemsService.GetSingleItem(model.Id);
 
             return result.Data;
         }
 
-        private List<ImportItemsResponseModel> ImportNewItems(string itemId, string projectId, List<GCItem> items)
-        {
-            List<ImportItemsResponseModel> cmsItems = _mappingManager.MapItems(items, projectId);
-
-            //List<ImportItemsResponseModel> importResult = _itemsRepository.ImportItems(itemId, cmsItems);
-
-            return cmsItems;
-        }
-
-        private List<ImportItemsResponseModel> GetSuccessfulImportedItems(List<ImportItemsResponseModel> importResult)
+        private List<MappingResultModel> GetSuccessfulImportedItems(List<MappingResultModel> importResult)
         {
             return importResult.Where(i => i.IsImportSuccessful).ToList();
         }
 
-        private void PostNewStatusesForItems(List<ImportItemsResponseModel> items, string statusId)
+        private void PostNewStatusesForItems(List<MappingResultModel> items, string statusId)
         {
-            foreach (ImportItemsResponseModel item in items)
+            foreach (MappingResultModel item in items)
             {
                 _itemsService.ChooseStatusForItem(item.GCItemId, statusId);
             }

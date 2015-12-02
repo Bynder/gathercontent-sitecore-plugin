@@ -15,7 +15,7 @@
     self.items = ko.observableArray([]),
     self.statuses = ko.observableArray([]),
     self.templates = ko.observableArray([]),
-    self.statusPostState = ko.observable(),
+    self.statusPostState = ko.observable(false),
     self.project = ko.observable(),
     self.statusFilter = ko.observable(),
     self.templateFilter = ko.observable(),
@@ -211,7 +211,8 @@
         var items = self.items();
         var status = self.statusFilter();
         var project = self.project();
-
+        if (!self.statusPostState())
+            status = "";
         jQuery.ajax
         ({
             type: "POST",
@@ -231,19 +232,26 @@
     }
 
     self.backButtonClick = function () {
-        self.items(allItems);
+        self.items(allItems.slice(0));
     }
 
     self.buttonClick = function (newMode) {
-        self.currentMode(newMode);
-        if (newMode === MODE.CheckItemsBeforeImport)
+        if (newMode === MODE.CheckItemsBeforeImport) {
+            self.currentMode(newMode);
             self.switchToCheckItemsBeforeImport();
-        else if (newMode === MODE.Import)
+        } else if (newMode === MODE.Import) {
+            self.currentMode(newMode);
             self.import();
-        else if (newMode === MODE.Close)
+        } else if (newMode === MODE.Close) {
+            self.currentMode(newMode);
             self.close();
-        else if (newMode === MODE.ChooseItmesForImort)
+        } else if (newMode === MODE.ChooseItmesForImort) {
+            self.statusFilter = ko.observable();
+            self.currentMode(newMode);
             self.backButtonClick();
+        } else {
+            self.currentMode(newMode);
+        }
     }
 
     self.getMode = function (section) {

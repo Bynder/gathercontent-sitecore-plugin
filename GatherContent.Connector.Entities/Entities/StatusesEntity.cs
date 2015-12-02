@@ -6,6 +6,6 @@ namespace GatherContent.Connector.Entities.Entities
     public class StatusesEntity
     {
         [JsonProperty(PropertyName = "data")]
-        public List<Status> Data { get; set; }
+        public List<GCStatus> Data { get; set; }
     }
 }

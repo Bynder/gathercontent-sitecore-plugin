@@ -16,10 +16,6 @@
 </script>
 
 <div data-bind="if: getMode(1)" class="gathercontent-import">
-    <div>
-        <div>PROJECT</div>
-        <select class="custom_select" data-bind="options: projects, optionsText: 'name', optionsValue: 'id', value: project, event:{ change: $root.projectChanged}"></select>
-    </div>
     <div class="filter_wrapper">
         <div class="filter_wrapper_import">
             <div>FILTER</div>
@@ -44,8 +40,12 @@
                             <div>Select All</div>
                         </th>
                         <th>
-                            Title
-                            <div>Title</div>
+                            Sitecore Title
+                            <div>Sitecore Title</div>
+                        </th>
+                        <th>
+                            GC Project
+                            <div>GC Project</div>
                         </th>
                         <th>
                             Last updated in GC
@@ -56,19 +56,25 @@
                             <div>Last updated in Sitecore</div>
                         </th>
                         <th>
-                            Template
-                            <div>Template</div>
+                            GC Template
+                            <div>GC Template</div>
+                        </th>
+                        <th>
+                            Sitecore Template
+                            <div>Sitecore Template</div>
                         </th>
                     </tr>
                 </thead>
                 <tbody data-bind="foreach: items">
                     <tr data-bind="click: $root.checkRow">
-                        <td><input type="checkbox" data-bind="checked: Checked" /></td>
+                        <td><input type="checkbox" data-bind="checked: Checked, click: function(){return true}, clickBubble: false" /></td>
                         <td data-bind="text: Status.name, style: { color: Status.color }"></td>
                         <td data-bind="text: Title"></td>
-                        <td data-bind="text: LastUpdatedInGC"></td>
-                        <td data-bind="text: LastUpdatedInCMS"></td>
+                        <td data-bind="text: ProjectName"></td>
+                        <td data-bind="text: LastUpdatedInGC, style: { color: $root.getDateColor($data)}"></td>
+                        <td data-bind="text: LastUpdatedInCMS, style: { color: $root.getDateColor($data)}"></td>
                         <td data-bind="text: Template.name"></td>
+                        <td data-bind="text: CMSTemplate"></td>
                     </tr>
                 </tbody>
             </table>
@@ -94,19 +100,34 @@
 
     <div class="table_import_wrapper">
         <div class="table_import_scroll">
-            <table>
+            <table class="table_point">
                 <thead>
                     <tr>
                         <th>
-                            <div></div>
                         </th>
                         <th>
-                            Title
-                            <div>Title</div>
+                            Sitecore Title
+                            <div>Sitecore Title</div>
                         </th>
                         <th>
-                            Template
-                            <div>Template</div>
+                            GC Project
+                            <div>GC Project</div>
+                        </th>
+                        <th>
+                            Last updated in GC
+                            <div>Last updated in GC</div>
+                        </th>
+                        <th>
+                            Last updated in Sitecore
+                            <div>Last updated in Sitecore</div>
+                        </th>
+                        <th>
+                            GC Template
+                            <div>GC Template</div>
+                        </th>
+                        <th>
+                            Sitecore Template
+                            <div>Sitecore Template</div>
                         </th>
                     </tr>
                 </thead>
@@ -114,10 +135,16 @@
                     <tr>
                         <td data-bind="text: Status.name, style: { color: Status.color }"></td>
                         <td data-bind="text: Title"></td>
+                        <td data-bind="text: ProjectName"></td>
+                        <td data-bind="text: LastUpdatedInGC, style: { color: $root.getDateColor($data)}"></td>
+                        <td data-bind="text: LastUpdatedInCMS, style: { color: $root.getDateColor($data)}"></td>
                         <td data-bind="text: Template.name"></td>
+                        <td data-bind="text: CMSTemplate"></td>
                     </tr>
                 </tbody>
             </table>
+
+
         </div>
     </div>
     <div class="footer_btn">
@@ -133,15 +160,16 @@
 </div>
 
 <div data-bind="if: getMode(3)">
-    <div class="preloader">
+    <div class="preloader_import text-center">
         <h2 class="title">Update in progress</h2>
         <p>Please do not close your browser. Depending on the number of items, this can take some time.</p>
+        <img src="/sitecore/shell/themes/standard/images/sc-spinner16.gif" alt="">
     </div>
     <!--<input type="button" value="Next" data-bind="click: buttonClick.bind($data, 4)" />-->
 </div>
 
 <div data-bind="if: getMode(4)">
-    <div>Update complete: Results</div>
+    <h2 class="title">Update complete: Results</h2>
 
     <div class="table_import_wrapper">
         <div class="table_import_scroll">

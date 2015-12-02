@@ -47,5 +47,23 @@ namespace GatherContent.Connector.Entities.Entities
 
         [JsonProperty(PropertyName = "plain_text")]
         public bool PlainText { get; set; }
+
+        [JsonProperty(PropertyName = "other_option")]
+        public bool OtherOption { get; set; }
+
+        [JsonProperty(PropertyName = "options")]
+        public List<Option> Options { get; set; }
+    }
+
+    public class Option
+    {
+        [JsonProperty(PropertyName = "name")]
+        public string Name { get; set; }
+
+        [JsonProperty(PropertyName = "label")]
+        public string Label { get; set; }
+
+        [JsonProperty(PropertyName = "selected")]
+        public bool Selected { get; set; }
     }
 }

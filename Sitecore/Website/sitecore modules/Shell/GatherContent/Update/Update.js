@@ -199,12 +199,11 @@
         var id = getUrlVars()["id"];
         var items = self.items();
         var status = self.statusFilter();
-        var project = self.project();
 
         jQuery.ajax
         ({
             type: "POST",
-            url: '/sitecore/api/update?id={' + id + '}&projectId=' + project + '&statusId=' + status,
+            url: '/sitecore/api/update?id={' + id + '}&statusId=' + status,
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(items),
@@ -259,6 +258,12 @@
         if (!item.IsImportSuccessful)
             return 'red';
         return 'green';
+    }
+
+    self.getDateColor = function(item) {
+        //if (item.IsNeedToHighlightingDate) {
+            return '#D4C390';
+        //}
     }
 
     self.init();

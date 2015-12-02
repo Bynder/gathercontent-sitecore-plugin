@@ -7,10 +7,10 @@ namespace GatherContent.Connector.Entities.Entities
     public class TemplatesEntity
     {
         [JsonProperty(PropertyName = "data")]
-        public List<Template> Data { get; set; }
+        public List<GCTemplate> Data { get; set; }
     }
 
-    public class Template
+    public class GCTemplate
     {
         [JsonProperty(PropertyName = "id")]
         public int Id { get; set; }

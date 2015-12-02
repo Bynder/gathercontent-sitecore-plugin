@@ -63,7 +63,7 @@
                 </thead>
                 <tbody data-bind="foreach: items">
                     <tr data-bind="click: $root.checkRow">
-                        <td><input type="checkbox" data-bind="checked: Checked" /></td>
+                        <td><input type="checkbox" data-bind="checked: Checked, click: function(){return true}, clickBubble: false" /></td>
                         <td data-bind="text: Status.name, style: { color: Status.color }"></td>
                         <td data-bind="text: Title"></td>
                         <td data-bind="text: LastUpdatedInGC"></td>

@@ -5,7 +5,7 @@ namespace GatherContent.Connector.Entities.Entities
     public class TemplateEntity
     {
         [JsonProperty(PropertyName = "data")]
-        public Template Data { get; set; }
+        public GCTemplate Data { get; set; }
     }
 
 }

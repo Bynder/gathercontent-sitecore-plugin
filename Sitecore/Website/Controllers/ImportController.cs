@@ -7,13 +7,13 @@ namespace GatherContent.Connector.Website.Controllers
 {
     public class ImportController : ServicesApiController
     {
-        public SelectImportItemsModel Get(string id, string projectId)
+        public SelectItemsForImportModel Get(string id, string projectId)
         {
             var importManager = new ImportManager();
             return importManager.GetModelForSelectImportItemsDialog(id, projectId);
         }
 
-        public ImportResultModel ImportItems(string id, string projectId, string statusId, List<ItemModel> items)
+        public ImportResultModel ImportItems(string id, string projectId, string statusId, List<ImportListItem> items)
         {
             var importManager = new ImportManager();
             return importManager.ImportItems(id, items, projectId, statusId);

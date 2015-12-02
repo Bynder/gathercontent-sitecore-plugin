@@ -268,8 +268,14 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return result.ToList();
         }
 
+        public List<MappingTemplateModel> GetAllTemplateMappings()
+        {
+            IEnumerable<Item> mappings = GetAllMappings();
+            IEnumerable<MappingTemplateModel> result = ConvertSitecoreTemplatesToModel(mappings);
 
-
+            return result.ToList();
+        }
+        
         public AddMapping GetAddMappingModel(string projectId, TemplateEntity template)
         {
             var model = new AddMapping { GcTemplateId = template.Data.Id.ToString(), IsEdit = false };

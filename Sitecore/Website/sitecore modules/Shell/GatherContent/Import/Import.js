@@ -238,6 +238,8 @@
             self.statusFilter = ko.observable();
             self.currentMode(newMode);
             self.backButtonClick();
+        } else {
+            self.currentMode(newMode);
         }
     }
 

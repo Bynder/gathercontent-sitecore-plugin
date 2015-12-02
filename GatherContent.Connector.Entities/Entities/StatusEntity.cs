@@ -5,10 +5,10 @@ namespace GatherContent.Connector.Entities.Entities
     public class StatusEntity
     {
         [JsonProperty(PropertyName = "data")]
-        public Status Data { get; set; }
+        public GCStatus Data { get; set; }
     }
 
-    public class Status
+    public class GCStatus
     {
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }

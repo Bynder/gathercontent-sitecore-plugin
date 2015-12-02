@@ -11,7 +11,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
     {
         public StatusesRepository() : base() { }
 
-        public void CreateStatus(string id, Status status)
+        public void CreateStatus(string id, GCStatus status)
         {
             var parentItem = GetItem(id);
             var statusesFolder = parentItem.Children.FirstOrDefault(item => item.Name == Constants.StatusFolderName);

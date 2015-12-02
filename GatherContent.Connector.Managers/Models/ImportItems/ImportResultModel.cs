@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
-using GatherContent.Connector.IRepositories.Models;
 using GatherContent.Connector.IRepositories.Models.Import;
 
 namespace GatherContent.Connector.Managers.Models.ImportItems
 {
     public class ImportResultModel
     {
-        public List<ImportItemsResponseModel> Items { get; set; }
+        public List<ImportItemResponseModel> Items { get; set; }
 
-        public ImportResultModel(List<ImportItemsResponseModel> items)
+        public ImportResultModel(List<ImportItemResponseModel> items)
         {
             Items = items;
         }

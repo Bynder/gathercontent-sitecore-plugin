@@ -261,5 +261,11 @@
         return 'green';
     }
 
+    self.getDateColor = function(item) {
+        //if (item.IsNeedToHighlightingDate) {
+            return '#D4C390';
+        //}
+    }
+
     self.init();
 }

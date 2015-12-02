@@ -3,7 +3,7 @@ using GatherContent.Connector.Entities.Entities;
 
 namespace GatherContent.Connector.IRepositories.Models.Import
 {
-    public class ImportCMSFiled
+    public class ImportCMSField
     {
         public string Type { get; set; }
         public string Name { get; set; }
@@ -11,7 +11,7 @@ namespace GatherContent.Connector.IRepositories.Models.Import
 
         public List<Option> Options { get; set; }
 
-        public ImportCMSFiled(string type, string name, string value, List<Option> options)
+        public ImportCMSField(string type, string name, string value, List<Option> options)
         {
             Type = type;
             Name = name;

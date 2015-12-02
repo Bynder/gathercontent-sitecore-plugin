@@ -1,13 +1,16 @@
 ﻿using System.Collections.Generic;
 using GatherContent.Connector.Entities.Entities;
+using GatherContent.Connector.IRepositories.Models.Import;
 
-namespace GatherContent.Connector.IRepositories.Models.Import
+namespace GatherContent.Connector.IRepositories.Models.Update
 {
-    public class ImportItemsResponseModel
+    public class UpdateItemResponseModel
     {
+        public string CMSId { get; set; }
+
         public string GCItemId { get; set; }
 
-        public Status Status { get; set; }
+        public GCStatus Status { get; set; }
 
         public string Title { get; set; }
 
@@ -19,11 +22,11 @@ namespace GatherContent.Connector.IRepositories.Models.Import
         public string Message { get; set; }
 
 
-        public List<ImportCMSFiled> Fields { get; set; }
+        public List<ImportCMSField> Fields { get; set; }
 
         public string CMSTemplate { get; set; }
 
-        public ImportItemsResponseModel(string itemId, Status status, string title, string template, string message, bool isImportSuccessful, List<ImportCMSFiled> fields, string cmsTemplate)
+        public UpdateItemResponseModel(string itemId, GCStatus status, string title, string template, string message, bool isImportSuccessful, List<ImportCMSField> fields, string cmsTemplate)
         {
             GCItemId = itemId;
             Status = status;

@@ -6,7 +6,7 @@ using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.Data.Managers;
 using Sitecore.SecurityModel;
-using Template = GatherContent.Connector.Entities.Entities.Template;
+using Template = GatherContent.Connector.Entities.Entities.GCTemplate;
 using TemplateField = Sitecore.Data.Templates.TemplateField;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories

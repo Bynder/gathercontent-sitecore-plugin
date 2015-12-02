@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using GatherContent.Connector.Entities.Entities;
 
 namespace GatherContent.Connector.Managers.Models.ImportItems
 {
-    public class ItemModel
+    public class ImportListItem
     {
         public string Id { get; set; }
 
         public bool Checked { get; set; }
 
-        public Status Status { get; set; }
+        public GCStatus Status { get; set; }
 
         public string Title { get; set; }
 
@@ -19,13 +18,11 @@ namespace GatherContent.Connector.Managers.Models.ImportItems
 
         public string Breadcrumb { get; set; }
 
-        public Template Template { get; set; }
+        public GCTemplate Template { get; set; }
 
-        public ItemModel()
-        {
-        }
+        public ImportListItem() { }
 
-        public ItemModel(GCItem item, Template template, List<GCItem> items, string dateFormat)
+        public ImportListItem(GCItem item, GCTemplate template, List<GCItem> items, string dateFormat)
         {
             Checked = false;
 
@@ -33,14 +30,9 @@ namespace GatherContent.Connector.Managers.Models.ImportItems
             Title = item.Name;
             Status = item.Status.Data;
             Breadcrumb = GetBreadcrumb(item, items);
-            LastUpdatedInGC = GetLastUpdatedInGC(item.Updated.Date, dateFormat);
+            LastUpdatedInGC = item.Updated.Date.ToString(dateFormat);
 
             Template = template;
-        }
-
-        private string GetLastUpdatedInGC(DateTime dtEvent, string format)
-        {
-            return dtEvent.ToString(format);
         }
 
         private string GetBreadcrumb(GCItem item, List<GCItem> items)

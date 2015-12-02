@@ -93,7 +93,7 @@ namespace GatherContent.Connector.Managers.Managers
 
                     foreach (var gcTemplate in gcSelectedTemplates)
                     {
-                        var newTemplate = new Template {Name = gcTemplate.TemplateName, Id = gcTemplate.TemplateId};
+                        var newTemplate = new GCTemplate {Name = gcTemplate.TemplateName, Id = gcTemplate.TemplateId};
                         _templatesRepository.CreateTemplate(project.ProjectId.ToString(), newTemplate);
                     }
                 } 

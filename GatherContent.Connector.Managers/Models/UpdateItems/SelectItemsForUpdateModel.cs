@@ -3,15 +3,15 @@ using GatherContent.Connector.Entities.Entities;
 
 namespace GatherContent.Connector.Managers.Models.UpdateItems
 {
-    public class SelectImportItemsModel
+    public class SelectItemsForUpdateModel
     {
         public FiltersModel Filters { get; set; }
 
         public TableDataModel Data { get; set; }
 
-        public SelectImportItemsModel(List<ItemModel> items, Project project, List<Project> projects, List<Status> statuses, List<Template> templates)
+        public SelectItemsForUpdateModel(List<UpdateListItem> items, List<GCStatus> statuses, List<GCTemplate> templates)
         {
-            Filters = new FiltersModel(project, projects, templates, statuses);
+            Filters = new FiltersModel(templates, statuses);
             Data = new TableDataModel(items);
         }
     }

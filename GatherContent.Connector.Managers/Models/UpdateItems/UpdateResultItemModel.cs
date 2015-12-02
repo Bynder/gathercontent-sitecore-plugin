@@ -2,7 +2,7 @@
 
 namespace GatherContent.Connector.Managers.Models.UpdateItems
 {
-    public class ImportResultItemModel
+    public class UpdateResultItemModel
     {
         public string Id { get; set; }
 
@@ -10,13 +10,13 @@ namespace GatherContent.Connector.Managers.Models.UpdateItems
 
         public string ResultMessage { get; set; }
 
-        public Status Status { get; set; }
+        public GCStatus Status { get; set; }
 
         public string Title { get; set; }
 
-        public Template Template { get; set; }
+        public GCTemplate Template { get; set; }
 
-        public ImportResultItemModel(GCItem item, Template template, bool isImportSuccessful, string resultMessage)
+        public UpdateResultItemModel(GCItem item, GCTemplate template, bool isImportSuccessful, string resultMessage)
         {
             Id = item.Id.ToString();
             IsImportSuccessful = isImportSuccessful;

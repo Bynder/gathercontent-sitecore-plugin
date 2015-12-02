@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using GatherContent.Connector.Managers.Managers;
+using GatherContent.Connector.Managers.Models.ImportItems;
 using GatherContent.Connector.Managers.Models.UpdateItems;
 using Sitecore.Services.Infrastructure.Web.Http;
 
@@ -10,16 +8,16 @@ namespace GatherContent.Connector.Website.Controllers
 {
     public class UpdateController : ServicesApiController
     {
-        public SelectImportItemsModel Get(string id, string projectId)
+        public SelectItemsForUpdateModel Get(string id)
         {
-            var importManager = new UpdateManager();
-            return importManager.GetItemsForUpdate(id, projectId);
+            var updateManager = new UpdateManager();
+            return updateManager.GetItemsForUpdate(id);
         }
 
-        public ImportResultModel UpdateItems(string id, string projectId, List<ItemModel> items)
+        public ImportResultModel UpdateItems(string id, string statusId, List<UpdateListItem> items)
         {
-            var importManager = new UpdateManager();
-            return importManager.UpdateItems(id, items, projectId);
+            var updateManager = new UpdateManager();
+            return updateManager.UpdateItems(id, items);
         }
     }
 }

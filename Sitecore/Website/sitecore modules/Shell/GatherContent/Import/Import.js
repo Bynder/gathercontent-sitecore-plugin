@@ -42,6 +42,7 @@
                      simple_tooltip(this,"tooltip",i);
                  }
              });
+             document_resize();
          });
      }
 
@@ -293,4 +294,14 @@ function simple_tooltip(target_items, name,i){
         }).mouseout(function(){
             my_tooltip.fadeOut(0);
         });
+}
+function document_resize() {
+    jQuery(window).resize(function(){
+        jQuery(".tooltip").remove();
+        jQuery("tr td").each(function (i) {
+            if (jQuery(this).outerWidth() < this.scrollWidth) {
+                simple_tooltip(this, "tooltip", i);
+            }
+        });
+    })
 }

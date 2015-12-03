@@ -56,7 +56,7 @@ namespace GatherContent.Connector.Website.Commands
             {
                 Width = "1200",
                 Height = "700",
-                MinWidth = "600",
+                MinWidth = "881",
                 MinHeight = "400",
                 Maximizable = false,
                 Header = "Import Content from GatherContent"

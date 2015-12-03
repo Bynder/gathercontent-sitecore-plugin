@@ -4,18 +4,24 @@
         CheckItemsBeforeImport: 2,
         Import: 3,
         ImportResult: 4,
-        Close: 5
+        Close: 5,
+        Error: 6
     };
 
     var allItems = [];
     var self = this;
 
+    self.errorText = ko.observable(),
+
     self.currentMode = ko.observable(MODE.ChooseItmesForImort);
+
     self.projects = ko.observableArray([]),
     self.items = ko.observableArray([]),
     self.statuses = ko.observableArray([]),
     self.templates = ko.observableArray([]),
+
     self.statusPostState = ko.observable(false),
+
     self.project = ko.observable(),
     self.statusFilter = ko.observable(),
     self.templateFilter = ko.observable(),
@@ -37,11 +43,7 @@
          jQuery.getJSON('/sitecore/api/getItemsForImport?id={' + id + '}&projectId=' + project, null, function (response) {
              callbackFunction(response);
              jQuery(".preloader").hide();
-             jQuery("tr td").each(function(i){
-                 if(jQuery(this).outerWidth()<this.scrollWidth){
-                     simple_tooltip(this,"tooltip",i);
-                 }
-             });
+             initTooltip();
          });
      }
 
@@ -60,6 +62,7 @@
 
     self.projectChanged = function (obj, event) {
         if (event.originalEvent) {
+            jQuery(".preloader").show();
             var callbackFunction = function (response) {
                 self.initVariables(response);
                 self.setupDefaultValuesToFilters();
@@ -85,13 +88,8 @@
 
         self.items(currentCollection);
         jQuery(".tooltip").remove();
-        jQuery("tr td").each(function(i){
-            if(jQuery(this).outerWidth()<this.scrollWidth){
-                simple_tooltip(this,"tooltip",i);
-                console.log("ssss")
-            }
-        });
-    },
+        initTooltip();
+    }
 
     self.search = function (currentCollection) {
         var resultCollection = currentCollection;
@@ -223,6 +221,11 @@
             success: function (response) {
                 self.items(response.Items);
                 self.buttonClick(MODE.ImportResult);
+            },
+            error: function (response) {
+                jQuery(".preloader").hide();
+                self.errorText(response.responseJSON);
+                self.buttonClick(MODE.Error);
             }
         });
     }
@@ -269,7 +272,7 @@
         return items;
     }
 
-    self.getImportResultTemplateColor = function(item) {
+    self.getImportResultTemplateColor = function (item) {
         if (!item.IsImportSuccessful)
             return 'red';
     }
@@ -282,15 +285,24 @@
 
     self.init();
 }
-function simple_tooltip(target_items, name,i){
-        jQuery("body").append("<div class='"+name+"' id='"+name+i+"'><p>"+jQuery(target_items).text()+"</p></div>");
-        var my_tooltip = jQuery("#"+name+i);
 
-        jQuery(target_items).mouseover(function(){
-            my_tooltip.css({opacity:0.8, display:"none"}).fadeIn(0);
-        }).mousemove(function(kmouse){
-            my_tooltip.css({left:kmouse.pageX-120, top:kmouse.pageY+20});
-        }).mouseout(function(){
-            my_tooltip.fadeOut(0);
-        });
+function initTooltip() {
+    jQuery("tr td").each(function (i) {
+        if (jQuery(this).outerWidth() < this.scrollWidth) {
+            simple_tooltip(this, "tooltip", i);
+        }
+    });
+}
+
+function simple_tooltip(target_items, name, i) {
+    jQuery("body").append("<div class='" + name + "' id='" + name + i + "'><p>" + jQuery(target_items).text() + "</p></div>");
+    var my_tooltip = jQuery("#" + name + i);
+
+    jQuery(target_items).mouseover(function () {
+        my_tooltip.css({ opacity: 0.8, display: "none" }).fadeIn(0);
+    }).mousemove(function (kmouse) {
+        my_tooltip.css({ left: kmouse.pageX - 120, top: kmouse.pageY + 20 });
+    }).mouseout(function () {
+        my_tooltip.fadeOut(0);
+    });
 }

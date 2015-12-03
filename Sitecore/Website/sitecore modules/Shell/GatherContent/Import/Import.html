@@ -185,4 +185,11 @@
     </div>
 </div>
 
+<div data-bind="if: getMode(6)">
+    <h2 class="title"><span data-bind="text: errorText"></span></h2>
+    <div class="footer_btn">
+        <input type="button" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" value="Close" />
+    </div>
+</div>
+
 <div class="preloader"></div>

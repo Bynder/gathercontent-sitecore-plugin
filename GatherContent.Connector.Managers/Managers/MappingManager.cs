@@ -6,6 +6,7 @@ using GatherContent.Connector.GatherContentService.Services;
 using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.IRepositories.Models.Mapping;
 using GatherContent.Connector.Managers.Models.Mapping;
+using GatherContent.Connector.Managers.Models.UpdateItems;
 using GatherContent.Connector.SitecoreRepositories.Repositories;
 
 namespace GatherContent.Connector.Managers.Managers

@@ -30,13 +30,7 @@ namespace GatherContent.Connector.Managers.Models.ImportItems
             Title = item.Name;
             Status = item.Status.Data;
             Breadcrumb = GetBreadcrumb(item, items);
-<<<<<<< HEAD:GatherContent.Connector.Managers/Models/ImportItems/ItemModel.cs
-            //Breadcrumb += Breadcrumb;
-            //Breadcrumb += Breadcrumb;
-            LastUpdatedInGC = GetLastUpdatedInGC(item.Updated.Date, dateFormat);
-=======
             LastUpdatedInGC = item.Updated.Date.ToString(dateFormat);
->>>>>>> 3c4ff9333254ca907b30bb5c45d10172a32fc946:GatherContent.Connector.Managers/Models/ImportItems/ImportListItem.cs
 
             Template = template;
         }

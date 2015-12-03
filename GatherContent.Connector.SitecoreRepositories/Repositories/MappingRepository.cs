@@ -18,7 +18,8 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
         private readonly GCAccountSettings _accountSettings;
 
-        public MappingRepository() : base()
+        public MappingRepository()
+            : base()
         {
             var accountsRepository = new AccountsRepository();
             _accountSettings = accountsRepository.GetAccountSettings();
@@ -57,6 +58,21 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     .FirstOrDefault(item => item["GC Template"] == gcTemplateId &
                                             item.TemplateID ==
                                             new ID(Constants.GcTemplateMapping));
+
+            }
+            return null;
+        }
+
+        private Item GetTemplate(string gcProjectId, string gcTemplateId)
+        {
+            var project = GetProject(gcProjectId);
+
+            if (project != null)
+            {
+                return project.Axes.GetDescendants()
+                    .FirstOrDefault(item => item["Temaplate Id"] == gcTemplateId &
+                                            item.TemplateID ==
+                                            new ID(Constants.GcTemplate));
 
             }
             return null;
@@ -104,14 +120,14 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-
-        private void RemoveFieldMapping(Item field)
+        private void DeleteItem(Item template)
         {
             using (new SecurityDisabler())
             {
-                field.Delete();
+                template.Delete();
             }
         }
+
 
 
         private IEnumerable<MappingTemplateModel> ConvertSitecoreTemplatesToModel(IEnumerable<Item> templates)
@@ -225,26 +241,38 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                         {
                             double d;
                             var gcUpdateDate = string.Empty;
-                            
+
                             if (Double.TryParse(m["Last Updated in GC"], out d))
                             {
                                 var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
                                 gcUpdateDate = posixTime.AddMilliseconds(d * 1000).ToString(_accountSettings.DateFormat);
                             }
-                           
+
 
                             var scTemplate = GetItem(m["Sitecore Template"]);
-                            mapping.CmsTemplateName = scTemplate != null ? scTemplate.Name : m["Sitecore Template"];
-                            mapping.LastUpdatedDate = gcUpdateDate;
-                            mapping.LastMappedDateTime = DateUtil.IsoDateToDateTime(m["Last Mapped Date"]).ToString(_accountSettings.DateFormat);
-                            mapping.EditButtonTitle = "Edit";
-                            mapping.IsMapped = true;
+                            if (scTemplate != null)
+                            {
+                                mapping.CmsTemplateName = scTemplate.Name;
+                                mapping.LastUpdatedDate = gcUpdateDate;
+                                mapping.LastMappedDateTime =
+                                    DateUtil.IsoDateToDateTime(m["Last Mapped Date"])
+                                        .ToString(_accountSettings.DateFormat);
+                                mapping.EditButtonTitle = "Edit";
+                                mapping.IsMapped = true;
+                            }
+                            else
+                            {
+                                mapping.CmsTemplateName = "Not mapped";
+                                mapping.LastMappedDateTime = "never";
+                                mapping.EditButtonTitle = "Setup";
+                                mapping.IsMapped = false;
+                            }
                         }
                         else
                         {
                             mapping.CmsTemplateName = "Not mapped";
                             mapping.LastMappedDateTime = "never";
-                            mapping.EditButtonTitle = "Setup mapping";
+                            mapping.EditButtonTitle = "Setup";
                             mapping.IsMapped = false;
                         }
 
@@ -275,7 +303,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
             return result.ToList();
         }
-        
+
         public AddMapping GetAddMappingModel(string projectId, TemplateEntity template)
         {
             var model = new AddMapping { GcTemplateId = template.Data.Id.ToString(), IsEdit = false };
@@ -354,7 +382,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     {
                         if (templateField.SelectedField == "0")
                         {
-                            RemoveFieldMapping(field);
+                            DeleteItem(field);
                         }
                         else
                         {
@@ -369,6 +397,25 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                         }
                     }
                 }
+            }
+        }
+
+
+        public void DeleteMapping(TemplateEntity template)
+        {
+            var templateMapping = GetTemplateMapping(template.Data.ProjectId.ToString(), template.Data.Id.ToString());
+            if (templateMapping != null)
+            {
+                DeleteItem(templateMapping);
+            }
+        }
+
+        public void DeleteTemplate(TemplateEntity template)
+        {
+            var scTemplate = GetTemplate(template.Data.ProjectId.ToString(), template.Data.Id.ToString());
+            if (scTemplate != null)
+            {
+                DeleteItem(scTemplate);
             }
         }
     }

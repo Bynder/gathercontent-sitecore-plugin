@@ -25,5 +25,6 @@ namespace GatherContent.Connector.Managers.Models.Mapping
         public string LastUpdatedDate { get; set; }
         public string EditButtonTitle { get; set; }
         public bool IsMapped { get; set; }
+        public bool RemovedFromGc { get; set; }
     }
 }

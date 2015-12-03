@@ -44,6 +44,11 @@ namespace GatherContent.Connector.Website
                 controller = "Mappings",
                 action = "Post"
             });
+            routes.MapHttpRoute("RemoveMapping", "sitecore/api/removemapping", new
+            {
+                controller = "Mappings",
+                action = "Delete"
+            });
             routes.MapHttpRoute("TemplatesCommand", "sitecore/api/templates", new
             {
                 controller = "TemplatesMapping",

@@ -49,6 +49,9 @@
                         <th style="width: 100px;">
                             <div></div>
                         </th>
+                        <th style="width: 100px;">
+                            <div></div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody data-bind="foreach: mappings">
@@ -58,7 +61,8 @@
                         <td data-bind="text: ScTemplateName, style: { color: IsMapped ? 'black': 'red' }"></td>
                         <td data-bind="text: LastMappedDateTime, style: { color: IsMapped ? 'black': 'red' }"></td>
                         <td data-bind="text: LastUpdatedDate"></td>
-                        <td><a href="#" data-bind="click: editMapping, text: EditButtonTitle">Edit</a></td>
+                        <td data-bind="if: !RemovedFromGc"><a href="#" data-bind="click: editMapping, text: EditButtonTitle">Edit</a></td>
+                        <td><a href="#" data-bind="click: removeMapping"><img src="/temp/IconCache/Office/32x32/delete.png" width="20" height="20"></a></td>
                     </tr>
                 </tbody>
             </table>

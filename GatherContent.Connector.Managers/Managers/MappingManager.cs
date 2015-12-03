@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.GatherContentService.Services;
+using GatherContent.Connector.IRepositories.Models;
 using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.IRepositories.Models.Mapping;
 using GatherContent.Connector.Managers.Models.Mapping;
 using GatherContent.Connector.Managers.Models.UpdateItems;
+using GatherContent.Connector.SitecoreRepositories;
 using GatherContent.Connector.SitecoreRepositories.Repositories;
 
 namespace GatherContent.Connector.Managers.Managers
@@ -40,7 +43,17 @@ namespace GatherContent.Connector.Managers.Managers
             _projectService = new ProjectsService(_accountSettings);
         }
 
+
         #region Utilities
+
+        private string ConvertMsecToDate(double date)
+        {
+            var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
+            var gcUpdateDate =
+                posixTime.AddMilliseconds(date * 1000).ToString(_accountSettings.DateFormat);
+            return gcUpdateDate;
+        }
+
 
         private IEnumerable<SitecoreTemplate> MapSitecoreTemplates(IEnumerable<CmsTemplate> scTemplates)
         {
@@ -99,14 +112,43 @@ namespace GatherContent.Connector.Managers.Managers
 
         #endregion
 
+
         public List<MappingModel> GetMappingModel()
         {
             var mappings = _mappingRepository.GetMappings();
 
-            return mappings.Select(cmsMappingModel => new MappingModel(cmsMappingModel.GcProjectName, cmsMappingModel.GcTemplateId,
+            var model = mappings.Select(cmsMappingModel => new MappingModel(cmsMappingModel.GcProjectName, cmsMappingModel.GcTemplateId,
                 cmsMappingModel.GcTemplateName, cmsMappingModel.CmsTemplateName, cmsMappingModel.LastMappedDateTime,
                 cmsMappingModel.LastUpdatedDate, cmsMappingModel.EditButtonTitle, cmsMappingModel.IsMapped)).ToList();
+            foreach (var mapping in model)
+            {
+                try
+                {
+                    var template = _templateService.GetSingleTemplate(mapping.GcTemplateId);
+                    if (template == null)
+                    {
+                        mapping.LastUpdatedDate = "Removed from GC";
+                        mapping.RemovedFromGc = true;
+                    }
+                    else
+                    {
+                        var gcUpdateDate = ConvertMsecToDate((double)template.Data.Updated);
+
+                        mapping.LastUpdatedDate = gcUpdateDate;
+                        mapping.RemovedFromGc = false;
+                    }
+                }
+                catch
+                {
+                    mapping.LastUpdatedDate = "Removed from GC";
+                    mapping.RemovedFromGc = true;
+                }
+
+            }
+
+            return model;
         }
+
 
         public TemplateMapModel GetTemplateMappingModel(string id)
         {
@@ -128,6 +170,15 @@ namespace GatherContent.Connector.Managers.Managers
             model.AddMappingModel = addSitecoreMappingModel;
 
             return model;
+        }
+
+        public void DeleteMapping(string id)
+        {
+            var template = _templateService.GetSingleTemplate(id);
+
+            _mappingRepository.DeleteTemplate(template);
+            _mappingRepository.DeleteMapping(template);
+
         }
 
         public void PostMapping(AddMappingModel model)
@@ -325,6 +376,6 @@ namespace GatherContent.Connector.Managers.Managers
 
             return gcFieldsForMapping.ToList();
         }
-
+        
     }
 }

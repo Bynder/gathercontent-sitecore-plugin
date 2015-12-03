@@ -52,6 +52,23 @@ namespace GatherContent.Connector.Website.Controllers
             }
             
         }
+
+
+        public HttpResponseMessage Delete(string id)
+        {
+            try
+            {
+                _mappingManager.DeleteMapping(id);
+                var response = Request.CreateResponse(HttpStatusCode.OK);
+                return response;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message, e);
+                var response = Request.CreateResponse(HttpStatusCode.InternalServerError);
+                return response;
+            }
+        }
     }
 }
 

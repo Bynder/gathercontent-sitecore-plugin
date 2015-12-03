@@ -287,7 +287,7 @@ function simple_tooltip(target_items, name,i){
         var my_tooltip = jQuery("#"+name+i);
 
         jQuery(target_items).mouseover(function(){
-            my_tooltip.css({opacity:0.8, display:"none"}).fadeIn(100);
+            my_tooltip.css({opacity:0.8, display:"none"}).fadeIn(0);
         }).mousemove(function(kmouse){
             my_tooltip.css({left:kmouse.pageX-120, top:kmouse.pageY+20});
         }).mouseout(function(){

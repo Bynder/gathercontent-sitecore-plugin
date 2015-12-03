@@ -185,3 +185,8 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
+
+/Sitecore/Data
+/GatherConnect/Sitecore/Data
+/.vs
+/Sitecore/Website/sitecore modules/Shell/GatherContent/.idea

@@ -27,7 +27,7 @@
             <select class="custom_select" data-bind="options: templates, optionsText: 'name', optionsValue: 'id', value: templateFilter, optionsCaption: 'TEMPLATE', event:{ change: $root.filter }"></select>
         </div>
         <div class="search_filter">
-            <input placeholder="FILTER BY ITEM NAME(SEARCH)" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
+            <input placeholder="FILTER BY ITEM NAME (SEARCH)" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
         </div>
     </div>
     <div class="table_import_wrapper">
@@ -40,24 +40,24 @@
                             <div><input type="checkbox" data-bind="checked: AllChecked" /></div>
                         </th>
                         <th>
-                            Select All
-                            <div>Select All</div>
+                            Status
+                            <div>Status</div>
                         </th>
                         <th>
-                            Title
-                            <div>Title</div>
+                            Item Name
+                            <div>Item Name</div>
                         </th>
                         <th>
-                            Last updated in GC
-                            <div>Last updated in GC</div>
+                            Last updated in GatherContent
+                            <div>Last updated in GatherContent</div>
                         </th>
                         <th>
                             Path
                             <div>Path</div>
                         </th>
                         <th>
-                            Template
-                            <div>Template</div>
+                            Template name
+                            <div>Template name</div>
                         </th>
                     </tr>
                 </thead>
@@ -89,7 +89,7 @@
 <div data-bind="if: getMode(2)">
     <div>
         <h2 class="title">Confirm import selection (<span data-bind="text: getCheckedCount"></span> items)</h2>
-        <p>Please review your import selection before importing</p>
+        <p>Please review your import selection before importing.</p>
     </div>
 
     <div class="table_import_wrapper">
@@ -98,15 +98,16 @@
                 <thead>
                     <tr>
                         <th>
-                            <div></div>
+                            Status
+                            <div>Status</div>
                         </th>
                         <th>
-                            Title
-                            <div>Title</div>
+                            Item name
+                            <div>Item name</div>
                         </th>
                         <th>
-                            Template
-                            <div>Template</div>
+                            Template name
+                            <div>Template name</div>
                         </th>
                     </tr>
                 </thead>
@@ -123,7 +124,7 @@
     <div class="footer_btn">
         <div>
             <input type="checkbox" data-bind="checked: statusPostState" />
-            After successful import change status of item to <select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender"></select> inside your GatherContent account
+            After successful import change status of item to <select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender"></select> inside your GatherContent account.
         </div>
         <input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 1)" />
         <input type="button" value="Import>" data-bind="click: buttonClick.bind($data, 3)" />
@@ -136,14 +137,14 @@
 <div data-bind="if: getMode(3)">
     <div class="preloader_import text-center">
         <h2 class="title">Import in progress</h2>
-        <p>Please do not close your browser. Depending on the number of items, this can take some time.</p>
+        <p>Please do not close your browser. Depending on the number of Items you have selected the import can take some time.</p>
         <img src="/sitecore/shell/themes/standard/images/sc-spinner16.gif" alt="">
     </div>
     <!--<input type="button" value="Next" data-bind="click: buttonClick.bind($data, 4)" />-->
 </div>
 
 <div data-bind="if: getMode(4)">
-    <h2 class="title">Import complete: Results</h2>
+    <h2 class="title">Import complete: Results.</h2>
 
     <div class="table_import_wrapper">
         <div class="table_import_scroll">
@@ -151,18 +152,20 @@
                 <thead>
                     <tr>
                         <th>
-                            <div></div>
+                            Status
+                            <div>Status</div>
                         </th>
                         <th>
-                            Title
-                            <div>Title</div>
+                            Item name
+                            <div>Item name</div>
                         </th>
                         <th>
-                            <div></div>
+                            Import status
+                            <div>Import status</div>
                         </th>
                         <th>
-                            Template
-                            <div>Template</div>
+                            Template name
+                            <div>Template name</div>
                         </th>
                     </tr>
                 </thead>

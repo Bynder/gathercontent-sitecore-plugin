@@ -1,10 +1,9 @@
 ﻿var id = getUrlVars()["id"];
-var name = getUrlVars()["name"];
-var url = '/sitecore/api/mapping/' + id + '?projectName=' + name;
+var url = '/sitecore/api/mapping/' + id;
 
 function ViewModel() {
     var self = this;
- 
+
     this.SelectedTemplate = ko.observable();
     this.IsEdit = ko.observable();
     this.GcProjectName = ko.observable();
@@ -15,9 +14,11 @@ function ViewModel() {
     this.SitecoreFields = ko.observableArray();
     this.Tabs = ko.observableArray();
 
+
+
     jQuery.getJSON(url, null, function (data) {
         self.GcProjectName("Project:" + " " + data.GcProjectName);
-        self.GcTemplateName("Template:" + " " + data.GcTemplateName);    
+        self.GcTemplateName("Template:" + " " + data.GcTemplateName);
         self.SitecoreTemplates(data.SitecoreTemplates),
         self.SelectedTemplate(self.find("SitrecoreTemplateId", data.AddMappingModel.SelectedTemplateId));
         self.templateChanged();
@@ -27,17 +28,17 @@ function ViewModel() {
         jQuery(".preloader").hide();
         tabInitSlide();
     });
-    function tabInitSlide(){
+    function tabInitSlide() {
         jQuery(".content_mapping").slideUp(0);
         jQuery(".title_mapping").removeClass("open");
         jQuery(jQuery(".title_mapping")[0]).addClass("open");
         jQuery(jQuery(".content_mapping")[0]).slideDown(0);
-        jQuery("body").on("click",".title_mapping",function(){
-            if(jQuery(this).hasClass("open")){
+        jQuery("body").on("click", ".title_mapping", function () {
+            if (jQuery(this).hasClass("open")) {
                 jQuery(this).next(".content_mapping").slideUp(200);
                 jQuery(this).removeClass("open");
             }
-            else{
+            else {
                 jQuery(".title_mapping.open").next(".content_mapping").slideUp(200);
                 jQuery(".title_mapping.open").removeClass("open");
                 jQuery(this).addClass("open");
@@ -70,12 +71,21 @@ function ViewModel() {
         this.SelectedTemplateId(self.SelectedTemplate().SitrecoreTemplateId);
     }
 
+    this.returnFieldName = function (item) {
+        if (item.FieldName === null) {
+            return "[Empty]" + " (" + item.FieldId + ")";
+        } else {
+            return item.FieldName;
+        }
+    };
+
+
 
     this.find = function (prop, data) {
         return ko.utils.arrayFirst(self.SitecoreTemplates(), function (item) {
             return item[prop] === data;
         });
     };
- 
+
 };
 

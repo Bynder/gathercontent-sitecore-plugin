@@ -96,7 +96,8 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     select new CmsField
                     {
                         CmsFieldName = f.Name,
-                        CmsFieldId = f.ID.ToString()
+                        CmsFieldId = f.ID.ToString(),
+                        CmsFieldType = f.Type
                     });
 
                 model.Add(sitecoreTemplate);

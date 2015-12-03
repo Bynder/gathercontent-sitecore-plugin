@@ -31,6 +31,7 @@ namespace GatherContent.Connector.Managers.Models.Mapping
     public class TemplateField
     {
         public string FieldName { get; set; }
+        public string FieldId { get; set; }
         public string SelectedField { get; set; }
     }
 
@@ -50,5 +51,6 @@ namespace GatherContent.Connector.Managers.Models.Mapping
     {
         public string SitrecoreFieldName { get; set; }
         public string SitecoreFieldId { get; set; }
+        public string SitecoreFieldType { get; set; }
     }
 }

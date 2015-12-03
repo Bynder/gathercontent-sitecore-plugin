@@ -145,39 +145,48 @@
 
 <div data-bind="if: getMode(4)">
     <h2 class="title">Import complete: Results.</h2>
-
-    <div class="table_import_wrapper">
-        <div class="table_import_scroll">
-            <table>
-                <thead>
-                    <tr>
-                        <th>
-                            Status
-                            <div>Status</div>
-                        </th>
-                        <th>
-                            Item name
-                            <div>Item name</div>
-                        </th>
-                        <th>
-                            Import status
-                            <div>Import status</div>
-                        </th>
-                        <th>
-                            Template name
-                            <div>Template name</div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody data-bind="foreach: items">
-                    <tr>
-                        <td data-bind="text: Status.name, style: { color: Status.color }"></td>
-                        <td data-bind="text: Title"></td>
-                        <td data-bind="text: Message, style: { color: $root.getImportResultMessageColor($data) }"></td>
-                        <td data-bind="text: GCTemplate, style: { color: $root.getImportResultTemplateColor($data) }"></td>
-                    </tr>
-                </tbody>
-            </table>
+    <div data-bind="if: successImportedItemsCount() > 0">
+        <span data-bind="text: successImportedItemsCount()"></span> items were imported successfully.
+    </div>
+    <div data-bind="if: items().length > 0">
+        <span data-bind="text: items().length"></span> items were not imported. Check errors below.
+        <div class="table_import_wrapper">
+            <div class="table_import_scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                Status
+                                <div>Status</div>
+                            </th>
+                            <th>
+                                Item name
+                                <div>Item name</div>
+                            </th>
+                            <th>
+                                Import status
+                                <div>Import status</div>
+                            </th>
+                            <th>
+                                Template name
+                                <div>Template name</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: items">
+                        <tr>
+                            <td data-bind="text: Status.name, style: { color: Status.color }"></td>
+                            <td data-bind="text: Title"></td>
+                            <td data-bind="text: Message, style: { color: $root.getImportResultMessageColor($data) }"></td>
+                            <td data-bind="text: GCTemplate, style: { color: $root.getImportResultTemplateColor($data) }"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div>
+            Templated not mapped: Please check template mapping.<br/>
+            Template fields mismatch: Pleace check fields in mapping for current template.
         </div>
     </div>
     <div class="footer_btn">

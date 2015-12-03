@@ -12,7 +12,7 @@
     var self = this;
 
     self.errorText = ko.observable(),
-
+    self.successImportedItemsCount = ko.observable(),
     self.currentMode = ko.observable(MODE.ChooseItmesForImort);
 
     self.projects = ko.observableArray([]),
@@ -220,6 +220,8 @@
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(items),
             success: function (response) {
+                var count = self.items().length - response.Items.length;
+                self.successImportedItemsCount(count);
                 self.items(response.Items);
                 self.buttonClick(MODE.ImportResult);
             },
@@ -283,7 +285,7 @@
             return 'red';
         return 'green';
     }
-
+    
     self.init();
 }
 

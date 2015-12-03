@@ -53,7 +53,6 @@ namespace GatherContent.Connector.Website.Controllers
             
         }
 
-
         public HttpResponseMessage Delete(string id)
         {
             try

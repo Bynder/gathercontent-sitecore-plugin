@@ -109,7 +109,9 @@ namespace GatherContent.Connector.Managers.Managers
                 //PostNewStatusesForItems(successfulImportedItems, statusId);
             }
 
-            var result = new ImportResultModel(cmsItems);
+            List<MappingResultModel> importedWithErrorItems = cmsItems.Except(successfulImportedItems).ToList();
+
+            var result = new ImportResultModel(importedWithErrorItems);
 
             return result;
         }

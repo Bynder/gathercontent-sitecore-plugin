@@ -72,7 +72,9 @@ namespace GatherContent.Connector.Managers.Managers
                     var scField = new SitecoreTemplateField
                     {
                         SitrecoreFieldName = field.CmsFieldName,
-                        SitecoreFieldId = field.CmsFieldId
+                        SitecoreFieldId = field.CmsFieldId,
+                        SitecoreFieldType = field.CmsFieldType
+
                     };
                     st.SitecoreFields.Add(scField);
                 }
@@ -103,6 +105,7 @@ namespace GatherContent.Connector.Managers.Managers
                                     select new TemplateField
                                     {
                                         FieldName = t.FieldName,
+                                        FieldId = t.FieldId,
                                         SelectedField = t.SelectedField
                                     });
                 addSitecoreMappingModel.Tabs.Add(tab);
@@ -191,6 +194,7 @@ namespace GatherContent.Connector.Managers.Managers
                         select new CmsTemplateField
                         {
                             FieldName = templateField.FieldName,
+                            FieldId =  templateField.FieldId,
                             SelectedField = templateField.SelectedField,
                         }).ToList();
 

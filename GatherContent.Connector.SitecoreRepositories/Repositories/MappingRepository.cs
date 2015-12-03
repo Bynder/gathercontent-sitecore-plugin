@@ -81,7 +81,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         private Item GetFieldMappingItem(string templateMappingId, string name)
         {
             var parentItem = GetItem(templateMappingId);
-            return parentItem.Axes.GetDescendants().FirstOrDefault(item => item["GC Field"] == name);
+            return parentItem.Axes.GetDescendants().FirstOrDefault(item => item["GC Field Id"] == name);
         }
 
         /// <summary>
@@ -92,17 +92,19 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         private void CreateFieldMapping(Item field, CmsTemplateField fieldMapping)
         {
             var mappings = field.Axes.GetDescendants();
-            if (!mappings.Select(item => item.Name).ToList().Contains(fieldMapping.FieldName))
+            var validName = ItemUtil.ProposeValidItemName(fieldMapping.FieldName + " " + fieldMapping.FieldId);
+            if (!mappings.Select(item => item.Name).ToList().Contains(validName))
             {
                 using (new SecurityDisabler())
                 {
                     var mapping = ContextDatabase.GetTemplate(new ID(Constants.GcFieldMapping));
-                    var validName = ItemUtil.ProposeValidItemName(fieldMapping.FieldName);
+                   
                     var createdItem = field.Add(validName, mapping);
                     using (new SecurityDisabler())
                     {
                         createdItem.Editing.BeginEdit();
                         createdItem.Fields["GC Field"].Value = fieldMapping.FieldName;
+                        createdItem.Fields["GC Field Id"].Value = fieldMapping.FieldId;
                         createdItem.Fields["Sitecore Field"].Value = fieldMapping.SelectedField;
                         createdItem.Editing.EndEdit();
                     }
@@ -160,7 +162,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
         private Item GetFieldMapping(Item mapping, string fieldName)
         {
-            return mapping.Axes.GetDescendants().FirstOrDefault(item => item["GC Field"] == fieldName);
+            return mapping.Axes.GetDescendants().FirstOrDefault(item => item["GC Field Id"] == fieldName);
         }
 
         /// <summary>
@@ -323,12 +325,20 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 var tab = new CmsTemplateTab { TabName = config.Label };
                 foreach (var element in config.Elements)
                 {
-                    var tm = new CmsTemplateField { FieldName = element.Label };
+                    var tm = new CmsTemplateField 
+                    { 
+                        FieldName = element.Label, 
+                        FieldId = element.Name,
+                        FieldType = element.Type 
+                    };
 
                     if (scMapping != null)
                     {
-                        var scField = GetFieldMapping(scMapping, element.Label);
-                        if (scField != null) tm.SelectedField = scField["Sitecore Field"];
+                        var scField = GetFieldMapping(scMapping, element.Name);
+                        if (scField != null)
+                        {
+                            tm.SelectedField = scField["Sitecore Field"];
+                        }
                     }
 
                     tab.Fields.Add(tm);
@@ -376,8 +386,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
                 foreach (var templateField in fields)
                 {
-                    if (string.IsNullOrEmpty(templateField.FieldName)) continue;
-                    var field = GetFieldMappingItem(templateMapping.ID.ToString(), templateField.FieldName);
+                    var field = GetFieldMappingItem(templateMapping.ID.ToString(), templateField.FieldId);
                     if (field != null)
                     {
                         if (templateField.SelectedField == "0")

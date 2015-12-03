@@ -41,7 +41,7 @@
             <div data-bind="text: tab.TabName" class="title_mapping open"></div>
             <div data-bind="foreach: { data: Fields, as: 'field' }" class="content_mapping">
                 <div class="row_mapping_tab">
-                    <input type="text" data-bind="value: field.FieldName" disabled />
+                    <input type="text" data-bind="value: $root.returnFieldName($data)" disabled />
                     <div class="arrow"></div>
                     <select class="custom_selected" data-bind="options: $root.SitecoreFields, optionsText: 'SitrecoreFieldName', optionsValue: 'SitecoreFieldId', value: SelectedField,"></select>
                 </div>

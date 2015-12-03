@@ -45,6 +45,7 @@
              jQuery(".preloader").hide();
              initTooltip();
          });
+         document_resize();
      }
 
     self.initVariables = function (response) {
@@ -304,5 +305,15 @@ function simple_tooltip(target_items, name, i) {
         my_tooltip.css({ left: kmouse.pageX - 120, top: kmouse.pageY + 20 });
     }).mouseout(function () {
         my_tooltip.fadeOut(0);
+    });
+}
+function document_resize() {
+    jQuery(window).resize(function () {
+        jQuery(".tooltip").remove();
+        jQuery("tr td").each(function (i) {
+            if (jQuery(this).outerWidth() < this.scrollWidth) {
+                simple_tooltip(this, "tooltip", i);
+            }
+        });
     });
 }

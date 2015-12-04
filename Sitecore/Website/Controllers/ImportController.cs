@@ -11,13 +11,19 @@ namespace GatherContent.Connector.Website.Controllers
 {
     public class ImportController : ServicesApiController
     {
+        private readonly ImportManager _importManager;
+
+        public ImportController()
+        {
+            _importManager = new ImportManager();
+        }
+
         public HttpResponseMessage Get(string id, string projectId)
         {
             HttpResponseMessage response;
             try
             {
-                var importManager = new ImportManager();
-                SelectItemsForImportModel result = importManager.GetModelForSelectImportItemsDialog(id, projectId);
+                SelectItemsForImportModel result = _importManager.GetModelForSelectImportItemsDialog(id, projectId);
                 response = Request.CreateResponse(HttpStatusCode.OK, result);
                 return response;
             }
@@ -34,8 +40,7 @@ namespace GatherContent.Connector.Website.Controllers
             HttpResponseMessage response;
             try
             {
-                var importManager = new ImportManager();
-                ImportResultModel result = importManager.ImportItems(id, items, projectId, statusId);
+                ImportResultModel result = _importManager.ImportItems(id, items, projectId, statusId);
                 response = Request.CreateResponse(HttpStatusCode.OK, result);
                 return response;
             }

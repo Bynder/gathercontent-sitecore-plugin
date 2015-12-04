@@ -98,7 +98,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 using (new SecurityDisabler())
                 {
                     var mapping = ContextDatabase.GetTemplate(new ID(Constants.GcFieldMapping));
-                   
+
                     var createdItem = field.Add(validName, mapping);
                     using (new SecurityDisabler())
                     {
@@ -183,6 +183,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     using (new SecurityDisabler())
                     {
                         var mapping = ContextDatabase.GetTemplate(new ID(Constants.GcTemplateMapping));
+
+                        SetupLinkedGCTemplate(templateMapping);
+
                         var validFolderName = ItemUtil.ProposeValidItemName(templateMapping.Name);
                         var createdItem = mappingsFolder.Add(validFolderName, mapping);
                         using (new SecurityDisabler())
@@ -201,6 +204,23 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 return mappings.FirstOrDefault(item => item.Name == templateMapping.Name);
             }
             return null;
+        }
+
+        private void SetupLinkedGCTemplate(TemplateMapping templateMapping)
+        {
+            var linkedGCTemplate = ContextDatabase.GetTemplate(new ID(Constants.GCLinkItemTemplate));
+            var sitecoreTemplate = GetItem(templateMapping.SitecoreTemplateId);
+            var baseTemplates = sitecoreTemplate[FieldIDs.BaseTemplate];
+            if (!baseTemplates.ToLower().Contains(linkedGCTemplate.ID.ToString().ToLower()))
+            {
+                using (new SecurityDisabler())
+                {
+                    sitecoreTemplate.Editing.BeginEdit();
+                    sitecoreTemplate[Sitecore.FieldIDs.BaseTemplate] = string.Format("{0}|{1}", baseTemplates,
+                        linkedGCTemplate.ID);
+                    sitecoreTemplate.Editing.EndEdit();
+                }
+            }
         }
 
         private void UpdateTemplateMapping(Item template, TemplateMapping templateMapping)
@@ -325,11 +345,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 var tab = new CmsTemplateTab { TabName = config.Label };
                 foreach (var element in config.Elements)
                 {
-                    var tm = new CmsTemplateField 
-                    { 
-                        FieldName = element.Label, 
+                    var tm = new CmsTemplateField
+                    {
+                        FieldName = element.Label,
                         FieldId = element.Name,
-                        FieldType = element.Type 
+                        FieldType = element.Type
                     };
 
                     if (scMapping != null)

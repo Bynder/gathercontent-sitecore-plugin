@@ -239,6 +239,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
         public List<CmsMappingModel> GetMappings()
         {
+            //TODO remove m["Last Updated in GC"]
             var model = new List<CmsMappingModel>();
             var scProjects = GetAllProjects();
             var scMappings = GetAllMappings();
@@ -263,15 +264,21 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                         {
                             double d;
                             var gcUpdateDate = string.Empty;
-
+                            var isHighlightingDate = true;
                             if (Double.TryParse(m["Last Updated in GC"], out d))
                             {
                                 var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
+                                var d1 = DateUtil.IsoDateToDateTime(m["Last Mapped Date"]);
+                                var d2 = posixTime.AddMilliseconds(d*1000);
+                                var dd = d1 < d2;
+                                
                                 gcUpdateDate = posixTime.AddMilliseconds(d * 1000).ToString(_accountSettings.DateFormat);
                             }
 
 
                             var scTemplate = GetItem(m["Sitecore Template"]);
+
+                            
                             if (scTemplate != null)
                             {
                                 mapping.CmsTemplateName = scTemplate.Name;
@@ -281,6 +288,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                                         .ToString(_accountSettings.DateFormat);
                                 mapping.EditButtonTitle = "Edit";
                                 mapping.IsMapped = true;
+                                mapping.IsHighlightingDate = isHighlightingDate;
                             }
                             else
                             {

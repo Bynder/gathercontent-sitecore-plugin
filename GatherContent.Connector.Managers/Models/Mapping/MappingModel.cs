@@ -5,8 +5,7 @@ namespace GatherContent.Connector.Managers.Models.Mapping
     {
         public MappingModel() { }
 
-        public MappingModel(string gcProjectName, string gcTemplateId, string gcTemplateName, string scTemplateName, string lastMappedDateTime,
-            string lastUpdatedDate, string editButtonTitle, bool isMapped)
+        public MappingModel(string gcProjectName, string gcTemplateId, string gcTemplateName, string scTemplateName, string lastMappedDateTime, string lastUpdatedDate, string editButtonTitle, bool isMapped, bool isHighlightingDate)
         {
             GcProjectName = gcProjectName;
             GcTemplateId = gcTemplateId;
@@ -16,6 +15,7 @@ namespace GatherContent.Connector.Managers.Models.Mapping
             LastUpdatedDate = lastUpdatedDate;
             EditButtonTitle = editButtonTitle;
             IsMapped = isMapped;
+            IsHighlightingDate = isHighlightingDate;
         }
         public string GcProjectName { get; set; }
         public string GcTemplateId { get; set; }
@@ -26,5 +26,6 @@ namespace GatherContent.Connector.Managers.Models.Mapping
         public string EditButtonTitle { get; set; }
         public bool IsMapped { get; set; }
         public bool RemovedFromGc { get; set; }
+        public bool IsHighlightingDate { get; set; }
     }
 }

@@ -7,6 +7,7 @@ namespace GatherContent.Connector.Managers.Models.Mapping
         public TemplateMapModel()
         {
             SitecoreTemplates = new List<SitecoreTemplate>();
+            Rules = new Dictionary<string, string>();
         }
 
         public string GcProjectName { get; set; }
@@ -14,7 +15,7 @@ namespace GatherContent.Connector.Managers.Models.Mapping
         public List<SitecoreTemplate> SitecoreTemplates { get; set; }
         public SitecoreTemplate SelectedTemplate { get; set; }
         public AddMappingModel AddMappingModel { get; set; }
-
+        public Dictionary<string, string> Rules { get; set; }
     }
 
     public class TemplateTab
@@ -33,6 +34,8 @@ namespace GatherContent.Connector.Managers.Models.Mapping
         public string FieldName { get; set; }
         public string FieldId { get; set; }
         public string SelectedField { get; set; }
+        public string FieldType { get; set; }
+        
     }
 
     public class SitecoreTemplate

@@ -18,12 +18,12 @@
 <div data-bind="if: getMode(1)" class="gathercontent-import">
     <div class="filter_wrapper">
         <div class="filter_wrapper_import">
-            <div>FILTER</div>
+            <div class="title_filter">FILTER</div>
             <select class="custom_select" data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, optionsCaption: 'STATUS', event:{ change: $root.filter }"></select>
             <select class="custom_select" data-bind="options: templates, optionsText: 'name', optionsValue: 'id', value: templateFilter, optionsCaption: 'TEMPLATE', event:{ change: $root.filter }"></select>
         </div>
         <div class="search_filter">
-            <input placeholder="FILTER BY ITEM NAME(SEARCH)" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
+            <input placeholder="FILTER BY ITEM NAME (SEARCH)" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
         </div>
     </div>
     <div class="table_import_wrapper">
@@ -36,28 +36,28 @@
                             <div><input type="checkbox" data-bind="checked: AllChecked" /></div>
                         </th>
                         <th>
-                            Select All
-                            <div>Select All</div>
+                            Status
+                            <div>Status</div>
                         </th>
                         <th>
                             Sitecore Title
                             <div>Sitecore Title</div>
                         </th>
                         <th>
-                            GC Project
-                            <div>GC Project</div>
+                            GatherContent Project
+                            <div>GatherContent Project</div>
                         </th>
                         <th>
-                            Last updated in GC
-                            <div>Last updated in GC</div>
+                            Last updated in GatherContent
+                            <div>Last updated in GatherContent</div>
                         </th>
                         <th>
                             Last updated in Sitecore
                             <div>Last updated in Sitecore</div>
                         </th>
                         <th>
-                            GC Template
-                            <div>GC Template</div>
+                            GatherContent Template
+                            <div>GatherContent Template</div>
                         </th>
                         <th>
                             Sitecore Template
@@ -71,8 +71,8 @@
                         <td data-bind="text: Status.name, style: { color: Status.color }"></td>
                         <td data-bind="text: Title"></td>
                         <td data-bind="text: ProjectName"></td>
-                        <td data-bind="text: LastUpdatedInGC, style: { color: $root.getDateColor($data)}"></td>
-                        <td data-bind="text: LastUpdatedInCMS, style: { color: $root.getDateColor($data)}"></td>
+                        <td data-bind="text: LastUpdatedInGC, css: { dateWarning: $data.IsNeedToHighlightingDate }"></td>
+                        <td data-bind="text: LastUpdatedInCMS, css: { dateWarning: $data.IsNeedToHighlightingDate }"></td>
                         <td data-bind="text: Template.name"></td>
                         <td data-bind="text: CMSTemplate"></td>
                     </tr>
@@ -94,8 +94,8 @@
 
 <div data-bind="if: getMode(2)">
     <div>
-        <h2 class="title">Confirm update selection (<span data-bind="text: getCheckedCount"></span> items)<br /></h2>
-        Please review your update selection before updating
+        <h2 class="title">Confirm update selection (<span data-bind="text: getCheckedCount"></span> items)</h2>
+        <p>Please review your update selection before updating.</p>
     </div>
 
     <div class="table_import_wrapper">
@@ -104,26 +104,28 @@
                 <thead>
                     <tr>
                         <th>
+                            Status
+                            <div>Status</div>
                         </th>
                         <th>
                             Sitecore Title
                             <div>Sitecore Title</div>
                         </th>
                         <th>
-                            GC Project
-                            <div>GC Project</div>
+                            GatherContent Project
+                            <div>GatherContent Project</div>
                         </th>
                         <th>
-                            Last updated in GC
-                            <div>Last updated in GC</div>
+                            Last updated in GatherContent
+                            <div>Last updated in GatherContent</div>
                         </th>
                         <th>
                             Last updated in Sitecore
                             <div>Last updated in Sitecore</div>
                         </th>
                         <th>
-                            GC Template
-                            <div>GC Template</div>
+                            GatherContent Template
+                            <div>GatherContent Template</div>
                         </th>
                         <th>
                             Sitecore Template
@@ -149,6 +151,7 @@
     </div>
     <div class="footer_btn">
         <!--<div>
+            <input type="checkbox" data-bind="checked: statusPostState" />
             After successful import change status of item to [<select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender"></select>] inside your GatherContent account
         </div>-->
         <input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 1)" />
@@ -169,40 +172,57 @@
 </div>
 
 <div data-bind="if: getMode(4)">
-    <h2 class="title">Update complete: Results</h2>
+    <h2 class="title">Update complete: Results.</h2>
 
-    <div class="table_import_wrapper">
-        <div class="table_import_scroll">
-            <table>
-                <thead>
-                    <tr>
-                        <th>
-                            <div></div>
-                        </th>
-                        <th>
-                            Title
-                            <div>Title</div>
-                        </th>
-                        <th>
-                            <div></div>
-                        </th>
-                        <th>
-                            Template
-                            <div>Template</div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody data-bind="foreach: items">
-                    <tr>
-                        <td data-bind="text: Status.name, style: { color: Status.color }"></td>
-                        <td data-bind="text: Title"></td>
-                        <td data-bind="text: Message, style: { color: $root.getImportResultMessageColor($data) }"></td>
-                        <td data-bind="text: GCTemplate, style: { color: $root.getImportResultTemplateColor($data) }"></td>
-                    </tr>
-                </tbody>
-            </table>
+    <div data-bind="if: successImportedItemsCount() > 0">
+        <span data-bind="text: successImportedItemsCount()"></span> items were imported successfully.
+    </div>
+    <div data-bind="if: items().length > 0">
+        <span data-bind="text: items().length"></span> items were not imported. Check errors below.
+        <div class="table_import_wrapper">
+            <div class="table_import_scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                <div></div>
+                            </th>
+                            <th>
+                                Title
+                                <div>Title</div>
+                            </th>
+                            <th>
+                                <div></div>
+                            </th>
+                            <th>
+                                Template
+                                <div>Template</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: items">
+                        <tr>
+                            <td data-bind="text: Status.name, style: { color: Status.color }"></td>
+                            <td data-bind="text: Title"></td>
+                            <td data-bind="text: Message, style: { color: $root.getImportResultMessageColor($data) }"></td>
+                            <td data-bind="text: GCTemplate, style: { color: $root.getImportResultTemplateColor($data) }"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                Templated not mapped: Please check template mapping.<br />
+                Template fields mismatch: Pleace check fields in mapping for current template.
+            </div>
         </div>
     </div>
+    <div class="footer_btn">
+        <input type="button" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" value="Close" />
+    </div>
+</div>
+
+<div data-bind="if: getMode(6)">
+    <h2 class="title"><span data-bind="text: errorText"></span></h2>
     <div class="footer_btn">
         <input type="button" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" value="Close" />
     </div>

@@ -4,19 +4,23 @@
         CheckItemsBeforeImport: 2,
         Import: 3,
         ImportResult: 4,
-        Close: 5
+        Close: 5,
+        Error: 6
     };
 
     var allItems = [];
     var self = this;
 
+    self.errorText = ko.observable(),
+    self.successImportedItemsCount = ko.observable(),
     self.currentMode = ko.observable(MODE.ChooseItmesForImort);
-    self.projects = ko.observableArray([]),
+
     self.items = ko.observableArray([]),
     self.statuses = ko.observableArray([]),
     self.templates = ko.observableArray([]),
 
-    self.project = ko.observable(),
+    self.statusPostState = ko.observable(false),
+
     self.statusFilter = ko.observable(),
     self.templateFilter = ko.observable(),
 
@@ -31,38 +35,26 @@
 
      self.initRequestHandler = function (callbackFunction) {
          var id = getUrlVars()["id"];
-         var project = self.project();
-         project = project ? project : 0;
-
-         jQuery.getJSON('/sitecore/api/getItemsForUpdate?id={' + id + '}&projectId=' + project, null, function (response) {
+         
+         jQuery.getJSON('/sitecore/api/getItemsForUpdate?id={' + id + '}', null, function (response) {
              callbackFunction(response);
              jQuery(".preloader").hide();
+             initTooltip();
          });
+
+         document_resize();
      }
 
     self.initVariables = function (response) {
         var items = self.setupWatcher(response.Data.Items);
         self.items(items);
         allItems = items.slice(0);
-
-        self.projects(response.Filters.Projects);
-        self.project(response.Filters.Project);
-
+        
         self.statuses(response.Filters.Statuses);
 
         self.templates(response.Filters.Templates);
     }
-
-    self.projectChanged = function (obj, event) {
-        if (event.originalEvent) {
-            var callbackFunction = function (response) {
-                self.initVariables(response);
-                self.setupDefaultValuesToFilters();
-            }
-            self.initRequestHandler(callbackFunction);
-        }
-    },
-
+    
     self.setupDefaultValuesToFilters = function () {
         self.query('');
         self.statusFilter();
@@ -79,7 +71,9 @@
         currentCollection = self.filterByTemplate(currentCollection);
 
         self.items(currentCollection);
-    },
+        jQuery(".tooltip").remove();
+        initTooltip();
+    }
 
     self.search = function (currentCollection) {
         var resultCollection = currentCollection;
@@ -109,7 +103,6 @@
                 }
             }
         }
-
         return resultCollection;
     },
 
@@ -199,7 +192,8 @@
         var id = getUrlVars()["id"];
         var items = self.items();
         var status = self.statusFilter();
-
+        if (!self.statusPostState())
+            status = "";
         jQuery.ajax
         ({
             type: "POST",
@@ -208,8 +202,15 @@
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(items),
             success: function (response) {
+                var count = self.items().length - response.Items.length;
+                self.successImportedItemsCount(count);
                 self.items(response.Items);
                 self.buttonClick(MODE.ImportResult);
+            },
+            error: function (response) {
+                jQuery(".preloader").hide();
+                self.errorText(response.responseJSON);
+                self.buttonClick(MODE.Error);
             }
         });
     }
@@ -219,19 +220,26 @@
     }
 
     self.backButtonClick = function () {
-        self.items(allItems);
+        self.items(allItems.slice(0));
     }
 
     self.buttonClick = function (newMode) {
-        self.currentMode(newMode);
-        if (newMode === MODE.CheckItemsBeforeImport)
+        if (newMode === MODE.CheckItemsBeforeImport) {
+            self.currentMode(newMode);
             self.switchToCheckItemsBeforeImport();
-        else if (newMode === MODE.Import)
+        } else if (newMode === MODE.Import) {
+            self.currentMode(newMode);
             self.import();
-        else if (newMode === MODE.Close)
+        } else if (newMode === MODE.Close) {
+            self.currentMode(newMode);
             self.close();
-        else if (newMode === MODE.ChooseItmesForImort)
+        } else if (newMode === MODE.ChooseItmesForImort) {
+            self.statusFilter = ko.observable();
+            self.currentMode(newMode);
             self.backButtonClick();
+        } else {
+            self.currentMode(newMode);
+        }
     }
 
     self.getMode = function (section) {
@@ -249,7 +257,7 @@
         return items;
     }
 
-    self.getImportResultTemplateColor = function(item) {
+    self.getImportResultTemplateColor = function (item) {
         if (!item.IsImportSuccessful)
             return 'red';
     }
@@ -260,10 +268,9 @@
         return 'green';
     }
 
-    self.getDateColor = function(item) {
-        //if (item.IsNeedToHighlightingDate) {
-            return '#D4C390';
-        //}
+    self.getDateColor = function (item) {
+        //if (item.IsNeedToHighlightingDate)
+        return 'dateWarnings';
     }
 
     self.init();

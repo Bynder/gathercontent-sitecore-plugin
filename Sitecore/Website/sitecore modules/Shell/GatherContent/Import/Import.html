@@ -145,9 +145,7 @@
 
 <div data-bind="if: getMode(4)">
     <h2 class="title">Import complete: Results.</h2>
-    <div data-bind="if: successImportedItemsCount() > 0">
-        <span data-bind="text: successImportedItemsCount()"></span> items were imported successfully.
-    </div>
+    <span data-bind="text: successImportedItemsCount()"></span> items were imported successfully.
     <div data-bind="if: items().length > 0">
         <span data-bind="text: items().length"></span> items were not imported. Check errors below.
         <div class="table_import_wrapper">
@@ -185,7 +183,7 @@
             </div>
         </div>
         <div>
-            Templated not mapped: Please check template mapping.<br/>
+            <span>Templated not mapped</span>: Please check template mapping.<br />
             Template fields mismatch: Pleace check fields in mapping for current template.
         </div>
     </div>

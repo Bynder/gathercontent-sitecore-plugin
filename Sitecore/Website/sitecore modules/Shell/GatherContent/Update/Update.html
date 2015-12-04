@@ -174,11 +174,10 @@
 <div data-bind="if: getMode(4)">
     <h2 class="title">Update complete: Results.</h2>
 
-    <div data-bind="if: successImportedItemsCount() > 0">
-        <span data-bind="text: successImportedItemsCount()"></span> items were imported successfully.
-    </div>
+    <span data-bind="text: successImportedItemsCount()"></span> items were updated successfully.
+
     <div data-bind="if: items().length > 0">
-        <span data-bind="text: items().length"></span> items were not imported. Check errors below.
+        <span data-bind="text: items().length"></span> items were not updated. Check errors below.
         <div class="table_import_wrapper">
             <div class="table_import_scroll">
                 <table>

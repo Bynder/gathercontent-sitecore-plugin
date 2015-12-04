@@ -40,13 +40,21 @@
          var project = self.project();
          project = project ? project : 0;
 
-         jQuery.getJSON('/sitecore/api/getItemsForImport?id={' + id + '}&projectId=' + project, null, function (response) {
+         jQuery.getJSON('/sitecore/api/getItemsForImport?id={' + id + '}&projectId=' + project).success(function (response) {
              callbackFunction(response);
              jQuery(".preloader").hide();
              initTooltip();
+         }).error(function(response) {
+             self.errorCallbackHandle(response);
          });
          document_resize();
      }
+
+    self.errorCallbackHandle = function(response) {
+        jQuery(".preloader").hide();
+        self.errorText(response.responseJSON);
+        self.buttonClick(MODE.Error);
+    }
 
     self.initVariables = function (response) {
         var items = self.setupWatcher(response.Data.Items);
@@ -226,9 +234,7 @@
                 self.buttonClick(MODE.ImportResult);
             },
             error: function (response) {
-                jQuery(".preloader").hide();
-                self.errorText(response.responseJSON);
-                self.buttonClick(MODE.Error);
+                self.errorCallbackHandle(response);
             }
         });
     }

@@ -69,13 +69,19 @@ namespace GatherContent.Connector.Managers.Managers
                 {
                     foreach (var template in templates.Data)
                     {
+                        var isEnabled = _templatesRepository.TemplateIsEnabled(project.Id, template.Id);
                         p.Templates.Add(new GcTemplateModel
                         {
                             TemplateName = template.Name,
                             TemplateId = template.Id,
-                            Enabled = _templatesRepository.TemplateIsEnabled(project.Id, template.Id)
+                            Enabled = isEnabled
                         });
+                        if (!isEnabled)
+                        {
+                            model.Selected.Add(template.Id);
+                        }
                     }
+                    
                     model.Projects.Add(p);
                 }
             }
@@ -93,8 +99,16 @@ namespace GatherContent.Connector.Managers.Managers
 
                     foreach (var gcTemplate in gcSelectedTemplates)
                     {
-                        var newTemplate = new GCTemplate {Name = gcTemplate.TemplateName, Id = gcTemplate.TemplateId};
-                        _templatesRepository.CreateTemplate(project.ProjectId.ToString(), newTemplate);
+                        var isEnabled = _templatesRepository.TemplateIsEnabled(project.ProjectId, gcTemplate.TemplateId);
+                        if (isEnabled)
+                        {
+                            var newTemplate = new GCTemplate
+                            {
+                                Name = gcTemplate.TemplateName,
+                                Id = gcTemplate.TemplateId
+                            };
+                            _templatesRepository.CreateTemplate(project.ProjectId.ToString(), newTemplate);
+                        }
                     }
                 } 
             }

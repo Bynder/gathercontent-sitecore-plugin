@@ -15,7 +15,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 return new GCAccountSettings
                 {
                     ApiUrl = accountSettingItem["API Url"],
-                    Username = accountSettingItem["Username"],
+                    Username = accountSettingItem["Account Owner Password"],
                     ApiKey = accountSettingItem["API Key"],
                     TemplateFolderId = accountSettingItem["Templates Root Folder"],
                     DateFormat = accountSettingItem["Date Format"],

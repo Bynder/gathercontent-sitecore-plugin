@@ -21,6 +21,7 @@ namespace GatherContent.Connector.Website.Controllers
         public TemplateMappingModel Get()
         {
             var model = _templateManager.GetTemplateMappingModel();
+          
             return model;
         }
 

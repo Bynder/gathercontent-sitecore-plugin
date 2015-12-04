@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
@@ -60,7 +61,15 @@ namespace GatherContent.Connector.Managers.Managers
 
 
 
-        private string ConvertMsecToDate(double date)
+        private DateTime ConvertMsecToDate(double date)
+        {
+            var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
+            var gcUpdateDate =
+                posixTime.AddMilliseconds(date * 1000);
+            return gcUpdateDate;
+        }
+
+        private string ConvertMsecToFormattedDate(double date)
         {
             var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
             var gcUpdateDate =
@@ -138,7 +147,7 @@ namespace GatherContent.Connector.Managers.Managers
 
             var model = mappings.Select(cmsMappingModel => new MappingModel(cmsMappingModel.GcProjectName, cmsMappingModel.GcTemplateId,
                 cmsMappingModel.GcTemplateName, cmsMappingModel.CmsTemplateName, cmsMappingModel.LastMappedDateTime,
-                cmsMappingModel.LastUpdatedDate, cmsMappingModel.EditButtonTitle, cmsMappingModel.IsMapped)).ToList();
+                cmsMappingModel.LastUpdatedDate, cmsMappingModel.EditButtonTitle, cmsMappingModel.IsMapped, cmsMappingModel.IsHighlightingDate)).ToList();
             foreach (var mapping in model)
             {
                 try
@@ -150,11 +159,17 @@ namespace GatherContent.Connector.Managers.Managers
                         mapping.RemovedFromGc = true;
                     }
                     else
-                    {
+                    {                     
                         var gcUpdateDate = ConvertMsecToDate((double)template.Data.Updated);
-
-                        mapping.LastUpdatedDate = gcUpdateDate;
+                        if (mapping.IsMapped)
+                        {
+                            mapping.IsHighlightingDate =
+                                DateTime.ParseExact(mapping.LastMappedDateTime, _accountSettings.DateFormat,
+                                    CultureInfo.InvariantCulture) < gcUpdateDate;
+                        }
+                        mapping.LastUpdatedDate = gcUpdateDate.ToString(_accountSettings.DateFormat);
                         mapping.RemovedFromGc = false;
+
                     }
                 }
                 catch
@@ -167,6 +182,8 @@ namespace GatherContent.Connector.Managers.Managers
 
             return model;
         }
+
+
 
 
         public TemplateMapModel GetTemplateMappingModel(string id)
@@ -211,7 +228,7 @@ namespace GatherContent.Connector.Managers.Managers
                         select new CmsTemplateField
                         {
                             FieldName = templateField.FieldName,
-                            FieldId =  templateField.FieldId,
+                            FieldId = templateField.FieldId,
                             SelectedField = templateField.SelectedField,
                         }).ToList();
 
@@ -397,6 +414,6 @@ namespace GatherContent.Connector.Managers.Managers
 
             return gcFieldsForMapping.ToList();
         }
-        
+
     }
 }

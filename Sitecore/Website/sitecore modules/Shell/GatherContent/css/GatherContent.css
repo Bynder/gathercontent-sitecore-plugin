@@ -410,5 +410,5 @@ table {
 }
 
 .dateWarning {
-    color: #FFBB00;
+    color: #FFBB00 !important;
 }

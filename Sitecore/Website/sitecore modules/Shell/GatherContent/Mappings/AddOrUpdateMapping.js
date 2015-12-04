@@ -4,6 +4,7 @@ var url = '/sitecore/api/mapping/' + id;
 function ViewModel() {
     var self = this;
 
+    this.Rules = ko.observableArray();
     this.SelectedTemplate = ko.observable();
     this.IsEdit = ko.observable();
     this.GcProjectName = ko.observable();
@@ -15,11 +16,11 @@ function ViewModel() {
     this.Tabs = ko.observableArray();
 
 
-
     jQuery.getJSON(url, null, function (data) {
         self.GcProjectName("Project:" + " " + data.GcProjectName);
         self.GcTemplateName("Template:" + " " + data.GcTemplateName);
         self.SitecoreTemplates(data.SitecoreTemplates),
+        self.Rules(data.Rules),
         self.SelectedTemplate(self.find("SitrecoreTemplateId", data.AddMappingModel.SelectedTemplateId));
         self.templateChanged();
         self.GcTemplateId(data.AddMappingModel.GcTemplateId),
@@ -37,15 +38,14 @@ function ViewModel() {
             if (jQuery(this).hasClass("open")) {
                 jQuery(this).next(".content_mapping").slideUp(200);
                 jQuery(this).removeClass("open");
-            }
-            else {
+            } else {
                 jQuery(".title_mapping.open").next(".content_mapping").slideUp(200);
                 jQuery(".title_mapping.open").removeClass("open");
                 jQuery(this).addClass("open");
                 jQuery(this).next(".content_mapping").slideDown(200);
 
             }
-        })
+        });
     }
 
 
@@ -71,6 +71,36 @@ function ViewModel() {
         this.SelectedTemplateId(self.SelectedTemplate().SitrecoreTemplateId);
     }
 
+
+
+    this.GetCurrentFields = function (item) {
+        var fieldType = item.FieldType;
+        var allowedFields = self.Rules()[fieldType];
+        if (typeof allowedFields === 'undefined') {
+            return self.SelectedTemplate().SitecoreFields[0];
+        } else {
+            if (allowedFields != null) {
+                var allowedFieldsArr = allowedFields.split(",");
+                var currentCollection = self.SelectedTemplate().SitecoreFields;
+                var resultCollection = [];
+                resultCollection.push(self.SelectedTemplate().SitecoreFields[0]);
+                for (var i = 0; i < currentCollection.length; i++) {
+                    var currentElement = currentCollection[i];
+                    for (var f = 0; f < allowedFieldsArr.length; f++) {
+                        var field = allowedFieldsArr[f];
+                        if (currentElement.SitecoreFieldType == field.trim()) {
+                            resultCollection.push(currentElement);
+                        }
+                    }
+                }
+                return resultCollection;
+            }
+        }
+        return self.SelectedTemplate().SitecoreFields[0];
+    };
+   
+
+
     this.returnFieldName = function (item) {
         if (item.FieldName === null) {
             return "[Empty]" + " (" + item.FieldId + ")";
@@ -86,6 +116,5 @@ function ViewModel() {
             return item[prop] === data;
         });
     };
-
 };
 

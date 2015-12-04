@@ -46,6 +46,20 @@ namespace GatherContent.Connector.Managers.Managers
 
         #region Utilities
 
+
+        private Dictionary<string, string> GetMapRules()
+        {
+            return new Dictionary<string, string>
+            {
+                {"text", "Single-Line Text, Multi-Line Text, Rich Text"},
+                {"section", "Single-Line Text, Multi-Line Text, Rich Text"},
+                {"choice_radio", "Checkbox"},
+                {"choice_checkbox", "Checklist"}
+            };
+        }
+
+
+
         private string ConvertMsecToDate(double date)
         {
             var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
@@ -106,12 +120,14 @@ namespace GatherContent.Connector.Managers.Managers
                                     {
                                         FieldName = t.FieldName,
                                         FieldId = t.FieldId,
-                                        SelectedField = t.SelectedField
+                                        FieldType = t.FieldType,
+                                        SelectedField = t.SelectedField,
                                     });
                 addSitecoreMappingModel.Tabs.Add(tab);
             }
             return addSitecoreMappingModel;
         }
+
 
         #endregion
 
@@ -171,6 +187,7 @@ namespace GatherContent.Connector.Managers.Managers
 
             model.SitecoreTemplates.AddRange(templates);
             model.AddMappingModel = addSitecoreMappingModel;
+            model.Rules = GetMapRules();
 
             return model;
         }

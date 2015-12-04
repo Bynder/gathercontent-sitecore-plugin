@@ -23,7 +23,7 @@
 
 <div class="gathercontent-dialog">
     <p>
-        Choose the fields you wish to map from GatherContent intp Sitecore. Only map the fields you need to import
+        Choose the fields you wish to map from GatherContent into Sitecore. Only map the fields you need to import.
     </p>
     <div class="mapping_tabs_wrapper">
 
@@ -43,7 +43,7 @@
                 <div class="row_mapping_tab">
                     <input type="text" data-bind="value: $root.returnFieldName($data)" disabled />
                     <div class="arrow"></div>
-                    <select class="custom_selected" data-bind="options: $root.SitecoreFields, optionsText: 'SitrecoreFieldName', optionsValue: 'SitecoreFieldId', value: SelectedField,"></select>
+                    <select class="custom_selected" data-bind="options: $root.GetCurrentFields($data), optionsText: 'SitrecoreFieldName', optionsValue: 'SitecoreFieldId', value: SelectedField,"></select>
                 </div>
             </div>
         </div>
@@ -51,7 +51,7 @@
     <div class="footer_btn">
         <input class="mappings-btn" id="AddMore" type="button" value="Save mapping configuration" data-bind="click: saveMapping" style="margin-top: 15px;" />
         <p>
-            Remember you can always make changes to this configuration later
+            You can always change your mapping later
         </p>
     </div>
 </div>

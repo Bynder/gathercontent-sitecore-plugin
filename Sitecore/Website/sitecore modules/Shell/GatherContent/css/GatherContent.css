@@ -137,7 +137,7 @@ table {
 }
 
 .gathercontent-dialog .table_mappings_scroll {
-    max-height: calc(100% - 170px);
+    max-height: 340px;
     overflow-y: auto;
     overflow-x: hidden;
     background: #fff;
@@ -239,15 +239,10 @@ table {
 .tabs_mapping .row_mapping_tab .custom_selected, .custom_selected {
     -webkit-appearance: none;
     background-image: url('img/arrow_select.png');
-    background-position-y: center;
     background-repeat: no-repeat;
-    -ms-background-position-x: 95%;
-    background-position-x: 95%;
-    -webkit-background-size: 95%;
+    background-position: 95% 50%;
     background-size: 8px;
-    /* for FF */
     -moz-appearance: none;
-    /* for IE */
     -ms-appearance: none;
     appearance: none !important;
 }
@@ -330,10 +325,35 @@ table {
 .template_list {
     padding-left: 0px;
     position: relative;
-    height: 300px;
+    height: 280px;
     overflow-y: auto;
     box-sizing: border-box;
     list-style-type: none;
+    margin-top: 0;
+}
+.template_list_title:after{
+    content:"";
+    display: block;
+    clear: both;
+
+}
+.template_list_title{
+    background: #5e5e5e;
+    height: 36px;
+}
+.template_list_title h2{
+    margin: 0;
+    width: 50%;
+    float: left;
+    padding-left: 10px;
+    color:#fff;
+    font-weight: 700;
+    box-sizing: border-box;
+    margin-top: 8px;
+
+}
+.template_list_title h2:first-child{
+    border-right:1px solid #fff ;
 }
 
     .template_list:after {

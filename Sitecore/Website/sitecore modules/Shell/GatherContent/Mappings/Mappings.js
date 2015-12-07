@@ -48,5 +48,9 @@ function ViewModel() {
         var id = getUrlVars()["id"];
         scForm.showModalDialog("/sitecore modules/shell/gathercontent/AddTemplate/AddTemplate.html?id=" + id, null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:495;dialogMinWidth:600;dialogWidth:800;dialogHeight:495;header: Setup template mapping");
     }
+
 }
+jQuery(window).resize(function(){
+    jQuery(".table_mappings_scroll").css("max-height",jQuery(".gathercontent-dialog").height()-160)
+})
 

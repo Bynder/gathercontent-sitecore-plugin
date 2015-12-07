@@ -23,8 +23,10 @@
 <div class="gathercontent-dialog">
     <p>You can map templates from multiple GatherContent projects into Sitecore</p>
 
-    <div style="display: inline">GatherContent Project</div>
-    <div style="display: inline;position: absolute;left: 50%;">Project Templates</div>
+    <div class="template_list_title" >
+            <h2>GatherContent Project</h2>
+            <h2>Project Templates</h2>
+    </div>
     <ul data-bind="foreach: { data: Projects }" class="template_list">
         <!-- ko if: $index()===0 -->
         <li class="project-item active">

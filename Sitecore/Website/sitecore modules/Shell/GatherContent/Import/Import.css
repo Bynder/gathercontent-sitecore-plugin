@@ -36,7 +36,12 @@ body {
     padding: 10px 20px 0;
     width: 100%;
 }
-
+.footer_btn input[type="checkbox"]{
+    display: block;
+    float: left;
+    margin-top: -1px;
+    margin-right: 5px;
+}
 .gathercontent-import {
 }
 
@@ -73,36 +78,32 @@ body {
             color: #777777;
         }
 
-Firefox 19 + .search_filter input:-moz-placeholder {
+ .search_filter input:-moz-placeholder {
     color: #777777;
 }
 
-Firefox 18- .search_filter input:-ms-input-placeholder {
+.search_filter input:-ms-input-placeholder {
     color: #777777;
 }
 
 .custom_select {
     -webkit-appearance: none;
     background-image: url('/sitecore modules/shell/gathercontent/img/arrow_select.png');
-    background-position-y: center;
     background-repeat: no-repeat;
-    -ms-background-position-x: 95%;
-    background-position-x: 95%;
+    background-position:95% 50%;
     -webkit-background-size: 95%;
     background-size: 8px;
-    for FF -moz-appearance: none;
-    for IE -ms-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
     appearance: none !important;
     display: block;
     width: 210px;
     box-sizing: border-box;
     padding-left: 10px;
     padding-right: 25px;
-    padding-right: 25px;
     overflow: hidden;
     border: 1px solid #808080;
     background-color: #fff;
-    box-sizing: border-box;
     height: 30px;
     color: #808080;
     vertical-align: middle;
@@ -251,15 +252,18 @@ table thead th div {
     min-height: 18px;
 }
 
-table thead th:first-child div, table.table_point thead th:nth-child(2) div {
+
+table thead th.checkbox_table+th div,table thead th.checkbox_table div,table thead th:first-child div{
     border-left: none;
     text-align: center;
 }
-
-table thead th:first-child div {
+table thead th.checkbox_table div {
     margin-top: 6px;
 }
-
+table thead th.checkbox_table{
+    margin: 0;
+    width: 25px;
+}
 table thead th {
     height: 0;
     line-height: 0;
@@ -271,10 +275,6 @@ table thead th {
     padding: 0 8px 0 0;
     overflow: hidden;
 }
-
-    table thead th:nth-child(1) {
-        width: 25px;
-    }
 
     table thead th:nth-child(4) {
         width: 150px;

@@ -16,6 +16,11 @@
 </script>
 
 <div data-bind="if: getMode(1)" class="gathercontent-import">
+
+    <div class="filter_wrapper_import">
+        <div class="title_filter">PROJECT</div>
+        <select class="custom_select" data-bind="options: projects, ptionsText: 'name', optionsValue: 'name', value: projectFilter, optionsCaption: 'PROJECT', event:{ change: $root.filter}"></select>
+    </div>
     <div class="filter_wrapper">
         <div class="filter_wrapper_import">
             <div class="title_filter">FILTER</div>
@@ -26,6 +31,7 @@
             <input placeholder="FILTER BY ITEM NAME (SEARCH)" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
         </div>
     </div>
+
     <div class="table_import_wrapper">
         <div class="table_import_scroll">
             <table class="table_point">
@@ -177,7 +183,9 @@
     <span data-bind="text: successImportedItemsCount()"></span> items were updated successfully.
 
     <div data-bind="if: items().length > 0">
-        <span data-bind="text: items().length"></span> items were not updated. Check errors below.
+        <div data-bind="if: notUpdaredItemsCount() > 0">
+            <span data-bind="text: notUpdaredItemsCount()"></span> items were not updated. Check errors below.
+        </div>
         <div class="table_import_wrapper">
             <div class="table_import_scroll">
                 <table>
@@ -210,7 +218,7 @@
                 </table>
             </div>
         </div>
-        <div>
+        <div data-bind="if: notUpdaredItemsCount() > 0">
             Templated not mapped: Please check template mapping.<br />
             Template fields mismatch: Pleace check fields in mapping for current template.
         </div>

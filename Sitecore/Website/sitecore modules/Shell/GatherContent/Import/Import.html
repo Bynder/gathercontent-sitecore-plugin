@@ -64,7 +64,8 @@
                 <tbody data-bind="foreach: items">
                     <tr data-bind="click: $root.checkRow">
                         <td><input type="checkbox" data-bind="checked: Checked, click: function(){return true}, clickBubble: false" /></td>
-                        <td data-bind="text: Status.name, style: { color: Status.color }"></td>
+                        <!--<td data-bind="text: Status.name, style: { color: Status.color }"></td>-->
+                        <td data-bind="text: Status.name"></td>
                         <td data-bind="text: Title"></td>
                         <td data-bind="text: LastUpdatedInGC"></td>
                         <td data-bind="text: Breadcrumb"></td>
@@ -113,7 +114,8 @@
                 </thead>
                 <tbody data-bind="foreach: items">
                     <tr>
-                        <td data-bind="text: Status.name, style: { color: Status.color }"></td>
+                        <!--<td data-bind="text: Status.name, style: { color: Status.color }"></td>-->
+                        <td data-bind="text: Status.name"></td>
                         <td data-bind="text: Title"></td>
                         <td data-bind="text: Template.name"></td>
                     </tr>
@@ -124,7 +126,8 @@
     <div class="footer_btn">
         <div>
             <input type="checkbox" data-bind="checked: statusPostState" />
-            After successful import change status of item to <select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender"></select> inside your GatherContent account.
+            After successful import change status of item to <select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter"></select> inside your GatherContent account.
+            <!--, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender-->
         </div>
         <input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 1)" />
         <input type="button" value="Import>" data-bind="click: buttonClick.bind($data, 3)" />
@@ -147,7 +150,9 @@
     <h2 class="title">Import complete: Results.</h2>
     <span data-bind="text: successImportedItemsCount()"></span> items were imported successfully.
     <div data-bind="if: items().length > 0">
-        <span data-bind="text: items().length"></span> items were not imported. Check errors below.
+        <div data-bind="if: notImportedItemsCount() > 0">
+            <span data-bind=" text: notImportedItemsCount()"></span> items were not imported. Check errors below.
+        </div>
         <div class="table_import_wrapper">
             <div class="table_import_scroll">
                 <table>
@@ -173,7 +178,8 @@
                     </thead>
                     <tbody data-bind="foreach: items">
                         <tr>
-                            <td data-bind="text: Status.name, style: { color: Status.color }"></td>
+                            <!--<td data-bind="text: Status.name, style: { color: Status.color }"></td>-->
+                            <td data-bind="text: Status.name"></td>
                             <td data-bind="text: Title"></td>
                             <td data-bind="text: Message, style: { color: $root.getImportResultMessageColor($data) }"></td>
                             <td data-bind="text: GCTemplate, style: { color: $root.getImportResultTemplateColor($data) }"></td>
@@ -182,9 +188,9 @@
                 </table>
             </div>
         </div>
-        <div>
-            <span>Templated not mapped</span>: Please check template mapping.<br />
-            Template fields mismatch: Pleace check fields in mapping for current template.
+        <div data-bind="if: notImportedItemsCount() > 0">
+            <span>Templated not mapped:</span> Please check template mapping.<br />
+            <span>Template fields mismatch:</span> Pleace check fields in mapping for current template.
         </div>
     </div>
     <div class="footer_btn">

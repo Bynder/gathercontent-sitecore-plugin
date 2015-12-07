@@ -40,17 +40,18 @@ namespace GatherContent.Connector.Managers.Managers
             List<GCTemplate> templates;
             List<GCStatus> statuses;
             List<UpdateListItem> models;
-            TryToGetModelData(cmsItems, out templates, out statuses, out models);
-            
-            var result = new SelectItemsForUpdateModel(models, statuses, templates);
+            List<Project> projects;
+            TryToGetModelData(cmsItems, out templates, out statuses, out models, out projects);
+
+            var result = new SelectItemsForUpdateModel(models, statuses, templates, projects);
             return result;
         }
 
-        private bool TryToGetModelData(List<CMSUpdateItem> cmsItems, out List<GCTemplate> templates, out List<GCStatus> statuses, out List<UpdateListItem> items)
+        private bool TryToGetModelData(List<CMSUpdateItem> cmsItems, out List<GCTemplate> templates, out List<GCStatus> statuses, out List<UpdateListItem> items, out List<Project> projects)
         {
-            var projects = new Dictionary<int, Project>();
+            var projectsDictionary = new Dictionary<int, Project>();
             var templatesDictionary = new Dictionary<int, GCTemplate>();
-            
+
             statuses = new List<GCStatus>();
             items = new List<UpdateListItem>();
 
@@ -60,7 +61,7 @@ namespace GatherContent.Connector.Managers.Managers
                 if (entity != null)
                 {
                     GCItem gcItem = entity.Data;
-                    Project project = GetProject(projects, gcItem.ProjectId);
+                    Project project = GetProject(projectsDictionary, gcItem.ProjectId);
                     if (gcItem.TemplateId.HasValue)
                     {
                         GCTemplate template = GetTemplate(templatesDictionary, gcItem.TemplateId.Value);
@@ -77,8 +78,9 @@ namespace GatherContent.Connector.Managers.Managers
 
                 }
             }
-            
+
             templates = templatesDictionary.Values.ToList();
+            projects = projectsDictionary.Values.ToList();
 
             return true;
         }
@@ -116,7 +118,9 @@ namespace GatherContent.Connector.Managers.Managers
         {
             List<GCItem> gcItems = GetGCItemsByModels(models);
             List<MappingResultModel> resultItems = _mappingManager.MapItems(gcItems);
-            _itemsRepository.UpdateItems(resultItems);
+            List<MappingResultModel> successfulyUpdated = resultItems.Where(i => i.IsImportSuccessful).ToList();
+
+            _itemsRepository.UpdateItems(successfulyUpdated);
 
             var result = new UpdateResultModel(resultItems);
 

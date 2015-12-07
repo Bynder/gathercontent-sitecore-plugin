@@ -13,14 +13,18 @@
 
     self.errorText = ko.observable(),
     self.successImportedItemsCount = ko.observable(),
+    self.notUpdaredItemsCount = ko.observable(),
+
     self.currentMode = ko.observable(MODE.ChooseItmesForImort);
 
     self.items = ko.observableArray([]),
     self.statuses = ko.observableArray([]),
     self.templates = ko.observableArray([]),
+    self.projects = ko.observableArray([]),
 
     self.statusPostState = ko.observable(false),
 
+    self.projectFilter = ko.observable(),
     self.statusFilter = ko.observable(),
     self.templateFilter = ko.observable(),
 
@@ -59,7 +63,7 @@
         allItems = items.slice(0);
         
         self.statuses(response.Filters.Statuses);
-
+        self.projects(response.Filters.Projects);
         self.templates(response.Filters.Templates);
     }
     
@@ -77,6 +81,7 @@
         currentCollection = self.search(currentCollection);
         currentCollection = self.filterByStatus(currentCollection);
         currentCollection = self.filterByTemplate(currentCollection);
+        currentCollection = self.filterByProject(currentCollection);
 
         self.items(currentCollection);
         jQuery(".tooltip").remove();
@@ -96,6 +101,21 @@
             }
         }
 
+        return resultCollection;
+    },
+
+    self.filterByProject = function (currentCollection) {
+        var resultCollection = currentCollection;
+        var value = self.projectFilter();
+        if (value) {
+            resultCollection = [];
+            for (var i = 0; i < currentCollection.length; i++) {
+                var currentElement = currentCollection[i];
+                if (currentElement.ProjectName === value) {
+                    resultCollection.push(currentElement);
+                }
+            }
+        }
         return resultCollection;
     },
 
@@ -210,8 +230,9 @@
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(items),
             success: function (response) {
-                var count = self.items().length - response.Items.length;
-                self.successImportedItemsCount(count);
+                var notUpdatedCount = self.getNotUpdatedItemsCount(response.Items);
+                self.successImportedItemsCount(response.Items.length - notUpdatedCount);
+                self.notUpdaredItemsCount(notUpdatedCount);
                 self.items(response.Items);
                 self.buttonClick(MODE.ImportResult);
             },
@@ -219,6 +240,16 @@
                 self.errorCallbackHandle(response);
             }
         });
+    }
+
+    self.getNotUpdatedItemsCount = function (items) {
+        var count = 0;
+        items.forEach(function (item) {
+            if (!item.IsImportSuccessful)
+                count++;
+        });
+
+        return count;
     }
 
     self.close = function () {

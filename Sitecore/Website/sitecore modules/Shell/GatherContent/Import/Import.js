@@ -13,6 +13,7 @@
 
     self.errorText = ko.observable(),
     self.successImportedItemsCount = ko.observable(),
+    self.notImportedItemsCount = ko.observable(),
     self.currentMode = ko.observable(MODE.ChooseItmesForImort);
 
     self.projects = ko.observableArray([]),
@@ -35,7 +36,7 @@
         self.initRequestHandler(callbackFunction);
     },
 
-     self.initRequestHandler = function (callbackFunction) {
+    self.initRequestHandler = function (callbackFunction) {
          var id = getUrlVars()["id"];
          var project = self.project();
          project = project ? project : 0;
@@ -44,13 +45,13 @@
              callbackFunction(response);
              jQuery(".preloader").hide();
              initTooltip();
-         }).error(function(response) {
+         }).error(function (response) {
              self.errorCallbackHandle(response);
          });
          document_resize();
      }
 
-    self.errorCallbackHandle = function(response) {
+    self.errorCallbackHandle = function (response) {
         jQuery(".preloader").hide();
         self.errorText(response.responseJSON);
         self.buttonClick(MODE.Error);
@@ -178,23 +179,23 @@
         return counter;
     });
 
-    self.afterStatusesSelectRender = function (option, status) {
-        if (status.color) {
-            option.style.color = status.color;
-        }
-    };
+    //self.afterStatusesSelectRender = function (option, status) {
+    //    if (status.color) {
+    //        option.style.color = status.color;
+    //    }
+    //};
 
-    self.getSelectedStatusColor = function () {
-        var result = "";
-        ko.utils.arrayForEach(self.statuses(), function (status) {
-            if (status.id.toLowerCase() === self.statusFilter()) {
-                result = status.color;
-                return;
-            }
-        });
+    //self.getSelectedStatusColor = function () {
+    //    var result = "";
+    //    ko.utils.arrayForEach(self.statuses(), function (status) {
+    //        if (status.id.toLowerCase() === self.statusFilter()) {
+    //            result = status.color;
+    //            return;
+    //        }
+    //    });
 
-        return result;
-    }
+    //    return result;
+    //}
 
     self.checkRow = function () {
         this.Checked(!this.Checked());
@@ -228,8 +229,9 @@
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(items),
             success: function (response) {
-                var count = self.items().length - response.Items.length;
-                self.successImportedItemsCount(count);
+                var notImportedItemsCount = self.getNotImportedItemsCount(response.Items);
+                self.notImportedItemsCount(notImportedItemsCount);
+                self.successImportedItemsCount(response.Items.length - notImportedItemsCount);
                 self.items(response.Items);
                 self.buttonClick(MODE.ImportResult);
             },
@@ -237,6 +239,16 @@
                 self.errorCallbackHandle(response);
             }
         });
+    }
+
+    self.getNotImportedItemsCount = function (items) {
+        var count = 0;
+        items.forEach(function(item) {
+            if (!item.IsImportSuccessful)
+                count++;
+        });
+
+        return count;
     }
 
     self.close = function () {
@@ -291,6 +303,6 @@
             return 'red';
         return 'green';
     }
-    
+
     self.init();
 }

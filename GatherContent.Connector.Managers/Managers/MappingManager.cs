@@ -332,7 +332,7 @@ namespace GatherContent.Connector.Managers.Managers
             if (item is UpdateGCItem)
                 cmsId = (item as UpdateGCItem).CMSId;
 
-            result = new MappingResultModel(item, fields, gcTemplate.Name, template.CMSTemplateId, cmsId);
+            result = new MappingResultModel(item, fields, gcTemplate.Name, template.CMSTemplateId, cmsId, "Import Successful");
         }
 
         private TryMapItemState TryGetTemplate(List<MappingTemplateModel> templates, string templateId, out MappingTemplateModel result)

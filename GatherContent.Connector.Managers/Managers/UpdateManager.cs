@@ -41,7 +41,7 @@ namespace GatherContent.Connector.Managers.Managers
             List<GCStatus> statuses;
             List<UpdateListItem> models;
             TryToGetModelData(cmsItems, out templates, out statuses, out models);
-            
+
             var result = new SelectItemsForUpdateModel(models, statuses, templates);
             return result;
         }
@@ -50,7 +50,7 @@ namespace GatherContent.Connector.Managers.Managers
         {
             var projects = new Dictionary<int, Project>();
             var templatesDictionary = new Dictionary<int, GCTemplate>();
-            
+
             statuses = new List<GCStatus>();
             items = new List<UpdateListItem>();
 
@@ -77,7 +77,7 @@ namespace GatherContent.Connector.Managers.Managers
 
                 }
             }
-            
+
             templates = templatesDictionary.Values.ToList();
 
             return true;
@@ -116,9 +116,12 @@ namespace GatherContent.Connector.Managers.Managers
         {
             List<GCItem> gcItems = GetGCItemsByModels(models);
             List<MappingResultModel> resultItems = _mappingManager.MapItems(gcItems);
-            _itemsRepository.UpdateItems(resultItems);
+            List<MappingResultModel> successfulyUpdated = resultItems.Where(i => i.IsImportSuccessful).ToList();
+            List<MappingResultModel> updatedWithError = resultItems.Except(successfulyUpdated).ToList();
 
-            var result = new UpdateResultModel(resultItems);
+            _itemsRepository.UpdateItems(successfulyUpdated);
+
+            var result = new UpdateResultModel(updatedWithError);
 
             return result;
         }

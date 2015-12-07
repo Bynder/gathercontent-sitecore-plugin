@@ -106,7 +106,7 @@ namespace GatherContent.Connector.Managers.Managers
 
             if (!string.IsNullOrEmpty(statusId))
             {
-                //PostNewStatusesForItems(successfulImportedItems, statusId);
+                PostNewStatusesForItems(successfulImportedItems, statusId);
             }
 
             List<MappingResultModel> importedWithErrorItems = cmsItems.Except(successfulImportedItems).ToList();

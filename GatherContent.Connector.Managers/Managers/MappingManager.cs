@@ -155,7 +155,7 @@ namespace GatherContent.Connector.Managers.Managers
                     var template = _templateService.GetSingleTemplate(mapping.GcTemplateId);
                     if (template == null)
                     {
-                        mapping.LastUpdatedDate = "Removed from GC";
+                        mapping.LastUpdatedDate = "Removed from GatherContent ";
                         mapping.RemovedFromGc = true;
                     }
                     else
@@ -174,7 +174,7 @@ namespace GatherContent.Connector.Managers.Managers
                 }
                 catch
                 {
-                    mapping.LastUpdatedDate = "Removed from GC";
+                    mapping.LastUpdatedDate = "Removed from GatherContent ";
                     mapping.RemovedFromGc = true;
                 }
 

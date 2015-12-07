@@ -49,6 +49,7 @@
     <Compile Include="Managers\BaseManager.cs" />
     <Compile Include="Managers\ImportManager.cs" />
     <Compile Include="Managers\MappingManager.cs" />
+    <Compile Include="Managers\TestConnectionManager.cs" />
     <Compile Include="Managers\UpdateManager.cs" />
     <Compile Include="Models\ImportItems\FiltersModel.cs" />
     <Compile Include="Models\ImportItems\ImportListItem.cs" />

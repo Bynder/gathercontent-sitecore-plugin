@@ -136,6 +136,8 @@
     <Content Include="sitecore modules\Shell\GatherContent\img\arrow_select.png" />
     <Content Include="sitecore modules\Shell\GatherContent\img\bkt_left.png" />
     <Content Include="sitecore modules\Shell\GatherContent\img\bkt_right.png" />
+    <Content Include="sitecore modules\Shell\GatherContent\TestConnection\testconnection.html" />
+    <Content Include="sitecore modules\Shell\GatherContent\TestConnection\testconnection.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Update\Update.css" />
     <Content Include="sitecore modules\Shell\GatherContent\Update\Update.html" />
     <Content Include="sitecore modules\Shell\GatherContent\Update\Update.js" />
@@ -150,6 +152,7 @@
     <Compile Include="App_Start\RegisterHttpRoutes.cs" />
     <Compile Include="Commands\ImportCommand.cs" />
     <Compile Include="Commands\AddTemplateCommand.cs" />
+    <Compile Include="Commands\TestConnectionCommand.cs" />
     <Compile Include="Commands\MappingsCommand.cs" />
     <Compile Include="Commands\UpdateCommand.cs" />
     <Compile Include="Controllers\TemplatesController.cs" />

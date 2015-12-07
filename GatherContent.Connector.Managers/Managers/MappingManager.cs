@@ -329,10 +329,14 @@ namespace GatherContent.Connector.Managers.Managers
             }
 
             string cmsId = string.Empty;
+            string message = "Import Successful";
             if (item is UpdateGCItem)
+            {
                 cmsId = (item as UpdateGCItem).CMSId;
+                message = "Update Successful";
+            }
 
-            result = new MappingResultModel(item, fields, gcTemplate.Name, template.CMSTemplateId, cmsId, "Import Successful");
+            result = new MappingResultModel(item, fields, gcTemplate.Name, template.CMSTemplateId, cmsId, message);
         }
 
         private TryMapItemState TryGetTemplate(List<MappingTemplateModel> templates, string templateId, out MappingTemplateModel result)

@@ -307,6 +307,8 @@ namespace GatherContent.Connector.Managers.Managers
 
         private void TryMapItem(GCItem item, GCTemplate gcTemplate, List<MappingTemplateModel> templates, out MappingResultModel result)
         {
+            bool isUpdate = item is UpdateGCItem;
+
             List<Element> gcFields = item.Config.SelectMany(i => i.Elements).ToList();
 
             MappingTemplateModel template;
@@ -314,7 +316,8 @@ namespace GatherContent.Connector.Managers.Managers
 
             if (templateMapState == TryMapItemState.TemplateError)
             {
-                result = new MappingResultModel(item, null, gcTemplate.Name, null, string.Empty, "Template not mapped", false);
+                string errorMessage = isUpdate ? "Update failed: Template not mapped" : "Import failed: Template not mapped";
+                result = new MappingResultModel(item, null, gcTemplate.Name, null, string.Empty, errorMessage, false);
                 return;
             }
 
@@ -324,13 +327,14 @@ namespace GatherContent.Connector.Managers.Managers
             TryMapItemState mapState = TryMapFields(gcFields, groupedFields, out fields);
             if (mapState == TryMapItemState.FieldError)
             {
-                result = new MappingResultModel(item, null, gcTemplate.Name, null, string.Empty, "Template fields mismatch", false);
+                string errorMessage = isUpdate ? "Update failed: Template fields mismatch" : "Import failed: Template fields mismatch";
+                result = new MappingResultModel(item, null, gcTemplate.Name, null, string.Empty, errorMessage, false);
                 return;
             }
 
             string cmsId = string.Empty;
             string message = "Import Successful";
-            if (item is UpdateGCItem)
+            if (isUpdate)
             {
                 cmsId = (item as UpdateGCItem).CMSId;
                 message = "Update Successful";

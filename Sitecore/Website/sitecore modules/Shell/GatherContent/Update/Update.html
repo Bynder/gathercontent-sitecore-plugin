@@ -74,7 +74,8 @@
                 <tbody data-bind="foreach: items">
                     <tr data-bind="click: $root.checkRow">
                         <td><input type="checkbox" data-bind="checked: Checked, click: function(){return true}, clickBubble: false" /></td>
-                        <td data-bind="text: Status.name, style: { color: Status.color }"></td>
+                        <!--<td data-bind="text: Status.name, style: { color: Status.color }"></td>-->
+                        <td data-bind="text: Status.name"></td>
                         <td data-bind="text: Title"></td>
                         <td data-bind="text: ProjectName"></td>
                         <td data-bind="text: LastUpdatedInGC, css: { dateWarning: $data.IsNeedToHighlightingDate }"></td>
@@ -101,7 +102,7 @@
 <div data-bind="if: getMode(2)">
     <div>
         <h2 class="title">Confirm update selection (<span data-bind="text: getCheckedCount"></span> items)</h2>
-        <p>Please review your update selection before updating.</p>
+        <p>You're about to overwrite Sitecore content with new content from GatherContent. Please review your selection before updating your content.</p>
     </div>
 
     <div class="table_import_wrapper">
@@ -141,7 +142,8 @@
                 </thead>
                 <tbody data-bind="foreach: items">
                     <tr>
-                        <td data-bind="text: Status.name, style: { color: Status.color }"></td>
+                        <!--<td data-bind="text: Status.name, style: { color: Status.color }"></td>-->
+                        <td data-bind="text: Status.name"></td>
                         <td data-bind="text: Title"></td>
                         <td data-bind="text: ProjectName"></td>
                         <td data-bind="text: LastUpdatedInGC, style: { color: $root.getDateColor($data)}"></td>
@@ -209,7 +211,8 @@
                     </thead>
                     <tbody data-bind="foreach: items">
                         <tr>
-                            <td data-bind="text: Status.name, style: { color: Status.color }"></td>
+                            <!--<td data-bind="text: Status.name, style: { color: Status.color }"></td>-->
+                            <td data-bind="text: Status.name"></td>
                             <td data-bind="text: Title"></td>
                             <td data-bind="text: Message, style: { color: $root.getImportResultMessageColor($data) }"></td>
                             <td data-bind="text: GCTemplate, style: { color: $root.getImportResultTemplateColor($data) }"></td>

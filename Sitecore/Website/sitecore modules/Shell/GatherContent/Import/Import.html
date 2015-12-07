@@ -64,7 +64,8 @@
                 <tbody data-bind="foreach: items">
                     <tr data-bind="click: $root.checkRow">
                         <td><input type="checkbox" data-bind="checked: Checked, click: function(){return true}, clickBubble: false" /></td>
-                        <td data-bind="text: Status.name, style: { color: Status.color }"></td>
+                        <!--<td data-bind="text: Status.name, style: { color: Status.color }"></td>-->
+                        <td data-bind="text: Status.name"></td>
                         <td data-bind="text: Title"></td>
                         <td data-bind="text: LastUpdatedInGC"></td>
                         <td data-bind="text: Breadcrumb"></td>
@@ -113,7 +114,8 @@
                 </thead>
                 <tbody data-bind="foreach: items">
                     <tr>
-                        <td data-bind="text: Status.name, style: { color: Status.color }"></td>
+                        <!--<td data-bind="text: Status.name, style: { color: Status.color }"></td>-->
+                        <td data-bind="text: Status.name"></td>
                         <td data-bind="text: Title"></td>
                         <td data-bind="text: Template.name"></td>
                     </tr>
@@ -124,7 +126,8 @@
     <div class="footer_btn">
         <div>
             <input type="checkbox" data-bind="checked: statusPostState" />
-            After successful import change status of item to <select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender"></select> inside your GatherContent account.
+            After successful import change status of item to <select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter"></select> inside your GatherContent account.
+            <!--, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender-->
         </div>
         <input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 1)" />
         <input type="button" value="Import>" data-bind="click: buttonClick.bind($data, 3)" />
@@ -175,7 +178,8 @@
                     </thead>
                     <tbody data-bind="foreach: items">
                         <tr>
-                            <td data-bind="text: Status.name, style: { color: Status.color }"></td>
+                            <!--<td data-bind="text: Status.name, style: { color: Status.color }"></td>-->
+                            <td data-bind="text: Status.name"></td>
                             <td data-bind="text: Title"></td>
                             <td data-bind="text: Message, style: { color: $root.getImportResultMessageColor($data) }"></td>
                             <td data-bind="text: GCTemplate, style: { color: $root.getImportResultTemplateColor($data) }"></td>

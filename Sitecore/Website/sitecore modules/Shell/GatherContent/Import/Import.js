@@ -179,23 +179,23 @@
         return counter;
     });
 
-    self.afterStatusesSelectRender = function (option, status) {
-        if (status.color) {
-            option.style.color = status.color;
-        }
-    };
+    //self.afterStatusesSelectRender = function (option, status) {
+    //    if (status.color) {
+    //        option.style.color = status.color;
+    //    }
+    //};
 
-    self.getSelectedStatusColor = function () {
-        var result = "";
-        ko.utils.arrayForEach(self.statuses(), function (status) {
-            if (status.id.toLowerCase() === self.statusFilter()) {
-                result = status.color;
-                return;
-            }
-        });
+    //self.getSelectedStatusColor = function () {
+    //    var result = "";
+    //    ko.utils.arrayForEach(self.statuses(), function (status) {
+    //        if (status.id.toLowerCase() === self.statusFilter()) {
+    //            result = status.color;
+    //            return;
+    //        }
+    //    });
 
-        return result;
-    }
+    //    return result;
+    //}
 
     self.checkRow = function () {
         this.Checked(!this.Checked());

@@ -197,20 +197,20 @@ table {
         font-size: 1em;
     }
 
-        table tbody tr td:nth-child(1):before {
-            content: "";
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background-color: currentColor;
-            margin-right: 4px;
-        }
+        /*table tbody tr td:nth-child(1):before {*/
+            /*content: "";*/
+            /*display: inline-block;*/
+            /*width: 10px;*/
+            /*height: 10px;*/
+            /*background-color: currentColor;*/
+            /*margin-right: 4px;*/
+        /*}*/
 
-    table.table_point tbody tr td:nth-child(1):before {
-        content: none;
-    }
+    /*table.table_point tbody tr td:nth-child(1):before {*/
+        /*content: none;*/
+    /*}*/
 
-    table.table_point tbody tr td span:first-child {
+    table tbody tr td span:first-child {
         display: inline-block;
         width: 10px;
         height: 10px;

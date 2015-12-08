@@ -210,12 +210,10 @@ table {
         content: none;
     }
 
-    table.table_point tbody tr td:nth-child(2):before {
-        content: "";
+    table.table_point tbody tr td span:first-child {
         display: inline-block;
         width: 10px;
         height: 10px;
-        background-color: currentColor;
         margin-right: 4px;
     }
 

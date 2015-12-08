@@ -65,7 +65,7 @@
                     <tr data-bind="click: $root.checkRow">
                         <td><input type="checkbox" data-bind="checked: Checked, click: function(){return true}, clickBubble: false" /></td>
                         <!--<td data-bind="text: Status.name, style: { color: Status.color }"></td>-->
-                        <td data-bind="text: Status.name"></td>
+                        <td><span data-bind="style: { backgroundColor : Status.color }"></span><span data-bind="text: Status.name"></span></td>
                         <td data-bind="text: Title"></td>
                         <td data-bind="text: LastUpdatedInGC"></td>
                         <td data-bind="text: Breadcrumb"></td>

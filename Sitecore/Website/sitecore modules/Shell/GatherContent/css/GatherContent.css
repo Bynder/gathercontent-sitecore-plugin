@@ -318,7 +318,7 @@ table {
     }
 
 .tabs_mapping {
-    width: 80%;
+    width: 100%;
     margin: 0 auto;
 }
 /*add template*/
@@ -343,7 +343,7 @@ table {
 }
 .template_list_title h2{
     margin: 0;
-    width: 50%;
+    width: 49%;
     float: left;
     padding-left: 10px;
     color:#fff;
@@ -431,4 +431,11 @@ table {
 
 .dateWarning {
     color: #FFBB00 !important;
+}
+.sitecore-template-select {
+    width: 200px;
+    padding-left: 5px;
+}
+.fields-mapping-padding {
+    padding: 0 33px;
 }

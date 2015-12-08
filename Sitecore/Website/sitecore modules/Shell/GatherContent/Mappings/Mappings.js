@@ -4,16 +4,9 @@ function ViewModel() {
 
     this.mappings = ko.observableArray();
 
-
-    jQuery.ajax({
-        type: 'GET',
-        url: '/sitecore/api/mappings',
-        dataType: 'json',
-        success: function (data) {
-            self.mappings(data);
-            jQuery(".preloader").hide();
-        },
-        async: false
+    jQuery.getJSON('/sitecore/api/mappings', null, function (data) {
+        self.mappings(data);
+        jQuery(".preloader").hide();
     });
 
 
@@ -47,6 +40,11 @@ function ViewModel() {
     addMoreTemplates = function () {
         var id = getUrlVars()["id"];
         scForm.showModalDialog("/sitecore modules/shell/gathercontent/AddTemplate/AddTemplate.html?id=" + id, null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:495;dialogMinWidth:600;dialogWidth:800;dialogHeight:495;header: Setup template mapping");
+    }
+
+
+    openImportPopup = function () {
+        scForm.showModalDialog("/sitecore modules/shell/gathercontent/import/import.html", null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:400;dialogMinWidth:881;dialogWidth:1200;dialogHeight:700;header: Import Content from GatherContent");
     }
 
 }

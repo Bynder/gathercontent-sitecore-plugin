@@ -22,7 +22,7 @@
 </script>
 
 <div class="gathercontent-dialog">
-    <p>
+    <p class="fields-mapping-padding">
         Choose the fields you wish to map from GatherContent into Sitecore. Only map the fields you need to import. We don't currently support Attachment Fields. This will be supported on future releases.
     </p>
     <div class="mapping_tabs_wrapper">
@@ -33,8 +33,8 @@
             <p data-bind="text: GcTemplateName" class="title_lvl2"></p>
         </div>
         <div style="float: right;" class="mapping_heading">
-            <div><span><strong>Sitecore:</strong></span></div>
-            <select class="custom_selected" style="width: 200px;" data-bind="options: SitecoreTemplates, optionsText: 'SitrecoreTemplateName', value: SelectedTemplate, event:{ change: $root.templateChanged}"></select>
+            <div><span><strong>Sitecore Template:</strong></span></div>
+            <select class="custom_selected sitecore-template-select" data-bind="options: SitecoreTemplates, optionsText: 'SitrecoreTemplateName', value: SelectedTemplate, event:{ change: $root.templateChanged}"></select>
         </div>
         <div style="clear: both;"></div>
         <div data-bind="foreach: { data: Tabs, as: 'tab' } " class="tabs_mapping">
@@ -48,7 +48,7 @@
             </div>
         </div>
     </div>
-    <div class="footer_btn">
+    <div class="fields-mapping-padding">
         <input class="mappings-btn" id="AddMore" type="button" value="Save mapping configuration" data-bind="click: saveMapping" style="margin-top: 15px;" />
         <p>
             You can always change your mapping later

@@ -74,8 +74,7 @@
                 <tbody data-bind="foreach: items">
                     <tr data-bind="click: $root.checkRow">
                         <td><input type="checkbox" data-bind="checked: Checked, click: function(){return true}, clickBubble: false" /></td>
-                        <!--<td data-bind="text: Status.name, style: { color: Status.color }"></td>-->
-                        <td data-bind="text: Status.name"></td>
+                        <td><span data-bind="style: { backgroundColor : Status.color }"></span><span data-bind="text: Status.name"></span></td>
                         <td data-bind="text: Title"></td>
                         <td data-bind="text: ProjectName"></td>
                         <td data-bind="text: LastUpdatedInGC, css: { dateWarning: $data.IsNeedToHighlightingDate }"></td>
@@ -142,8 +141,7 @@
                 </thead>
                 <tbody data-bind="foreach: items">
                     <tr>
-                        <!--<td data-bind="text: Status.name, style: { color: Status.color }"></td>-->
-                        <td data-bind="text: Status.name"></td>
+                        <td><span data-bind="style: { backgroundColor : Status.color }"></span><span data-bind="text: Status.name"></span></td>
                         <td data-bind="text: Title"></td>
                         <td data-bind="text: ProjectName"></td>
                         <td data-bind="text: LastUpdatedInGC, style: { color: $root.getDateColor($data)}"></td>
@@ -211,8 +209,7 @@
                     </thead>
                     <tbody data-bind="foreach: items">
                         <tr>
-                            <!--<td data-bind="text: Status.name, style: { color: Status.color }"></td>-->
-                            <td data-bind="text: Status.name"></td>
+                            <td><span data-bind="style: { backgroundColor : Status.color }"></span><span data-bind="text: Status.name"></span></td>
                             <td data-bind="text: Title"></td>
                             <td data-bind="text: Message, style: { color: $root.getImportResultMessageColor($data) }"></td>
                             <td data-bind="text: GCTemplate, style: { color: $root.getImportResultTemplateColor($data) }"></td>

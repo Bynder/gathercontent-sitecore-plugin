@@ -50,12 +50,12 @@ namespace GatherContent.Connector.Website.Commands
 
             var options = new ModalDialogOptions(path)
             {
-                Width = "1200",
+                Width = "1600",
                 Height = "700",
                 MinWidth = "881",
                 MinHeight = "400",
                 Maximizable = false,
-                Header = "Update Content from GatherContent"
+                Header = "Pull Updated Content from GatherContent"
             };
 
             Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(options), "Shell");

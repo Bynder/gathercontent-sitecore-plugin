@@ -17,15 +17,12 @@
 
 <div data-bind="if: getMode(1)" class="gathercontent-import">
 
-    <div class="filter_wrapper_import">
-        <div class="title_filter">PROJECT</div>
-        <select class="custom_select" data-bind="options: projects, ptionsText: 'name', optionsValue: 'name', value: projectFilter, optionsCaption: 'PROJECT', event:{ change: $root.filter}"></select>
-    </div>
     <div class="filter_wrapper">
         <div class="filter_wrapper_import">
             <div class="title_filter">FILTER</div>
             <select class="custom_select" data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, optionsCaption: 'STATUS', event:{ change: $root.filter }"></select>
-            <select class="custom_select" data-bind="options: templates, optionsText: 'name', optionsValue: 'id', value: templateFilter, optionsCaption: 'TEMPLATE', event:{ change: $root.filter }"></select>
+            <select class="custom_select" style="width: 250px;" data-bind="options: projects, ptionsText: 'name', optionsValue: 'name', value: projectFilter, optionsCaption: 'GATHER CONTENT PROJECT', event:{ change: $root.filter}"></select>
+            <select class="custom_select" style="width: 250px;" data-bind="options: templates, optionsText: 'name', optionsValue: 'id', value: templateFilter, optionsCaption: 'GATHER CONTENT TEMPLATE', event:{ change: $root.filter }"></select>
         </div>
         <div class="search_filter">
             <input placeholder="FILTER BY ITEM NAME (SEARCH)" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
@@ -50,6 +47,10 @@
                             <div>Sitecore Title</div>
                         </th>
                         <th>
+                           GatherContent Item Name
+                            <div>GatherContent Item Name</div>
+                        </th>
+                        <th>
                             GatherContent Project
                             <div>GatherContent Project</div>
                         </th>
@@ -69,6 +70,14 @@
                             Sitecore Template
                             <div>Sitecore Template</div>
                         </th>
+                        <th>
+                            Open In Sitecore
+                            <div> Open In Sitecore</div>
+                        </th>
+                        <th>
+                            Open In GatherContent
+                            <div>Open In GatherContent</div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody data-bind="foreach: items">
@@ -76,11 +85,14 @@
                         <td><input type="checkbox" data-bind="checked: Checked, click: function(){return true}, clickBubble: false" /></td>
                         <td><span data-bind="style: { backgroundColor : Status.color }"></span><span data-bind="text: Status.name"></span></td>
                         <td data-bind="text: Title"></td>
+                        <td data-bind="text: GcItemName"></td>
                         <td data-bind="text: ProjectName"></td>
                         <td data-bind="text: LastUpdatedInGC, css: { dateWarning: $data.IsNeedToHighlightingDate }"></td>
                         <td data-bind="text: LastUpdatedInCMS, css: { dateWarning: $data.IsNeedToHighlightingDate }"></td>
                         <td data-bind="text: Template.name"></td>
                         <td data-bind="text: CMSTemplate"></td>
+                        <td><a data-bind="click: $root.openCmsLink, attr: { href: CmsLink, title: CmsLink },  text: CmsLink"></a></td>
+                        <td><a data-bind="click: $root.openGcLink, attr: { href: GcLink, title: GcLink },  text: GcLink"></a></td>
                     </tr>
                 </tbody>
             </table>
@@ -118,6 +130,10 @@
                             <div>Sitecore Title</div>
                         </th>
                         <th>
+                            GatherContent Item Name
+                            <div>GatherContent Item Name</div>
+                        </th>
+                        <th>
                             GatherContent Project
                             <div>GatherContent Project</div>
                         </th>
@@ -137,17 +153,28 @@
                             Sitecore Template
                             <div>Sitecore Template</div>
                         </th>
+                        <th>
+                            Open In Sitecore
+                            <div> Open In Sitecore</div>
+                        </th>
+                        <th>
+                            Open In GatherContent
+                            <div>Open In GatherContent</div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody data-bind="foreach: items">
                     <tr>
                         <td><span data-bind="style: { backgroundColor : Status.color }"></span><span data-bind="text: Status.name"></span></td>
                         <td data-bind="text: Title"></td>
+                        <td data-bind="text: GcItemName"></td>
                         <td data-bind="text: ProjectName"></td>
                         <td data-bind="text: LastUpdatedInGC, style: { color: $root.getDateColor($data)}"></td>
                         <td data-bind="text: LastUpdatedInCMS, style: { color: $root.getDateColor($data)}"></td>
                         <td data-bind="text: Template.name"></td>
                         <td data-bind="text: CMSTemplate"></td>
+                        <td><a data-bind="click: $root.openCmsLink, attr: { href: CmsLink, title: CmsLink },  text: CmsLink"></a></td>
+                        <td><a data-bind="click: $root.openGcLink, attr: { href: GcLink, title: GcLink },  text: GcLink"></a></td>
                     </tr>
                 </tbody>
             </table>

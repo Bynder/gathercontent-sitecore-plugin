@@ -19,6 +19,8 @@ namespace GatherContent.Connector.Managers.Models.UpdateItems
 
         public string Title { get; set; }
 
+        public string GcItemName { get; set; }
+
         public string LastUpdatedInGC { get; set; }
 
         public string LastUpdatedInCMS { get; set; }
@@ -27,13 +29,17 @@ namespace GatherContent.Connector.Managers.Models.UpdateItems
 
         public string CMSTemplate { get; set; }
 
+        public string CmsLink { get; set; }
+        public string GcLink { get; set; }
+
         public UpdateListItem() { }
 
-        public UpdateListItem(GCItem item, GCTemplate template, CMSUpdateItem cmsItem, string dateFormat, string projectName)
+        public UpdateListItem(GCItem item, GCTemplate template, CMSUpdateItem cmsItem, string dateFormat, string projectName, string cmsLink = null, string gcLink = null)
         {
             Checked = false;
 
             CMSId = cmsItem.CMSId;
+            GcItemName = item.Name;
             GCId = item.Id.ToString();
             Title = cmsItem.Title;
             Status = item.Status.Data;
@@ -45,6 +51,10 @@ namespace GatherContent.Connector.Managers.Models.UpdateItems
 
             LastUpdatedInCMS = cmsItem.LastUpdatedTime.ToString(dateFormat);
             LastUpdatedInGC = item.Updated.Date.ToString(dateFormat);
+
+
+            CmsLink = cmsLink;
+            GcLink = gcLink;
         }
     }
 }

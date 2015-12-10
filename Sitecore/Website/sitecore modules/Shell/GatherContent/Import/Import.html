@@ -84,6 +84,9 @@
         <input type="button" class="mappings-btn" value="Next>" data-bind="click: buttonClick.bind($data, 2)" />
         <!--<input type="button" value="Close" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" />-->
     </div>
+    <div class="help-link">
+        <a href="mailto:support@gathercontent.com">Need help?</a>
+    </div>
 </div>
 
 <div data-bind="if: getMode(2)">
@@ -131,7 +134,9 @@
         <input type="button" value="Import>" data-bind="click: buttonClick.bind($data, 3)" />
         <!--<input type="button" class="closeButton" value="Close" data-bind="click: buttonClick.bind($data, 5)" />-->
     </div>
-
+    <div class="help-link">
+        <a href="mailto:support@gathercontent.com">Need help?</a>
+    </div>
 
 </div>
 
@@ -146,10 +151,11 @@
 
 <div data-bind="if: getMode(4)">
     <h2 class="title">Import complete: Results.</h2>
+    <img src="~/icon/Apps/32x32/Right.png" width="20" height="20">
     <span data-bind="text: successImportedItemsCount()"></span> items were imported successfully.
     <div data-bind="if: items().length > 0">
-        <div data-bind="if: notImportedItemsCount() > 0">
-            <span data-bind=" text: notImportedItemsCount()"></span> items were not imported. Check errors below.
+        <div data-bind="if: notImportedItemsCount() > 0" class="import-padding">
+            <img src="~/icon/Apps/32x32/Warning (1).png" width="20" height="20"> <span data-bind=" text: notImportedItemsCount()"></span> items were not imported. Check errors below.
         </div>
         <div class="table_import_wrapper">
             <div class="table_import_scroll">
@@ -172,6 +178,14 @@
                                 Template name
                                 <div>Template name</div>
                             </th>
+                            <th>
+                                Open In Sitecore
+                                <div> Open In Sitecore</div>
+                            </th>
+                            <th>
+                                Open In GatherContent
+                                <div>Open In GatherContent</div>
+                            </th>
                         </tr>
                     </thead>
                     <tbody data-bind="foreach: items">
@@ -180,18 +194,23 @@
                         <td data-bind="text: Title"></td>
                         <td data-bind="text: Message, style: { color: $root.getImportResultMessageColor($data) }"></td>
                         <td data-bind="text: GCTemplate, style: { color: $root.getImportResultTemplateColor($data) }"></td>
+                        <td><a data-bind="click: $root.openCmsLink, attr: { href: CmsLink, title: CmsLink },  text: CmsLink"></a></td>
+                        <td><a data-bind="click: $root.openGcLink, attr: { href: GcLink, title: GcLink },  text: GcLink"></a></td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-        <div data-bind="if: notImportedItemsCount() > 0">
-            <span>Templated not mapped:</span> Please check template mapping.<br />
-            <span>Template fields mismatch:</span> Pleace check fields in mapping for current template.
+        <div data-bind="if: notImportedItemsCount() > 0" class="import-padding">
+            <span>Template not mapped:</span> Please check template mapping.<br />
+            <span>Template fields mismatch:</span> This could be because the template in GatherContent has changed and the changed template has not been updated on Sitecore.
         </div>
     </div>
     <div class="footer_btn">
         <input type="button" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" value="Close" />
+    </div>
+    <div class="help-link">
+        <a href="mailto:support@gathercontent.com">Need help?</a>
     </div>
 </div>
 
@@ -199,6 +218,9 @@
     <h2 class="title"><span data-bind="text: errorText"></span></h2>
     <div class="footer_btn">
         <input type="button" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" value="Close" />
+    </div>
+    <div class="help-link">
+        <a href="mailto:support@gathercontent.com">Need help?</a>
     </div>
 </div>
 

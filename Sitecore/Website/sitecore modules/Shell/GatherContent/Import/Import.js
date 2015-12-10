@@ -304,5 +304,17 @@
         return 'green';
     }
 
+    self.openCmsLink = function (data, e) {
+        var link = data.CmsLink;
+        window.open(link);
+        e.stopImmediatePropagation();
+    }
+
+    self.openGcLink = function (data, e) {
+        var link = data.GcLink;
+        window.open(link);
+        e.stopImmediatePropagation();
+    }
+
     self.init();
 }

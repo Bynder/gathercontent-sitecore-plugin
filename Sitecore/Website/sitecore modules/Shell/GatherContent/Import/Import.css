@@ -33,13 +33,12 @@ body {
     position: absolute;
     left: 0;
     bottom: 0;
-    padding: 10px 20px 0;
+    padding: 10px 20px 15px;
     width: 100%;
 }
 .footer_btn input[type="checkbox"]{
     display: block;
     float: left;
-    margin-top: -1px;
     margin-right: 5px;
 }
 .gathercontent-import {

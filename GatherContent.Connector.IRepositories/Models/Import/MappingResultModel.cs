@@ -20,11 +20,13 @@ namespace GatherContent.Connector.IRepositories.Models.Import
         public string CMSId { get; set; }
 
         public string CMSTemplateId { get; set; }
+        public string CmsLink { get; set; }
+        public string GcLink { get; set; }
 
         public List<ImportCMSField> Fields { get; set; }
 
         public MappingResultModel(GCItem item, List<ImportCMSField> fields, string template, string cmsTemplate, string cmsId = "", string message = "", bool isImportSuccessful = true)
-        {
+        {      
             GCItemId = item.Id.ToString();
             Status = item.Status.Data;
             Title = item.Name;

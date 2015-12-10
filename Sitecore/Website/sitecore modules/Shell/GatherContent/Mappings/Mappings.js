@@ -39,7 +39,7 @@ function ViewModel() {
 
     addMoreTemplates = function () {
         var id = getUrlVars()["id"];
-        scForm.showModalDialog("/sitecore modules/shell/gathercontent/AddTemplate/AddTemplate.html?id=" + id, null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:495;dialogMinWidth:600;dialogWidth:800;dialogHeight:495;header: Setup template mapping");
+        scForm.showModalDialog("/sitecore modules/shell/gathercontent/AddTemplate/AddTemplate.html?id=" + id, null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:550;dialogMinWidth:600;dialogWidth:800;dialogHeight:550;header: Setup template mapping");
     }
 
 

@@ -51,6 +51,12 @@ body {
 .footer_btn {
     position: absolute;
     left: 0;
+    bottom: 20px;
+    padding: 10px 20px;
+}
+.help-link {
+    position: absolute;
+    left: 0;
     bottom: 0;
     padding: 10px 20px;
 }
@@ -438,4 +444,7 @@ table {
 }
 .fields-mapping-padding {
     padding: 0 33px;
+}
+.import-padding {
+    padding: 15px 0;
 }

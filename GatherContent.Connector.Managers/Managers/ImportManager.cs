@@ -45,6 +45,7 @@ namespace GatherContent.Connector.Managers.Managers
             List<GCTemplate> templates = GetTemplates(project.Id);
             List<GCStatus> statuses = GetStatuses(project.Id);
             List<GCItem> items = GetItems(project.Id);
+            items = items.OrderBy(item => item.Status.Data.Name).ToList();
 
             List<ImportListItem> mappedItems = MapItems(items, templates);
 
@@ -107,6 +108,18 @@ namespace GatherContent.Connector.Managers.Managers
             if (!string.IsNullOrEmpty(statusId))
             {
                 PostNewStatusesForItems(successfulImportedItems, statusId);
+            }
+
+            foreach (var item in cmsItems)
+            {
+                if (successfulImportedItems.Contains(item))
+                {
+                    var cmsId = _itemsRepository.GetItemId(itemId, item.GCItemId);
+                    var cmsLink = string.Format("http://gathercontent.dev/sitecore/shell/Applications/Content Editor?fo={0}&sc_content=master", cmsId);
+                    var gcLink = "https://brimit.gathercontent.com/item/" + item.GCItemId;
+                    item.CmsLink = cmsLink;
+                    item.GcLink = gcLink;
+                }
             }
 
             var result = new ImportResultModel(cmsItems);

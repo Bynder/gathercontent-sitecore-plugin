@@ -93,5 +93,21 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 SetupFields(scItem, item);
             }
         }
+
+        public string GetItemId(string itemId, string gcItemId)
+        {
+            Item parentItem = GetItem(itemId);
+
+            if (parentItem != null)
+            {
+                var gcItem = parentItem.Axes.GetDescendants()
+                    .FirstOrDefault(item => item[GC_CONTENT_ID] == gcItemId);
+                if (gcItem != null)
+                    return gcItem.ID.ToString();
+            }
+            return null;
+        }
+
+
     }
 }

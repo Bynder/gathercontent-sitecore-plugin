@@ -115,7 +115,8 @@ namespace GatherContent.Connector.Managers.Managers
                 if (successfulImportedItems.Contains(item))
                 {
                     var cmsId = _itemsRepository.GetItemId(itemId, item.GCItemId);
-                    var cmsLink = string.Format("http://gathercontent.dev/sitecore/shell/Applications/Content Editor?fo={0}&sc_content=master", cmsId);
+                   
+                    var cmsLink = string.Format("{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master", Sitecore.Context.Site.HostName, cmsId);
                     var gcLink = "https://brimit.gathercontent.com/item/" + item.GCItemId;
                     item.CmsLink = cmsLink;
                     item.GcLink = gcLink;

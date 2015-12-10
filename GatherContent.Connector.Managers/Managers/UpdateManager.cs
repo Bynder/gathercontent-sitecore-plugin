@@ -67,8 +67,9 @@ namespace GatherContent.Connector.Managers.Managers
                     {
                         GCTemplate template = GetTemplate(templatesDictionary, gcItem.TemplateId.Value);
 
+
                         var gcLink = "https://brimit.gathercontent.com/item/" + gcItem.Id;
-                        var cmsLink = string.Format("http://gathercontent.dev/sitecore/shell/Applications/Content Editor?fo={0}&sc_content=master",cmsItem.CMSId);
+                        var cmsLink = string.Format("{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master", Sitecore.Context.Site.HostName, cmsItem.CMSId);
                         var listItem = new UpdateListItem(gcItem, template, cmsItem, _gcAccountSettings.DateFormat, project.Name, gcLink, cmsLink);
                         items.Add(listItem);
 

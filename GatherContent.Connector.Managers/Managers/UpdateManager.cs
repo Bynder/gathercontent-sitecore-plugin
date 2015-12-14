@@ -35,7 +35,6 @@ namespace GatherContent.Connector.Managers.Managers
 
         public SelectItemsForUpdateModel GetItemsForUpdate(string itemId)
         {
-            //http://gathercontent.dev/sitecore/shell/Applications/Content%20Editor?fo={246A39E4-35FF-4BC3-B66E-C562D8DB9DD5}&sc_content=master
             List<CMSUpdateItem> cmsItems = _itemsRepository.GetItemsForUpdate(itemId);
 
             List<GCTemplate> templates;
@@ -67,10 +66,13 @@ namespace GatherContent.Connector.Managers.Managers
                     {
                         GCTemplate template = GetTemplate(templatesDictionary, gcItem.TemplateId.Value);
 
-
-                        var gcLink = "https://brimit.gathercontent.com/item/" + gcItem.Id;
+                        string gcLink = null;
+                        if (!string.IsNullOrEmpty(_gcAccountSettings.GatherContentUrl))
+                        {
+                            gcLink = _gcAccountSettings.GatherContentUrl + "/item/" + gcItem.Id;
+                        }
                         var cmsLink = string.Format("{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master", Sitecore.Context.Site.HostName, cmsItem.CMSId);
-                        var listItem = new UpdateListItem(gcItem, template, cmsItem, _gcAccountSettings.DateFormat, project.Name, gcLink, cmsLink);
+                        var listItem = new UpdateListItem(gcItem, template, cmsItem, _gcAccountSettings.DateFormat, project.Name, cmsLink, gcLink);
                         items.Add(listItem);
 
                         GCStatus status = gcItem.Status.Data;

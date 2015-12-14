@@ -13,5 +13,7 @@
         public string DateFormat { get; set; }
 
         public string AccountItemId { get; set; }
+
+        public string GatherContentUrl { get; set; }
     }
 }

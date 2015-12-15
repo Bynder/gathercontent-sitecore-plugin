@@ -55,7 +55,7 @@ namespace GatherContent.Connector.Managers.Managers
                 {"text", "Single-Line Text, Multi-Line Text, Rich Text"},
                 {"section", "Single-Line Text, Multi-Line Text, Rich Text"},
                 {"choice_radio", "Checkbox"},
-                {"choice_checkbox", "Checklist"}
+                {"choice_checkbox", "Checklist, Multilist, Multilist with Search, Treelist"}
             };
         }
 
@@ -418,7 +418,8 @@ namespace GatherContent.Connector.Managers.Managers
         private List<Element> GetFieldsForMapping(IGrouping<string, MappingFieldModel> fieldsMappig, List<Element> gcFields)
         {
             IEnumerable<string> gsFiledNames = fieldsMappig.Select(i => i.GCField);
-            IEnumerable<Element> gcFieldsForMapping = gcFields.Where(i => gsFiledNames.Contains(i.Label));
+            var test = gsFiledNames.ToList();
+            IEnumerable<Element> gcFieldsForMapping = gcFields.Where(i => gsFiledNames.Contains(i.Name));
 
             return gcFieldsForMapping.ToList();
         }

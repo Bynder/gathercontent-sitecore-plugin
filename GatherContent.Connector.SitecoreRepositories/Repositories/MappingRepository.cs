@@ -154,7 +154,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
         private MappingFieldModel ConvertSitecoreFieldToModel(Item field)
         {
-            var result = new MappingFieldModel(field["Sitecore Field"], field["GC Field"]);
+            var result = new MappingFieldModel(field["Sitecore Field"], field["GC Field Id"]);
             return result;
         }
 
@@ -267,11 +267,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                             var isHighlightingDate = true;
                             if (Double.TryParse(m["Last Updated in GC"], out d))
                             {
-                                var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
-                                var d1 = DateUtil.IsoDateToDateTime(m["Last Mapped Date"]);
-                                var d2 = posixTime.AddMilliseconds(d*1000);
-                                var dd = d1 < d2;
-                                
+                                var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);                                                         
                                 gcUpdateDate = posixTime.AddMilliseconds(d * 1000).ToString(_accountSettings.DateFormat);
                             }
 

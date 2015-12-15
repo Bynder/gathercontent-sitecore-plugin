@@ -27,6 +27,15 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return resultItem;
         }
 
+        public Item GetItemByPath(string path)
+        {
+            Item resultItem = null;
+            if (!String.IsNullOrEmpty(path))
+                resultItem = ContextDatabase.GetItem(path);
+
+            return resultItem;
+        }
+
         protected IEnumerable<Item> GetAllProjects()
         {
             var accountSettingItem = ContextDatabase.GetItem(Constants.AccountItemId, ContextLanguage);

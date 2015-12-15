@@ -16,7 +16,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         private const string GC_CONTENT_ID = "GC Content Id";
         private const string LAST_SYNC_DATE = "Last Sync Date";
 
-        
+
         public void ImportItems(string itemId, List<MappingResultModel> items)
         {
             Item parentItem = GetItem(itemId);
@@ -40,27 +40,58 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
+
+
+
         private void SetupFields(Item updatedItem, MappingResultModel item)
         {
             using (new SecurityDisabler())
             {
                 updatedItem.Editing.BeginEdit();
 
-                foreach (ImportCMSField field in item.Fields)
+                foreach (var field in item.Fields)
                 {
-                    updatedItem.Fields[new ID(field.Name)].Value = field.Value;
+                    if (field.Type == "choice_checkbox")
+                    {
+                        var value = string.Empty;
+                        foreach (var option in field.Options)
+                        {                           
+                            if (option.Selected)
+                            {
+
+                                var scField = updatedItem.Fields[new ID(field.Name)];
+                                var dataSourcePath = GetItem(scField.ID.ToString())["Source"];
+                                var dataSourceItem = GetItemByPath(dataSourcePath);
+                                var children = dataSourceItem.GetChildren().InnerChildren.FirstOrDefault(c => c.Name == option.Label);
+                                if (children != null) value += children.ID.ToString() + "|";                               
+                            }                           
+                        }
+                        value = value.TrimEnd('|');
+                        if (!string.IsNullOrEmpty(value)) updatedItem.Fields[new ID(field.Name)].Value = value;
+                    }
+                    else
+                    {
+                        updatedItem.Fields[new ID(field.Name)].Value = field.Value;
+                    }
+
                 }
+                try
+                {
+                    updatedItem.Fields[GC_CONTENT_ID].Value = item.GCItemId;
 
-                updatedItem.Fields[GC_CONTENT_ID].Value = item.GCItemId;
-
-                var isoDate = DateUtil.ToIsoDate(DateTime.UtcNow);
-                updatedItem.Fields[LAST_SYNC_DATE].Value = isoDate;
+                    var isoDate = DateUtil.ToIsoDate(DateTime.UtcNow);
+                    updatedItem.Fields[LAST_SYNC_DATE].Value = isoDate;
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Your template("+ updatedItem.TemplateName +") is not inherited from the GC Linked Item.");
+                }
 
                 updatedItem.Editing.EndEdit();
             }
         }
 
-        
+
         public List<CMSUpdateItem> GetItemsForUpdate(string targetItemId)
         {
             Item parentItem = GetItem(targetItemId);

@@ -37,6 +37,15 @@ namespace GatherContent.Connector.GatherContentService.Services
             return ReadResponse<ItemEntity>(webrequest);
         }
 
+        public ItemFiles GetItemFiles(string itemId)
+        {
+            var url = string.Format("{0}/{1}/files", ServiceUrl, itemId);
+            var webrequest = CreateRequest(url);
+            webrequest.Method = WebRequestMethods.Http.Get; ;
+
+            return ReadResponse<ItemFiles>(webrequest);
+        }
+
         public void PostItem(string projectId, string name, string parentId = null, string templateId = null, Config config = null)
         {
             var data = new StringBuilder();

@@ -44,7 +44,9 @@
   <ItemGroup>
     <Compile Include="Entities\AccountEntity.cs" />
     <Compile Include="Entities\Config.cs" />
+    <Compile Include="Entities\FileEntity.cs" />
     <Compile Include="Entities\ItemEntity.cs" />
+    <Compile Include="Entities\ItemFiles.cs" />
     <Compile Include="Entities\ItemsEntity.cs" />
     <Compile Include="Entities\ProjectEntity.cs" />
     <Compile Include="Entities\ProjectsEntity.cs" />

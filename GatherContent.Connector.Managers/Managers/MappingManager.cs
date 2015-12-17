@@ -12,6 +12,7 @@ using GatherContent.Connector.Managers.Models.Mapping;
 using GatherContent.Connector.Managers.Models.UpdateItems;
 using GatherContent.Connector.SitecoreRepositories;
 using GatherContent.Connector.SitecoreRepositories.Repositories;
+using Sitecore.Pipelines.ItemProvider.AddVersion;
 
 namespace GatherContent.Connector.Managers.Managers
 {
@@ -29,6 +30,7 @@ namespace GatherContent.Connector.Managers.Managers
 
         private readonly TemplatesService _templateService;
         private readonly ProjectsService _projectService;
+        private readonly ItemsService _itemService;
 
         private readonly GCAccountSettings _accountSettings;
 
@@ -41,6 +43,7 @@ namespace GatherContent.Connector.Managers.Managers
             _templatesRepository = new TemplatesRepository();
 
             _templateService = new TemplatesService(_accountSettings);
+            _itemService = new ItemsService(_accountSettings);
             _projectService = new ProjectsService(_accountSettings);
         }
 
@@ -54,8 +57,9 @@ namespace GatherContent.Connector.Managers.Managers
             {
                 {"text", "Single-Line Text, Multi-Line Text, Rich Text"},
                 {"section", "Single-Line Text, Multi-Line Text, Rich Text"},
-                {"choice_radio", "Checkbox"},
-                {"choice_checkbox", "Checklist, Multilist, Multilist with Search, Treelist"}
+                {"choice_radio", "Checklist, Multilist, Multilist with Search, Treelist"},
+                {"choice_checkbox", "Checklist, Multilist, Multilist with Search, Treelist"},
+                {"files", "Image, File, Droptree, Multilist, Multilist with Search, Treelist"}
             };
         }
 
@@ -324,7 +328,22 @@ namespace GatherContent.Connector.Managers.Managers
             List<ImportCMSField> fields;
             IEnumerable<IGrouping<string, MappingFieldModel>> groupedFields = template.Fields.GroupBy(i => i.CMSField);
 
-            TryMapItemState mapState = TryMapFields(gcFields, groupedFields, out fields);
+            var files = new List<File>();
+            if(item.Config.SelectMany(config => config.Elements).Select(element => element.Type).Contains("files"))
+            {
+                foreach(var file in _itemService.GetItemFiles(item.Id.ToString()).Data)
+                {
+                    files.Add(new File
+                    {
+                        FileName = file.FileName,
+                        Url = file.Url,
+                        FieldId = file.Field
+                    });
+                }
+            }
+            
+         
+            TryMapItemState mapState = TryMapFields(gcFields, groupedFields, files, out fields);
             if (mapState == TryMapItemState.FieldError)
             {
                 string errorMessage = isUpdate ? "Update failed: Template fields mismatch" : "Import failed: Template fields mismatch";
@@ -352,13 +371,13 @@ namespace GatherContent.Connector.Managers.Managers
             return TryMapItemState.Success;
         }
 
-        private TryMapItemState TryMapFields(List<Element> gcFields, IEnumerable<IGrouping<string, MappingFieldModel>> fieldsMappig, out List<ImportCMSField> result)
+        private TryMapItemState TryMapFields(List<Element> gcFields, IEnumerable<IGrouping<string, MappingFieldModel>> fieldsMappig, List<File> files, out List<ImportCMSField> result)
         {
             result = new List<ImportCMSField>();
             foreach (IGrouping<string, MappingFieldModel> grouping in fieldsMappig)
             {
                 ImportCMSField cmsField;
-                TryMapItemState mapState = TryMapField(gcFields, grouping, out cmsField);
+                TryMapItemState mapState = TryMapField(gcFields, grouping, files, out cmsField);
                 if (mapState == TryMapItemState.FieldError)
                     return mapState;
                 result.Add(cmsField);
@@ -367,28 +386,33 @@ namespace GatherContent.Connector.Managers.Managers
             return TryMapItemState.Success;
         }
 
-        private TryMapItemState TryMapField(List<Element> gcFields, IGrouping<string, MappingFieldModel> fieldsMappig, out ImportCMSField importCMSField)
+        private TryMapItemState TryMapField(List<Element> gcFields, IGrouping<string, MappingFieldModel> fieldsMappig, List<File> files, out ImportCMSField importCMSField)
         {
-            string cmsFieldName = fieldsMappig.Key;
-            List<Element> gcFieldsForMapping = GetFieldsForMapping(fieldsMappig, gcFields);
+            var cmsFieldName = fieldsMappig.Key;
+            
+            var gcFieldsForMapping = GetFieldsForMapping(fieldsMappig, gcFields);
 
-            Element field = gcFieldsForMapping.FirstOrDefault();
+            
+            var field = gcFieldsForMapping.FirstOrDefault();
+            
             if (field == null)
             {
-                importCMSField = new ImportCMSField(string.Empty, cmsFieldName, string.Empty, null);
+                importCMSField = new ImportCMSField(string.Empty, cmsFieldName, null, string.Empty, null, null);
                 return TryMapItemState.FieldError;
             }
 
+            
             if (IsMappedFieldsHaveDifrentTypes(gcFieldsForMapping))
             {
-                importCMSField = new ImportCMSField(string.Empty, cmsFieldName, string.Empty, null);
+                importCMSField = new ImportCMSField(string.Empty, cmsFieldName, field.Label, string.Empty, null, null);
                 return TryMapItemState.FieldError;
             }
 
-            string value = GetValue(gcFieldsForMapping);
-            List<Option> options = GetOptions(gcFieldsForMapping);
+            var value = GetValue(gcFieldsForMapping);
+            var options = GetOptions(gcFieldsForMapping);
+            files = files.Where(item => item.FieldId == field.Name).ToList();
 
-            importCMSField = new ImportCMSField(field.Type, cmsFieldName, value, options);
+            importCMSField = new ImportCMSField(field.Type, cmsFieldName, field.Label, value, options, files);
 
             return TryMapItemState.Success;
         }
@@ -418,7 +442,6 @@ namespace GatherContent.Connector.Managers.Managers
         private List<Element> GetFieldsForMapping(IGrouping<string, MappingFieldModel> fieldsMappig, List<Element> gcFields)
         {
             IEnumerable<string> gsFiledNames = fieldsMappig.Select(i => i.GCField);
-            var test = gsFiledNames.ToList();
             IEnumerable<Element> gcFieldsForMapping = gcFields.Where(i => gsFiledNames.Contains(i.Name));
 
             return gcFieldsForMapping.ToList();

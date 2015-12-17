@@ -103,27 +103,11 @@ namespace GatherContent.Connector.Managers.Managers
             List<MappingResultModel> cmsItems = _mappingManager.MapItems(gcItems, projectId);
 
             List<MappingResultModel> successfulImportedItems = GetSuccessfulImportedItems(cmsItems);
-            _itemsRepository.ImportItems(itemId, successfulImportedItems);
+            _itemsRepository.ImportItems(itemId, ref successfulImportedItems);
 
             if (!string.IsNullOrEmpty(statusId))
             {
                 PostNewStatusesForItems(successfulImportedItems, statusId);
-            }
-
-            foreach (var item in cmsItems)
-            {
-                if (successfulImportedItems.Contains(item))
-                {
-                    var cmsId = _itemsRepository.GetItemId(itemId, item.GCItemId);
-
-                    if (!string.IsNullOrEmpty(_gcAccountSettings.GatherContentUrl))
-                    {
-                        item.GcLink = _gcAccountSettings.GatherContentUrl + "/item/" + item.GCItemId; 
-                    }
-                    var cmsLink = string.Format("{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master", Sitecore.Context.Site.HostName, cmsId);
-                    item.CmsLink = cmsLink;
-                   
-                }
             }
 
             var result = new ImportResultModel(cmsItems);

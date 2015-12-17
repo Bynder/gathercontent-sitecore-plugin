@@ -248,27 +248,18 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
         public void UpdateItems(List<MappingResultModel> items)
         {
-            foreach (MappingResultModel item in items)
+            foreach (var item in items)
             {
-                Item scItem = GetItem(item.CMSId);
+                var scItem = GetItem(item.CMSId);
+                if (!string.IsNullOrEmpty(_accountSettings.GatherContentUrl))
+                {
+                    item.GcLink = _accountSettings.GatherContentUrl + "/item/" + item.GCItemId;
+                }
+                var cmsLink = string.Format("{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master", Sitecore.Context.Site.HostName, scItem.ID);
+                item.CmsLink = cmsLink;
                 SetupFields(scItem, item);
             }
         }
-
-        public string GetItemId(string itemId, string gcItemId)
-        {
-            Item parentItem = GetItem(itemId);
-
-            if (parentItem != null)
-            {
-                var gcItem = parentItem.Axes.GetDescendants()
-                    .FirstOrDefault(item => item[GC_CONTENT_ID] == gcItemId);
-                if (gcItem != null)
-                    return gcItem.ID.ToString();
-            }
-            return null;
-        }
-
 
     }
 }

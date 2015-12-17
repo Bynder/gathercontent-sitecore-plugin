@@ -41,6 +41,10 @@ function document_resize() {
 }
 
 jQuery(function () {
+    jQuery(window).resize(function(){
+        jQuery(".table_import_scroll").css("max-height",jQuery("body").height()-300)
+})
+        jQuery(".table_import_scroll").css("max-height",jQuery("body").height()-300)
 });
 
 

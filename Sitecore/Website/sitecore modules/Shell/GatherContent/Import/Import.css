@@ -1,7 +1,9 @@
 ﻿.closeButton {
     float: left;
 }
-
+body{
+    height: 100%;
+}
 .gathercontent-import {
 }
 
@@ -225,12 +227,12 @@ table {
 
 .table_import_wrapper {
     position: relative;
-    padding-top: 36px;
+    padding-top: 45px;
     background: #5e5e5e;
 }
 
 .table_import_scroll {
-    max-height: calc(100% - 250px);
+    max-height: 340px;
     overflow-y: auto;
     overflow-x: hidden;
     background: #fff;
@@ -241,18 +243,20 @@ table thead th div {
     position: absolute;
     background: transparent;
     color: #fff;
-    margin: 9px 0;
+    margin: 12px 0 9px;
+    padding-top: 3px;
     top: 0;
     line-height: normal;
     border-left: 1px solid #fff;
     padding-left: 5px;
     min-height: 18px;
+    word-wrap: break-word;
+    width: inherit;
 }
 
 
 table thead th.checkbox_table+th div,table thead th.checkbox_table div,table thead th:first-child div{
     border-left: none;
-    text-align: center;
 }
 table thead th.checkbox_table div {
     margin-top: 6px;
@@ -261,6 +265,10 @@ table thead th.checkbox_table{
     margin: 0;
     width: 25px;
 }
+table thead th.status{
+    margin: 0;
+    width: 155px;
+}
 table thead th {
     height: 0;
     line-height: 0;
@@ -268,9 +276,9 @@ table thead th {
     padding-bottom: 0;
     color: transparent;
     border: none;
-    white-space: nowrap;
     padding: 0 8px 0 0;
     overflow: hidden;
+    width: 200px;
 }
 
     table thead th:nth-child(4) {

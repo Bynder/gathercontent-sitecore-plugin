@@ -318,3 +318,14 @@
 
     self.init();
 }
+
+jQuery(function () {
+
+    jQuery("thead th div").each(function(){
+       if( jQuery(this).height()>18){
+           jQuery(this).css("padding-top",0);
+           jQuery(this).css("margin-top",9)
+       }
+    })
+
+});

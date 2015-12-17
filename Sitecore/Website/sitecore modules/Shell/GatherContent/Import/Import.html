@@ -17,14 +17,14 @@
 
 <div data-bind="if: getMode(1)" class="gathercontent-import">
     <div class="filter_wrapper_import">
-        <div class="title_filter">PROJECT</div>
-        <select class="custom_select" data-bind="options: projects, optionsText: 'name', optionsValue: 'id', value: project, event:{ change: $root.projectChanged}"></select>
+        <div class="title_filter">GATHER CONTENT PROJECT</div>
+        <select class="custom_select" style="width: 250px" data-bind="options: projects, optionsText: 'name', optionsValue: 'id', value: project, event:{ change: $root.projectChanged}"></select>
     </div>
     <div class="filter_wrapper">
         <div class="filter_wrapper_import">
-            <div class="title_filter">FILTER</div>
-            <select class="custom_select" data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, optionsCaption: 'STATUS', event:{ change: $root.filter }"></select>
-            <select class="custom_select" data-bind="options: templates, optionsText: 'name', optionsValue: 'id', value: templateFilter, optionsCaption: 'TEMPLATE', event:{ change: $root.filter }"></select>
+            <div class="title_filter" style="padding-right: 135px;">FILTER</div>
+            <select class="custom_select" style="width: 250px" data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, optionsCaption: 'STATUS', event:{ change: $root.filter }"></select>
+            <select class="custom_select" style="width: 250px;" data-bind="options: templates, optionsText: 'name', optionsValue: 'id', value: templateFilter, optionsCaption: 'GATHER CONTENT TEMPLATE', event:{ change: $root.filter }"></select>
         </div>
         <div class="search_filter">
             <input placeholder="FILTER BY ITEM NAME (SEARCH)" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">

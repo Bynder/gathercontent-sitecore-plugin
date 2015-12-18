@@ -53,23 +53,26 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         public void CreateTemplate(string projectId, Template template)
         {
             var project = GetProject(projectId);
-            var templatesFolder = project.Children.FirstOrDefault(item => item.Name == Constants.TemplatesFolderName);
-            if (templatesFolder != null)
+            if (project != null)
             {
-                var folders = templatesFolder.Axes.GetDescendants().Select(item => item.Name).ToList();
-                if (!folders.Contains(template.Name))
+                var templatesFolder = project.Children.FirstOrDefault(item => item.Name == Constants.TemplatesFolderName);
+                if (templatesFolder != null)
                 {
-                    using (new SecurityDisabler())
+                    var folders = templatesFolder.Axes.GetDescendants().Select(item => item.Name).ToList();
+                    if (!folders.Contains(template.Name))
                     {
-                        var scTemplate = ContextDatabase.GetTemplate(new ID(Constants.GcTemplate));
-                        var validFolderName = ItemUtil.ProposeValidItemName(template.Name);
-                        var createdItem = templatesFolder.Add(validFolderName, scTemplate);
                         using (new SecurityDisabler())
                         {
-                            createdItem.Editing.BeginEdit();
-                            createdItem.Fields["Temaplate Id"].Value = template.Id.ToString();
-                            createdItem.Fields["Template Name"].Value = template.Name;
-                            createdItem.Editing.EndEdit();
+                            var scTemplate = ContextDatabase.GetTemplate(new ID(Constants.GcTemplate));
+                            var validFolderName = ItemUtil.ProposeValidItemName(template.Name);
+                            var createdItem = templatesFolder.Add(validFolderName, scTemplate);
+                            using (new SecurityDisabler())
+                            {
+                                createdItem.Editing.BeginEdit();
+                                createdItem.Fields["Temaplate Id"].Value = template.Id.ToString();
+                                createdItem.Fields["Template Name"].Value = template.Name;
+                                createdItem.Editing.EndEdit();
+                            }
                         }
                     }
                 }

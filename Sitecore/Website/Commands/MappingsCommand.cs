@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Specialized;
 using Sitecore;
+using Sitecore.Data;
 using Sitecore.Diagnostics;
 using Sitecore.Globalization;
 using Sitecore.Shell.Framework.Commands;
@@ -10,6 +11,13 @@ namespace GatherContent.Connector.Website.Commands
 {
     public class MappingsCommand : Command
     {
+        public override CommandState QueryState(CommandContext context)
+        {
+            var item = context.Items[0];
+
+            return item.Paths.FullPath.ToLower().StartsWith("/sitecore/content") || item.ID == new ID("B99D89BD-56AB-4F41-BB02-121D116E5145") ? 
+                base.QueryState(context) : CommandState.Hidden;
+        }
 
         public override void Execute(CommandContext context)
         {

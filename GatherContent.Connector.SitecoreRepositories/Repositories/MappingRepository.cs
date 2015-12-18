@@ -174,34 +174,38 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         private Item CreateTemplateMapping(string projectId, TemplateMapping templateMapping)
         {
             var scProject = GetProject(projectId);
-            var mappingsFolder = GetMappingFolder(scProject);
-            if (mappingsFolder != null)
+            if (scProject != null)
             {
-                var mappings = mappingsFolder.Axes.GetDescendants();
-                if (!mappings.Select(item => item.Name).ToList().Contains(templateMapping.Name))
+                var mappingsFolder = GetMappingFolder(scProject);
+                if (mappingsFolder != null)
                 {
-                    using (new SecurityDisabler())
+                    var mappings = mappingsFolder.Axes.GetDescendants();
+                    if (!mappings.Select(item => item.Name).ToList().Contains(templateMapping.Name))
                     {
-                        var mapping = ContextDatabase.GetTemplate(new ID(Constants.GcTemplateMapping));
-
-                        SetupLinkedGCTemplate(templateMapping);
-
-                        var validFolderName = ItemUtil.ProposeValidItemName(templateMapping.Name);
-                        var createdItem = mappingsFolder.Add(validFolderName, mapping);
                         using (new SecurityDisabler())
                         {
-                            createdItem.Editing.BeginEdit();
-                            createdItem.Fields["Sitecore Template"].Value = templateMapping.SitecoreTemplateId;
-                            createdItem.Fields["GC Template"].Value = templateMapping.GcTemplateId;
-                            createdItem.Fields["Last Mapped Date"].Value = DateUtil.ToIsoDate(DateTime.Now);
-                            createdItem.Fields["Last Updated in GC"].Value = templateMapping.LastUpdated;
-                            createdItem.Editing.EndEdit();
-                        }
+                            var mapping = ContextDatabase.GetTemplate(new ID(Constants.GcTemplateMapping));
 
-                        return createdItem;
+                            SetupLinkedGCTemplate(templateMapping);
+
+                            var validFolderName = ItemUtil.ProposeValidItemName(templateMapping.Name);
+                            var createdItem = mappingsFolder.Add(validFolderName, mapping);
+                            using (new SecurityDisabler())
+                            {
+                                createdItem.Editing.BeginEdit();
+                                createdItem.Fields["Sitecore Template"].Value = templateMapping.SitecoreTemplateId;
+                                createdItem.Fields["GC Template"].Value = templateMapping.GcTemplateId;
+                                createdItem.Fields["Last Mapped Date"].Value = DateUtil.ToIsoDate(DateTime.Now);
+                                createdItem.Fields["Last Updated in GC"].Value = templateMapping.LastUpdated;
+                                createdItem.Editing.EndEdit();
+                            }
+
+                            return createdItem;
+                        }
                     }
+                    return mappings.FirstOrDefault(item => item.Name == templateMapping.Name);
                 }
-                return mappings.FirstOrDefault(item => item.Name == templateMapping.Name);
+                return null;
             }
             return null;
         }
@@ -262,13 +266,18 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                         var m = scMappings.FirstOrDefault(map => map["GC Template"] == template["Temaplate Id"]);
                         if (m != null)
                         {
+                            var dateFormat = _accountSettings.DateFormat;
+                            if (string.IsNullOrEmpty(dateFormat))
+                            {
+                                dateFormat = Constants.DateFormat;
+                            }
                             double d;
                             var gcUpdateDate = string.Empty;
                             var isHighlightingDate = true;
                             if (Double.TryParse(m["Last Updated in GC"], out d))
                             {
                                 var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);                                                         
-                                gcUpdateDate = posixTime.AddMilliseconds(d * 1000).ToString(_accountSettings.DateFormat);
+                                gcUpdateDate = posixTime.AddMilliseconds(d * 1000).ToString(dateFormat);
                             }
 
 
@@ -281,7 +290,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                                 mapping.LastUpdatedDate = gcUpdateDate;
                                 mapping.LastMappedDateTime =
                                     DateUtil.IsoDateToDateTime(m["Last Mapped Date"])
-                                        .ToString(_accountSettings.DateFormat);
+                                        .ToString(dateFormat);
                                 mapping.EditButtonTitle = "Edit";
                                 mapping.IsMapped = true;
                                 mapping.IsHighlightingDate = isHighlightingDate;
@@ -314,6 +323,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         public List<MappingTemplateModel> GetTemplateMappings(string projectId)
         {
             Item projectFolder = GetProject(projectId);
+            if (projectFolder == null) return null;
             Item mappingFolder = GetMappingFolder(projectFolder);
 
             IEnumerable<Item> mappings = GetTemplateMappings(mappingFolder);

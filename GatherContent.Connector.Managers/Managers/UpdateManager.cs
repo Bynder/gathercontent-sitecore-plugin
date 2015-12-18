@@ -71,8 +71,13 @@ namespace GatherContent.Connector.Managers.Managers
                         {
                             gcLink = _gcAccountSettings.GatherContentUrl + "/item/" + gcItem.Id;
                         }
+                        var dateFormat = _gcAccountSettings.DateFormat;
+                        if (string.IsNullOrEmpty(dateFormat))
+                        {
+                            dateFormat = Constants.DateFormat;
+                        }
                         var cmsLink = string.Format("{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master", Sitecore.Context.Site.HostName, cmsItem.CMSId);
-                        var listItem = new UpdateListItem(gcItem, template, cmsItem, _gcAccountSettings.DateFormat, project.Name, cmsLink, gcLink);
+                        var listItem = new UpdateListItem(gcItem, template, cmsItem, dateFormat, project.Name, cmsLink, gcLink);
                         items.Add(listItem);
 
                         GCStatus status = gcItem.Status.Data;

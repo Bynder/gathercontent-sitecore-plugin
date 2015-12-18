@@ -105,27 +105,37 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                                     case "Droptree":
                                     {
                                         var file = field.Files.FirstOrDefault();
-                                        var media = UploadFile(item.Title, field.Label, file);
-                                        updatedItem.Fields[new ID(field.Name)].Value = media.ID.ToString();
+                                        if (file != null)
+                                        {
+                                            var media = UploadFile(item.Title, field.Label, file);
+                                            updatedItem.Fields[new ID(field.Name)].Value = media.ID.ToString();
+                                        }
 
                                     }
                                         break;
                                     case "Image":
                                     {
                                         var file = field.Files.FirstOrDefault();
-                                        var media = UploadFile(item.Title, field.Label, file);
-                                        var val = "<image mediaid=\"" + media.ID + "\" />";
-                                        updatedItem.Fields[new ID(field.Name)].Value = val;
+                                        if (file != null)
+                                        {
+                                            var media = UploadFile(item.Title, field.Label, file);
+                                            var val = "<image mediaid=\"" + media.ID + "\" />";
+                                            updatedItem.Fields[new ID(field.Name)].Value = val;
+                                        }
                                     }
                                         break;
                                     case "File":
                                     {
                                         var file = field.Files.FirstOrDefault();
-                                        var media = UploadFile(item.Title, field.Label, file);
+                                        if (file != null)
+                                        {
+                                            var media = UploadFile(item.Title, field.Label, file);
 
-                                        var mediaUrl = MediaManager.GetMediaUrl(media, new MediaUrlOptions { UseItemPath = false, AbsolutePath = false });
-                                        var val = "<file mediaid=\"" + media.ID + "\" src=\"" + mediaUrl + "\" />";
-                                        updatedItem.Fields[new ID(field.Name)].Value = val;
+                                            var mediaUrl = MediaManager.GetMediaUrl(media,
+                                                new MediaUrlOptions {UseItemPath = false, AbsolutePath = false});
+                                            var val = "<file mediaid=\"" + media.ID + "\" src=\"" + mediaUrl + "\" />";
+                                            updatedItem.Fields[new ID(field.Name)].Value = val;
+                                        }
                                     }
                                         break;
                                     default:
@@ -133,8 +143,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                                         var value = string.Empty;
                                         foreach (var file in field.Files)
                                         {
-                                            var media = UploadFile(item.Title, field.Label, file);
-                                            if (media != null) value += media.ID.ToString() + "|";
+                                            if (file != null)
+                                            {
+                                                var media = UploadFile(item.Title, field.Label, file);
+                                                if (media != null) value += media.ID.ToString() + "|";
+                                            }
                                         }
                                         value = value.TrimEnd('|');
                                         if (!string.IsNullOrEmpty(value))
@@ -170,7 +183,8 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
         private Item UploadFile(string itemTitle, string fieldTitle, File file)
         {
-            var request = (HttpWebRequest)WebRequest.Create("https://gathercontent-miniatures-800px.s3.amazonaws.com/" + file.Url);
+            var uri = file.Url.StartsWith("http") ? file.Url : "https://gathercontent.s3.amazonaws.com/" + file.Url;
+            var request = (HttpWebRequest)WebRequest.Create(uri);
             var resp = (HttpWebResponse)request.GetResponse();
             var stream = resp.GetResponseStream();
 

@@ -2,6 +2,8 @@
 {
     public class Constants
     {
+        public const string DateFormat = "dd/MM/yyyy hh:mm tt";
+
         #region Ids
 
         public const string Folder = "{A87A00B1-E6DB-45AB-8B54-636FEC3B5523}";
@@ -12,6 +14,7 @@
         public const string GcFieldMapping = "{24FE0F34-5B16-44ED-A845-D6C502F08AA9}";
         public const string AccountItemId = "{B99D89BD-56AB-4F41-BB02-121D116E5145}";
         public const string GcFolderId = "{5342D6D1-0ACF-4FE6-9AA2-613EDDDBEED0}";
+        public const string TemplateFolderId = "{3C1715FE-6A13-4FCF-845F-DE308BA9741D}";
 
         #endregion
 

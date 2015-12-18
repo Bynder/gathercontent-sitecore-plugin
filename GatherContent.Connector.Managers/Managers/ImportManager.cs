@@ -90,8 +90,12 @@ namespace GatherContent.Connector.Managers.Managers
         private List<ImportListItem> MapItems(List<GCItem> items, List<GCTemplate> templates)
         {
             var mappedItems = items.Where(i => i.TemplateId != null).ToList();
-
-            var result = mappedItems.Select(i => new ImportListItem(i, templates.FirstOrDefault(templ => templ.Id == i.TemplateId), items, _gcAccountSettings.DateFormat));
+            var dateFormat = _gcAccountSettings.DateFormat;
+            if (string.IsNullOrEmpty(dateFormat))
+            {
+                dateFormat = Constants.DateFormat;
+            }
+            var result = mappedItems.Select(i => new ImportListItem(i, templates.FirstOrDefault(templ => templ.Id == i.TemplateId), items, dateFormat));
 
             return result.ToList();
         }
@@ -102,6 +106,7 @@ namespace GatherContent.Connector.Managers.Managers
             List<GCItem> gcItems = MapItems(items);
             List<MappingResultModel> cmsItems = _mappingManager.MapItems(gcItems, projectId);
 
+            if (cmsItems == null) return null;
             List<MappingResultModel> successfulImportedItems = GetSuccessfulImportedItems(cmsItems);
             _itemsRepository.ImportItems(itemId, ref successfulImportedItems);
 

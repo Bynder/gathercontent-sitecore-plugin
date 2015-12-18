@@ -61,6 +61,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         {
             var accountSettingItem = ContextDatabase.GetItem(Constants.AccountItemId, ContextLanguage);
             var projects = accountSettingItem.Axes.SelectItems(String.Format("./descendant::*[@@templatename='{0}']", Constants.ProjectTemplateName));
+            if (projects == null || projects.Count() <= 0) return null;
             var project = projects.FirstOrDefault(i => i["Id"] == projectId);
             return project;
         }

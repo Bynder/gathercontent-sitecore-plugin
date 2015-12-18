@@ -76,8 +76,13 @@ namespace GatherContent.Connector.Managers.Managers
         private string ConvertMsecToFormattedDate(double date)
         {
             var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
+            var dateFormat = _accountSettings.DateFormat;
+            if (string.IsNullOrEmpty(dateFormat))
+            {
+                dateFormat = Constants.DateFormat;
+            }
             var gcUpdateDate =
-                posixTime.AddMilliseconds(date * 1000).ToString(_accountSettings.DateFormat);
+                posixTime.AddMilliseconds(date * 1000).ToString(dateFormat);
             return gcUpdateDate;
         }
 
@@ -165,13 +170,18 @@ namespace GatherContent.Connector.Managers.Managers
                     else
                     {                     
                         var gcUpdateDate = ConvertMsecToDate((double)template.Data.Updated);
+                        var dateFormat = _accountSettings.DateFormat;
+                        if (string.IsNullOrEmpty(dateFormat))
+                        {
+                            dateFormat = Constants.DateFormat;
+                        }
                         if (mapping.IsMapped)
                         {
                             mapping.IsHighlightingDate =
-                                DateTime.ParseExact(mapping.LastMappedDateTime, _accountSettings.DateFormat,
+                                DateTime.ParseExact(mapping.LastMappedDateTime, dateFormat,
                                     CultureInfo.InvariantCulture) < gcUpdateDate;
                         }
-                        mapping.LastUpdatedDate = gcUpdateDate.ToString(_accountSettings.DateFormat);
+                        mapping.LastUpdatedDate = gcUpdateDate.ToString(dateFormat);
                         mapping.RemovedFromGc = false;
 
                     }
@@ -200,7 +210,12 @@ namespace GatherContent.Connector.Managers.Managers
             model.GcProjectName = project.Data.Name;
             model.GcTemplateName = template.Data.Name;
 
-            var scTemplates = _templatesRepository.GetTemplatesModel(_accountSettings.TemplateFolderId);
+            var templateFolderId = _accountSettings.TemplateFolderId;
+            if (string.IsNullOrEmpty(templateFolderId))
+            {
+                templateFolderId = Constants.TemplateFolderId;
+            }
+            var scTemplates = _templatesRepository.GetTemplatesModel(templateFolderId);
             var addMappingModel = _mappingRepository.GetAddMappingModel(project.Data.Id.ToString(), template);
 
             var templates = MapSitecoreTemplates(scTemplates);
@@ -265,6 +280,8 @@ namespace GatherContent.Connector.Managers.Managers
         public List<MappingResultModel> MapItems(List<GCItem> items, string projectId)
         {
             List<MappingTemplateModel> templates = _mappingRepository.GetTemplateMappings(projectId);
+
+            if (templates == null) return null;
 
             List<MappingResultModel> result = TryMapItems(items, templates);
 

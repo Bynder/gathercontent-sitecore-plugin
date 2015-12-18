@@ -2,6 +2,7 @@
 using System.Collections.Specialized;
 using GatherContent.Connector.Managers.Managers;
 using Sitecore;
+using Sitecore.Data;
 using Sitecore.Diagnostics;
 using Sitecore.Shell.Framework.Commands;
 using Sitecore.Web.UI.Sheer;
@@ -10,6 +11,13 @@ namespace GatherContent.Connector.Website.Commands
 {
     public class TestConnectionCommand : Command
     {
+        public override CommandState QueryState(CommandContext context)
+        {
+            var item = context.Items[0];
+
+            return item.ID == new ID("B99D89BD-56AB-4F41-BB02-121D116E5145") ? base.QueryState(context) : CommandState.Hidden;
+        }
+
         public override void Execute(CommandContext context)
         {
             try

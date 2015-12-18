@@ -22,10 +22,17 @@
 </script>
 
 <div class="gathercontent-dialog">
+    <!-- ko if: mappings().length==0 -->
+    <p>
+        There are no mapping defined. Please click Add More Templates to start.
+    </p>
+   
+    <!-- /ko -->
+    <!-- ko if: mappings().length>0 -->
     <p>
         Choose which templates you wish to manage.
     </p>
-    <div class="table_mappings_wrapper">
+    <div class="table_mappings_wrapper">   
         <div class="table_mappings_scroll">
             <table>
                 <thead>
@@ -67,9 +74,12 @@
             </table>
         </div>
     </div>
+    <!-- /ko -->
     <div class="footer_btn">
         <input class="mappings-btn" style="width: 160px;" id="AddMore" type="button" value="Add templates" data-bind="click: addMoreTemplates" />
+        <!-- ko if: mappings().length>0 -->
         <a href="#" data-bind="click: openImportPopup">Ready to import your content?</a>
+        <!-- /ko -->
     </div>
     <div class="help-link">
         <a href="mailto:support@gathercontent.com">Need help?</a>

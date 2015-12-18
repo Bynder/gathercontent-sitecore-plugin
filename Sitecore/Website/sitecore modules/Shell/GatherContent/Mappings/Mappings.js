@@ -4,7 +4,7 @@ function ViewModel() {
 
     this.mappings = ko.observableArray();
 
-    jQuery.getJSON('/sitecore/api/mappings', null, function (data) {
+    jQuery.getJSON('/api/sitecore/mappings/Get', null, function (data) {
         self.mappings(data);
         jQuery(".preloader").hide();
     });
@@ -25,7 +25,7 @@ function ViewModel() {
         if (confirmDelete) {
             jQuery.ajax({
                 type: 'DELETE',
-                url: '/sitecore/api/removemapping?id='+id,
+                url: '/api/sitecore/mappings/Delete?id=' + id,
                 //dataType: 'json',
                 success: function () {
                     self.mappings.remove(function (mapping) {

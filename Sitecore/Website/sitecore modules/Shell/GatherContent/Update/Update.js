@@ -40,7 +40,7 @@
      self.initRequestHandler = function (callbackFunction) {
          var id = getUrlVars()["id"];
          
-         jQuery.getJSON('/sitecore/api/getItemsForUpdate?id={' + id + '}').success(function (response) {
+         jQuery.getJSON('/api/sitecore/Update/Get?id={' + id + '}').success(function (response) {
              callbackFunction(response);
              jQuery(".preloader").hide();
              initTooltip();
@@ -238,7 +238,7 @@
         jQuery.ajax
         ({
             type: "POST",
-            url: '/sitecore/api/update?id={' + id + '}&statusId=' + status,
+            url: '/api/sitecore/Update/UpdateItems?id={' + id + '}&statusId=' + status,
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(items),

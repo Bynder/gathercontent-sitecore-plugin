@@ -2,14 +2,19 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
+using System.Web.Helpers;
+using System.Web.Mvc;
 using GatherContent.Connector.Managers.Managers;
 using GatherContent.Connector.Managers.Models.ImportItems;
+using Newtonsoft.Json;
 using Sitecore.Diagnostics;
-using Sitecore.Services.Infrastructure.Web.Http;
+using Sitecore.Mvc.Controllers;
+using Sitecore.Services.Infrastructure.Web.Http.Formatting;
 
 namespace GatherContent.Connector.Website.Controllers
 {
-    public class ImportController : ServicesApiController
+    public class ImportController : SitecoreController
     {
         private readonly ImportManager _importManager;
 
@@ -18,38 +23,38 @@ namespace GatherContent.Connector.Website.Controllers
             _importManager = new ImportManager();
         }
 
-        public HttpResponseMessage Get(string id, string projectId)
+
+        public string Get(string id, string projectId)
         {
-            HttpResponseMessage response;
             try
             {
                 SelectItemsForImportModel result = _importManager.GetModelForSelectImportItemsDialog(id, projectId);
-                response = Request.CreateResponse(HttpStatusCode.OK, result);
-                return response;
+                var model = JsonConvert.SerializeObject(result);
+                return model;
             }
             catch (Exception exception)
             {
                 Log.Error(exception.Message, exception);
-                response = Request.CreateResponse(HttpStatusCode.InternalServerError, exception.Message);
-                return response;
             }
+            return null;
         }
 
-        public HttpResponseMessage ImportItems(string id, string projectId, string statusId, List<ImportListItem> items)
+
+
+        public string ImportItems(string id, string projectId, string statusId, List<ImportListItem> items)
         {
-            HttpResponseMessage response;
             try
             {
                 ImportResultModel result = _importManager.ImportItems(id, items, projectId, statusId);
-                response = Request.CreateResponse(HttpStatusCode.OK, result);
-                return response;
+                var model = JsonConvert.SerializeObject(result);
+                return model;
             }
             catch (Exception exception)
             {
                 Log.Error(exception.Message, exception);
-                response = Request.CreateResponse(HttpStatusCode.InternalServerError, exception.Message);
-                return response;
             }
+            return null;
         }
+
     }
 }

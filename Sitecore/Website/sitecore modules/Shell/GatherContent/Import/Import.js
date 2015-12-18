@@ -41,7 +41,7 @@
          var project = self.project();
          project = project ? project : 0;
 
-         jQuery.getJSON('/sitecore/api/getItemsForImport?id={' + id + '}&projectId=' + project).success(function (response) {
+        jQuery.getJSON('/api/sitecore/Import/Get?id={' + id + '}&projectId=' + project).success(function (response) {
              callbackFunction(response);
              jQuery(".preloader").hide();
              initTooltip();
@@ -224,7 +224,7 @@
         jQuery.ajax
         ({
             type: "POST",
-            url: '/sitecore/api/import?id={' + id + '}&projectId=' + project + '&statusId=' + status,
+            url: '/api/sitecore/Import/ImportItems?id={' + id + '}&projectId=' + project + '&statusId=' + status,
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(items),

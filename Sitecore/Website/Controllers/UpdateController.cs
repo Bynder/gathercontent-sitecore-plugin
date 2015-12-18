@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
 using GatherContent.Connector.Managers.Managers;
 using GatherContent.Connector.Managers.Models.UpdateItems;
+using Newtonsoft.Json;
 using Sitecore.Diagnostics;
-using Sitecore.Services.Infrastructure.Web.Http;
+using Sitecore.Mvc.Controllers;
 
 namespace GatherContent.Connector.Website.Controllers
 {
-    public class UpdateController : ServicesApiController
+    public class UpdateController : SitecoreController
     {
         private readonly UpdateManager _updateManager;
 
@@ -18,38 +17,34 @@ namespace GatherContent.Connector.Website.Controllers
             _updateManager = new UpdateManager();
         }
 
-        public HttpResponseMessage Get(string id)
+        public string Get(string id)
         {
-            HttpResponseMessage response;
             try
             {
                 SelectItemsForUpdateModel result = _updateManager.GetItemsForUpdate(id);
-                response = Request.CreateResponse(HttpStatusCode.OK, result);
-                return response;
+                var model = JsonConvert.SerializeObject(result);
+                return model;
             }
             catch (Exception exception)
             {
                 Log.Error(exception.Message, exception);
-                response = Request.CreateResponse(HttpStatusCode.InternalServerError, exception.Message);
-                return response;
             }
+            return null;
         }
 
-        public HttpResponseMessage UpdateItems(string id, string statusId, List<UpdateListItem> items)
+        public string UpdateItems(string id, string statusId, List<UpdateListItem> items)
         {
-            HttpResponseMessage response;
             try
             {
                 UpdateResultModel result = _updateManager.UpdateItems(id, items);
-                response = Request.CreateResponse(HttpStatusCode.OK, result);
-                return response;
+                var model = JsonConvert.SerializeObject(result);
+                return model;
             }
             catch (Exception exception)
             {
                 Log.Error(exception.Message, exception);
-                response = Request.CreateResponse(HttpStatusCode.InternalServerError, exception.Message);
-                return response;
             }
+            return null;
         }
     }
 }

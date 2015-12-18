@@ -7,7 +7,7 @@ function ViewModel() {
 
     jQuery.ajax({
         type: 'GET',
-        url: '/sitecore/api/templates',
+        url: '/api/sitecore/TemplatesMapping/Get',
         dataType: 'json',
         success: function (data) {
             self.Projects(data.Projects);
@@ -24,7 +24,7 @@ function ViewModel() {
     addTemplateMapping = function () {
         var dataObject = ko.toJSON(this);
         jQuery.ajax({
-            url: '/sitecore/api/posttemplates',
+            url: '/api/sitecore/TemplatesMapping/Post',
             type: 'post',
             data: dataObject,
             contentType: 'application/json',

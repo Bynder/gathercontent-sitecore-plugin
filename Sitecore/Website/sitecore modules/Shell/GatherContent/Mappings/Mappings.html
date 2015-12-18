@@ -22,16 +22,11 @@
 </script>
 
 <div class="gathercontent-dialog">
-    <!-- ko if: mappings().length==0 -->
-    <p>
-        There are no mapping defined. Please click Add More Templates to start.
-    </p>
-   
-    <!-- /ko -->
     <!-- ko if: mappings().length>0 -->
     <p>
         Choose which templates you wish to manage.
     </p>
+    <!-- /ko -->
     <div class="table_mappings_wrapper">   
         <div class="table_mappings_scroll">
             <table>
@@ -74,11 +69,13 @@
             </table>
         </div>
     </div>
+    <!-- ko if: mappings().length==0 -->
+        <h1 class="mapping-empty"> There are no mapping defined. Please click Add Templates to start.</h1>
     <!-- /ko -->
     <div class="footer_btn">
         <input class="mappings-btn" style="width: 160px;" id="AddMore" type="button" value="Add templates" data-bind="click: addMoreTemplates" />
         <!-- ko if: mappings().length>0 -->
-        <a href="#" data-bind="click: openImportPopup">Ready to import your content?</a>
+        <!--<a href="#" data-bind="click: openImportPopup">Ready to import your content?</a>-->
         <!-- /ko -->
     </div>
     <div class="help-link">

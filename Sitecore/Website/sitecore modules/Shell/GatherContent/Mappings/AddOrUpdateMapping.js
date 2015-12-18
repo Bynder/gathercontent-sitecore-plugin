@@ -1,5 +1,5 @@
 ﻿var id = getUrlVars()["id"];
-var url = '/sitecore/api/mapping/' + id;
+var url = '/api/sitecore/mappings/GetMapping?id=' + id;
 
 function ViewModel() {
     var self = this;
@@ -53,7 +53,7 @@ function ViewModel() {
         var dataObject = ko.toJSON(this);
 
         jQuery.ajax({
-            url: '/sitecore/api/postmappings',
+            url: '/api/sitecore/mappings/Post/',
             type: 'post',
             data: dataObject,
             contentType: 'application/json',

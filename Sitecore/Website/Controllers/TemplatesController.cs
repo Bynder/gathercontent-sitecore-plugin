@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
+using System.Web.Mvc;
 using GatherContent.Connector.Managers.Managers;
 using GatherContent.Connector.Managers.Models.TemplateModel;
 using Sitecore.Diagnostics;
-using Sitecore.Services.Infrastructure.Web.Http;
+using Sitecore.Mvc.Controllers;
 
 namespace GatherContent.Connector.Website.Controllers
 {
-    public class TemplatesMappingController : ServicesApiController
-    {
-     
+    public class TemplatesMappingController : SitecoreController
+    { 
         private readonly TemplatesManager _templateManager;
 
         public TemplatesMappingController()
@@ -18,25 +19,27 @@ namespace GatherContent.Connector.Website.Controllers
             _templateManager = new TemplatesManager();
         }
 
-        public TemplateMappingModel Get()
+        public ActionResult Get()
         {
             var model = _templateManager.GetTemplateMappingModel();
-          
-            return model;
+            return Json(model, JsonRequestBehavior.AllowGet);       
         }
 
         public HttpResponseMessage Post(TemplateMappingModel model)
         {
+            var response = new HttpResponseMessage();
             try
             {
                 _templateManager.PostTemplate(model);
-                var response = Request.CreateResponse(HttpStatusCode.OK, model);
+                response.StatusCode = HttpStatusCode.OK;
+                response.Content = new ObjectContent<TemplateMappingModel>(model, new JsonMediaTypeFormatter());
                 return response;
             }
             catch (Exception e)
             {
                 Log.Error(e.Message, e);
-                var response = Request.CreateResponse(HttpStatusCode.InternalServerError, model);
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                response.Content = new ObjectContent<TemplateMappingModel>(model, new JsonMediaTypeFormatter());
                 return response;
             }
         }

@@ -14,6 +14,13 @@ namespace GatherContent.Connector.Website.Commands
 {
     public class ImportCommand : Command
     {
+
+        public override CommandState QueryState(CommandContext context)
+        {
+            var item = context.Items[0];
+
+            return item.Paths.FullPath.ToLower().StartsWith("/sitecore/content") ? base.QueryState(context) : CommandState.Hidden;
+        }
         public override void Execute(CommandContext context)
         {
             try

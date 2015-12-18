@@ -10,6 +10,7 @@ namespace GatherContent.Connector.Website.Commands
 {
     public class MappingsCommand : Command
     {
+
         public override void Execute(CommandContext context)
         {
             try

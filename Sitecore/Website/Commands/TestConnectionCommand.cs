@@ -15,7 +15,7 @@ namespace GatherContent.Connector.Website.Commands
         {
             var item = context.Items[0];
 
-            return item.ID == new ID("B99D89BD-56AB-4F41-BB02-121D116E5145") ? base.QueryState(context) : CommandState.Hidden;
+            return item.TemplateID == new ID("F8B571EE-59A4-4EA5-9B32-9C57720F87ED") ? base.QueryState(context) : CommandState.Hidden;
         }
 
         public override void Execute(CommandContext context)

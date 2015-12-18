@@ -15,7 +15,7 @@ namespace GatherContent.Connector.Website.Commands
         {
             var item = context.Items[0];
 
-            return item.Paths.FullPath.ToLower().StartsWith("/sitecore/content") || item.ID == new ID("B99D89BD-56AB-4F41-BB02-121D116E5145") ? 
+            return item.Paths.FullPath.ToLower().StartsWith("/sitecore/content") || item.TemplateID == new ID("F8B571EE-59A4-4EA5-9B32-9C57720F87ED") ? 
                 base.QueryState(context) : CommandState.Hidden;
         }
 

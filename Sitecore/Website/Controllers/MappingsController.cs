@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Formatting;
-using System.Web.Helpers;
 using System.Web.Mvc;
 using GatherContent.Connector.Managers.Managers;
 using GatherContent.Connector.Managers.Models.Mapping;
 using Sitecore.Diagnostics;
 using Sitecore.Mvc.Controllers;
-using Sitecore.Services.Infrastructure.Web.Http;
 
 
 namespace GatherContent.Connector.Website.Controllers
@@ -40,42 +34,32 @@ namespace GatherContent.Connector.Website.Controllers
 
 
 
-        public HttpResponseMessage Post(AddMappingModel model)
+        public ActionResult Post(AddMappingModel model)
         {
-            var response = new HttpResponseMessage();
             try
             {
                 _mappingManager.PostMapping(model);
-
-                response.StatusCode = HttpStatusCode.OK;
-                response.Content = new ObjectContent<AddMappingModel>(model, new JsonMediaTypeFormatter());
-                return response;
+                return new EmptyResult();
             }
             catch (Exception e)
             {
                 Log.Error(e.Message, e);
-                response.StatusCode = HttpStatusCode.InternalServerError;
-                response.Content = new StringContent(e.Message);
-                return response;
+                return Json(new { status = "error", message = e.Message});
             }
             
         }
 
-        public HttpResponseMessage Delete(string id)
+        public ActionResult Delete(string id)
         {
-            var response = new HttpResponseMessage();
             try
             {              
                 _mappingManager.DeleteMapping(id);
-                response.StatusCode = HttpStatusCode.OK;
-                return response;
+                return new EmptyResult();
             }
             catch (Exception e)
             {
                 Log.Error(e.Message, e);
-                response.StatusCode = HttpStatusCode.InternalServerError;
-                response.Content = new StringContent(e.Message);
-                return response;
+                return Json(new { status = "error", message = e.Message });
             }
         }
     }

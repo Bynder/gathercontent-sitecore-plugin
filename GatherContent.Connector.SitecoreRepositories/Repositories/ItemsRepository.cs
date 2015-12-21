@@ -63,12 +63,30 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
         private Item GetDatasource(Item updatedItem, string fieldId, string label)
         {
-            var scField = updatedItem.Fields[new ID(fieldId)];
-            var dataSourcePath = GetItem(scField.ID.ToString())["Source"];
+            var dataSourcePath = GetDatasourcePath(updatedItem, fieldId);
             var dataSourceItem = GetItemByPath(dataSourcePath);
             if (dataSourceItem == null) return null;
-            var children = dataSourceItem.GetChildren().InnerChildren.FirstOrDefault(c => c.Name == label);
+            var children = dataSourceItem.GetChildren().InnerChildren.FirstOrDefault(c => c.Name.ToLower() == label.ToLower());
             return children;
+        }
+
+        private string GetDatasourcePath(Item updatedItem, string fieldId)
+        {
+            var scField = updatedItem.Fields[new ID(fieldId)];
+            var dataSourcePath = GetItem(scField.ID.ToString())["Source"];
+            return dataSourcePath;
+        }
+
+        private void SetDatasourcePath(Item updatedItem, string fieldId, string path)
+        {
+            var scField = updatedItem.Fields[new ID(fieldId)];
+            var scItem = GetItem(scField.ID.ToString());
+            using (new SecurityDisabler())
+            {
+                scItem.Editing.BeginEdit();
+                scItem["Source"] = path;
+                scItem.Editing.EndEdit();
+            }
         }
 
 
@@ -99,15 +117,29 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                             }
                             break;
                         case "files":
+                        {
+                            var dataSourcePath = GetDatasourcePath(updatedItem, field.Name);
+                            string path;
+                            if (string.IsNullOrEmpty(dataSourcePath))
                             {
-                                switch (updatedItem.Fields[new ID(field.Name)].Type)
+                                path = string.IsNullOrEmpty(field.Label)
+                                    ? string.Format("/sitecore/media library/GatherContent/{0}/", item.Title)
+                                    : string.Format("/sitecore/media library/GatherContent/{0}/{1}/", item.Title,
+                                        field.Label);
+                                SetDatasourcePath(updatedItem, field.Name, path);
+                            }
+                            else
+                            {
+                                path = dataSourcePath;
+                            }
+                            switch (updatedItem.Fields[new ID(field.Name)].Type)
                                 {
                                     case "Droptree":
                                     {
                                         var file = field.Files.FirstOrDefault();
                                         if (file != null)
                                         {
-                                            var media = UploadFile(item.Title, field.Label, file);
+                                            var media = UploadFile(path, file);
                                             updatedItem.Fields[new ID(field.Name)].Value = media.ID.ToString();
                                         }
 
@@ -118,7 +150,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                                         var file = field.Files.FirstOrDefault();
                                         if (file != null)
                                         {
-                                            var media = UploadFile(item.Title, field.Label, file);
+                                            var media = UploadFile(path, file);
                                             var val = "<image mediaid=\"" + media.ID + "\" />";
                                             updatedItem.Fields[new ID(field.Name)].Value = val;
                                         }
@@ -129,7 +161,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                                         var file = field.Files.FirstOrDefault();
                                         if (file != null)
                                         {
-                                            var media = UploadFile(item.Title, field.Label, file);
+                                            var media = UploadFile(path, file);
 
                                             var mediaUrl = MediaManager.GetMediaUrl(media,
                                                 new MediaUrlOptions {UseItemPath = false, AbsolutePath = false});
@@ -145,7 +177,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                                         {
                                             if (file != null)
                                             {
-                                                var media = UploadFile(item.Title, field.Label, file);
+                                                var media = UploadFile(path, file);
                                                 if (media != null) value += media.ID.ToString() + "|";
                                             }
                                         }
@@ -181,7 +213,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
 
 
-        private Item UploadFile(string itemTitle, string fieldTitle, File file)
+
+
+        private Item UploadFile(string path, File file)
         {
             var uri = file.Url.StartsWith("http") ? file.Url : "https://gathercontent.s3.amazonaws.com/" + file.Url;
             var request = (HttpWebRequest)WebRequest.Create(uri);
@@ -198,9 +232,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
                 if (memoryStream.Length > 0)
                 {
-                    var path = string.IsNullOrEmpty(fieldTitle) ?
-                        string.Format("/sitecore/media library/GatherContent/{0}/", itemTitle) :
-                        string.Format("/sitecore/media library/GatherContent/{0}/{1}/", itemTitle, fieldTitle);
+                    //var path = string.IsNullOrEmpty(fieldTitle) ?
+                    //    string.Format("/sitecore/media library/GatherContent/{0}/", itemTitle) :
+                    //    string.Format("/sitecore/media library/GatherContent/{0}/{1}/", itemTitle, fieldTitle);
                     var media = CreateMedia(path, file.FileName, "jpg", memoryStream);
                     return media;
                 }

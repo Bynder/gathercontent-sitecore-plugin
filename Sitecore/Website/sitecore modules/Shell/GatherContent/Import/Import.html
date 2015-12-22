@@ -64,7 +64,7 @@
                 <tbody data-bind="foreach: items">
                     <tr data-bind="click: $root.checkRow">
                         <td><input type="checkbox" data-bind="checked: Checked, click: function(){return true}, clickBubble: false" /></td>
-                        <td><span data-bind="style: { backgroundColor : Status.color }"></span><span data-bind="text: Status.Name"></span></td>
+                        <td><span data-bind="style: { backgroundColor : Status.color }"></span><span data-bind="text: Status.name"></span></td>
                         <td data-bind="text: Title"></td>
                         <td data-bind="text: LastUpdatedInGC"></td>
                         <td data-bind="text: Breadcrumb"></td>
@@ -190,7 +190,7 @@
                     </thead>
                     <tbody data-bind="foreach: items">
                     <tr>
-                        <td><span data-bind="style: { backgroundColor : Status.color }"></span><span data-bind="text: Status.name"></span></td>
+                        <td><span data-bind="style: { backgroundColor : Status.Color }"></span><span data-bind="text: Status.Name"></span></td>
                         <td data-bind="text: Title"></td>
                         <td data-bind="text: Message, style: { color: $root.getImportResultMessageColor($data) }"></td>
                         <td data-bind="text: GCTemplate, style: { color: $root.getImportResultTemplateColor($data) }"></td>

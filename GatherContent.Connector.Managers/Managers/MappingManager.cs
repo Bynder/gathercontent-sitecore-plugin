@@ -237,7 +237,6 @@ namespace GatherContent.Connector.Managers.Managers
         public void PostMapping(List<TemplateTab> model, bool isEdit, string templateId, string selectedTemplateId)
         {
             var template = _templateService.GetSingleTemplate(templateId);
-            //var template = _templateService.GetSingleTemplate(model.GcTemplateId);
             var project = _projectService.GetSingleProject(template.Data.ProjectId.ToString());
 
             var list = (from tab in model
@@ -250,13 +249,11 @@ namespace GatherContent.Connector.Managers.Managers
                         }).ToList();
 
             if (isEdit)
-            //if (model.IsEdit)
             {
 
                 _mappingRepository.UpdateMapping(project.Data.Id, template.Data.Id, new TemplateMapping
                 {
                     SitecoreTemplateId = selectedTemplateId,
-                   // SitecoreTemplateId = model.SelectedTemplateId,
                     Name = template.Data.Name,
                     GcTemplateId = template.Data.Id.ToString()
                 }, list);
@@ -267,7 +264,6 @@ namespace GatherContent.Connector.Managers.Managers
                 _mappingRepository.CreateMapping(project.Data.Id, new TemplateMapping
                 {
                     SitecoreTemplateId = selectedTemplateId,
-                    //SitecoreTemplateId = model.SelectedTemplateId,
                     Name = template.Data.Name,
                     GcTemplateId = template.Data.Id.ToString(),
                     LastUpdated = template.Data.Updated.ToString()
@@ -282,7 +278,7 @@ namespace GatherContent.Connector.Managers.Managers
         {
             List<MappingTemplateModel> templates = _mappingRepository.GetTemplateMappings(projectId);
 
-            if (templates == null) return null;
+            //if (templates == null) return null;
 
             List<MappingResultModel> result = TryMapItems(items, templates);
 
@@ -382,6 +378,12 @@ namespace GatherContent.Connector.Managers.Managers
 
         private TryMapItemState TryGetTemplate(List<MappingTemplateModel> templates, string templateId, out MappingTemplateModel result)
         {
+            if (templates == null)
+            {
+                result = null;
+                return TryMapItemState.TemplateError;
+            }
+
             result = templates.FirstOrDefault(i => templateId == i.GCTemplateId);
             if (result == null)
                 return TryMapItemState.TemplateError;

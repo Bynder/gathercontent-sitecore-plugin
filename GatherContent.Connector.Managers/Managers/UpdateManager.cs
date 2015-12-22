@@ -126,7 +126,7 @@ namespace GatherContent.Connector.Managers.Managers
         }
 
 
-        public UpdateResultModel UpdateItems(string itemId, List<UpdateListItem> models)
+        public UpdateResultModel UpdateItems(string itemId, List<UpdateListIds> models)
         {
             List<GCItem> gcItems = GetGCItemsByModels(models);
             List<MappingResultModel> resultItems = _mappingManager.MapItems(gcItems);
@@ -139,7 +139,7 @@ namespace GatherContent.Connector.Managers.Managers
             return result;
         }
 
-        private List<GCItem> GetGCItemsByModels(List<UpdateListItem> models)
+        private List<GCItem> GetGCItemsByModels(List<UpdateListIds> models)
         {
             var result = new List<GCItem>();
 

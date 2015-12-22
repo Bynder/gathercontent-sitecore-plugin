@@ -41,17 +41,19 @@ namespace GatherContent.Connector.Website.Controllers
 
 
 
-        public string ImportItems(string id, string projectId, string statusId, List<ImportListItem> items)
+        [HttpPost]
+        public ActionResult ImportItems(string id, string projectId, string statusId, List<string> items)
         {
             try
             {
                 ImportResultModel result = _importManager.ImportItems(id, items, projectId, statusId);
-                var model = JsonConvert.SerializeObject(result);
-                return model;
+
+                return Json(result, JsonRequestBehavior.AllowGet); 
             }
             catch (Exception exception)
             {
                 Log.Error(exception.Message, exception);
+                return Json(new { status = "error", message = exception.Message }, JsonRequestBehavior.AllowGet);
             }
             return null;
         }

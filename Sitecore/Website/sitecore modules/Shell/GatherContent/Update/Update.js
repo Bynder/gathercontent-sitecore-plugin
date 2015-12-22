@@ -53,7 +53,7 @@
 
     self.errorCallbackHandle = function (response) {
         jQuery(".preloader").hide();
-        self.errorText(response.responseJSON);
+        self.errorText(response);
         self.buttonClick(MODE.Error);
     }
 
@@ -232,6 +232,13 @@
     self.import = function () {
         var id = getUrlVars()["id"];
         var items = self.items();
+        var itemids = [];
+        items.forEach(function (item, i) {
+            itemids.push({
+                GCId: item.GCId,
+                CMSId: item.CMSId
+            });
+        });
         var status = self.statusFilter();
         if (!self.statusPostState())
             status = "";
@@ -241,8 +248,11 @@
             url: '/api/sitecore/Update/UpdateItems?id={' + id + '}&statusId=' + status,
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(items),
+            data: JSON.stringify(itemids),
             success: function (response) {
+                if (response.status == 'error') {
+                    self.errorCallbackHandle(response.message);
+                }
                 var notUpdatedCount = self.getNotUpdatedItemsCount(response.Items);
                 self.successImportedItemsCount(response.Items.length - notUpdatedCount);
                 self.notUpdaredItemsCount(notUpdatedCount);

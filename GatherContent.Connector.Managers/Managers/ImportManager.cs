@@ -101,7 +101,7 @@ namespace GatherContent.Connector.Managers.Managers
         }
 
 
-        public ImportResultModel ImportItems(string itemId, List<ImportListItem> items, string projectId, string statusId)
+        public ImportResultModel ImportItems(string itemId, List<string> items, string projectId, string statusId)
         {
             List<GCItem> gcItems = MapItems(items);
             List<MappingResultModel> cmsItems = _mappingManager.MapItems(gcItems, projectId);
@@ -120,15 +120,15 @@ namespace GatherContent.Connector.Managers.Managers
             return result;
         }
 
-        private List<GCItem> MapItems(List<ImportListItem> items)
+        private List<GCItem> MapItems(List<string> items)
         {
-            List<GCItem> result = items.Select(GetGCItemByModel).ToList();
+            List<GCItem> result = items.Select(GetGcItemByModel).ToList();
             return result;
         }
 
-        private GCItem GetGCItemByModel(ImportListItem model)
+        private GCItem GetGcItemByModel(string id)
         {
-            ItemEntity result = _itemsService.GetSingleItem(model.Id);
+            ItemEntity result = _itemsService.GetSingleItem(id);
 
             return result.Data;
         }

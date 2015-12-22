@@ -65,6 +65,7 @@
     <Compile Include="Models\UpdateItems\SelectItemsForUpdateModel.cs" />
     <Compile Include="Models\UpdateItems\TableDataModel.cs" />
     <Compile Include="Models\UpdateItems\UpdateGCItem.cs" />
+    <Compile Include="Models\UpdateItems\UpdateListIds.cs" />
     <Compile Include="Models\UpdateItems\UpdateListItem.cs" />
     <Compile Include="Models\UpdateItems\UpdateResultModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -53,7 +53,7 @@
 
     self.errorCallbackHandle = function (response) {
         jQuery(".preloader").hide();
-        self.errorText(response.responseJSON);
+        self.errorText(response);
         self.buttonClick(MODE.Error);
     }
 
@@ -217,6 +217,10 @@
     self.import = function () {
         var id = getUrlVars()["id"];
         var items = self.items();
+        var itemids = [];
+        items.forEach(function (item, i) {
+            itemids.push(item.Id);
+        });
         var status = self.statusFilter();
         var project = self.project();
         if (!self.statusPostState())
@@ -227,8 +231,11 @@
             url: '/api/sitecore/Import/ImportItems?id={' + id + '}&projectId=' + project + '&statusId=' + status,
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(items),
+            data: JSON.stringify(itemids),
             success: function (response) {
+                if (response.status == 'error') {
+                    self.errorCallbackHandle(response.message);
+                }
                 var notImportedItemsCount = self.getNotImportedItemsCount(response.Items);
                 self.notImportedItemsCount(notImportedItemsCount);
                 self.successImportedItemsCount(response.Items.length - notImportedItemsCount);

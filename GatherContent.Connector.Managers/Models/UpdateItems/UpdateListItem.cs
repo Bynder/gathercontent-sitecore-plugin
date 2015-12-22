@@ -3,6 +3,8 @@ using GatherContent.Connector.IRepositories.Models.Update;
 
 namespace GatherContent.Connector.Managers.Models.UpdateItems
 {
+
+
     public class UpdateListItem
     {
         public bool IsNeedToHighlightingDate { get; set; }

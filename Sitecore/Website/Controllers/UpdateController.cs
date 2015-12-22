@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web.Mvc;
 using GatherContent.Connector.Managers.Managers;
 using GatherContent.Connector.Managers.Models.UpdateItems;
 using Newtonsoft.Json;
@@ -32,17 +33,17 @@ namespace GatherContent.Connector.Website.Controllers
             return null;
         }
 
-        public string UpdateItems(string id, string statusId, List<UpdateListItem> items)
+        public ActionResult UpdateItems(string id, string statusId, List<UpdateListIds> items)
         {
             try
             {
                 UpdateResultModel result = _updateManager.UpdateItems(id, items);
-                var model = JsonConvert.SerializeObject(result);
-                return model;
+                return Json(result, JsonRequestBehavior.AllowGet);
             }
             catch (Exception exception)
             {
                 Log.Error(exception.Message, exception);
+                return Json(new { status = "error", message = exception.Message }, JsonRequestBehavior.AllowGet);
             }
             return null;
         }

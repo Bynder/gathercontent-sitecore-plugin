@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<control xmlns:def="Definition" xmlns="http://schemas.sitecore.net/Visual-Studio-Intellisense">
+  <AboutSitecore>
+    <FormPage Background="#e9e9e9">
+      <CodeBeside Type="Sitecore.Shell.Applications.Dialogs.About.AboutForm,Sitecore.Client"/>
+
+      <Stylesheet>
+        #VersionInfo {
+        font-weight:bold;
+        padding:4px 4px 8px;
+        }
+
+        .infoContainer {
+        background: #e9e9e9;
+        padding: 0 4px;
+        margin: 4px 0;
+        overflow: auto;
+        }
+
+        .footer {
+        text-align: right;
+        padding: 4px 8px;
+        height: 34px;
+        }
+      </Stylesheet>
+
+      <div class="scStretch scFlexColumnContainer">
+
+        <Border ID="VersionInfo" />
+        <div class="scFlexContent infoContainer">
+
+          <Literal Text="License:"/>
+
+          <Scrollbox Border="1px inset" class="scScrollbox scHeightAuto">
+            <GridPanel CellPadding="2" Columns="2">
+              <Literal Text="Licensed to:" GridPanel.NoWrap="true"/>
+              <Literal ID="LicensedTo" GridPanel.Width="100%"/>
+
+              <Literal Text="Company no:" GridPanel.NoWrap="true"/>
+              <Literal ID="CompanyNo"/>
+
+              <Literal Text="Address:" GridPanel.NoWrap="true"/>
+              <Literal ID="Address"/>
+
+              <Literal Text="Version:" GridPanel.NoWrap="true"/>
+              <Literal ID="Version"/>
+
+              <Literal Text="Expiration:" GridPanel.NoWrap="true"/>
+              <Literal ID="Expiration"/>
+
+              <Literal Text="Purpose:" GridPanel.NoWrap="true"/>
+              <Literal ID="Purpose"/>
+
+              <Literal Text="For use at:" GridPanel.NoWrap="true"/>
+              <Literal ID="ForUseAt"/>
+
+              <Literal Text="Reseller:" GridPanel.NoWrap="true"/>
+              <Literal ID="Reseller"/>
+
+              <Border ID="LicenseAgreement" GridPanel.ColSpan="2">
+              </Border>
+
+            </GridPanel>
+          </Scrollbox>
+
+          <Literal Text="Copyright:" GridPanel.Style="padding:8px 0px 0px 0px"/>
+
+          <Scrollbox ID="Copyright" Border="1px inset" height="80">
+            <Literal Text="All the licenses to copyrighted products that are distributed with Sitecore are stored in the \\Website\\sitecore\\Copyrights folder. For more information about the copyrighted licenses, see the \\Website\\sitecore\\Copyrights folder."/>
+          </Scrollbox>
+
+          <Literal Text="Additional Information:" Style="padding:8px 0px 0px 0px" />
+          <Scrollbox ID="AdditionalInfoContainer" Border="1px inset" Height="50">
+            <Literal ID="AdditionalInfo" />
+          </Scrollbox>
+
+          <Border Padding="8px 0px 0px 0px">
+            <Literal Text="Visit the Sitecore homepage at" Padding="0px 0.5em 0px 0px"/><a href="http://www.sitecore.net" target="_blank">www.sitecore.net</a>.
+          </Border>
+
+          <Border Padding="8px 0px 0px 0px">
+            <Literal ID="Warning" />
+          </Border>
+
+        </div>
+        <div class="footer">
+          <Button ID="OK">
+            <Literal Text="Close"/>
+          </Button>
+        </div>
+      </div>
+
+    </FormPage>
+  </AboutSitecore>
+</control>

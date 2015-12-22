@@ -26,6 +26,9 @@ bld/
 #temp/
 MediaCache/
 Sitecore/Website/data/
+Sitecore 7.2/Website/data/
+Sitecore 8.0/Website/data/
+Sitecore 8.1/Website/data/
 
 
 

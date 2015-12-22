@@ -50,12 +50,12 @@ function ViewModel() {
 
 
     this.saveMapping = function () {
-        var dataObject = ko.toJSON(this);
-
+        //var dataObject = ko.toJSON(this);
+ 
         jQuery.ajax({
-            url: '/api/sitecore/mappings/Post/',
+            url: '/api/sitecore/mappings/Post?isEdit=' + self.IsEdit() + '&templateId=' + self.GcTemplateId() + '&selectedTemplateId=' + self.SelectedTemplateId(),
             type: 'post',
-            data: dataObject,
+            data: JSON.stringify(self.Tabs()),
             contentType: 'application/json',
             success: function () {
                 window.opener.location.reload(true);

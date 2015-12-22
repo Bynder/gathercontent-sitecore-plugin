@@ -5,14 +5,11 @@ using System.Linq;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.GatherContentService.Services;
-using GatherContent.Connector.IRepositories.Models;
 using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.IRepositories.Models.Mapping;
 using GatherContent.Connector.Managers.Models.Mapping;
 using GatherContent.Connector.Managers.Models.UpdateItems;
-using GatherContent.Connector.SitecoreRepositories;
 using GatherContent.Connector.SitecoreRepositories.Repositories;
-using Sitecore.Pipelines.ItemProvider.AddVersion;
 
 namespace GatherContent.Connector.Managers.Managers
 {
@@ -57,9 +54,9 @@ namespace GatherContent.Connector.Managers.Managers
             {
                 {"text", "Single-Line Text, Multi-Line Text, Rich Text"},
                 {"section", "Single-Line Text, Multi-Line Text, Rich Text"},
-                {"choice_radio", "Checklist, Multilist, Multilist with Search, Treelist"},
-                {"choice_checkbox", "Checklist, Multilist, Multilist with Search, Treelist"},
-                {"files", "Image, File, Droptree, Multilist, Multilist with Search, Treelist"}
+                {"choice_radio", "Droptree, Checklist, Multilist, Multilist with Search, Treelist, TreelistEx"},
+                {"choice_checkbox", "Checklist, Multilist, Multilist with Search, Treelist, TreelistEx"},
+                {"files", "Image, File, Droptree, Multilist, Multilist with Search, Treelist, TreelistEx"}
             };
         }
 
@@ -237,12 +234,13 @@ namespace GatherContent.Connector.Managers.Managers
 
         }
 
-        public void PostMapping(AddMappingModel model)
+        public void PostMapping(List<TemplateTab> model, bool isEdit, string templateId, string selectedTemplateId)
         {
-            var template = _templateService.GetSingleTemplate(model.GcTemplateId);
+            var template = _templateService.GetSingleTemplate(templateId);
+            //var template = _templateService.GetSingleTemplate(model.GcTemplateId);
             var project = _projectService.GetSingleProject(template.Data.ProjectId.ToString());
 
-            var list = (from tab in model.Tabs
+            var list = (from tab in model
                         from templateField in tab.Fields
                         select new CmsTemplateField
                         {
@@ -251,12 +249,14 @@ namespace GatherContent.Connector.Managers.Managers
                             SelectedField = templateField.SelectedField,
                         }).ToList();
 
-            if (model.IsEdit)
+            if (isEdit)
+            //if (model.IsEdit)
             {
 
                 _mappingRepository.UpdateMapping(project.Data.Id, template.Data.Id, new TemplateMapping
                 {
-                    SitecoreTemplateId = model.SelectedTemplateId,
+                    SitecoreTemplateId = selectedTemplateId,
+                   // SitecoreTemplateId = model.SelectedTemplateId,
                     Name = template.Data.Name,
                     GcTemplateId = template.Data.Id.ToString()
                 }, list);
@@ -266,7 +266,8 @@ namespace GatherContent.Connector.Managers.Managers
             {
                 _mappingRepository.CreateMapping(project.Data.Id, new TemplateMapping
                 {
-                    SitecoreTemplateId = model.SelectedTemplateId,
+                    SitecoreTemplateId = selectedTemplateId,
+                    //SitecoreTemplateId = model.SelectedTemplateId,
                     Name = template.Data.Name,
                     GcTemplateId = template.Data.Id.ToString(),
                     LastUpdated = template.Data.Updated.ToString()

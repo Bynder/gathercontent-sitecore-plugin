@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using GatherContent.Connector.Managers.Managers;
 using GatherContent.Connector.Managers.Models.Mapping;
@@ -33,22 +34,25 @@ namespace GatherContent.Connector.Website.Controllers
         }
 
 
-
-        public ActionResult Post(AddMappingModel model)
+        [HttpPost]
+        public ActionResult Post(List<TemplateTab> model, bool isEdit, string templateId, string selectedTemplateId)
         {
+            if (templateId == null)
+                return Json(new { status = "error", message = "GatherContent template isn't selected" }, JsonRequestBehavior.AllowGet);
             try
             {
-                _mappingManager.PostMapping(model);
+                _mappingManager.PostMapping(model, isEdit,templateId,selectedTemplateId);
                 return new EmptyResult();
             }
             catch (Exception e)
             {
                 Log.Error(e.Message, e);
-                return Json(new { status = "error", message = e.Message});
+                return Json(new { status = "error", message = e.Message}, JsonRequestBehavior.AllowGet);
             }
             
         }
 
+        [HttpDelete]
         public ActionResult Delete(string id)
         {
             try
@@ -59,7 +63,7 @@ namespace GatherContent.Connector.Website.Controllers
             catch (Exception e)
             {
                 Log.Error(e.Message, e);
-                return Json(new { status = "error", message = e.Message });
+                return Json(new { status = "error", message = e.Message }, JsonRequestBehavior.AllowGet);
             }
         }
     }

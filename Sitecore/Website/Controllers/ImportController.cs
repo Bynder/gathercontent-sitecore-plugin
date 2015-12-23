@@ -10,7 +10,6 @@ using GatherContent.Connector.Managers.Models.ImportItems;
 using Newtonsoft.Json;
 using Sitecore.Diagnostics;
 using Sitecore.Mvc.Controllers;
-using Sitecore.Services.Infrastructure.Web.Http.Formatting;
 
 namespace GatherContent.Connector.Website.Controllers
 {

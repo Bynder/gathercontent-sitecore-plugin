@@ -256,8 +256,8 @@
                             <td data-bind="text: Title" style="width: 150px;"></td>
                             <td data-bind="text: Message, style: { color: $root.getImportResultMessageColor($data) }" style="width: 150px;"></td>
                             <td data-bind="text: GCTemplate, style: { color: $root.getImportResultTemplateColor($data) }"></td>
-                            <td style="width: 150px;"><a data-bind="click: $root.openCmsLink, attr: { href: CmsLink, title: CmsLink }">Open</a></td>
-                            <td style="width: 150px;"><a data-bind="click: $root.openGcLink, attr: { href: GcLink, title: GcLink }">Open</a></td>
+                            <td style="width: 150px;"><a data-bind="if: CmsLink!=null, click: $root.openCmsLink, attr: { href: CmsLink, title: CmsLink }">Open</a></td>
+                            <td style="width: 150px;"><a data-bind="if: GcLink!=null, click: $root.openGcLink, attr: { href: GcLink, title: GcLink }">Open</a></td>
                         </tr>
                     </tbody>
                 </table>

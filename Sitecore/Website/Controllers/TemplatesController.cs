@@ -25,22 +25,17 @@ namespace GatherContent.Connector.Website.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);       
         }
 
-        public HttpResponseMessage Post(TemplateMappingModel model)
+        public ActionResult Post(TemplateMappingModel model)
         {
-            var response = new HttpResponseMessage();
             try
             {
                 _templateManager.PostTemplate(model);
-                response.StatusCode = HttpStatusCode.OK;
-                response.Content = new ObjectContent<TemplateMappingModel>(model, new JsonMediaTypeFormatter());
-                return response;
+                return new EmptyResult();
             }
             catch (Exception e)
             {
                 Log.Error(e.Message, e);
-                response.StatusCode = HttpStatusCode.InternalServerError;
-                response.Content = new ObjectContent<TemplateMappingModel>(model, new JsonMediaTypeFormatter());
-                return response;
+                return Json(new { status = "error", message = e.Message }, JsonRequestBehavior.AllowGet);
             }
         }
     }

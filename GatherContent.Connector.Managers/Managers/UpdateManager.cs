@@ -57,36 +57,43 @@ namespace GatherContent.Connector.Managers.Managers
 
             foreach (CMSUpdateItem cmsItem in cmsItems)
             {
-                ItemEntity entity = _itemsService.GetSingleItem(cmsItem.GCItemId);
-                if (entity != null)
+                if (!string.IsNullOrEmpty(cmsItem.GCItemId))
                 {
-                    GCItem gcItem = entity.Data;
-                    Project project = GetProject(projectsDictionary, gcItem.ProjectId);
-                    if (gcItem.TemplateId.HasValue)
+                    ItemEntity entity = _itemsService.GetSingleItem(cmsItem.GCItemId);
+                    if (entity != null)
                     {
-                        GCTemplate template = GetTemplate(templatesDictionary, gcItem.TemplateId.Value);
+                        GCItem gcItem = entity.Data;
+                        Project project = GetProject(projectsDictionary, gcItem.ProjectId);
+                        if (gcItem.TemplateId.HasValue)
+                        {
+                            GCTemplate template = GetTemplate(templatesDictionary, gcItem.TemplateId.Value);
 
-                        string gcLink = null;
-                        if (!string.IsNullOrEmpty(_gcAccountSettings.GatherContentUrl))
-                        {
-                            gcLink = _gcAccountSettings.GatherContentUrl + "/item/" + gcItem.Id;
-                        }
-                        var dateFormat = _gcAccountSettings.DateFormat;
-                        if (string.IsNullOrEmpty(dateFormat))
-                        {
-                            dateFormat = Constants.DateFormat;
-                        }
-                        var cmsLink = string.Format("{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master", Sitecore.Context.Site.HostName, cmsItem.CMSId);
-                        var listItem = new UpdateListItem(gcItem, template, cmsItem, dateFormat, project.Name, cmsLink, gcLink);
-                        items.Add(listItem);
+                            string gcLink = null;
+                            if (!string.IsNullOrEmpty(_gcAccountSettings.GatherContentUrl))
+                            {
+                                gcLink = _gcAccountSettings.GatherContentUrl + "/item/" + gcItem.Id;
+                            }
+                            var dateFormat = _gcAccountSettings.DateFormat;
+                            if (string.IsNullOrEmpty(dateFormat))
+                            {
+                                dateFormat = Constants.DateFormat;
+                            }
+                            var cmsLink =
+                                string.Format(
+                                    "{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master",
+                                    Sitecore.Context.Site.HostName, cmsItem.CMSId);
+                            var listItem = new UpdateListItem(gcItem, template, cmsItem, dateFormat, project.Name,
+                                cmsLink, gcLink);
+                            items.Add(listItem);
 
-                        GCStatus status = gcItem.Status.Data;
-                        if (statuses.All(i => i.Id != status.Id))
-                        {
-                            statuses.Add(status);
+                            GCStatus status = gcItem.Status.Data;
+                            if (statuses.All(i => i.Id != status.Id))
+                            {
+                                statuses.Add(status);
+                            }
                         }
+
                     }
-
                 }
             }
 

@@ -21,16 +21,33 @@ namespace GatherContent.Connector.Website.Controllers
 
         public ActionResult Get()
         {
-            var model = _mappingManager.GetMappingModel();
-            return Json(model, JsonRequestBehavior.AllowGet);       
+            try
+            {
+                var model = _mappingManager.GetMappingModel();
+                return Json(model, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception exception)
+            {
+                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
+                return Json(new { status = "error", message = exception.Message }, JsonRequestBehavior.AllowGet);
+            }
         }
 
 
 
         public ActionResult GetMapping(string id)
         {
-            var model = _mappingManager.GetTemplateMappingModel(id);
-            return Json(model, JsonRequestBehavior.AllowGet);   
+            try
+            {
+                var model = _mappingManager.GetTemplateMappingModel(id);
+                return Json(model, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception exception)
+            {
+                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
+                
+                return Json(new { status = "error", message = exception.Message }, JsonRequestBehavior.AllowGet);
+            }
         }
 
 
@@ -41,28 +58,30 @@ namespace GatherContent.Connector.Website.Controllers
                 return Json(new { status = "error", message = "GatherContent template isn't selected" }, JsonRequestBehavior.AllowGet);
             try
             {
-                _mappingManager.PostMapping(model, isEdit,templateId,selectedTemplateId);
+                _mappingManager.PostMapping(model, isEdit, templateId, selectedTemplateId);
                 return new EmptyResult();
             }
             catch (Exception e)
             {
-                Log.Error(e.Message, e);
-                return Json(new { status = "error", message = e.Message}, JsonRequestBehavior.AllowGet);
+                Log.Error("GatherContent message: " + e.Message + e.StackTrace, e);
+                
+                return Json(new { status = "error", message = e.Message }, JsonRequestBehavior.AllowGet);
             }
-            
+
         }
 
         [HttpDelete]
         public ActionResult Delete(string id)
         {
             try
-            {              
+            {
                 _mappingManager.DeleteMapping(id);
                 return new EmptyResult();
             }
             catch (Exception e)
             {
-                Log.Error(e.Message, e);
+                Log.Error("GatherContent message: " + e.Message + e.StackTrace, e);
+                
                 return Json(new { status = "error", message = e.Message }, JsonRequestBehavior.AllowGet);
             }
         }

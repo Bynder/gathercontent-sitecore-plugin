@@ -193,10 +193,11 @@ namespace GatherContent.Connector.Managers.Managers
 
                     }
                 }
-                catch
+                catch(Exception)
                 {
                     mapping.LastUpdatedDate = "Removed from GatherContent ";
                     mapping.RemovedFromGc = true;
+                    throw;
                 }
 
             }
@@ -287,8 +288,6 @@ namespace GatherContent.Connector.Managers.Managers
         public List<MappingResultModel> MapItems(List<GCItem> items, string projectId)
         {
             List<MappingTemplateModel> templates = _mappingRepository.GetTemplateMappings(projectId);
-
-            //if (templates == null) return null;
 
             List<MappingResultModel> result = TryMapItems(items, templates);
 

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Formatting;
 using System.Web.Mvc;
 using GatherContent.Connector.Managers.Managers;
 using GatherContent.Connector.Managers.Models.TemplateModel;
@@ -21,8 +18,17 @@ namespace GatherContent.Connector.Website.Controllers
 
         public ActionResult Get()
         {
-            var model = _templateManager.GetTemplateMappingModel();
-            return Json(model, JsonRequestBehavior.AllowGet);       
+            try
+            {
+                var model = _templateManager.GetTemplateMappingModel();
+                return Json(model, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error("GatherContent message: " + e.Message + e.StackTrace, e);
+                
+                return Json(new { status = "error", message = e.Message }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         public ActionResult Post(TemplateMappingModel model)
@@ -34,7 +40,8 @@ namespace GatherContent.Connector.Website.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(e.Message, e);
+                Log.Error("GatherContent message: " + e.Message + e.StackTrace, e);
+                
                 return Json(new { status = "error", message = e.Message }, JsonRequestBehavior.AllowGet);
             }
         }

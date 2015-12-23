@@ -28,7 +28,7 @@ namespace GatherContent.Connector.Website.Controllers
             }
             catch (Exception exception)
             {
-                Log.Error(exception.Message, exception);
+                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
             }
             return null;
         }
@@ -42,7 +42,7 @@ namespace GatherContent.Connector.Website.Controllers
             }
             catch (Exception exception)
             {
-                Log.Error(exception.Message, exception);
+                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
                 return Json(new { status = "error", message = exception.Message }, JsonRequestBehavior.AllowGet);
             }
             return null;

@@ -22,6 +22,12 @@ namespace GatherContent.Connector.Managers.Managers
 
     public class MappingManager : BaseManager
     {
+        #region Constants
+        public const string FieldGcContentId = "{955A4DD9-6A01-458E-9791-3C99F5E076A8}";
+        public const string FieldLastSyncDate = "{F9D2EA57-86A2-45CF-9C28-8D8CA72A2669}";
+        #endregion
+
+
         private readonly MappingRepository _mappingRepository;
         private readonly TemplatesRepository _templatesRepository;
 
@@ -98,14 +104,18 @@ namespace GatherContent.Connector.Managers.Managers
                 st.SitecoreFields.Add(new SitecoreTemplateField { SitecoreFieldId = "0", SitrecoreFieldName = "Do not map" });
                 foreach (var field in cmsTemplate.CmsFields)
                 {
-                    var scField = new SitecoreTemplateField
+                    if (field.CmsFieldId != FieldGcContentId &&
+                        field.CmsFieldId != FieldLastSyncDate)
                     {
-                        SitrecoreFieldName = field.CmsFieldName,
-                        SitecoreFieldId = field.CmsFieldId,
-                        SitecoreFieldType = field.CmsFieldType
+                        var scField = new SitecoreTemplateField
+                        {
+                            SitrecoreFieldName = field.CmsFieldName,
+                            SitecoreFieldId = field.CmsFieldId,
+                            SitecoreFieldType = field.CmsFieldType
 
-                    };
-                    st.SitecoreFields.Add(scField);
+                        };
+                        st.SitecoreFields.Add(scField);
+                    }
                 }
                 templates.Add(st);
             }

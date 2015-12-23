@@ -13,6 +13,10 @@ function ViewModel() {
             }
             self.errorText(data.message);
             jQuery(".preloader").hide();
+            jQuery("thead th.cell_resize").each(function(){
+                jQuery(this).find("div").css("width",jQuery(this).width())
+            })
+
         });
 
 
@@ -58,6 +62,18 @@ function ViewModel() {
 
 }
 jQuery(window).resize(function () {
-    jQuery(".table_mappings_scroll").css("max-height", jQuery(".gathercontent-dialog").height() - 160)
+    jQuery(".table_mappings_scroll").css("max-height", jQuery(".gathercontent-dialog").height() - 155)
+    jQuery("thead th.cell_resize").each(function(){
+        jQuery(this).find("div").css("width",jQuery(this).width())
+    })
 })
 
+jQuery(function () {
+    jQuery("thead th div").each(function(){
+        if( jQuery(this).height()>18){
+            jQuery(this).css("padding-top",0);
+            jQuery(this).css("margin-top",9)
+        }
+    })
+
+});

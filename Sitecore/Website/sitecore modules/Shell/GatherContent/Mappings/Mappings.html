@@ -37,25 +37,25 @@
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 250px;">
+                        <th class="cell_resize">
                             <div>GatherContent Project</div>
                         </th>
-                        <th style="width: 250px;">
+                        <th class="cell_resize">
                             <div>GatherContent template</div>
                         </th>
-                        <th style="width: 200px;">
+                        <th class="cell_resize">
                             <div>Sitecore Template</div>
                         </th>
                         <th style="width: 130px;">
                             <div>Last mapped</div>
                         </th>
-                        <th style="width: 200px;">
-                            <div>Last updated in GatherContent</div>
+                        <th style="width: 130px;">
+                            <div>Last updated in  GatherContent</div>
                         </th>
-                        <th style="width: 100px;">
+                        <th style="width: 60px;">
                             <div>Manage</div>
                         </th>
-                        <th style="width: 100px;">
+                        <th style="width: 50px;">
                             <div>Delete</div>
                         </th>
                     </tr>
@@ -67,8 +67,8 @@
                         <td data-bind="text: ScTemplateName, style: { color: IsMapped ? 'black': 'red' }"></td>
                         <td data-bind="text: LastMappedDateTime, style: { color: IsMapped ? 'black': 'red' }, css: { dateWarning: IsHighlightingDate }"></td>
                         <td data-bind="text: LastUpdatedDate,  css: { dateWarning: IsHighlightingDate }"></td>
-                        <td data-bind="if: !RemovedFromGc"><a href="#" data-bind="click: editMapping, text: EditButtonTitle">Edit</a></td>
-                        <td><a href="#" data-bind="click: removeMapping"><img src="~/icon/Office/32x32/delete.png" width="20" height="20"></a></td>
+                        <td data-bind="if: !RemovedFromGc" class="text-center"><a href="#" data-bind="click: editMapping, text: EditButtonTitle">Edit</a></td>
+                        <td class="text-center"><a href="#" data-bind="click: removeMapping"><img src="~/icon/Office/32x32/delete.png" width="20" height="20"></a></td>
                     </tr>
                 </tbody>
             </table>

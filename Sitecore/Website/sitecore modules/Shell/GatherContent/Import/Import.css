@@ -272,8 +272,6 @@ table thead th.status{
 table thead th {
     height: 0;
     line-height: 0;
-    padding-top: 0;
-    padding-bottom: 0;
     color: transparent;
     border: none;
     padding: 0 8px 0 0;
@@ -286,9 +284,20 @@ table thead th {
     }
 
     table thead th > input {
-        width: 0;
+        width:18px;
         height: 0;
-        display: none;
+        height: 0px;
+        visibility: hidden;
+        margin: 0 !important;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        -o-appearance: none;
+        appearance: none;
+        border-width: 0;
+        border-color: transparent;
+        border: none;
+        position: relative;
+        top: -5px;
     }
 
 input[type="button"] {

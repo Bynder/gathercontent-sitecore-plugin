@@ -3,11 +3,17 @@ function ViewModel() {
     var self = this;
 
     this.mappings = ko.observableArray();
+    this.errorText = ko.observable();
 
-    jQuery.getJSON('/api/sitecore/mappings/Get', null, function (data) {
-        self.mappings(data);
-        jQuery(".preloader").hide();
-    });
+    jQuery.getJSON('/api/sitecore/mappings/Get', function () {
+    })
+        .success(function (data) {
+            if (data.status != "error") {
+                self.mappings(data);
+            }
+            self.errorText(data.message);
+            jQuery(".preloader").hide();
+        });
 
 
     editMapping = function () {
@@ -32,8 +38,11 @@ function ViewModel() {
                         return mapping.GcTemplateId == id;
                     });
                 },
+                error: function (data) {
+                    self.errorText(data.message);
+                }
             });
-        } 
+        }
     };
 
 
@@ -48,7 +57,7 @@ function ViewModel() {
     }
 
 }
-jQuery(window).resize(function(){
-    jQuery(".table_mappings_scroll").css("max-height",jQuery(".gathercontent-dialog").height()-160)
+jQuery(window).resize(function () {
+    jQuery(".table_mappings_scroll").css("max-height", jQuery(".gathercontent-dialog").height() - 160)
 })
 

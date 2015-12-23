@@ -21,13 +21,18 @@
     scSitecore.prototype.Settings.SessionTimeout = 1200000;
 </script>
 
+
 <div class="gathercontent-dialog">
+    <!-- ko if: errorText()!=null -->
+    <h1 data-bind="text: errorText"></h1>
+    <!-- /ko -->
+    <!-- ko if: errorText()==null -->
     <!-- ko if: mappings().length>0 -->
     <p>
         Choose which templates you wish to manage.
     </p>
     <!-- /ko -->
-    <div class="table_mappings_wrapper">   
+    <div class="table_mappings_wrapper">
         <div class="table_mappings_scroll">
             <table>
                 <thead>
@@ -70,7 +75,7 @@
         </div>
     </div>
     <!-- ko if: mappings().length==0 -->
-        <h1 class="mapping-empty"> There are no mapping defined. Please click Add Templates to start.</h1>
+    <h1 data-bind="if: errorText!=null, text:errorText" class="mapping-empty" > There are no mapping defined. Please click Add Templates to start.</h1>
     <!-- /ko -->
     <div class="footer_btn">
         <input class="mappings-btn" style="width: 160px;" id="AddMore" type="button" value="Add templates" data-bind="click: addMoreTemplates" />
@@ -78,6 +83,7 @@
         <!--<a href="#" data-bind="click: openImportPopup">Ready to import your content?</a>-->
         <!-- /ko -->
     </div>
+    <!-- /ko -->
     <div class="help-link">
         <a href="mailto:support@gathercontent.com">Need help?</a>
     </div>

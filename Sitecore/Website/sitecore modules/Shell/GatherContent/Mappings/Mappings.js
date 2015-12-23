@@ -10,6 +10,7 @@ function ViewModel() {
         .success(function (data) {
             if (data.status != "error") {
                 self.mappings(data);
+                self.errorText('');
             }
             self.errorText(data.message);
             jQuery(".preloader").hide();

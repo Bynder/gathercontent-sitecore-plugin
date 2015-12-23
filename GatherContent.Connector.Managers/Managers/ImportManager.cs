@@ -112,7 +112,7 @@ namespace GatherContent.Connector.Managers.Managers
 
             if (!string.IsNullOrEmpty(statusId))
             {
-                PostNewStatusesForItems(successfulImportedItems, statusId);
+                PostNewStatusesForItems(successfulImportedItems, statusId, projectId);
             }
 
             var result = new ImportResultModel(cmsItems);
@@ -138,11 +138,14 @@ namespace GatherContent.Connector.Managers.Managers
             return importResult.Where(i => i.IsImportSuccessful).ToList();
         }
 
-        private void PostNewStatusesForItems(List<MappingResultModel> items, string statusId)
+        private void PostNewStatusesForItems(List<MappingResultModel> items, string statusId, string projectId)
         {
             foreach (MappingResultModel item in items)
             {
                 _itemsService.ChooseStatusForItem(item.GCItemId, statusId);
+                var status = _projectsService.GetSingleStatus(statusId, projectId);
+                item.Status.Color = status.Data.Color;
+                item.Status.Name = status.Data.Name;
             }
         }
     }

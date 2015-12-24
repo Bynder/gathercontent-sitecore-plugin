@@ -117,4 +117,6 @@ function ViewModel() {
         });
     };
 };
-
+jQuery(window).resize(function () {
+    jQuery(".tabs_mapping").css("max-height", jQuery(".gathercontent-dialog").height() - 240);
+})

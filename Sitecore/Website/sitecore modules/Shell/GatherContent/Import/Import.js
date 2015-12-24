@@ -45,10 +45,16 @@
              callbackFunction(response);
              jQuery(".preloader").hide();
              initTooltip();
+            jQuery("thead th.cell_resize").each(function(){
+                jQuery(this).find("div").css("width",jQuery(this).width())
+            })
          }).error(function (response) {
              self.errorCallbackHandle(response);
          });
          document_resize();
+        jQuery("thead th.cell_resize").each(function(){
+            jQuery(this).find("div").css("width",jQuery(this).width())
+        })
      }
 
     self.errorCallbackHandle = function (response) {
@@ -325,6 +331,11 @@
 
     self.init();
 }
+jQuery(window).resize(function () {
+    jQuery("thead th.cell_resize").each(function(){
+        jQuery(this).find("div").css("width",jQuery(this).width());
+    });
+})
 
 jQuery(function () {
 

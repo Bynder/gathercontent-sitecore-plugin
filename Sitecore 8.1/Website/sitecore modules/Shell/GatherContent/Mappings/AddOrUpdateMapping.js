@@ -14,18 +14,27 @@ function ViewModel() {
     this.SitecoreTemplates = ko.observableArray();
     this.SitecoreFields = ko.observableArray();
     this.Tabs = ko.observableArray();
+    this.errorText = ko.observable();
+    this.isError = ko.observable();
 
 
     jQuery.getJSON(url, null, function (data) {
-        self.GcProjectName("Project:" + " " + data.GcProjectName);
-        self.GcTemplateName("Template:" + " " + data.GcTemplateName);
-        self.SitecoreTemplates(data.SitecoreTemplates),
-        self.Rules(data.Rules),
-        self.SelectedTemplate(self.find("SitrecoreTemplateId", data.AddMappingModel.SelectedTemplateId));
-        self.templateChanged();
-        self.GcTemplateId(data.AddMappingModel.GcTemplateId),
-        self.Tabs(data.AddMappingModel.Tabs);
-        self.IsEdit(data.AddMappingModel.IsEdit);
+        if (data.status != "error") {
+            self.GcProjectName("Project:" + " " + data.GcProjectName);
+            self.GcTemplateName("Template:" + " " + data.GcTemplateName);
+            self.SitecoreTemplates(data.SitecoreTemplates),
+            self.Rules(data.Rules),
+            self.SelectedTemplate(self.find("SitrecoreTemplateId", data.AddMappingModel.SelectedTemplateId));
+            self.templateChanged();
+            self.GcTemplateId(data.AddMappingModel.GcTemplateId),
+            self.Tabs(data.AddMappingModel.Tabs);
+            self.IsEdit(data.AddMappingModel.IsEdit);
+            self.isError(false);
+        } else {
+            self.errorText("Error:" + " " + data.message);
+            self.isError(true);
+        }
+
         jQuery(".preloader").hide();
         tabInitSlide();
     });
@@ -57,10 +66,16 @@ function ViewModel() {
             type: 'post',
             data: JSON.stringify(self.Tabs()),
             contentType: 'application/json',
-            success: function () {
-                window.opener.location.reload(true);
-                window.top.dialogClose();
-            }
+            success: function (data) {
+                if (data.status != "error") {
+                    window.opener.location.reload(true);
+                    window.top.dialogClose();
+                } else {
+                    self.errorText("Error:" + " " + data.message);
+                    self.isError(true);
+                }          
+            },
+ 
         });
     };
 
@@ -117,6 +132,7 @@ function ViewModel() {
         });
     };
 };
-jQuery(window).resize(function () {
+
+jQuery(window).resize(function() {
     jQuery(".tabs_mapping").css("max-height", jQuery(".gathercontent-dialog").height() - 240);
-})
+});

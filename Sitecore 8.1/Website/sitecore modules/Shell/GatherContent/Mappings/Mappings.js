@@ -37,14 +37,15 @@ function ViewModel() {
             jQuery.ajax({
                 type: 'DELETE',
                 url: '/api/sitecore/mappings/Delete?id=' + id,
-                //dataType: 'json',
                 success: function () {
                     self.mappings.remove(function (mapping) {
                         return mapping.GcTemplateId == id;
                     });
+                    self.isError(false);
                 },
                 error: function (data) {
-                    self.errorText(data.message);
+                    self.errorText("Error:" + " " + data.message);
+                    self.isError(true);
                 }
             });
         }

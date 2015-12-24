@@ -22,6 +22,9 @@
 </script>
 
 <div class="gathercontent-dialog">
+    <!-- ko if: isError -->
+    <h1 data-bind="text: errorText"></h1>
+    <!-- /ko -->
     <p class="fields-mapping-padding">
         Choose the fields you wish to map from GatherContent into Sitecore. Only map the fields you need to import.
     </p>

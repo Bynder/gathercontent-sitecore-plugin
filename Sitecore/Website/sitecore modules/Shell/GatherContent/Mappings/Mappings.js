@@ -4,21 +4,21 @@ function ViewModel() {
 
     this.mappings = ko.observableArray();
     this.errorText = ko.observable();
+    this.isError = ko.observable();
 
-    jQuery.getJSON('/api/sitecore/mappings/Get', function () {
-    })
-        .success(function (data) {
-            if (data.status != "error") {
-                self.mappings(data);
-                self.errorText('');
-            }
-            self.errorText(data.message);
-            jQuery(".preloader").hide();
-            jQuery("thead th.cell_resize").each(function(){
-                jQuery(this).find("div").css("width",jQuery(this).width())
-            })
-
+    jQuery.getJSON('/api/sitecore/mappings/Get', function (data) {
+        if (data.status != "error") {
+            self.mappings(data);
+            self.isError(false);
+        } else {
+            self.errorText("Error:" + " " + data.message);
+            self.isError(true);
+        }
+        jQuery(".preloader").hide();
+        jQuery("thead th.cell_resize").each(function () {
+            jQuery(this).find("div").css("width", jQuery(this).width());
         });
+    });
 
 
     editMapping = function () {
@@ -71,11 +71,11 @@ jQuery(window).resize(function () {
 })
 
 jQuery(function () {
-    jQuery("thead th div").each(function(){
-        if( jQuery(this).height()>18){
-            jQuery(this).css("padding-top",0);
-            jQuery(this).css("margin-top",9)
+    jQuery("thead th div").each(function() {
+        if (jQuery(this).height() > 18) {
+            jQuery(this).css("padding-top", 0);
+            jQuery(this).css("margin-top", 9);
         }
-    })
+    });
 
 });

@@ -30,7 +30,9 @@ Sitecore 7.2/Website/data/
 Sitecore 8.0/Website/data/
 Sitecore 8.1/Website/data/
 
-
+Sitecore 8.1/Website/temp/
+Sitecore 7.2/Website/temp/
+Sitecore 8.0/Website/temp/
 
 # MSTest test Results
 [Tt]est[Rr]esult*/

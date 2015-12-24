@@ -1,0 +1,215 @@
+﻿<link href="/sitecore modules/shell/GatherContent/css/GatherContent.css" rel="stylesheet" />
+<link href="/sitecore modules/shell/GatherContent/Import/Import.css" rel="stylesheet" />
+<link href="/sitecore modules/shell/GatherContent/css/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+
+<script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/jquery_2.1.1.min.js"></script>
+<script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/knockout-3.4.0.js"></script>
+<script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/GatherContent.js"></script>
+<script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/Import/Import.js"></script>
+<script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/css/bootstrap/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+    jQuery.noConflict();
+    jQuery(document).ready(function () {
+        ko.applyBindings(new ImportManager());
+    });
+</script>
+
+<div data-bind="if: getMode(1)" class="gathercontent-import">
+    <div class="filter_wrapper_import">
+        <div class="title_filter">GATHER CONTENT PROJECT</div>
+        <select class="custom_select" style="width: 250px" data-bind="options: projects, optionsText: 'name', optionsValue: 'id', value: project, event:{ change: $root.projectChanged}"></select>
+    </div>
+    <div class="filter_wrapper">
+        <div class="filter_wrapper_import">
+            <div class="title_filter" style="padding-right: 135px;">FILTER</div>
+            <select class="custom_select" style="width: 250px" data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, optionsCaption: 'STATUS', event:{ change: $root.filter }"></select>
+            <select class="custom_select" style="width: 250px;" data-bind="options: templates, optionsText: 'name', optionsValue: 'id', value: templateFilter, optionsCaption: 'GATHER CONTENT TEMPLATE', event:{ change: $root.filter }"></select>
+        </div>
+        <div class="search_filter">
+            <input placeholder="FILTER BY ITEM NAME (SEARCH)" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
+        </div>
+    </div>
+    <div class="table_import_wrapper">
+        <div class="table_import_scroll">
+            <table class="table_point">
+                <thead>
+                    <tr>
+                        <th class="checkbox_table">
+                            <div><input type="checkbox" data-bind="checked: AllChecked" /></div>
+                        </th>
+                        <th class="status cell_resize" >
+                            <div>Status</div>
+                        </th>
+                        <th class="cell_resize">
+                            <div>Item name</div>
+                        </th>
+                        <th style="width: 150px" >
+                            <div>Last updated in GatherContent</div>
+                        </th>
+                        <th class="cell_resize">
+                            <div>Path</div>
+                        </th>
+                        <th class="cell_resize">
+                            <div>Template name</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: items">
+                    <tr data-bind="click: $root.checkRow">
+                        <td><input type="checkbox" data-bind="checked: Checked, click: function(){return true}, clickBubble: false" /></td>
+                        <td><span data-bind="style: { backgroundColor : Status.color }"></span><span data-bind="text: Status.name"></span></td>
+                        <td data-bind="text: Title"></td>
+                        <td data-bind="text: LastUpdatedInGC"></td>
+                        <td data-bind="text: Breadcrumb"></td>
+                        <td data-bind="text: Template.name"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+    <div class="footer_btn">
+        <div>
+            <span data-bind="text: getCheckedCount"></span> Items selected
+        </div>
+
+        <input type="button" class="mappings-btn" value="Next>" data-bind="click: buttonClick.bind($data, 2)" />
+        <!--<input type="button" value="Close" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" />-->
+    </div>
+    <div class="help-link">
+        <a href="mailto:support@gathercontent.com">Need help?</a>
+    </div>
+</div>
+
+<div data-bind="if: getMode(2)">
+    <div>
+        <h2 class="title">Confirm import selection (<span data-bind="text: getCheckedCount"></span> items)</h2>
+        <p>Please review your import selection before importing.</p>
+    </div>
+
+    <div class="table_import_wrapper">
+        <div class="table_import_scroll">
+            <table class="table_point">
+                <thead>
+                    <tr>
+                        <th class="status">
+                            Status
+                            <div>Status</div>
+                        </th>
+                        <th  class="cell_resize">
+                            Item name
+                            <div>Item name</div>
+                        </th>
+                        <th  class="cell_resize">
+                            Template name
+                            <div>Template name</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: items">
+                    <tr>
+                        <td><span data-bind="style: { backgroundColor : Status.color }"></span><span data-bind="text: Status.name"></span></td>
+                        <td data-bind="text: Title"></td>
+                        <td data-bind="text: Template.name"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="footer_btn">
+        <div>
+            <input type="checkbox" data-bind="checked: statusPostState" />
+            After successful import change status of item to <select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter"></select> inside your GatherContent account.
+            <!--, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender-->
+        </div>
+        <input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 1)" />
+        <input type="button" value="Import>" data-bind="click: buttonClick.bind($data, 3)" />
+        <!--<input type="button" class="closeButton" value="Close" data-bind="click: buttonClick.bind($data, 5)" />-->
+    </div>
+    <div class="help-link">
+        <a href="mailto:support@gathercontent.com">Need help?</a>
+    </div>
+
+</div>
+
+<div data-bind="if: getMode(3)">
+    <div class="preloader_import text-center">
+        <h2 class="title">Import in progress</h2>
+        <p>Please do not close your browser. Depending on the number of Items you have selected the import can take some time.</p>
+        <img src="/sitecore/shell/themes/standard/images/sc-spinner16.gif" alt="">
+    </div>
+    <!--<input type="button" value="Next" data-bind="click: buttonClick.bind($data, 4)" />-->
+</div>
+
+<div data-bind="if: getMode(4)">
+    <h2 class="title">Import complete: Results.</h2>
+    <img src="~/icon/Apps/32x32/Right.png" width="20" height="20">
+    <span data-bind="text: successImportedItemsCount()"></span> items were imported successfully.
+    <div data-bind="if: items().length > 0">
+        <div data-bind="if: notImportedItemsCount() > 0" class="import-padding">
+            <img src="~/icon/Apps/32x32/Warning (1).png" width="20" height="20"> <span data-bind=" text: notImportedItemsCount()"></span> items were not imported. Check errors below.
+        </div>
+        <div class="table_import_wrapper">
+            <div class="table_import_scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="status">
+                                <div>Status</div>
+                            </th>
+                            <th class="cell_resize">
+                                <div>Item name</div>
+                            </th>
+                            <th  class="cell_resize">
+                                <div>Import status</div>
+                            </th>
+                            <th  class="cell_resize">
+                                <div>Template name</div>
+                            </th>
+                            <th  class="cell_resize">
+                                <div> Open In Sitecore</div>
+                            </th>
+                            <th  class="cell_resize">
+                                <div>Open In GatherContent</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: items">
+                    <tr>
+                        <td><span data-bind="style: { backgroundColor : Status.Color }"></span><span data-bind="text: Status.Name"></span></td>
+                        <td data-bind="text: Title"></td>
+                        <td data-bind="text: Message, style: { color: $root.getImportResultMessageColor($data) }"></td>
+                        <td data-bind="text: GCTemplate, style: { color: $root.getImportResultTemplateColor($data) }"></td>
+                        <td><a data-bind="if: CmsLink!=null, click: $root.openCmsLink, attr: { href: CmsLink, title: CmsLink }">Open</a></td>
+                        <td><a data-bind="if: GcLink!=null, click: $root.openGcLink, attr: { href: GcLink, title: GcLink }">Open</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div data-bind="if: notImportedItemsCount() > 0" class="import-padding">
+            <span>Template not mapped:</span> Please check template mapping.<br />
+            <span>Template fields mismatch:</span> This could be because the template in GatherContent has changed and the changed template has not been updated on Sitecore.
+        </div>
+    </div>
+    <div class="footer_btn">
+        <input type="button" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" value="Close" />
+    </div>
+    <div class="help-link">
+        <a href="mailto:support@gathercontent.com">Need help?</a>
+    </div>
+</div>
+
+<div data-bind="if: getMode(6)">
+    <h2 class="title"><span data-bind="text: errorText"></span></h2>
+    <div class="footer_btn">
+        <input type="button" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" value="Close" />
+    </div>
+    <div class="help-link">
+        <a href="mailto:support@gathercontent.com">Need help?</a>
+    </div>
+</div>
+
+<div class="preloader"></div>

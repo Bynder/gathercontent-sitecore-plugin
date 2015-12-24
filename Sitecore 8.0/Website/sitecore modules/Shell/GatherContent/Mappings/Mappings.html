@@ -1,0 +1,89 @@
+﻿<script src="/sitecore modules/shell/GatherContent/js/jquery_2.1.1.min.js"></script>
+<script src="/sitecore/shell/Controls/Lib/Prototype/prototype.js"></script>
+<script src="/sitecore/shell/Controls/Browser.js"></script>
+<script src="/sitecore/shell/Controls/Sitecore.js"></script>
+<script src="/sitecore modules/shell/GatherContent/Mappings/Mappings.js"></script>
+<script src="/sitecore modules/shell/GatherContent/js/knockout-3.4.0.js"></script>
+<script src="/sitecore modules/shell/GatherContent/js/GatherContent.js"></script>
+<link href="/sitecore modules/shell/GatherContent/css/GatherContent.css" rel="stylesheet" />
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        ko.applyBindings(new ViewModel());
+
+    });
+
+</script>
+<script type="text/JavaScript" language="javascript">
+    if (!window.scSitecore) {
+        scSitecore = function () { };
+    }
+    scSitecore.prototype.Settings = {};
+    scSitecore.prototype.Settings.SessionTimeout = 1200000;
+</script>
+
+
+<div class="gathercontent-dialog">
+    <!-- ko if: isError -->
+    <h1 data-bind="text: errorText"></h1>
+    <!-- /ko -->
+    <!-- ko if: mappings().length>0 -->
+    <p>
+        Choose which templates you wish to manage.
+    </p>
+    <!-- /ko -->
+    <div class="table_mappings_wrapper">
+        <div class="table_mappings_scroll">
+            <table>
+                <thead>
+                <tr>
+                    <th class="cell_resize">
+                        <div>GatherContent Project</div>
+                    </th>
+                    <th class="cell_resize">
+                        <div>GatherContent template</div>
+                    </th>
+                    <th class="cell_resize">
+                        <div>Sitecore Template</div>
+                    </th>
+                    <th style="width: 130px;">
+                        <div>Last mapped</div>
+                    </th>
+                    <th style="width: 130px;">
+                        <div>Last updated in  GatherContent</div>
+                    </th>
+                    <th style="width: 60px;">
+                        <div>Manage</div>
+                    </th>
+                    <th style="width: 50px;">
+                        <div>Delete</div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody data-bind="foreach: mappings">
+                <tr>
+                    <td data-bind="text: GcProjectName, style: { color: IsMapped ? 'black': 'red' }"></td>
+                    <td data-bind="text: GcTemplateName, style: { color: IsMapped ? 'black': 'red' }"></td>
+                    <td data-bind="text: ScTemplateName, style: { color: IsMapped ? 'black': 'red' }"></td>
+                    <td data-bind="text: LastMappedDateTime, style: { color: IsMapped ? 'black': 'red' }, css: { dateWarning: IsHighlightingDate }"></td>
+                    <td data-bind="text: LastUpdatedDate,  css: { dateWarning: IsHighlightingDate }"></td>
+                    <td data-bind="if: !RemovedFromGc" class="text-center"><a href="#" data-bind="click: editMapping, text: EditButtonTitle">Edit</a></td>
+                    <td class="text-center"><a href="#" data-bind="click: removeMapping"><img src="~/icon/Office/32x32/delete.png" width="20" height="20"></a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- ko if: mappings().length==0 -->
+    <h1 class="mapping-empty"> There are no mapping defined. Please click Add Templates to start.</h1>
+    <!-- /ko -->
+    <div class="footer_btn">
+        <input class="mappings-btn" style="width: 160px;" id="AddMore" type="button" value="Add templates" data-bind="click: addMoreTemplates" />
+        <!-- ko if: mappings().length>0 -->
+        <!--<a href="#" data-bind="click: openImportPopup">Ready to import your content?</a>-->
+        <!-- /ko -->
+    </div>
+    <div class="help-link">
+        <a href="mailto:support@gathercontent.com">Need help?</a>
+    </div>
+</div>
+<div class="preloader"></div>

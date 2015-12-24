@@ -48,12 +48,24 @@
             jQuery("thead th.cell_resize").each(function(){
                 jQuery(this).find("div").css("width",jQuery(this).width())
             })
+            jQuery("thead th div").each(function(){
+                if( jQuery(this).height()>18){
+                    jQuery(this).css("padding-top",0);
+                    jQuery(this).css("margin-top",9)
+                }
+            })
          }).error(function (response) {
              self.errorCallbackHandle(response);
          });
          document_resize();
         jQuery("thead th.cell_resize").each(function(){
             jQuery(this).find("div").css("width",jQuery(this).width())
+        })
+        jQuery("thead th div").each(function(){
+            if( jQuery(this).height()>18){
+                jQuery(this).css("padding-top",0);
+                jQuery(this).css("margin-top",9)
+            }
         })
      }
 
@@ -335,6 +347,12 @@ jQuery(window).resize(function () {
     jQuery("thead th.cell_resize").each(function(){
         jQuery(this).find("div").css("width",jQuery(this).width());
     });
+    jQuery("thead th div").each(function(){
+        if( jQuery(this).height()>18){
+            jQuery(this).css("padding-top",0);
+            jQuery(this).css("margin-top",9)
+        }
+    })
 })
 
 jQuery(function () {

@@ -44,10 +44,27 @@
              callbackFunction(response);
              jQuery(".preloader").hide();
              initTooltip();
+             jQuery("thead th.cell_resize").each(function(){
+                 jQuery(this).find("div").css("width",jQuery(this).width())
+             });
+             jQuery("thead th div").each(function(){
+                 if( jQuery(this).height()>18){
+                     jQuery(this).css("padding-top",0);
+                     jQuery(this).css("margin-top",9)
+                 }
+             })
          }).error(function(response) {
              self.errorCallbackHandle(response);
          });
-
+         jQuery("thead th.cell_resize").each(function(){
+             jQuery(this).find("div").css("width",jQuery(this).width())
+         });
+         jQuery("thead th div").each(function(){
+             if( jQuery(this).height()>18){
+                 jQuery(this).css("padding-top",0);
+                 jQuery(this).css("margin-top",9)
+             }
+         })
          document_resize();
      }
 
@@ -335,3 +352,19 @@
 
     self.init();
 }
+jQuery(window).resize(function () {
+    jQuery("thead th.cell_resize").each(function(){
+        jQuery(this).find("div").css("width",jQuery(this).width());
+    });
+})
+
+jQuery(function () {
+
+    jQuery("thead th div").each(function(){
+        if( jQuery(this).height()>18){
+            jQuery(this).css("padding-top",0);
+            jQuery(this).css("margin-top",9)
+        }
+    })
+
+});

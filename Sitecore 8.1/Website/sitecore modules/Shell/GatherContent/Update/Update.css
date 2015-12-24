@@ -1,7 +1,9 @@
 ﻿.closeButton {
     float: left;
 }
-
+body{
+    height: 100%;
+}
 .gathercontent-import {
 }
 
@@ -33,7 +35,7 @@ body {
     position: absolute;
     left: 0;
     bottom: 0;
-    padding: 10px 20px 15px;
+    padding: 0 20px 20px;
     width: 100%;
 }
 .footer_btn input[type="checkbox"]{
@@ -176,7 +178,7 @@ table tbody tr td {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 115px;
+    max-width: 160px;
 }
 
 table tbody tr td:last-child {
@@ -225,12 +227,12 @@ table tbody tr td a {
 
 .table_import_wrapper {
     position: relative;
-    padding-top: 36px;
+    padding-top: 45px;
     background: #5e5e5e;
 }
 
 .table_import_scroll {
-    max-height: calc(100% - 250px);
+    max-height: 340px;
     overflow-y: auto;
     overflow-x: hidden;
     background: #fff;
@@ -241,18 +243,20 @@ table thead th div {
     position: absolute;
     background: transparent;
     color: #fff;
-    margin: 9px 0;
+    margin: 12px 0 9px;
+    padding-top: 3px;
     top: 0;
     line-height: normal;
     border-left: 1px solid #fff;
-    padding-left: 5px;
     min-height: 18px;
+    word-wrap: break-word;
+    width: inherit;
+    text-align: center;
 }
 
 
 table thead th.checkbox_table+th div,table thead th.checkbox_table div,table thead th:first-child div{
     border-left: none;
-    text-align: center;
 }
 table thead th.checkbox_table div {
     margin-top: 6px;
@@ -261,44 +265,52 @@ table thead th.checkbox_table{
     margin: 0;
     width: 25px;
 }
+table thead th.status{
+    margin: 0;
+    width: 155px;
+}
 table thead th {
     height: 0;
     line-height: 0;
-    padding-top: 0;
-    padding-bottom: 0;
     color: transparent;
     border: none;
-    white-space: nowrap;
     padding: 0 8px 0 0;
     overflow: hidden;
+    text-align: center;
 }
 
-table thead th:nth-child(4) {
-    width: 150px;
-}
 
 table thead th > input {
-    width: 0;
+    width:18px;
     height: 0;
-    display: none;
+    height: 0px;
+    visibility: hidden;
+    margin: 0 !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -o-appearance: none;
+    appearance: none;
+    border-width: 0;
+    border-color: transparent;
+    border: none;
+    position: relative;
+    top: -5px;
 }
 
 input[type="button"] {
     border: none;
-    margin: 20px;
+    margin-top: 20px;
     padding: 10px;
-    margin-left: 0;
-    margin-right: 0;
     font-size: 0.9em;
     text-transform: uppercase;
     font-weight: 700;
-    box-shadow: inset 1px 1px 2px #BBB;
-    width: 100px;
-    box-sizing: border-box;
+    border-radius: 3px;
+    cursor: pointer;
+    background-color: #e4e3e3;
 }
 
 input[type="button"]:hover {
-    box-shadow: 1px 1px 4px #4A4949;
+    background-color:#f0eeee;
 }
 
 .tooltip {

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<control xmlns:def="Definition" xmlns="http://schemas.sitecore.net/Visual-Studio-Intellisense">
+  <WizardForm>
+    <Stylesheet Src="Dialogs.css" DeviceDependant="true"/>
+    
+    <FormPage Application="$Application" FormTarget="$FormTarget" Enctype="$Enctype" Submittable='${MainUtil.GetString($Submittable,"true")}' Overflow="true">
+      <CodeBeside Type="$CodeBeside"/>
+      <Script Type="text/JavaScript" Language="javascript" Src="/sitecore/shell/controls/Sitecore.Runtime.js"/>
+      <Script Type="text/JavaScript" Language="javascript" Src="/sitecore/shell/controls/SitecoreWizard.js"/>
+
+      <Border class="scStretch">
+        <Border class="scWizardPageContainer">
+          <def:Placeholder />
+        </Border>
+        <Border class="scWizardButtons">
+          <Border class="scBottomEdge" />
+          <Border class="scTopEdge" />
+          <Button ID="BackButton" Class="scButton" Disabled="true" Click="#" Header="&lt; Back"/>
+          <Button ID="NextButton" Class="scButton" Click="#" Header="Next &gt;"/>&#160;&#160;&#160;
+          <Button ID="CancelButton" Class="scButton" Click="#" Header="Cancel"/>&#160;&#160;&#160;
+        </Border>
+      
+      </Border>
+      
+    </FormPage>
+  </WizardForm>
+</control>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
@@ -7,6 +8,7 @@ using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.IRepositories.Models.Update;
 using GatherContent.Connector.Managers.Models.UpdateItems;
 using GatherContent.Connector.SitecoreRepositories.Repositories;
+using Sitecore.Diagnostics;
 
 namespace GatherContent.Connector.Managers.Managers
 {
@@ -59,7 +61,15 @@ namespace GatherContent.Connector.Managers.Managers
             {
                 if (!string.IsNullOrEmpty(cmsItem.GCItemId))
                 {
-                    ItemEntity entity = _itemsService.GetSingleItem(cmsItem.GCItemId);
+                    ItemEntity entity = null;
+                    try
+                    {
+                        entity = _itemsService.GetSingleItem(cmsItem.GCItemId);
+                    }
+                    catch(Exception exception)
+                    {
+                        Log.Error("GatherContent message. Api Server error has happened during getting Item with id = " + cmsItem.GCItemId, exception);
+                    }
                     if (entity != null)
                     {
                         GCItem gcItem = entity.Data;
@@ -94,6 +104,7 @@ namespace GatherContent.Connector.Managers.Managers
                         }
 
                     }
+
                 }
             }
 

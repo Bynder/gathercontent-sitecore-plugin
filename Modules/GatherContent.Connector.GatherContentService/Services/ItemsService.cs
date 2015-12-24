@@ -23,7 +23,7 @@ namespace GatherContent.Connector.GatherContentService.Services
         {
             string url = string.Format("{0}?project_id={1}", ServiceUrl, projectId);
             WebRequest webrequest = CreateRequest(url);
-            webrequest.Method = WebRequestMethods.Http.Get; ;
+            webrequest.Method = WebRequestMethods.Http.Get; 
 
             return ReadResponse<ItemsEntity>(webrequest);
         }
@@ -32,7 +32,7 @@ namespace GatherContent.Connector.GatherContentService.Services
         {
             string url = string.Format("{0}/{1}", ServiceUrl, itemId);
             WebRequest webrequest = CreateRequest(url);
-            webrequest.Method = WebRequestMethods.Http.Get; ;
+            webrequest.Method = WebRequestMethods.Http.Get; 
 
             return ReadResponse<ItemEntity>(webrequest);
         }
@@ -41,7 +41,7 @@ namespace GatherContent.Connector.GatherContentService.Services
         {
             var url = string.Format("{0}/{1}/files", ServiceUrl, itemId);
             var webrequest = CreateRequest(url);
-            webrequest.Method = WebRequestMethods.Http.Get; ;
+            webrequest.Method = WebRequestMethods.Http.Get; 
 
             return ReadResponse<ItemFiles>(webrequest);
         }

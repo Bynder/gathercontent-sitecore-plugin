@@ -50,6 +50,7 @@
     <Compile Include="Managers\ImportManager.cs" />
     <Compile Include="Managers\MappingManager.cs" />
     <Compile Include="Managers\TestConnectionManager.cs" />
+    <Compile Include="Models\UpdateItems\UpdateListIds.cs" />
     <Compile Include="Managers\UpdateManager.cs" />
     <Compile Include="Models\ImportItems\FiltersModel.cs" />
     <Compile Include="Models\ImportItems\ImportListItem.cs" />
@@ -65,7 +66,6 @@
     <Compile Include="Models\UpdateItems\SelectItemsForUpdateModel.cs" />
     <Compile Include="Models\UpdateItems\TableDataModel.cs" />
     <Compile Include="Models\UpdateItems\UpdateGCItem.cs" />
-    <Compile Include="Models\UpdateItems\UpdateListIds.cs" />
     <Compile Include="Models\UpdateItems\UpdateListItem.cs" />
     <Compile Include="Models\UpdateItems\UpdateResultModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

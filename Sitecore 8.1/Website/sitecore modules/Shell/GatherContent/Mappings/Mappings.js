@@ -62,13 +62,13 @@ function ViewModel() {
     }
 
 }
-
-jQuery(window).resize(function() {
+jQuery(window).resize(function () {
     jQuery(".table_mappings_scroll").css("max-height", jQuery(".gathercontent-dialog").height() - 155);
-    jQuery("thead th.cell_resize").each(function() {
-        jQuery(this).find("div").css("width", jQuery(this).width());
-    });
-});
+    jQuery(".tabs_mapping").css("max-height", jQuery(".gathercontent-dialog").height() - 255);
+    jQuery("thead th.cell_resize").each(function(){
+        jQuery(this).find("div").css("width",jQuery(this).width())
+    })
+})
 
 jQuery(function () {
     jQuery("thead th div").each(function() {

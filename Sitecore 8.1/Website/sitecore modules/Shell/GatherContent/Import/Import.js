@@ -286,30 +286,35 @@
 
     self.buttonClick = function (newMode) {
         if (newMode === MODE.CheckItemsBeforeImport) {
-            self.currentMode(newMode);
-            self.switchToCheckItemsBeforeImport();
+            if (self.getCheckedCount() == 0) {
+                self.errorText('Please select at least one item');
+            } else {
+                self.currentMode(newMode);
+                self.switchToCheckItemsBeforeImport();
+            }
         } else if (newMode === MODE.Import) {
-            self.currentMode(newMode);
-            self.import();
-        } else if (newMode === MODE.Close) {
-            self.currentMode(newMode);
-            self.close();
-        } else if (newMode === MODE.ChooseItmesForImort) {
-            self.statusFilter = ko.observable();
-            self.currentMode(newMode);
-            self.backButtonClick();
-        } else {
-            self.currentMode(newMode);
-        }
+                self.currentMode(newMode);
+                self.import();
+            } else if (newMode === MODE.Close) {
+                self.currentMode(newMode);
+                self.close();
+            } else if (newMode === MODE.ChooseItmesForImort) {
+                self.statusFilter = ko.observable();
+                self.currentMode(newMode);
+                self.backButtonClick();
+            } else {
+                self.currentMode(newMode);
+            }
+        
         jQuery("thead th.cell_resize").each(function(){
             jQuery(this).find("div").css("width",jQuery(this).width());
         });
-        jQuery("thead th div").each(function(){
-            if( jQuery(this).height()>18){
-                jQuery(this).css("padding-top",0);
-                jQuery(this).css("margin-top",9)
+        jQuery("thead th div").each(function() {
+            if (jQuery(this).height() > 18) {
+                jQuery(this).css("padding-top", 0);
+                jQuery(this).css("margin-top", 9);
             }
-        })
+        });
     }
 
     self.getMode = function (section) {
@@ -352,27 +357,27 @@
 
     self.init();
 }
-jQuery(window).resize(function () {
-    jQuery("thead th.cell_resize").each(function(){
-        jQuery(this).find("div").css("width",jQuery(this).width());
+jQuery(window).resize(function() {
+    jQuery("thead th.cell_resize").each(function() {
+        jQuery(this).find("div").css("width", jQuery(this).width());
     });
-    jQuery("thead th div").each(function(){
-        if( jQuery(this).height()>18){
-            jQuery(this).css("padding-top",0);
-            jQuery(this).css("margin-top",9)
+    jQuery("thead th div").each(function() {
+        if (jQuery(this).height() > 18) {
+            jQuery(this).css("padding-top", 0);
+            jQuery(this).css("margin-top", 9);
         }
-    })
-})
+    });
+});
 
 jQuery(function () {
     jQuery("thead th.cell_resize").each(function(){
         jQuery(this).find("div").css("width",jQuery(this).width());
     });
-    jQuery("thead th div").each(function(){
-       if( jQuery(this).height()>18){
-           jQuery(this).css("padding-top",0);
-           jQuery(this).css("margin-top",9)
-       }
-    })
+    jQuery("thead th div").each(function() {
+        if (jQuery(this).height() > 18) {
+            jQuery(this).css("padding-top", 0);
+            jQuery(this).css("margin-top", 9);
+        }
+    });
 
 });

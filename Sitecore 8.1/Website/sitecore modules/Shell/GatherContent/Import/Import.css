@@ -1,9 +1,11 @@
 ﻿.closeButton {
     float: left;
 }
-body{
+
+body {
     height: 100%;
 }
+
 .gathercontent-import {
 }
 
@@ -38,11 +40,13 @@ body {
     padding: 0 20px 20px;
     width: 100%;
 }
-.footer_btn input[type="checkbox"]{
-    display: block;
-    float: left;
-    margin-right: 5px;
-}
+
+    .footer_btn input[type="checkbox"] {
+        display: block;
+        float: left;
+        margin-right: 5px;
+    }
+
 .gathercontent-import {
 }
 
@@ -79,19 +83,19 @@ body {
             color: #777777;
         }
 
- .search_filter input:-moz-placeholder {
-    color: #777777;
-}
+        .search_filter input:-moz-placeholder {
+            color: #777777;
+        }
 
-.search_filter input:-ms-input-placeholder {
-    color: #777777;
-}
+        .search_filter input:-ms-input-placeholder {
+            color: #777777;
+        }
 
 .custom_select {
     -webkit-appearance: none;
     background-image: url('/sitecore modules/shell/gathercontent/img/arrow_select.png');
     background-repeat: no-repeat;
-    background-position:95% 50%;
+    background-position: 95% 50%;
     -webkit-background-size: 95%;
     background-size: 8px;
     -moz-appearance: none;
@@ -198,17 +202,17 @@ table {
         font-size: 1em;
     }
 
-        /*table tbody tr td:nth-child(1):before {*/
-            /*content: "";*/
-            /*display: inline-block;*/
-            /*width: 10px;*/
-            /*height: 10px;*/
-            /*background-color: currentColor;*/
-            /*margin-right: 4px;*/
-        /*}*/
+    /*table tbody tr td:nth-child(1):before {*/
+    /*content: "";*/
+    /*display: inline-block;*/
+    /*width: 10px;*/
+    /*height: 10px;*/
+    /*background-color: currentColor;*/
+    /*margin-right: 4px;*/
+    /*}*/
 
     /*table.table_point tbody tr td:nth-child(1):before {*/
-        /*content: none;*/
+    /*content: none;*/
     /*}*/
 
     table tbody tr td span:first-child {
@@ -255,20 +259,24 @@ table thead th div {
 }
 
 
-table thead th.checkbox_table+th div,table thead th.checkbox_table div,table thead th:first-child div{
+table thead th.checkbox_table + th div, table thead th.checkbox_table div, table thead th:first-child div {
     border-left: none;
 }
+
 table thead th.checkbox_table div {
     margin-top: 6px;
 }
-table thead th.checkbox_table{
+
+table thead th.checkbox_table {
     margin: 0;
     width: 25px;
 }
-table thead th.status{
+
+table thead th.status {
     margin: 0;
     width: 155px;
 }
+
 table thead th {
     height: 0;
     line-height: 0;
@@ -281,7 +289,7 @@ table thead th {
 
 
     table thead th > input {
-        width:18px;
+        width: 18px;
         height: 0;
         height: 0px;
         visibility: hidden;
@@ -310,7 +318,7 @@ input[type="button"] {
 }
 
     input[type="button"]:hover {
-        background-color:#f0eeee;
+        background-color: #f0eeee;
     }
 
 .tooltip {
@@ -329,3 +337,9 @@ input[type="button"] {
         background-color: #222;
         padding: 2px 7px;
     }
+
+.warning-message {
+    color: red;
+    display: inline;
+    padding-left: 10px;
+}

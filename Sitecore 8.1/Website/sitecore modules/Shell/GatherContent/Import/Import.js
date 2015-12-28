@@ -301,6 +301,15 @@
         } else {
             self.currentMode(newMode);
         }
+        jQuery("thead th.cell_resize").each(function(){
+            jQuery(this).find("div").css("width",jQuery(this).width());
+        });
+        jQuery("thead th div").each(function(){
+            if( jQuery(this).height()>18){
+                jQuery(this).css("padding-top",0);
+                jQuery(this).css("margin-top",9)
+            }
+        })
     }
 
     self.getMode = function (section) {

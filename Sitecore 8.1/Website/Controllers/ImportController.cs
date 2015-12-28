@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Web.Mvc;
 using GatherContent.Connector.Managers.Managers;
 using GatherContent.Connector.Managers.Models.ImportItems;
@@ -27,11 +28,16 @@ namespace GatherContent.Connector.Website.Controllers
                 var model = JsonConvert.SerializeObject(result);
                 return model;
             }
+            catch (WebException exception)
+            {
+                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
+                return exception.Message + " Please check your credentials";
+            }
             catch (Exception exception)
             {
                 Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
+                return exception.Message;
             }
-            return null;
         }
 
 
@@ -45,12 +51,16 @@ namespace GatherContent.Connector.Website.Controllers
 
                 return Json(result, JsonRequestBehavior.AllowGet); 
             }
+            catch (WebException exception)
+            {
+                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
+                return Json(new { status = "error", message = exception.Message + " Please check your credentials" }, JsonRequestBehavior.AllowGet);
+            }
             catch (Exception exception)
             {
                 Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
                 return Json(new { status = "error", message = exception.Message }, JsonRequestBehavior.AllowGet);
             }
-            return null;
         }
 
     }

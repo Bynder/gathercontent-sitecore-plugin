@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Web.Mvc;
 using GatherContent.Connector.Managers.Managers;
 using GatherContent.Connector.Managers.Models.Mapping;
@@ -26,10 +27,15 @@ namespace GatherContent.Connector.Website.Controllers
                 var model = _mappingManager.GetMappingModel();
                 return Json(model, JsonRequestBehavior.AllowGet);
             }
+            catch (WebException exception)
+            {
+                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
+                return Json(new { status = "error", message = exception.Message + " Please check your credentials" }, JsonRequestBehavior.AllowGet);
+            }
             catch (Exception exception)
             {
                 Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
-                return Json(new { status = "error", message = exception.Message }, JsonRequestBehavior.AllowGet);
+                return Json(new {status = "error", message = exception.Message}, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -41,6 +47,11 @@ namespace GatherContent.Connector.Website.Controllers
             {
                 var model = _mappingManager.GetTemplateMappingModel(id);
                 return Json(model, JsonRequestBehavior.AllowGet);
+            }
+            catch (WebException exception)
+            {
+                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
+                return Json(new { status = "error", message = exception.Message + " Please check your credentials" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception exception)
             {
@@ -61,6 +72,11 @@ namespace GatherContent.Connector.Website.Controllers
                 _mappingManager.PostMapping(model, isEdit, templateId, selectedTemplateId);
                 return new EmptyResult();
             }
+            catch (WebException exception)
+            {
+                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
+                return Json(new { status = "error", message = exception.Message + " Please check your credentials" }, JsonRequestBehavior.AllowGet);
+            }
             catch (Exception e)
             {
                 Log.Error("GatherContent message: " + e.Message + e.StackTrace, e);
@@ -77,6 +93,11 @@ namespace GatherContent.Connector.Website.Controllers
             {
                 _mappingManager.DeleteMapping(id);
                 return new EmptyResult();
+            }
+            catch (WebException exception)
+            {
+                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
+                return Json(new { status = "error", message = exception.Message + " Please check your credentials" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {

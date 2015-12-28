@@ -4,14 +4,22 @@ function ViewModel() {
 
     this.Projects = ko.observableArray();
     this.Selected = ko.observableArray();
+    this.ErrorText = ko.observable();
+    this.IsError = ko.observable();
 
     jQuery.ajax({
         type: 'GET',
         url: '/api/sitecore/TemplatesMapping/Get',
         dataType: 'json',
         success: function (data) {
-            self.Projects(data.Projects);
-            self.Selected(data.Selected);
+            if (data.status != "error") {
+                self.Projects(data.Projects);
+                self.Selected(data.Selected);
+                self.IsError(false);
+            } else {
+                self.ErrorText("Error:" + " " + data.message);
+                self.IsError(true);
+            }        
             jQuery(".preloader").hide();
         },
         async: true

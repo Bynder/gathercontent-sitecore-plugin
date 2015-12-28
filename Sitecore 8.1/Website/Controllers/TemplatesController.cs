@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Web.Mvc;
 using GatherContent.Connector.Managers.Managers;
 using GatherContent.Connector.Managers.Models.TemplateModel;
@@ -23,6 +24,11 @@ namespace GatherContent.Connector.Website.Controllers
                 var model = _templateManager.GetTemplateMappingModel();
                 return Json(model, JsonRequestBehavior.AllowGet);
             }
+            catch (WebException exception)
+            {
+                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
+                return Json(new { status = "error", message = exception.Message + " Please check your credentials" }, JsonRequestBehavior.AllowGet);
+            }
             catch (Exception e)
             {
                 Log.Error("GatherContent message: " + e.Message + e.StackTrace, e);
@@ -37,6 +43,11 @@ namespace GatherContent.Connector.Website.Controllers
             {
                 _templateManager.PostTemplate(model);
                 return new EmptyResult();
+            }
+            catch (WebException exception)
+            {
+                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
+                return Json(new { status = "error", message = exception.Message + " Please check your credentials" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {

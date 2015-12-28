@@ -71,7 +71,7 @@
 
     self.errorCallbackHandle = function (response) {
         jQuery(".preloader").hide();
-        self.errorText(response);
+        self.errorText(response.responseText);
         self.buttonClick(MODE.Error);
     }
 

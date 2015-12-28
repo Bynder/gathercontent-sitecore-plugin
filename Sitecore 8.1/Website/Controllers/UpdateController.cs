@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Web.Mvc;
 using GatherContent.Connector.Managers.Managers;
 using GatherContent.Connector.Managers.Models.UpdateItems;
@@ -26,11 +27,16 @@ namespace GatherContent.Connector.Website.Controllers
                 var model = JsonConvert.SerializeObject(result);
                 return model;
             }
+            catch (WebException exception)
+            {
+                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
+                return exception.Message + " Please check your credentials";
+            }
             catch (Exception exception)
             {
                 Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
+                return exception.Message;
             }
-            return null;
         }
 
         public ActionResult UpdateItems(string id, string statusId, List<UpdateListIds> items)
@@ -40,12 +46,16 @@ namespace GatherContent.Connector.Website.Controllers
                 UpdateResultModel result = _updateManager.UpdateItems(id, items);
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
+            catch (WebException exception)
+            {
+                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
+                return Json(new { status = "error", message = exception.Message + " Please check your credentials" }, JsonRequestBehavior.AllowGet);
+            }
             catch (Exception exception)
             {
                 Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
                 return Json(new { status = "error", message = exception.Message }, JsonRequestBehavior.AllowGet);
             }
-            return null;
         }
     }
 }

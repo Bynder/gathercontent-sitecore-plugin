@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.GatherContentService.Services;
@@ -66,9 +67,17 @@ namespace GatherContent.Connector.Managers.Managers
                     {
                         entity = _itemsService.GetSingleItem(cmsItem.GCItemId);
                     }
-                    catch(Exception exception)
+                    catch (WebException exception)
                     {
                         Log.Error("GatherContent message. Api Server error has happened during getting Item with id = " + cmsItem.GCItemId, exception);
+                        using (var response = exception.Response)
+                        {
+                            var httpResponse = (HttpWebResponse)response;
+                            if (httpResponse.StatusCode == HttpStatusCode.Unauthorized)
+                            {
+                                throw;
+                            }
+                        }
                     }
                     if (entity != null)
                     {

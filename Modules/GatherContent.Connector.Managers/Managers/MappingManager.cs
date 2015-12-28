@@ -360,7 +360,8 @@ namespace GatherContent.Connector.Managers.Managers
                     {
                         FileName = file.FileName,
                         Url = file.Url,
-                        FieldId = file.Field
+                        FieldId = file.Field,
+                        UpdatedDate = file.Updated
                     });
                 }
             }

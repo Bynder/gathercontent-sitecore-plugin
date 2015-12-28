@@ -329,3 +329,8 @@ input[type="button"]:hover {
     background-color: #222;
     padding: 2px 7px;
 }
+.warning-message {
+    color: red;
+    display: inline;
+    padding-left: 10px;
+}

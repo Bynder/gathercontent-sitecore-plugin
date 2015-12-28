@@ -150,6 +150,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                                         var file = field.Files.FirstOrDefault();
                                         if (file != null)
                                         {
+                                            
                                             var media = UploadFile(path, file);
                                             var val = "<image mediaid=\"" + media.ID + "\" />";
                                             updatedItem.Fields[new ID(field.Name)].Value = val;
@@ -235,7 +236,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     //var path = string.IsNullOrEmpty(fieldTitle) ?
                     //    string.Format("/sitecore/media library/GatherContent/{0}/", itemTitle) :
                     //    string.Format("/sitecore/media library/GatherContent/{0}/{1}/", itemTitle, fieldTitle);
-                    var media = CreateMedia(path, file.FileName, "jpg", memoryStream);
+                    var media = CreateMedia(path, file, "jpg", memoryStream);
                     return media;
                 }
 
@@ -245,13 +246,21 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         }
 
 
-        public Item CreateMedia(string rootPath, string name, string extension, Stream mediaStream)
+        public Item CreateMedia(string rootPath, File mediaFile, string extension, Stream mediaStream)
         {
             using (new SecurityDisabler())
             {
 
-                var validItemName = ItemUtil.ProposeValidItemName(name);
+                var validItemName = ItemUtil.ProposeValidItemName(mediaFile.FileName);
 
+                var files = GetItemByPath(rootPath).Children;
+                var item = files.FirstOrDefault(f => f.Name == validItemName &&  
+                    DateUtil.IsoDateToDateTime(f.Fields["__Created"].Value) >= mediaFile.UpdatedDate);
+                if (item != null)
+                {
+                    return item;
+                }
+   
                 var mediaOptions = new MediaCreatorOptions
                 {
                     Database = ContextDatabase,

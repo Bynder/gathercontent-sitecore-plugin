@@ -21,6 +21,16 @@ function ViewModel() {
                 self.IsError(true);
             }        
             jQuery(".preloader").hide();
+            console.log()
+            jQuery(".template_list").prepend(" ");
+            jQuery(".btn_next").on("click",function(el){
+                el.stopPropagation();
+                jQuery(".template_list").animate({ scrollTop:jQuery(".template_list").scrollTop()+260}, 800);
+            })
+            jQuery(".btn_prev").on("click",function(el){
+                el.stopPropagation();
+                jQuery(".template_list").animate({ scrollTop:jQuery(".template_list").scrollTop()-260}, 800);
+            })
         },
         async: true
     });

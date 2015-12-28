@@ -20,7 +20,7 @@
     scSitecore.prototype.Settings.SessionTimeout = 1200000;
 </script>
 
-<div class="gathercontent-dialog">
+<div class="gathercontent-dialog add_template">
     
     <!-- ko if: IsError -->
     <h1 data-bind="text: ErrorText"></h1>
@@ -34,35 +34,40 @@
             <h2>GatherContent Project</h2>
             <h2>Project Templates</h2>
         </div>
-        <ul data-bind="foreach: { data: Projects }" class="template_list">
-            <!-- ko if: $index()===0 -->
-            <li class="project-item active">
-                <span data-bind="text: ProjectName"> </span>
-                <ul data-bind="foreach: { data: Templates, as: 'item' }" class="template_items">
-                    <li>
-                        <div>
-                            <input type="checkbox" data-bind="value:item.TemplateId, checked: $root.Selected, enable: item.Enabled, attr: { id: item.TemplateName}" />
-                            <label data-bind="text: item.TemplateName, attr: {for: item.TemplateName}" />
-                        </div>
-                    </li>
-                </ul>
-            </li>
-            <!-- /ko -->
-            <!-- ko if: $index()!==0 -->
-            <li class="project-item">
-                <span data-bind="text: ProjectName"> </span>
-                <ul data-bind="foreach: { data: Templates, as: 'item' }" class="template_items">
-                    <li>
-                        <div>
-                            <input type="checkbox" data-bind="value:item.TemplateId, checked: $root.Selected, enable: item.Enabled, attr: { id: item.TemplateName}" />
-                            <label data-bind="text: item.TemplateName, attr: {for: item.TemplateName}" />
-                        </div>
-                    </li>
-                </ul>
-            </li>
-            <!-- /ko -->
-        </ul>
-        <div data-bind="text: Selected().length" style="display: inline-block;padding-right: 5px; padding-bottom: 20px"></div><span>templates selected</span>
+        <div class="carousel">
+            <a href="#" class='btn_prev'></a>
+            <a href="#" class='btn_next'></a>
+            <ul data-bind="foreach: { data: Projects }" class="template_list">
+
+                <!-- ko if: $index()===0 -->
+                <li class="project-item active">
+                    <span data-bind="text: ProjectName"> </span>
+                    <ul data-bind="foreach: { data: Templates, as: 'item' }" class="template_items">
+                        <li>
+                            <div>
+                                <input type="checkbox" data-bind="value:item.TemplateId, checked: $root.Selected, enable: item.Enabled, attr: { id: item.TemplateName}" />
+                                <label data-bind="text: item.TemplateName, attr: {for: item.TemplateName}" />
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                <!-- /ko -->
+                <!-- ko if: $index()!==0 -->
+                <li class="project-item">
+                    <span data-bind="text: ProjectName"> </span>
+                    <ul data-bind="foreach: { data: Templates, as: 'item' }" class="template_items">
+                        <li>
+                            <div>
+                                <input type="checkbox" data-bind="value:item.TemplateId, checked: $root.Selected, enable: item.Enabled, attr: { id: item.TemplateName}" />
+                                <label data-bind="text: item.TemplateName, attr: {for: item.TemplateName}" />
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                <!-- /ko -->
+            </ul>
+        </div>
+        <div data-bind="text: Selected().length" style="display: inline-block;padding-right: 5px; padding-bottom: 20px;padding-top: 10px"></div><span>templates selected</span>
         <div class="footer_btn">
             <input class="mappings-btn " id="Select-template" type="button" value="Select" data-bind="click: addTemplateMapping" />
             <input class="mappings-btn " id="Close-dialog" type="button" value="Close" data-bind="click: closeDialog" />

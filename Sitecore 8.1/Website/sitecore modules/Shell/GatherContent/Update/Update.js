@@ -103,6 +103,7 @@
         self.items(currentCollection);
         jQuery(".tooltip").remove();
         initTooltip();
+
     }
 
     self.search = function (currentCollection) {
@@ -275,6 +276,15 @@
                 self.notUpdaredItemsCount(notUpdatedCount);
                 self.items(response.Items);
                 self.buttonClick(MODE.ImportResult);
+                jQuery("thead th.cell_resize").each(function(){
+                    jQuery(this).find("div").css("width",jQuery(this).width());
+                });
+                jQuery("thead th div").each(function(){
+                    if( jQuery(this).height()>18){
+                        jQuery(this).css("padding-top",0);
+                        jQuery(this).css("margin-top",9)
+                    }
+                })
             },
             error: function (response) {
                 self.errorCallbackHandle(response);
@@ -303,10 +313,21 @@
     self.buttonClick = function (newMode) {
         if (newMode === MODE.CheckItemsBeforeImport) {
             self.currentMode(newMode);
+            jQuery("thead th.cell_resize").each(function(){
+                jQuery(this).find("div").css("width",jQuery(this).width())
+            });
+            jQuery("thead th div").each(function(){
+                if( jQuery(this).height()>18){
+                    jQuery(this).css("padding-top",0);
+                    jQuery(this).css("margin-top",9)
+                }
+            })
             self.switchToCheckItemsBeforeImport();
         } else if (newMode === MODE.Import) {
             self.currentMode(newMode);
+
             self.import();
+
         } else if (newMode === MODE.Close) {
             self.currentMode(newMode);
             self.close();
@@ -317,6 +338,15 @@
         } else {
             self.currentMode(newMode);
         }
+        jQuery("thead th.cell_resize").each(function(){
+            jQuery(this).find("div").css("width",jQuery(this).width());
+        });
+        jQuery("thead th div").each(function(){
+            if( jQuery(this).height()>18){
+                jQuery(this).css("padding-top",0);
+                jQuery(this).css("margin-top",9)
+            }
+        })
     }
 
     self.getMode = function (section) {
@@ -324,6 +354,15 @@
             return true;
         }
         return false;
+        jQuery("thead th.cell_resize").each(function(){
+            jQuery(this).find("div").css("width",jQuery(this).width());
+        });
+        jQuery("thead th div").each(function(){
+            if( jQuery(this).height()>18){
+                jQuery(this).css("padding-top",0);
+                jQuery(this).css("margin-top",9)
+            }
+        })
     }
 
     self.setupWatcher = function (items) {
@@ -356,10 +395,18 @@ jQuery(window).resize(function () {
     jQuery("thead th.cell_resize").each(function(){
         jQuery(this).find("div").css("width",jQuery(this).width());
     });
+    jQuery("thead th div").each(function(){
+        if( jQuery(this).height()>18){
+            jQuery(this).css("padding-top",0);
+            jQuery(this).css("margin-top",9)
+        }
+    })
 })
 
 jQuery(function () {
-
+    jQuery("thead th.cell_resize").each(function(){
+        jQuery(this).find("div").css("width",jQuery(this).width());
+    });
     jQuery("thead th div").each(function(){
         if( jQuery(this).height()>18){
             jQuery(this).css("padding-top",0);

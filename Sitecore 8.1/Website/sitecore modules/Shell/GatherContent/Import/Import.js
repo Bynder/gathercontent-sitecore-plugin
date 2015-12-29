@@ -45,28 +45,12 @@
              callbackFunction(response);
              jQuery(".preloader").hide();
              initTooltip();
-            jQuery("thead th.cell_resize").each(function(){
-                jQuery(this).find("div").css("width",jQuery(this).width())
-            })
-            jQuery("thead th div").each(function(){
-                if( jQuery(this).height()>18){
-                    jQuery(this).css("padding-top",0);
-                    jQuery(this).css("margin-top",7)
-                }
-            })
+             resizeTableHead();
          }).error(function (response) {
              self.errorCallbackHandle(response);
          });
          document_resize();
-        jQuery("thead th.cell_resize").each(function(){
-            jQuery(this).find("div").css("width",jQuery(this).width())
-        })
-        jQuery("thead th div").each(function(){
-            if( jQuery(this).height()>18){
-                jQuery(this).css("padding-top",0);
-                jQuery(this).css("margin-top",7)
-            }
-        })
+        resizeTableHead();
      }
 
     self.errorCallbackHandle = function (response) {
@@ -320,16 +304,7 @@
             } else {
                 self.currentMode(newMode);
             }
-        
-        jQuery("thead th.cell_resize").each(function(){
-            jQuery(this).find("div").css("width",jQuery(this).width());
-        });
-        jQuery("thead th div").each(function() {
-            if (jQuery(this).height() > 18) {
-                jQuery(this).css("padding-top", 0);
-                jQuery(this).css("margin-top", 7);
-            }
-        });
+        resizeTableHead();
     }
 
     self.getMode = function (section) {
@@ -373,15 +348,7 @@
     self.init();
 }
 jQuery(window).resize(function() {
-    jQuery("thead th.cell_resize").each(function() {
-        jQuery(this).find("div").css("width", jQuery(this).width());
-    });
-    jQuery("thead th div").each(function() {
-        if (jQuery(this).height() > 18) {
-            jQuery(this).css("padding-top", 0);
-            jQuery(this).css("margin-top", 7);
-        }
-    });
+    resizeTableHead();
 });
 
 jQuery(function () {

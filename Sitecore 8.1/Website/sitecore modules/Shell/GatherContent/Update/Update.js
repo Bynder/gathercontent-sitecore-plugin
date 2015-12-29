@@ -44,27 +44,11 @@
              callbackFunction(response);
              jQuery(".preloader").hide();
              initTooltip();
-             jQuery("thead th.cell_resize").each(function(){
-                 jQuery(this).find("div").css("width",jQuery(this).width())
-             });
-             jQuery("thead th div").each(function(){
-                 if( jQuery(this).height()>18){
-                     jQuery(this).css("padding-top",0);
-                     jQuery(this).css("margin-top",7)
-                 }
-             })
+             resizeTableHead();
          }).error(function(response) {
              self.errorCallbackHandle(response);
          });
-         jQuery("thead th.cell_resize").each(function(){
-             jQuery(this).find("div").css("width",jQuery(this).width())
-         });
-         jQuery("thead th div").each(function(){
-             if( jQuery(this).height()>18){
-                 jQuery(this).css("padding-top",0);
-                 jQuery(this).css("margin-top",7)
-             }
-         })
+         resizeTableHead();
          document_resize();
      }
 
@@ -107,15 +91,7 @@
         currentCollection = self.filterByProject(currentCollection);
 
         self.items(currentCollection);
-        jQuery("thead th.cell_resize").each(function(){
-            jQuery(this).find("div").css("width",jQuery(this).width())
-        })
-        jQuery("thead th div").each(function(){
-            if( jQuery(this).height()>18){
-                jQuery(this).css("padding-top",0);
-                jQuery(this).css("margin-top",7)
-            }
-        })
+        resizeTableHead();
         jQuery(".tooltip").remove();
         initTooltip();
 
@@ -291,15 +267,7 @@
                 self.notUpdaredItemsCount(notUpdatedCount);
                 self.items(response.Items);
                 self.buttonClick(MODE.ImportResult);
-                jQuery("thead th.cell_resize").each(function(){
-                    jQuery(this).find("div").css("width",jQuery(this).width());
-                });
-                jQuery("thead th div").each(function() {
-                    if (jQuery(this).height() > 18) {
-                        jQuery(this).css("padding-top", 0);
-                        jQuery(this).css("margin-top", 7);
-                    }
-                });
+                resizeTableHead();
             },
             error: function (response) {
                 self.errorCallbackHandle(response);
@@ -331,15 +299,7 @@
                 self.errorText('Please select at least one item');
             } else {
                 self.currentMode(newMode);
-                jQuery("thead th.cell_resize").each(function() {
-                    jQuery(this).find("div").css("width", jQuery(this).width());
-                });
-                jQuery("thead th div").each(function() {
-                    if (jQuery(this).height() > 18) {
-                        jQuery(this).css("padding-top", 0);
-                        jQuery(this).css("margin-top", 7);
-                    }
-                });
+                resizeTableHead();
                 self.switchToCheckItemsBeforeImport();
             }
         } else if (newMode === MODE.Import) {
@@ -373,15 +333,7 @@
             return true;
         }
         return false;
-        jQuery("thead th.cell_resize").each(function(){
-            jQuery(this).find("div").css("width",jQuery(this).width());
-        });
-        jQuery("thead th div").each(function() {
-            if (jQuery(this).height() > 18) {
-                jQuery(this).css("padding-top", 0);
-                jQuery(this).css("margin-top", 7);
-            }
-        });
+        resizeTableHead();
     }
 
     self.setupWatcher = function (items) {
@@ -411,26 +363,10 @@
     self.init();
 }
 jQuery(window).resize(function() {
-    jQuery("thead th.cell_resize").each(function() {
-        jQuery(this).find("div").css("width", jQuery(this).width());
-    });
-    jQuery("thead th div").each(function() {
-        if (jQuery(this).height() > 18) {
-            jQuery(this).css("padding-top", 0);
-            jQuery(this).css("margin-top", 7);
-        }
-    });
+    resizeTableHead();
 });
 
 jQuery(function () {
-    jQuery("thead th.cell_resize").each(function(){
-        jQuery(this).find("div").css("width",jQuery(this).width());
-    });
-    jQuery("thead th div").each(function() {
-        if (jQuery(this).height() > 18) {
-            jQuery(this).css("padding-top", 0);
-            jQuery(this).css("margin-top", 7);
-        }
-    });
+    resizeTableHead();
 
 });

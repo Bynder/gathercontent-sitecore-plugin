@@ -374,7 +374,6 @@ table {
     border: 1px solid #fff;
     background-size: 17px;
     box-sizing: border-box;
-    border-left: none;
     outline: none;
 }
 .carousel .btn_next:hover,.carousel .btn_prev:hover{
@@ -384,9 +383,12 @@ table {
 .carousel .btn_prev{
     top: 0;
     transform: rotate(180deg);
+    border-right:none ;
 }
 .carousel .btn_next{
     bottom: 0;
+    border-bottom: none;
+    border-left: none;
 
 }
 .template_list_title:after {

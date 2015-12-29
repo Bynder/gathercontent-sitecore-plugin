@@ -169,6 +169,7 @@ table {
     word-wrap: break-word;
     width: inherit;
     text-align: center;
+    line-height: 16px;
 }
 
 .gathercontent-dialog table thead th:first-child div {

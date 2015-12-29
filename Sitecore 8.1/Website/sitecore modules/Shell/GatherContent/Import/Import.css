@@ -221,7 +221,9 @@ table {
         height: 10px;
         margin-right: 4px;
     }
-
+    table tbody tr td input[type="checkbox"]{
+        margin-top: 0;
+    }
     table tbody tr td a {
         text-decoration: none;
         cursor: pointer;
@@ -250,12 +252,12 @@ table thead th div {
     margin: 12px 0 9px;
     padding-top: 3px;
     top: 0;
-    line-height: normal;
     border-left: 1px solid #fff;
     min-height: 18px;
     word-wrap: break-word;
     width: inherit;
     text-align: center;
+    line-height: 16px;
 }
 
 

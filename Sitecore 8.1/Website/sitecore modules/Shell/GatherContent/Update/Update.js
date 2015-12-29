@@ -50,7 +50,7 @@
              jQuery("thead th div").each(function(){
                  if( jQuery(this).height()>18){
                      jQuery(this).css("padding-top",0);
-                     jQuery(this).css("margin-top",9)
+                     jQuery(this).css("margin-top",7)
                  }
              })
          }).error(function(response) {
@@ -62,7 +62,7 @@
          jQuery("thead th div").each(function(){
              if( jQuery(this).height()>18){
                  jQuery(this).css("padding-top",0);
-                 jQuery(this).css("margin-top",9)
+                 jQuery(this).css("margin-top",7)
              }
          })
          document_resize();
@@ -107,6 +107,15 @@
         currentCollection = self.filterByProject(currentCollection);
 
         self.items(currentCollection);
+        jQuery("thead th.cell_resize").each(function(){
+            jQuery(this).find("div").css("width",jQuery(this).width())
+        })
+        jQuery("thead th div").each(function(){
+            if( jQuery(this).height()>18){
+                jQuery(this).css("padding-top",0);
+                jQuery(this).css("margin-top",7)
+            }
+        })
         jQuery(".tooltip").remove();
         initTooltip();
 
@@ -288,7 +297,7 @@
                 jQuery("thead th div").each(function() {
                     if (jQuery(this).height() > 18) {
                         jQuery(this).css("padding-top", 0);
-                        jQuery(this).css("margin-top", 9);
+                        jQuery(this).css("margin-top", 7);
                     }
                 });
             },
@@ -328,7 +337,7 @@
                 jQuery("thead th div").each(function() {
                     if (jQuery(this).height() > 18) {
                         jQuery(this).css("padding-top", 0);
-                        jQuery(this).css("margin-top", 9);
+                        jQuery(this).css("margin-top", 7);
                     }
                 });
                 self.switchToCheckItemsBeforeImport();
@@ -354,7 +363,7 @@
         jQuery("thead th div").each(function() {
             if (jQuery(this).height() > 18) {
                 jQuery(this).css("padding-top", 0);
-                jQuery(this).css("margin-top", 9);
+                jQuery(this).css("margin-top", 7);
             }
         });
     }
@@ -370,7 +379,7 @@
         jQuery("thead th div").each(function() {
             if (jQuery(this).height() > 18) {
                 jQuery(this).css("padding-top", 0);
-                jQuery(this).css("margin-top", 9);
+                jQuery(this).css("margin-top", 7);
             }
         });
     }
@@ -408,7 +417,7 @@ jQuery(window).resize(function() {
     jQuery("thead th div").each(function() {
         if (jQuery(this).height() > 18) {
             jQuery(this).css("padding-top", 0);
-            jQuery(this).css("margin-top", 9);
+            jQuery(this).css("margin-top", 7);
         }
     });
 });
@@ -420,7 +429,7 @@ jQuery(function () {
     jQuery("thead th div").each(function() {
         if (jQuery(this).height() > 18) {
             jQuery(this).css("padding-top", 0);
-            jQuery(this).css("margin-top", 9);
+            jQuery(this).css("margin-top", 7);
         }
     });
 

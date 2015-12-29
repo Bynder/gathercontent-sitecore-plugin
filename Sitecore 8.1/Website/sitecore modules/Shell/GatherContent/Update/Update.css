@@ -180,7 +180,9 @@ table tbody tr td {
     white-space: nowrap;
     max-width: 160px;
 }
-
+table tbody tr td input[type="checkbox"]{
+    margin-top: 0;
+}
 table tbody tr td:last-child {
     white-space: nowrap;
     border-right: none;
@@ -246,7 +248,7 @@ table thead th div {
     margin: 12px 0 9px;
     padding-top: 3px;
     top: 0;
-    line-height: normal;
+    line-height: 16px;
     border-left: 1px solid #fff;
     min-height: 18px;
     word-wrap: break-word;

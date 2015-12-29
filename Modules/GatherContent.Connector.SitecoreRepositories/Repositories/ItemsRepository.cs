@@ -314,6 +314,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 }
                 var cmsLink = string.Format("{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master", Sitecore.Context.Site.HostName, scItem.ID);
                 item.CmsLink = cmsLink;
+
+                var validName = ItemUtil.ProposeValidItemName(item.Title);
+                scItem.Editing.BeginEdit();
+                scItem.Name = validName;
+                scItem.Editing.EndEdit();
                 SetupFields(scItem, item);
             }
         }

@@ -348,12 +348,15 @@ namespace GatherContent.Connector.Managers.Managers
                 return;
             }
 
+
+
             List<ImportCMSField> fields;
             IEnumerable<IGrouping<string, MappingFieldModel>> groupedFields = template.Fields.GroupBy(i => i.CMSField);
 
             var files = new List<File>();
             if(item.Config.SelectMany(config => config.Elements).Select(element => element.Type).Contains("files"))
             {
+
                 foreach(var file in _itemService.GetItemFiles(item.Id.ToString()).Data)
                 {
                     files.Add(new File
@@ -363,6 +366,8 @@ namespace GatherContent.Connector.Managers.Managers
                         FieldId = file.Field,
                         UpdatedDate = file.Updated
                     });
+
+
                 }
             }
             

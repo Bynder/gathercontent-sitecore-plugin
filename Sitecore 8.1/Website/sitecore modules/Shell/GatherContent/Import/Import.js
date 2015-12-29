@@ -75,6 +75,12 @@
         self.buttonClick(MODE.Error);
     }
 
+    self.postErrorHandle = function (response) {
+        jQuery(".preloader").hide();
+        self.errorText(response);
+        self.buttonClick(MODE.Error);
+    }
+
     self.initVariables = function (response) {
         var items = self.setupWatcher(response.Data.Items);
         self.items(items);
@@ -252,7 +258,7 @@
             data: JSON.stringify(itemids),
             success: function (response) {
                 if (response.status == 'error') {
-                    self.errorCallbackHandle(response.message);
+                    self.postErrorHandle(response.message);
                 }
                 var notImportedItemsCount = self.getNotImportedItemsCount(response.Items);
                 self.notImportedItemsCount(notImportedItemsCount);

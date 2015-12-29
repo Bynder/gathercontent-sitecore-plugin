@@ -74,6 +74,12 @@
         self.buttonClick(MODE.Error);
     }
 
+    self.postErrorHandle = function (response) {
+        jQuery(".preloader").hide();
+        self.errorText(response);
+        self.buttonClick(MODE.Error);
+    }
+
     self.initVariables = function (response) {
         var items = self.setupWatcher(response.Data.Items);
         self.items(items);
@@ -269,7 +275,7 @@
             data: JSON.stringify(itemids),
             success: function (response) {
                 if (response.status == 'error') {
-                    self.errorCallbackHandle(response.message);
+                    self.postErrorHandle(response.message);
                 }
                 var notUpdatedCount = self.getNotUpdatedItemsCount(response.Items);
                 self.successImportedItemsCount(response.Items.length - notUpdatedCount);
@@ -279,12 +285,12 @@
                 jQuery("thead th.cell_resize").each(function(){
                     jQuery(this).find("div").css("width",jQuery(this).width());
                 });
-                jQuery("thead th div").each(function(){
-                    if( jQuery(this).height()>18){
-                        jQuery(this).css("padding-top",0);
-                        jQuery(this).css("margin-top",9)
+                jQuery("thead th div").each(function() {
+                    if (jQuery(this).height() > 18) {
+                        jQuery(this).css("padding-top", 0);
+                        jQuery(this).css("margin-top", 9);
                     }
-                })
+                });
             },
             error: function (response) {
                 self.errorCallbackHandle(response);

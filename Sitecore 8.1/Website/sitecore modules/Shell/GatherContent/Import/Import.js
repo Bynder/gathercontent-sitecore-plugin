@@ -44,6 +44,7 @@
         jQuery.getJSON('/api/sitecore/Import/Get?id={' + id + '}&projectId=' + project).success(function (response) {
              callbackFunction(response);
              jQuery(".preloader").hide();
+            jQuery(".tooltip").remove();
              initTooltip();
              resizeTableHead();
          }).error(function (response) {
@@ -105,15 +106,7 @@
         currentCollection = self.filterByTemplate(currentCollection);
 
         self.items(currentCollection);
-        jQuery("thead th.cell_resize").each(function(){
-            jQuery(this).find("div").css("width",jQuery(this).width())
-        })
-        jQuery("thead th div").each(function(){
-            if( jQuery(this).height()>18){
-                jQuery(this).css("padding-top",0);
-                jQuery(this).css("margin-top",7)
-            }
-        })
+        resizeTableHead();
         jQuery(".tooltip").remove();
         initTooltip();
     }

@@ -43,6 +43,7 @@
          jQuery.getJSON('/api/sitecore/Update/Get?id={' + id + '}').success(function (response) {
              callbackFunction(response);
              jQuery(".preloader").hide();
+             jQuery(".tooltip").remove();
              initTooltip();
              resizeTableHead();
          }).error(function(response) {

@@ -233,9 +233,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
                 if (memoryStream.Length > 0)
                 {
-                    //var path = string.IsNullOrEmpty(fieldTitle) ?
-                    //    string.Format("/sitecore/media library/GatherContent/{0}/", itemTitle) :
-                    //    string.Format("/sitecore/media library/GatherContent/{0}/{1}/", itemTitle, fieldTitle);
                     var media = CreateMedia(path, file, "jpg", memoryStream);
                     return media;
                 }
@@ -253,14 +250,19 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
                 var validItemName = ItemUtil.ProposeValidItemName(mediaFile.FileName);
 
-                var files = GetItemByPath(rootPath).Children;
-                var item = files.FirstOrDefault(f => f.Name == validItemName &&  
-                    DateUtil.IsoDateToDateTime(f.Fields["__Created"].Value) >= mediaFile.UpdatedDate);
-                if (item != null)
+                var filesFolder = GetItemByPath(rootPath);
+                if (filesFolder != null)
                 {
-                    return item;
+                    var files = filesFolder.Children;
+                    var item = files.FirstOrDefault(f => f.Name == validItemName &&
+                                                         DateUtil.IsoDateToDateTime(f.Fields["__Created"].Value) >=
+                                                         mediaFile.UpdatedDate);
+                    if (item != null)
+                    {
+                        return item;
+                    }
                 }
-   
+
                 var mediaOptions = new MediaCreatorOptions
                 {
                     Database = ContextDatabase,

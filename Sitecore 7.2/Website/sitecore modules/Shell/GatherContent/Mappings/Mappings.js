@@ -4,22 +4,25 @@ function ViewModel() {
 
     this.mappings = ko.observableArray();
     this.errorText = ko.observable();
+    this.isError = ko.observable();
 
-    jQuery.getJSON('/api/sitecore/mappings/Get', function () {
-    })
-        .success(function (data) {
-            if (data.status != "error") {
-                self.mappings(data);
-            }
-            self.errorText(data.message);
-            jQuery(".preloader").hide();
-        });
+    jQuery.getJSON('/api/sitecore/mappings/Get', function (data) {
+        if (data.status != "error") {
+            self.mappings(data);
+            self.isError(false);
+        } else {
+            self.errorText("Error:" + " " + data.message);
+            self.isError(true);
+        }
+        jQuery(".preloader").hide();
+        resizeTableHead();
+    });
 
 
     editMapping = function () {
         var id = this.GcTemplateId;
         scForm.showModalDialog("/sitecore modules/shell/gathercontent/Mappings/AddOrUpdateMapping.html?id=" + id,
-          null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:600;dialogMinWidth:700;dialogWidth:700;dialogHeight:800;header: Manage Field Mappings");
+            null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:600;dialogMinWidth:700;dialogWidth:700;dialogHeight:800;header: Manage Field Mappings");
     };
 
 
@@ -32,14 +35,15 @@ function ViewModel() {
             jQuery.ajax({
                 type: 'DELETE',
                 url: '/api/sitecore/mappings/Delete?id=' + id,
-                //dataType: 'json',
                 success: function () {
                     self.mappings.remove(function (mapping) {
                         return mapping.GcTemplateId == id;
                     });
+                    self.isError(false);
                 },
                 error: function (data) {
-                    self.errorText(data.message);
+                    self.errorText("Error:" + " " + data.message);
+                    self.isError(true);
                 }
             });
         }
@@ -58,6 +62,14 @@ function ViewModel() {
 
 }
 jQuery(window).resize(function () {
-    jQuery(".table_mappings_scroll").css("max-height", jQuery(".gathercontent-dialog").height() - 160)
+    jQuery(".table_mappings_scroll").css("max-height", jQuery(".gathercontent-dialog").height() - 155);
+    jQuery(".tabs_mapping").css("max-height", jQuery(".gathercontent-dialog").height() - 255);
+    jQuery("thead th.cell_resize").each(function(){
+        jQuery(this).find("div").css("width",jQuery(this).width())
+    })
 })
 
+jQuery(function () {
+    resizeTableHead();
+
+});

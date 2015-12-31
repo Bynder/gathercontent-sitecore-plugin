@@ -22,6 +22,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.Sit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.Website", "Sitecore 8.1\Website\GatherContent.Connector.Website.csproj", "{0B99B2EC-225D-4373-A383-DD762684EDE4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.Website7", "Sitecore 7.2\Website\GatherContent.Connector.Website7.csproj", "{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.WebControllers", "Modules\GatherContent.Connector.WebControllers\GatherContent.Connector.WebControllers.csproj", "{59E5F602-4A8D-484C-8009-C6B01DAD10CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +56,14 @@ Global
 		{0B99B2EC-225D-4373-A383-DD762684EDE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B99B2EC-225D-4373-A383-DD762684EDE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B99B2EC-225D-4373-A383-DD762684EDE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59E5F602-4A8D-484C-8009-C6B01DAD10CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59E5F602-4A8D-484C-8009-C6B01DAD10CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59E5F602-4A8D-484C-8009-C6B01DAD10CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59E5F602-4A8D-484C-8009-C6B01DAD10CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

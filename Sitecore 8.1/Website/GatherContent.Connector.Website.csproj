@@ -141,9 +141,6 @@
     <Content Include="sitecore modules\Shell\GatherContent\Update\Update.css" />
     <Content Include="sitecore modules\Shell\GatherContent\Update\Update.html" />
     <Content Include="sitecore modules\Shell\GatherContent\Update\Update.js" />
-    <Content Include="sitecore\shell\Controls\Browser.js" />
-    <Content Include="sitecore\shell\Controls\Lib\Prototype\prototype.js" />
-    <Content Include="sitecore\shell\Controls\Sitecore.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Import\Import.css" />
     <Content Include="sitecore modules\Shell\GatherContent\Import\Import.js" />
     <Content Include="Web.config">
@@ -151,22 +148,12 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\RegisterHttpRoutes.cs" />
     <Compile Include="Commands\ImportCommand.cs" />
     <Compile Include="Commands\AddTemplateCommand.cs" />
     <Compile Include="Commands\TestConnectionCommand.cs" />
     <Compile Include="Commands\MappingsCommand.cs" />
     <Compile Include="Commands\UpdateCommand.cs" />
-    <Compile Include="Controllers\TemplatesController.cs" />
-    <Compile Include="Controllers\ImportController.cs" />
-    <Compile Include="Controllers\MappingsController.cs" />
-    <Compile Include="Controllers\UpdateController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="App_Config\Include\GatherContent.HttpRoutesConfig.config">
-      <SubType>Designer</SubType>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Config\Sitecore.config" />

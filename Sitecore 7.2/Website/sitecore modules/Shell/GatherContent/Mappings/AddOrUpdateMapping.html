@@ -22,37 +22,42 @@
 </script>
 
 <div class="gathercontent-dialog">
-    <p class="fields-mapping-padding">
-        Choose the fields you wish to map from GatherContent into Sitecore. Only map the fields you need to import.
-    </p>
-    <div class="mapping_tabs_wrapper">
+    <!-- ko if: isError -->
+    <h1 data-bind="text: errorText"></h1>
+    <!-- /ko -->
+    <div data-bind="ifnot: isError">
+        <p class="fields-mapping-padding">
+            Choose the fields you wish to map from GatherContent into Sitecore. Only map the fields you need to import.
+        </p>
+        <div class="mapping_tabs_wrapper">
 
-        <div class="mapping_heading">
-            <div><span><strong>GatherContent:</strong></span></div>
-            <p data-bind="text: GcProjectName" class="title_lvl2"></p>
-            <p data-bind="text: GcTemplateName" class="title_lvl2"></p>
-        </div>
-        <div style="float: right;" class="mapping_heading">
-            <div><span><strong>Sitecore Template:</strong></span></div>
-            <select class="custom_selected sitecore-template-select" data-bind="options: SitecoreTemplates, optionsText: 'SitrecoreTemplateName', value: SelectedTemplate, event:{ change: $root.templateChanged}"></select>
-        </div>
-        <div style="clear: both;"></div>
-        <div data-bind="foreach: { data: Tabs, as: 'tab' } " class="tabs_mapping">
-            <div data-bind="text: tab.TabName" class="title_mapping open"></div>
-            <div data-bind="foreach: { data: Fields, as: 'field' }" class="content_mapping">
-                <div class="row_mapping_tab">
-                    <input type="text" data-bind="value: $root.returnFieldName($data)" disabled />
-                    <div class="arrow"></div>
-                    <select class="custom_selected" data-bind="options: $root.GetCurrentFields($data), optionsText: 'SitrecoreFieldName', optionsValue: 'SitecoreFieldId', value: SelectedField,"></select>
+            <div class="mapping_heading">
+                <div><span><strong>GatherContent:</strong></span></div>
+                <p data-bind="text: GcProjectName" class="title_lvl2"></p>
+                <p data-bind="text: GcTemplateName" class="title_lvl2"></p>
+            </div>
+            <div style="float: right;" class="mapping_heading">
+                <div><span><strong>Sitecore Template:</strong></span></div>
+                <select class="custom_selected sitecore-template-select" data-bind="options: SitecoreTemplates, optionsText: 'SitrecoreTemplateName', value: SelectedTemplate, event:{ change: $root.templateChanged}"></select>
+            </div>
+            <div style="clear: both;"></div>
+            <div data-bind="foreach: { data: Tabs, as: 'tab' } " class="tabs_mapping">
+                <div data-bind="text: tab.TabName" class="title_mapping open"></div>
+                <div data-bind="foreach: { data: Fields, as: 'field' }" class="content_mapping">
+                    <div class="row_mapping_tab">
+                        <input type="text" data-bind="value: $root.returnFieldName($data)" disabled />
+                        <div class="arrow"></div>
+                        <select class="custom_selected" data-bind="options: $root.GetCurrentFields($data), optionsText: 'SitrecoreFieldName', optionsValue: 'SitecoreFieldId', value: SelectedField,"></select>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="footer_btn">
-        <input class="mappings-btn" id="AddMore" type="button" value="Save mapping configuration" data-bind="click: saveMapping" style="margin-top: 15px;" />
-        <p>
-            You can always change your mapping later.
-        </p>
+        <div class="footer_btn">
+            <input class="mappings-btn" id="AddMore" type="button" value="Save mapping configuration" data-bind="click: saveMapping" style="margin-top: 15px;" />
+            <p>
+                You can always change your mapping later.
+            </p>
+        </div>
     </div>
     <div class="help-link">
         <a href="mailto:support@gathercontent.com">Need help?</a>

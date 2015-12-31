@@ -7,8 +7,7 @@ using GatherContent.Connector.Managers.Models.Mapping;
 using Sitecore.Diagnostics;
 using Sitecore.Mvc.Controllers;
 
-
-namespace GatherContent.Connector.Website.Controllers
+namespace GatherContent.Connector.WebControllers.Controllers
 {
     public class MappingsController : SitecoreController
     {

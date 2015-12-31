@@ -6,7 +6,7 @@ using GatherContent.Connector.Managers.Models.TemplateModel;
 using Sitecore.Diagnostics;
 using Sitecore.Mvc.Controllers;
 
-namespace GatherContent.Connector.Website.Controllers
+namespace GatherContent.Connector.WebControllers.Controllers
 {
     public class TemplatesMappingController : SitecoreController
     { 

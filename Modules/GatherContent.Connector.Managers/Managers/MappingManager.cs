@@ -224,6 +224,10 @@ namespace GatherContent.Connector.Managers.Managers
                 templateFolderId = Constants.TemplateFolderId;
             }
             var scTemplates = _templatesRepository.GetTemplatesModel(templateFolderId);
+            if (scTemplates.Count == 0)
+            {
+                throw new Exception("Template folder is empty");
+            }
             var addMappingModel = _mappingRepository.GetAddMappingModel(project.Data.Id.ToString(), template);
 
             var templates = MapSitecoreTemplates(scTemplates);

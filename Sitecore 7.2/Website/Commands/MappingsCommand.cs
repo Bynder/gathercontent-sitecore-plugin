@@ -56,7 +56,7 @@ namespace GatherContent.Connector.Website7.Commands
             var uri = "/sitecore modules/shell/gathercontent/mappings/mappings.html";
             var path = string.Format("{0}?id={1}&l={2}&v={3}", uri, id, language, version);
 
-            Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(path, "1280", "500", "Manage template mappings", true), "Shell");
+            Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(path, "1280", "500", "Manage template mappings", false), "Shell");
         }
     }
 }

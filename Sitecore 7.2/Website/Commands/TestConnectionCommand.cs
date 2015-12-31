@@ -57,7 +57,7 @@ namespace GatherContent.Connector.Website7.Commands
             var testConnectionManager = new TestConnectionManager();
             var uri = "/sitecore modules/shell/gathercontent/testconnection/testconnection.html";
             var path = string.Format("{0}?success={1}", uri, testConnectionManager.TestConnection());
-            Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(path, "250", "100", "Test Connection", true), "Shell");
+            Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(path, "250", "100", "Test Connection", false), "Shell");
         }
     }
 }

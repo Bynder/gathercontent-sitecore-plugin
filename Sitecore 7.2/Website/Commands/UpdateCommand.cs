@@ -55,7 +55,7 @@ namespace GatherContent.Connector.Website7.Commands
             var uri = "/sitecore modules/shell/gathercontent/update/update.html";
             var path = string.Format("{0}?id={1}&l={2}&v={3}", uri, id, language, version);
 
-            Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(path, "1600", "700", "Pull Updated Content from GatherContent", true), "Shell");
+            Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(path, "1600", "700", "Pull Updated Content from GatherContent", false), "Shell");
         }
     }
 }

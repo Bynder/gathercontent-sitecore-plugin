@@ -182,6 +182,10 @@
       <Project>{06887722-f39a-4f95-81bc-653334bc7636}</Project>
       <Name>GatherContent.Connector.Managers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Modules\GatherContent.Connector.WebControllers\GatherContent.Connector.WebControllers.csproj">
+      <Project>{59e5f602-4a8d-484c-8009-c6b01dad10cd}</Project>
+      <Name>GatherContent.Connector.WebControllers</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\PublishProfiles\acc.pubxml" />

@@ -24,7 +24,8 @@
 
 body {
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
+    /*font-family: Arial, Helvetica, sans-serif;*/
+    font-family: tahoma;
     font-size: 0.8em;
 }
 
@@ -71,6 +72,7 @@ table {
     border-spacing: 0;
     width: 100%;
     max-width: 100%;
+
 }
 /*.gathercontent-dialog table thead tr{*/
 /*color: white;*/
@@ -108,16 +110,17 @@ table {
 }
 
 .gathercontent-dialog table tbody tr {
-    height: 30px;
+    height: 22px;
 }
 
     .gathercontent-dialog table tbody tr td {
         color: #808080;
         cursor: default;
-        padding: 5px;
+        padding:2px 5px;
         border: 1px solid #ccc;
         border-top: none;
-        font-size: 0.8em;
+        border-right: none;
+        font-size: 8pt;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -132,7 +135,7 @@ table {
         }
 
         .gathercontent-dialog table tbody tr td:nth-child(1), .gathercontent-dialog table tbody tr td:nth-child(2) {
-            font-size: 0.8em;
+            font-size:8pt;
         }
 
         .gathercontent-dialog table tbody tr td a {
@@ -141,11 +144,14 @@ table {
             font-weight: 700;
             color: #00B6FF;
         }
-
+/*.gathercontent-dialog table tbody tr:first-child td{*/
+    /*border-top: 1px solid #c9c9c9;*/
+/*}*/
 .gathercontent-dialog .table_mappings_wrapper {
     position: relative;
-    padding-top: 45px;
-    background: #5e5e5e;
+    padding-top: 41px;
+    background: #ededed url("/sitecore/shell/themes/standard/images/Content Editor/SectionBackground.png") repeat-x;
+
 }
 
 .gathercontent-dialog .table_mappings_scroll {
@@ -154,22 +160,24 @@ table {
     overflow-x: hidden;
     background: #fff;
     border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
 }
 
 .gathercontent-dialog table thead th div {
     position: absolute;
     background: transparent;
-    color: #fff;
-    margin: 12px 0 9px;
+    color: #000;
     padding-top: 3px;
     top: 0;
-    line-height: normal;
-    border-left: 1px solid #fff;
     min-height: 18px;
     word-wrap: break-word;
     width: inherit;
     text-align: center;
     line-height: 16px;
+    border-left: 1px solid #000;
+    font-weight: 300;
+    margin-top: 10px;
 }
 
 .gathercontent-dialog table thead th:first-child div {
@@ -184,27 +192,42 @@ table {
     color: transparent;
     border: none;
     padding: 0 8px 0 0;
-    font-size: 0.8em;
+    font-size: 8pt;
     text-indent: 5px;
     overflow: hidden;
 }
 
 .gathercontent-dialog .mappings-btn {
-    border: none;
-    margin-top: 20px;
-    padding: 10px;
-    font-size: 0.9em;
-    text-transform: uppercase;
-    font-weight: 700;
-    border-radius: 3px;
-    cursor: pointer;
-    background-color: #e4e3e3;
+    /*border: none;*/
+    /*margin-top: 20px;*/
+    /*padding: 10px;*/
+    /*font-size: 0.9em;*/
+    /*text-transform: uppercase;*/
+    /*font-weight: 700;*/
+    /*border-radius: 3px;*/
+    /*cursor: pointer;*/
+    /*background-color: #e4e3e3;*/
+    height: auto;
+    width: auto !important;
+    min-width: 75px;
+    margin: 2px;
+    white-space: nowrap;
+    font: 8pt tahoma;
+    padding: 1px 6px;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    display: inline-block;
+    border: 2px outset buttonface;
 }
 .text-center{
     text-align: center;
 }
-.mappings-btn:hover {
-    background-color:#f0eeee;;
+.mappings-btn:hover,.mappings-btn:focus,.mappings-btn:active  {
+    border: 2px outset buttonface;
+    box-shadow: none;
 }
 
 .mappings-btn:focus {

@@ -67,8 +67,8 @@
                             <td data-bind="text: ScTemplateName, style: { color: IsMapped ? 'black': 'red' }"></td>
                             <td data-bind="text: LastMappedDateTime, style: { color: IsMapped ? 'black': 'red' }, css: { dateWarning: IsHighlightingDate }"></td>
                             <td data-bind="text: LastUpdatedDate,  css: { dateWarning: IsHighlightingDate }"></td>
-                            <td data-bind="if: !RemovedFromGc" class="text-center"><a href="#" data-bind="click: editMapping, text: EditButtonTitle">Edit</a></td>
-                            <td class="text-center"><a href="#" data-bind="click: removeMapping"><img src="~/icon/Applications/32x32/error.png" width="20" height="20"></a></td>
+                            <td data-bind="if: !RemovedFromGc" class=""><a href="#" data-bind="click: editMapping, text: EditButtonTitle">Edit</a></td>
+                            <td class=""><a href="#" data-bind="click: removeMapping"><img src="~/icon/Applications/32x32/error.png" width="15" height="15"></a></td>
                         </tr>
                     </tbody>
                 </table>

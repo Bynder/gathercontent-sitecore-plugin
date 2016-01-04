@@ -40,6 +40,7 @@ function ViewModel() {
                         return mapping.GcTemplateId == id;
                     });
                     self.isError(false);
+                    resizeTableHead();
                 },
                 error: function (data) {
                     self.errorText("Error:" + " " + data.message);

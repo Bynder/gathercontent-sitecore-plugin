@@ -53,11 +53,16 @@ function document_resize() {
                 jQuery(this).css("padding-top",0);
                 jQuery(this).css("margin-top",7)
             }
+            else{
+                jQuery(this).css("padding-top",3);
+                jQuery(this).css("margin-top",10)
+            }
         })
     });
 }
 
 jQuery(function () {
+    document_resize();
     jQuery(window).resize(function(){
         jQuery(".table_import_scroll").css("max-height",jQuery("body").height()-250)
 })

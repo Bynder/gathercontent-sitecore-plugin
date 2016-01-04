@@ -55,7 +55,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 {
                     item.GcLink = _accountSettings.GatherContentUrl + "/item/" + item.GCItemId;
                 }
-                var cmsLink = string.Format("{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master", Sitecore.Context.Site.HostName, createdItem.ID);
+                var cmsLink = string.Format("{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master&sc_bw=1", Sitecore.Context.Site.HostName, createdItem.ID);
                 item.CmsLink = cmsLink;
                 SetupFields(createdItem, item);
             }
@@ -314,7 +314,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 {
                     item.GcLink = _accountSettings.GatherContentUrl + "/item/" + item.GCItemId;
                 }
-                var cmsLink = string.Format("{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master", Sitecore.Context.Site.HostName, scItem.ID);
+                var cmsLink = string.Format("{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master&sc_bw=1", Sitecore.Context.Site.HostName, scItem.ID);
                 item.CmsLink = cmsLink;
 
                 var validName = ItemUtil.ProposeValidItemName(item.Title);

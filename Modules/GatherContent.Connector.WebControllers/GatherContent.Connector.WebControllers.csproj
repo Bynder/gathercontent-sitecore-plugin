@@ -7,8 +7,8 @@
     <ProjectGuid>{59E5F602-4A8D-484C-8009-C6B01DAD10CD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GatherContent.Connector.WebControllers1</RootNamespace>
-    <AssemblyName>GatherContent.Connector.WebControllers1</AssemblyName>
+    <RootNamespace>GatherContent.Connector.WebControllers</RootNamespace>
+    <AssemblyName>GatherContent.Connector.WebControllers</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

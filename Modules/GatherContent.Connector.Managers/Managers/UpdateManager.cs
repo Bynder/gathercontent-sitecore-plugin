@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Web;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.GatherContentService.Services;
@@ -99,8 +100,8 @@ namespace GatherContent.Connector.Managers.Managers
                             }
                             var cmsLink =
                                 string.Format(
-                                    "{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master&sc_bw=1",
-                                    Sitecore.Context.Site.HostName, cmsItem.CMSId);
+                                    "http://{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master&sc_bw=1",
+                                    HttpContext.Current.Request.Url.Host, cmsItem.CMSId);
                             var listItem = new UpdateListItem(gcItem, template, cmsItem, dateFormat, project.Name,
                                 cmsLink, gcLink);
                             items.Add(listItem);

@@ -43,32 +43,23 @@
          jQuery.getJSON('/api/sitecore/Update/Get?id={' + id + '}').success(function (response) {
              callbackFunction(response);
              jQuery(".preloader").hide();
+             jQuery(".tooltip").remove();
              initTooltip();
-             jQuery("thead th.cell_resize").each(function(){
-                 jQuery(this).find("div").css("width",jQuery(this).width())
-             });
-             jQuery("thead th div").each(function(){
-                 if( jQuery(this).height()>18){
-                     jQuery(this).css("padding-top",0);
-                     jQuery(this).css("margin-top",9)
-                 }
-             })
+             resizeTableHead();
          }).error(function(response) {
              self.errorCallbackHandle(response);
          });
-         jQuery("thead th.cell_resize").each(function(){
-             jQuery(this).find("div").css("width",jQuery(this).width())
-         });
-         jQuery("thead th div").each(function(){
-             if( jQuery(this).height()>18){
-                 jQuery(this).css("padding-top",0);
-                 jQuery(this).css("margin-top",9)
-             }
-         })
+         resizeTableHead();
          document_resize();
      }
 
     self.errorCallbackHandle = function (response) {
+        jQuery(".preloader").hide();
+        self.errorText(response.responseText);
+        self.buttonClick(MODE.Error);
+    }
+
+    self.postErrorHandle = function (response) {
         jQuery(".preloader").hide();
         self.errorText(response);
         self.buttonClick(MODE.Error);
@@ -101,8 +92,10 @@
         currentCollection = self.filterByProject(currentCollection);
 
         self.items(currentCollection);
+        resizeTableHead();
         jQuery(".tooltip").remove();
         initTooltip();
+
     }
 
     self.search = function (currentCollection) {
@@ -268,13 +261,14 @@
             data: JSON.stringify(itemids),
             success: function (response) {
                 if (response.status == 'error') {
-                    self.errorCallbackHandle(response.message);
+                    self.postErrorHandle(response.message);
                 }
                 var notUpdatedCount = self.getNotUpdatedItemsCount(response.Items);
                 self.successImportedItemsCount(response.Items.length - notUpdatedCount);
                 self.notUpdaredItemsCount(notUpdatedCount);
                 self.items(response.Items);
                 self.buttonClick(MODE.ImportResult);
+                resizeTableHead();
             },
             error: function (response) {
                 self.errorCallbackHandle(response);
@@ -302,11 +296,18 @@
 
     self.buttonClick = function (newMode) {
         if (newMode === MODE.CheckItemsBeforeImport) {
-            self.currentMode(newMode);
-            self.switchToCheckItemsBeforeImport();
+            if (self.getCheckedCount() == 0) {
+                self.errorText('Please select at least one item');
+            } else {
+                self.currentMode(newMode);
+                resizeTableHead();
+                self.switchToCheckItemsBeforeImport();
+            }
         } else if (newMode === MODE.Import) {
             self.currentMode(newMode);
+
             self.import();
+
         } else if (newMode === MODE.Close) {
             self.currentMode(newMode);
             self.close();
@@ -317,6 +318,15 @@
         } else {
             self.currentMode(newMode);
         }
+        jQuery("thead th.cell_resize").each(function(){
+            jQuery(this).find("div").css("width",jQuery(this).width());
+        });
+        jQuery("thead th div").each(function() {
+            if (jQuery(this).height() > 18) {
+                jQuery(this).css("padding-top", 0);
+                jQuery(this).css("margin-top", 7);
+            }
+        });
     }
 
     self.getMode = function (section) {
@@ -324,6 +334,7 @@
             return true;
         }
         return false;
+        resizeTableHead();
     }
 
     self.setupWatcher = function (items) {
@@ -352,19 +363,11 @@
 
     self.init();
 }
-jQuery(window).resize(function () {
-    jQuery("thead th.cell_resize").each(function(){
-        jQuery(this).find("div").css("width",jQuery(this).width());
-    });
-})
+jQuery(window).resize(function() {
+    resizeTableHead();
+});
 
 jQuery(function () {
-
-    jQuery("thead th div").each(function(){
-        if( jQuery(this).height()>18){
-            jQuery(this).css("padding-top",0);
-            jQuery(this).css("margin-top",9)
-        }
-    })
+    resizeTableHead();
 
 });

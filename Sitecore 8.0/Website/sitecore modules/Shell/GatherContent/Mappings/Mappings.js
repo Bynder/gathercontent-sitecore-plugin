@@ -15,9 +15,7 @@ function ViewModel() {
             self.isError(true);
         }
         jQuery(".preloader").hide();
-        jQuery("thead th.cell_resize").each(function () {
-            jQuery(this).find("div").css("width", jQuery(this).width());
-        });
+        resizeTableHead();
     });
 
 
@@ -72,11 +70,6 @@ jQuery(window).resize(function () {
 })
 
 jQuery(function () {
-    jQuery("thead th div").each(function() {
-        if (jQuery(this).height() > 18) {
-            jQuery(this).css("padding-top", 0);
-            jQuery(this).css("margin-top", 9);
-        }
-    });
+    resizeTableHead();
 
 });

@@ -70,14 +70,16 @@
 
         </div>
     </div>
-    <div class="footer_btn">
+    <div class="footer_btn"> 
         <div>
             <span data-bind="text: getCheckedCount"></span> Items selected
         </div>
-
-        <input type="button" class="mappings-btn" value="Next>" data-bind="click: buttonClick.bind($data, 2)" />
-        <!--<input type="button" value="Close" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" />-->
-    </div>
+        <div>
+            <input type="button" class="mappings-btn" value="Next>" data-bind="click: buttonClick.bind($data, 2)" />
+            <div data-bind="text: errorText" class="warning-message"></div>
+        </div>
+            <!--<input type="button" value="Close" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" />-->
+        </div>
     <div class="help-link">
         <a href="mailto:support@gathercontent.com">Need help?</a>
     </div>
@@ -95,15 +97,12 @@
                 <thead>
                     <tr>
                         <th class="status">
-                            Status
                             <div>Status</div>
                         </th>
                         <th  class="cell_resize">
-                            Item name
                             <div>Item name</div>
                         </th>
                         <th  class="cell_resize">
-                            Template name
                             <div>Template name</div>
                         </th>
                     </tr>
@@ -168,10 +167,10 @@
                             <th  class="cell_resize">
                                 <div>Template name</div>
                             </th>
-                            <th  class="cell_resize">
+                            <th  style="width: 100px">
                                 <div> Open In Sitecore</div>
                             </th>
-                            <th  class="cell_resize">
+                            <th  style="width: 100px">
                                 <div>Open In GatherContent</div>
                             </th>
                         </tr>

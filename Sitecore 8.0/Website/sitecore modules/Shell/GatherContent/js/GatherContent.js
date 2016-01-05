@@ -16,6 +16,17 @@ function initTooltip() {
         }
     });
 }
+function resizeTableHead(){
+    jQuery("thead th.cell_resize").each(function(){
+        jQuery(this).find("div").css("width",jQuery(this).width())
+    })
+    jQuery("thead th div").each(function(){
+        if( jQuery(this).height()>18){
+            jQuery(this).css("padding-top",0);
+            jQuery(this).css("margin-top",7)
+        }
+    })
+}
 
 function simple_tooltip(target_items, name, i) {
     jQuery("body").append("<div class='" + name + "' id='" + name + i + "'><p>" + jQuery(target_items).text() + "</p></div>");
@@ -40,7 +51,7 @@ function document_resize() {
         jQuery("thead th div").each(function(){
             if( jQuery(this).height()>18){
                 jQuery(this).css("padding-top",0);
-                jQuery(this).css("margin-top",9)
+                jQuery(this).css("margin-top",7)
             }
         })
     });
@@ -48,9 +59,9 @@ function document_resize() {
 
 jQuery(function () {
     jQuery(window).resize(function(){
-        jQuery(".table_import_scroll").css("max-height",jQuery("body").height()-300)
+        jQuery(".table_import_scroll").css("max-height",jQuery("body").height()-250)
 })
-        jQuery(".table_import_scroll").css("max-height",jQuery("body").height()-300)
+        jQuery(".table_import_scroll").css("max-height",jQuery("body").height()-250)
 });
 
 

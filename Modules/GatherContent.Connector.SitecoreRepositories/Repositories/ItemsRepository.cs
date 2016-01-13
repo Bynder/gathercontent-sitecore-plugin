@@ -286,7 +286,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         {
             Item parentItem = GetItem(targetItemId);
             var templatId = new ID(Constants.GCLinkItemTemplate);
-            IEnumerable<Item> items = parentItem.Axes.GetDescendants().Where(i => IsItemHasTemplate(templatId, i));
+            var items = new List<Item>();
+            if (IsItemHasTemplate(templatId, parentItem))
+            {
+                items.Add(parentItem);
+            }         
+            items.AddRange(parentItem.Axes.GetDescendants().Where(i => IsItemHasTemplate(templatId, i)).ToList());
             List<CMSUpdateItem> result = items.Select(GetCMSItem).ToList();
 
             return result;

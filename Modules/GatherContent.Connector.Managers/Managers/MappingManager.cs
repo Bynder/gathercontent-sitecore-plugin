@@ -168,7 +168,7 @@ namespace GatherContent.Connector.Managers.Managers
             {
                 try
                 {
-                    var template = _templateService.GetSingleTemplate(mapping.GcTemplateId);
+                    var template = GetGcTemplateEntity(mapping.GcTemplateId);
                     if (template == null)
                     {
                         mapping.LastUpdatedDate = "Removed from GatherContent ";
@@ -212,8 +212,8 @@ namespace GatherContent.Connector.Managers.Managers
         {
             var model = new TemplateMapModel();
 
-            var template = _templateService.GetSingleTemplate(id);
-            var project = _projectService.GetSingleProject(template.Data.ProjectId.ToString());
+            var template = GetGcTemplateEntity(id);
+            var project = GetGcProjectEntity(template.Data.ProjectId.ToString());
 
             model.GcProjectName = project.Data.Name;
             model.GcTemplateName = template.Data.Name;

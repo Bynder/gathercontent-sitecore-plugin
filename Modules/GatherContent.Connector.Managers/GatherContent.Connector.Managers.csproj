@@ -74,6 +74,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -83,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Managers\BaseManager.cs" />
+    <Compile Include="Managers\CacheManager.cs" />
     <Compile Include="Managers\ImportManager.cs" />
     <Compile Include="Managers\MappingManager.cs" />
     <Compile Include="Managers\TestConnectionManager.cs" />

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -132,7 +131,7 @@ namespace GatherContent.Connector.Managers.Managers
 
             if (template == null)
             {
-                template = _templatesService.GetSingleTemplate(templateId.ToString()).Data;
+                template = GetGcTemplateEntity(templateId.ToString()).Data;
                 templates.Add(templateId, template);
             }
 
@@ -146,7 +145,7 @@ namespace GatherContent.Connector.Managers.Managers
 
             if (project == null)
             {
-                project = _projectsService.GetSingleProject(projectId.ToString()).Data;
+                project = GetGcProjectEntity(projectId.ToString()).Data;
                 projects.Add(projectId, project);
             }
 

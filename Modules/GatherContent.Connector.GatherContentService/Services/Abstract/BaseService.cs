@@ -30,6 +30,10 @@ namespace GatherContent.Connector.GatherContentService.Services.Abstract
 
         protected static WebRequest CreateRequest(string url)
         {
+            if (!_apiUrl.EndsWith("/"))
+            {
+                _apiUrl = _apiUrl + "/";
+            }
             HttpWebRequest webrequest = WebRequest.Create(_apiUrl + url) as HttpWebRequest;
 
             if (webrequest != null)

@@ -101,14 +101,14 @@ namespace GatherContent.Connector.Managers.Managers
         }
 
 
-        public ImportResultModel ImportItems(string itemId, List<string> items, string projectId, string statusId)
+        public ImportResultModel ImportItems(string itemId, List<string> items, string projectId, string statusId, string language)
         {
             List<GCItem> gcItems = MapItems(items);
             List<MappingResultModel> cmsItems = _mappingManager.MapItems(gcItems, projectId);
 
             if (cmsItems == null) return null;
             List<MappingResultModel> successfulImportedItems = GetSuccessfulImportedItems(cmsItems);
-            _itemsRepository.ImportItems(itemId, ref successfulImportedItems);
+            _itemsRepository.ImportItems(itemId, language, ref successfulImportedItems);
 
             if (!string.IsNullOrEmpty(statusId))
             {

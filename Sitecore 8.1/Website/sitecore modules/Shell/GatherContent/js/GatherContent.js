@@ -16,16 +16,16 @@ function initTooltip() {
         }
     });
 }
-function resizeTableHead(){
-    jQuery("thead th.cell_resize").each(function(){
-        jQuery(this).find("div").css("width",jQuery(this).width())
-    })
-    jQuery("thead th div").each(function(){
-        if( jQuery(this).height()>18){
-            jQuery(this).css("padding-top",0);
-            jQuery(this).css("margin-top",7)
+function resizeTableHead() {
+    jQuery("thead th.cell_resize").each(function() {
+        jQuery(this).find("div").css("width", jQuery(this).width());
+    });
+    jQuery("thead th div").each(function() {
+        if (jQuery(this).height() > 18) {
+            jQuery(this).css("padding-top", 0);
+            jQuery(this).css("margin-top", 7);
         }
-    })
+    });
 }
 
 function simple_tooltip(target_items, name, i) {
@@ -48,20 +48,20 @@ function document_resize() {
                 simple_tooltip(this, "tooltip", i);
             }
         });
-        jQuery("thead th div").each(function(){
-            if( jQuery(this).height()>18){
-                jQuery(this).css("padding-top",0);
-                jQuery(this).css("margin-top",7)
+        jQuery("thead th div").each(function() {
+            if (jQuery(this).height() > 18) {
+                jQuery(this).css("padding-top", 0);
+                jQuery(this).css("margin-top", 7);
             }
-        })
+        });
     });
 }
 
 jQuery(function () {
-    jQuery(window).resize(function(){
-        jQuery(".table_import_scroll").css("max-height",jQuery("body").height()-250)
-})
-        jQuery(".table_import_scroll").css("max-height",jQuery("body").height()-250)
+    jQuery(window).resize(function() {
+        jQuery(".table_import_scroll").css("max-height", jQuery("body").height() - 250);
+    });
+    jQuery(".table_import_scroll").css("max-height", jQuery("body").height() - 250);
 });
 
 

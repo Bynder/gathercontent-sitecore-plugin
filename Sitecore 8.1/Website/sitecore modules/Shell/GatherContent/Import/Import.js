@@ -231,6 +231,7 @@
         items.forEach(function (item, i) {
             itemids.push(item.Id);
         });
+        var lang = getUrlVars()["l"];
         var status = self.statusFilter();
         var project = self.project();
         if (!self.statusPostState())
@@ -238,7 +239,7 @@
         jQuery.ajax
         ({
             type: "POST",
-            url: '/api/sitecore/Import/ImportItems?id={' + id + '}&projectId=' + project + '&statusId=' + status,
+            url: '/api/sitecore/Import/ImportItems?id={' + id + '}&projectId=' + project + '&statusId=' + status + '&language=' + lang,
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(itemids),

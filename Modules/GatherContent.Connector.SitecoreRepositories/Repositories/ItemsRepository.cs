@@ -3,12 +3,11 @@ using System.IO;
 using System.Net;
 using System.Web;
 using GatherContent.Connector.Entities;
-using GatherContent.Connector.Entities.Entities;
 using Sitecore;
 using System.Linq;
-using Sitecore.ApplicationCenter.Applications;
 using Sitecore.Data;
 using Sitecore.Data.Items;
+using Sitecore.Globalization;
 using Sitecore.Resources.Media;
 using Sitecore.SecurityModel;
 using System.Collections.Generic;
@@ -32,33 +31,43 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             _accountSettings = accountsRepository.GetAccountSettings();
         }
 
-        public void ImportItems(string itemId, ref List<MappingResultModel> items)
+        public void ImportItems(string itemId, string language, ref List<MappingResultModel> items)
         {
             Item parentItem = GetItem(itemId);
 
-            AddItems(parentItem, ref items);
+            AddItems(parentItem, language, ref items);
         }
 
-        private void AddItems(Item parent, ref List<MappingResultModel> items)
+        private void AddItems(Item parent, string language, ref List<MappingResultModel> items)
         {
-            items.ForEach(i => AddItem(parent, ref i));
+            items.ForEach(i => AddItem(parent, language, ref i));
         }
 
-        private void AddItem(Item parent, ref MappingResultModel item)
+        private void AddItem(Item parent, string language, ref MappingResultModel item)
         {
             using (new SecurityDisabler())
             {
-                TemplateItem template = ContextDatabase.GetTemplate(new ID(item.CMSTemplateId));
-                string validName = ItemUtil.ProposeValidItemName(item.Title);
-                Item createdItem = parent.Add(validName, template);
-
-                if (!string.IsNullOrEmpty(_accountSettings.GatherContentUrl))
+                //TODO Check using LanguageSwitcher instead Context.SetLanguage()
+                //var language = Sitecore.Globalization.Language.Parse(languageName);
+                //Context.SetLanguage(language, false);
+                using (new LanguageSwitcher(language)) 
                 {
-                    item.GcLink = _accountSettings.GatherContentUrl + "/item/" + item.GCItemId;
+                    
+                    TemplateItem template = ContextDatabase.GetTemplate(new ID(item.CMSTemplateId));
+                    string validName = ItemUtil.ProposeValidItemName(item.Title);
+                    Item createdItem = parent.Add(validName, template);
+
+                    if (!string.IsNullOrEmpty(_accountSettings.GatherContentUrl))
+                    {
+                        item.GcLink = _accountSettings.GatherContentUrl + "/item/" + item.GCItemId;
+                    }
+                    var cmsLink =
+                        string.Format(
+                            "http://{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master&sc_bw=1",
+                            HttpContext.Current.Request.Url.Host, createdItem.ID);
+                    item.CmsLink = cmsLink;
+                    SetupFields(createdItem, item);
                 }
-                var cmsLink = string.Format("http://{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master&sc_bw=1", HttpContext.Current.Request.Url.Host, createdItem.ID);
-                item.CmsLink = cmsLink;
-                SetupFields(createdItem, item);
             }
         }
 
@@ -118,75 +127,75 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                             }
                             break;
                         case "files":
-                        {
-                            var dataSourcePath = GetDatasourcePath(updatedItem, field.Name);
-                            string path;
-                            if (string.IsNullOrEmpty(dataSourcePath))
                             {
-                                path = string.IsNullOrEmpty(field.Label)
-                                    ? string.Format("/sitecore/media library/GatherContent/{0}/", item.Title)
-                                    : string.Format("/sitecore/media library/GatherContent/{0}/{1}/", item.Title,
-                                        field.Label);
-                                SetDatasourcePath(updatedItem, field.Name, path);
-                            }
-                            else
-                            {
-                                path = dataSourcePath;
-                            }
-                            switch (updatedItem.Fields[new ID(field.Name)].Type)
+                                var dataSourcePath = GetDatasourcePath(updatedItem, field.Name);
+                                string path;
+                                if (string.IsNullOrEmpty(dataSourcePath))
+                                {
+                                    path = string.IsNullOrEmpty(field.Label)
+                                        ? string.Format("/sitecore/media library/GatherContent/{0}/", item.Title)
+                                        : string.Format("/sitecore/media library/GatherContent/{0}/{1}/", item.Title,
+                                            field.Label);
+                                    SetDatasourcePath(updatedItem, field.Name, path);
+                                }
+                                else
+                                {
+                                    path = dataSourcePath;
+                                }
+                                switch (updatedItem.Fields[new ID(field.Name)].Type)
                                 {
                                     case "Droptree":
-                                    {
-                                        var file = field.Files.FirstOrDefault();
-                                        if (file != null)
                                         {
-                                            var media = UploadFile(path, file);
-                                            updatedItem.Fields[new ID(field.Name)].Value = media.ID.ToString();
-                                        }
-
-                                    }
-                                        break;
-                                    case "Image":
-                                    {
-                                        var file = field.Files.FirstOrDefault();
-                                        if (file != null)
-                                        {
-                                            
-                                            var media = UploadFile(path, file);
-                                            var val = "<image mediaid=\"" + media.ID + "\" />";
-                                            updatedItem.Fields[new ID(field.Name)].Value = val;
-                                        }
-                                    }
-                                        break;
-                                    case "File":
-                                    {
-                                        var file = field.Files.FirstOrDefault();
-                                        if (file != null)
-                                        {
-                                            var media = UploadFile(path, file);
-
-                                            var mediaUrl = MediaManager.GetMediaUrl(media,
-                                                new MediaUrlOptions {UseItemPath = false, AbsolutePath = false});
-                                            var val = "<file mediaid=\"" + media.ID + "\" src=\"" + mediaUrl + "\" />";
-                                            updatedItem.Fields[new ID(field.Name)].Value = val;
-                                        }
-                                    }
-                                        break;
-                                    default:
-                                    {
-                                        var value = string.Empty;
-                                        foreach (var file in field.Files)
-                                        {
+                                            var file = field.Files.FirstOrDefault();
                                             if (file != null)
                                             {
                                                 var media = UploadFile(path, file);
-                                                if (media != null) value += media.ID.ToString() + "|";
+                                                updatedItem.Fields[new ID(field.Name)].Value = media.ID.ToString();
+                                            }
+
+                                        }
+                                        break;
+                                    case "Image":
+                                        {
+                                            var file = field.Files.FirstOrDefault();
+                                            if (file != null)
+                                            {
+
+                                                var media = UploadFile(path, file);
+                                                var val = "<image mediaid=\"" + media.ID + "\" />";
+                                                updatedItem.Fields[new ID(field.Name)].Value = val;
                                             }
                                         }
-                                        value = value.TrimEnd('|');
-                                        if (!string.IsNullOrEmpty(value))
-                                            updatedItem.Fields[new ID(field.Name)].Value = value;
-                                    }
+                                        break;
+                                    case "File":
+                                        {
+                                            var file = field.Files.FirstOrDefault();
+                                            if (file != null)
+                                            {
+                                                var media = UploadFile(path, file);
+
+                                                var mediaUrl = MediaManager.GetMediaUrl(media,
+                                                    new MediaUrlOptions { UseItemPath = false, AbsolutePath = false });
+                                                var val = "<file mediaid=\"" + media.ID + "\" src=\"" + mediaUrl + "\" />";
+                                                updatedItem.Fields[new ID(field.Name)].Value = val;
+                                            }
+                                        }
+                                        break;
+                                    default:
+                                        {
+                                            var value = string.Empty;
+                                            foreach (var file in field.Files)
+                                            {
+                                                if (file != null)
+                                                {
+                                                    var media = UploadFile(path, file);
+                                                    if (media != null) value += media.ID.ToString() + "|";
+                                                }
+                                            }
+                                            value = value.TrimEnd('|');
+                                            if (!string.IsNullOrEmpty(value))
+                                                updatedItem.Fields[new ID(field.Name)].Value = value;
+                                        }
                                         break;
                                 }
                             }
@@ -290,7 +299,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             if (IsItemHasTemplate(templatId, parentItem))
             {
                 items.Add(parentItem);
-            }         
+            }
             items.AddRange(parentItem.Axes.GetDescendants().Where(i => IsItemHasTemplate(templatId, i)).ToList());
             List<CMSUpdateItem> result = items.Select(GetCMSItem).ToList();
 

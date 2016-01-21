@@ -38,6 +38,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
                 Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
                 return exception.Message;
             }
+            
         }
 
 
@@ -48,8 +49,10 @@ namespace GatherContent.Connector.WebControllers.Controllers
             try
             {
                 ImportResultModel result = _importManager.ImportItems(id, items, projectId, statusId, language);
+                
 
                 return Json(result, JsonRequestBehavior.AllowGet); 
+
             }
             catch (WebException exception)
             {

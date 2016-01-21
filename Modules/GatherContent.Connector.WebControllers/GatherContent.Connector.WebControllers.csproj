@@ -56,6 +56,33 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug 8.1|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug 8.1\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug 8.0|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug 8.0\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug 7|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug 7\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Release 8.1'">
       <SpecificVersion>False</SpecificVersion>
@@ -66,6 +93,18 @@
       <HintPath>..\..\References 8.0\Sitecore\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Release 7'">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References 7.2\Sitecore\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Debug 8.1'">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References\Sitecore\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Debug 8.0'">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References 8.0\Sitecore\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Debug 7'">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\References 7.2\Sitecore\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -81,6 +120,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\References 7.2\Sitecore\Sitecore.Kernel.dll</HintPath>
     </Reference>
+    <Reference Include="Sitecore.Kernel, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Debug 8.1'">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References\Sitecore\Sitecore.Kernel.dll</HintPath>
+    </Reference>
+    <Reference Include="Sitecore.Kernel, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Debug 8.0'">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References 8.0\Sitecore\Sitecore.Kernel.dll</HintPath>
+    </Reference>
+    <Reference Include="Sitecore.Kernel, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Debug 7'">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References 7.2\Sitecore\Sitecore.Kernel.dll</HintPath>
+    </Reference>
     <Reference Include="Sitecore.Mvc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Release 8.1'">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\References\Sitecore\Sitecore.Mvc.dll</HintPath>
@@ -90,6 +141,18 @@
       <HintPath>..\..\References 8.0\Sitecore\Sitecore.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="Sitecore.Mvc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Release 7'">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References 7.2\Sitecore\Sitecore.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="Sitecore.Mvc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Debug 8.1'">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References\Sitecore\Sitecore.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="Sitecore.Mvc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Debug 8.0'">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References 8.0\Sitecore\Sitecore.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="Sitecore.Mvc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Debug 7'">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\References 7.2\Sitecore\Sitecore.Mvc.dll</HintPath>
     </Reference>
@@ -104,6 +167,18 @@
       <HintPath>..\..\References 8.0\Sitecore\System.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Release 7'">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References 7.2\Sitecore\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Debug 8.1'">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References\Sitecore\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Debug 8.0'">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References 8.0\Sitecore\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Debug 7'">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\References 7.2\Sitecore\System.Web.Mvc.dll</HintPath>
     </Reference>

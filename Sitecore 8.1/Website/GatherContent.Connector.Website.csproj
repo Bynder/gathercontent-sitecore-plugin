@@ -41,10 +41,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Sitecore.Kernel, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\References\Sitecore\Sitecore.Kernel.dll</HintPath>
-    </Reference>
     <Reference Include="Sitecore.Kernel, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Release 8.1'">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\References\Sitecore\Sitecore.Kernel.dll</HintPath>
@@ -53,6 +49,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\References 8.0\Sitecore\Sitecore.Kernel.dll</HintPath>
     </Reference>
+	<Reference Include="Sitecore.Kernel, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Debug 8.1'">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References\Sitecore\Sitecore.Kernel.dll</HintPath>
+    </Reference>
+    <Reference Include="Sitecore.Kernel, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Debug 8.0'">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References 8.0\Sitecore\Sitecore.Kernel.dll</HintPath>
+    </Reference>
+	
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />

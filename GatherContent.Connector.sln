@@ -26,6 +26,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.Web
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.WebControllers", "Modules\GatherContent.Connector.WebControllers\GatherContent.Connector.WebControllers.csproj", "{59E5F602-4A8D-484C-8009-C6B01DAD10CD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deploy", "Deploy", "{4EE353B5-9811-4057-837A-BD6908CE0C76}"
+	ProjectSection(SolutionItems) = preProject
+		Copy to Sitecore 8 Website.ps1 = Copy to Sitecore 8 Website.ps1
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug 7|Any CPU = Debug 7|Any CPU

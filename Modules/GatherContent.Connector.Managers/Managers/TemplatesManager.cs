@@ -48,7 +48,8 @@ namespace GatherContent.Connector.Managers.Managers
         protected List<Project> GetProjects(int accountId)
         {
             var projects = _projectService.GetProjects(accountId);
-            return projects.Data;
+            var activeProjects = projects.Data.Where(p => p.Active).ToList();
+            return activeProjects;
         }
 
         public TemplateMappingModel GetTemplateMappingModel()

@@ -212,7 +212,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
         private void SetupLinkedGCTemplate(TemplateMapping templateMapping)
         {
-            var linkedGCTemplate = ContextDatabase.GetTemplate(new ID(Constants.GCLinkItemTemplate));
+            var linkedGCTemplate = ContextDatabase.GetTemplate(new ID(Constants.GCLinkItemTemplateID));
             var sitecoreTemplate = GetItem(templateMapping.SitecoreTemplateId);
             var baseTemplates = sitecoreTemplate[FieldIDs.BaseTemplate];
             if (!baseTemplates.ToLower().Contains(linkedGCTemplate.ID.ToString().ToLower()))

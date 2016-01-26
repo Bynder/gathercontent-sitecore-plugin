@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sitecore;
+using Sitecore.Configuration;
 using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.Globalization;
@@ -14,18 +16,25 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
         protected BaseSitecoreRepository()
         {
-            ContextDatabase = Sitecore.Configuration.Factory.GetDatabase("master");
-            ContextLanguage = Sitecore.Context.Language;
+            ContextDatabase = Factory.GetDatabase("master");
+            ContextLanguage = Context.Language;
         }
 
         public Item GetItem(string sitecoreId)
         {
+            var resultItem = GetItem(sitecoreId, ContextLanguage);
+            return resultItem;
+        }
+
+        public Item GetItem(string sitecoreId, Language language)
+        {
             Item resultItem = null;
             if (!String.IsNullOrEmpty(sitecoreId))
-                resultItem = ContextDatabase.GetItem(sitecoreId, ContextLanguage);
+                resultItem = ContextDatabase.GetItem(sitecoreId, language);
 
             return resultItem;
         }
+
 
         public Item GetItemByPath(string path)
         {

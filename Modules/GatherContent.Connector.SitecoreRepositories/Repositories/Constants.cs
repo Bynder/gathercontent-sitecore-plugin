@@ -37,7 +37,8 @@
         public const string TemplateProxyName = "GC Template Proxy";
         public const string ProjectFolderTemplateName = "GC Projects Folder";
         public const string MappingFolderTemplateName = "GC Mapping Folder";
-        public const string GCLinkItemTemplate = "{8F38ACEB-3587-4089-9713-EA2980227A8C}";
+        public const string GCLinkItemTemplateID = "{8F38ACEB-3587-4089-9713-EA2980227A8C}";
+        public const string GCLinkItemTemplateName = "GC Linked Item";
 
 
         #endregion

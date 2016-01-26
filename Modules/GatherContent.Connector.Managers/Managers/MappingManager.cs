@@ -195,9 +195,9 @@ namespace GatherContent.Connector.Managers.Managers
                 }
                 catch(Exception)
                 {
-                    mapping.LastUpdatedDate = "Removed from GatherContent ";
+                    mapping.LastUpdatedDate = "Removed from GatherContent";
                     mapping.RemovedFromGc = true;
-                    throw;
+                    //throw;
                 }
 
             }

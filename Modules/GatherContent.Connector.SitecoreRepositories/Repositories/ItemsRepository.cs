@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.IRepositories.Models.Update;
+using Sitecore.Data.Managers;
 using File = GatherContent.Connector.IRepositories.Models.Import.File;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories
@@ -31,11 +32,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             _accountSettings = accountsRepository.GetAccountSettings();
         }
 
-        public void ImportItems(string itemId, string language, ref List<MappingResultModel> items)
+        public void ImportItems(string itemId, string languageName, ref List<MappingResultModel> items)
         {
-            Item parentItem = GetItem(itemId);
+            var language = LanguageManager.GetLanguage(languageName);
+            Item parentItem = GetItem(itemId, language);
 
-            AddItems(parentItem, language, ref items);
+            AddItems(parentItem, languageName, ref items);
         }
 
         private void AddItems(Item parent, string language, ref List<MappingResultModel> items)
@@ -201,14 +203,22 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                             }
                             break;
                         default:
+                        {
+                            var targetFieldType = updatedItem.Fields[new ID(field.Name)].Type;
+                            var valueToUpdate = field.Value.Trim();
+                            if (targetFieldType == "Single-Line Text" || targetFieldType == "Multi-Line Text")
                             {
-                                updatedItem.Fields[new ID(field.Name)].Value = field.Value;
+                                valueToUpdate = StringUtil.RemoveTags(valueToUpdate).Trim();
+                            }
+
+                            updatedItem.Fields[new ID(field.Name)].Value = valueToUpdate;
                             }
                             break;
                     }
                 }
                 try
                 {
+                    EnsureMetaTemplateInherited(updatedItem.Template);
                     updatedItem.Fields[GC_CONTENT_ID].Value = item.GCItemId;
                     var isoDate = DateUtil.ToIsoDate(DateTime.UtcNow);
                     updatedItem.Fields[LAST_SYNC_DATE].Value = isoDate;
@@ -223,7 +233,26 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         }
 
 
+        public bool EnsureMetaTemplateInherited(TemplateItem templateItem)
+        {
+            if (templateItem != null)
+            {
+                var gcLinkTemplate = templateItem.BaseTemplates.Any(bt => bt.Name == Constants.GCLinkItemTemplateName);
+                var baseTemplates =  templateItem.InnerItem[FieldIDs.BaseTemplate];
 
+                if (!gcLinkTemplate)
+                {
+                    using (new SecurityDisabler())
+                    {
+                        templateItem.InnerItem.Editing.BeginEdit();
+                        templateItem.InnerItem[FieldIDs.BaseTemplate] = string.Format("{0}|{1}", baseTemplates, Constants.GCLinkItemTemplateID);
+                        templateItem.InnerItem.Editing.EndEdit();
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
 
 
         private Item UploadFile(string path, File file)
@@ -294,7 +323,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         public List<CMSUpdateItem> GetItemsForUpdate(string targetItemId)
         {
             Item parentItem = GetItem(targetItemId);
-            var templatId = new ID(Constants.GCLinkItemTemplate);
+            var templatId = new ID(Constants.GCLinkItemTemplateID);
             var items = new List<Item>();
             if (IsItemHasTemplate(templatId, parentItem))
             {

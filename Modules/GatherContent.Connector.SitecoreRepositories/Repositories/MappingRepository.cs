@@ -63,6 +63,22 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return null;
         }
 
+        private Item GetTemplateMapping(string gcProjectId, string gcTemplateId, string templateMappingProxy)
+        {
+            var project = GetProject(gcProjectId);
+
+            if (project != null)
+            {
+                return project.Axes.GetDescendants()
+                    .FirstOrDefault(item => item["GC Template"] == gcTemplateId &&
+                                            item.TemplateID ==
+                                            new ID(Constants.GcTemplateMapping) &&
+                                            item["GC Template Proxy"] == templateMappingProxy);
+
+            }
+            return null;
+        }
+
         private Item GetTemplate(string gcProjectId, string gcTemplateId)
         {
             var project = GetProject(gcProjectId);
@@ -194,6 +210,8 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                             {
                                 createdItem.Editing.BeginEdit();
                                 createdItem.Fields["Sitecore Template"].Value = templateMapping.SitecoreTemplateId;
+                                createdItem.Fields["GC Template Proxy"].Value = templateMapping.GcTemplateProxy;
+                                createdItem.Fields["Template mapping title"].Value = templateMapping.GcMappingTitle;
                                 createdItem.Fields["GC Template"].Value = templateMapping.GcTemplateId;
                                 createdItem.Fields["Last Mapped Date"].Value = DateUtil.ToIsoDate(DateTime.Now);
                                 createdItem.Fields["Last Updated in GC"].Value = templateMapping.LastUpdated;
@@ -233,6 +251,8 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             {
                 template.Editing.BeginEdit();
                 template.Fields["Sitecore Template"].Value = templateMapping.SitecoreTemplateId;
+                template.Fields["GC Template Proxy"].Value = templateMapping.GcTemplateProxy;
+                template.Fields["Template mapping title"].Value = templateMapping.GcMappingTitle;
                 template.Fields["Last Mapped Date"].Value = DateUtil.ToIsoDate(DateTime.Now);
                 template.Editing.EndEdit();
             }
@@ -261,11 +281,14 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                             GcProjectName = project.Name,
                             GcTemplateId = template["Temaplate Id"],
                             GcTemplateName = template.Name,
+                            GcTemplateProxy = template.ID.ToString()
                         };
 
-                        var m = scMappings.FirstOrDefault(map => map["GC Template"] == template["Temaplate Id"]);
+                        Item m = scMappings.FirstOrDefault(map => map["GC Template"] == template["Temaplate Id"]
+                                                                  && map["GC Template Proxy"] == template.ID.ToString());
                         if (m != null)
                         {
+                            
                             var dateFormat = _accountSettings.DateFormat;
                             if (string.IsNullOrEmpty(dateFormat))
                             {
@@ -340,15 +363,15 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return result.ToList();
         }
 
-        public AddMapping GetAddMappingModel(string projectId, TemplateEntity template)
+        public AddMapping GetAddMappingModel(string projectId, TemplateEntity template, string gcTemplateProxyId)
         {
             var model = new AddMapping { GcTemplateId = template.Data.Id.ToString(), IsEdit = false };
 
-            var scMapping = GetTemplateMapping(projectId, template.Data.Id.ToString());
-
+            var scMapping = GetTemplateMapping(projectId, template.Data.Id.ToString(), gcTemplateProxyId);
 
             if (scMapping != null)
             {
+                model.GcMappingTitle = scMapping["Template mapping title"];
                 model.IsEdit = true;
                 model.SelectedTemplateId = scMapping["Sitecore Template"];
             }
@@ -412,7 +435,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         /// <param name="fields"></param>
         public void UpdateMapping(int projectId, int templateId, TemplateMapping templateMappingModel, List<CmsTemplateField> fields)
         {
-            var templateMapping = GetTemplateMapping(projectId.ToString(), templateId.ToString());
+            var templateMapping = GetTemplateMapping(projectId.ToString(), templateId.ToString(), templateMappingModel.GcTemplateProxy);
 
             if (templateMapping != null)
             {
@@ -441,16 +464,28 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     }
                 }
             }
+            else
+            {
+                CreateMapping(projectId, templateMappingModel, fields);
+            }
         }
 
 
-        public void DeleteMapping(TemplateEntity template)
+        public void DeleteMapping(TemplateEntity template, string gcTemplateProxyId)
         {
-            var templateMapping = GetTemplateMapping(template.Data.ProjectId.ToString(), template.Data.Id.ToString());
+            var templateMapping = GetTemplateMapping(template.Data.ProjectId.ToString(), template.Data.Id.ToString(), gcTemplateProxyId);
             if (templateMapping != null)
             {
                 DeleteItem(templateMapping);
             }
+
+            var scTemplate = GetItem(gcTemplateProxyId);
+
+            if (scTemplate != null)
+            {
+                DeleteItem(scTemplate);
+            }
+
         }
 
         public void DeleteTemplate(TemplateEntity template)

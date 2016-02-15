@@ -62,6 +62,7 @@
                     </thead>
                     <tbody data-bind="foreach: mappings">
                         <tr>
+                            <td data-bind="text: GcTemplateProxy, visible: false"></td>
                             <td data-bind="text: GcProjectName, style: { color: IsMapped ? 'black': 'red' }"></td>
                             <td data-bind="text: GcTemplateName, style: { color: IsMapped ? 'black': 'red' }"></td>
                             <td data-bind="text: ScTemplateName, style: { color: IsMapped ? 'black': 'red' }"></td>

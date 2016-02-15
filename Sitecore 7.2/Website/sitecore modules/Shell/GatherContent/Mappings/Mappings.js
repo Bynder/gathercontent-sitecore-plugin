@@ -21,7 +21,8 @@ function ViewModel() {
 
     editMapping = function () {
         var id = this.GcTemplateId;
-        scForm.showModalDialog("/sitecore modules/shell/gathercontent/Mappings/AddOrUpdateMapping.html?id=" + id,
+        var gcTemplateProxyId = this.GcTemplateProxy;
+        scForm.showModalDialog("/sitecore modules/shell/gathercontent/Mappings/AddOrUpdateMapping.html?id=" + id + "&gcTemplateProxyId=" + gcTemplateProxyId,
             null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:600;dialogMinWidth:700;dialogWidth:700;dialogHeight:800;header: Manage Field Mappings");
     };
 
@@ -29,12 +30,13 @@ function ViewModel() {
     removeMapping = function () {
 
         var id = this.GcTemplateId;
+        var gcTemplateProxyId = this.GcTemplateProxy;
 
         var confirmDelete = confirm('Are you sure you want to delete this?');
         if (confirmDelete) {
             jQuery.ajax({
                 type: 'DELETE',
-                url: '/api/sitecore/mappings/Delete?id=' + id,
+                url: '/api/sitecore/mappings/Delete?id=' + id + "&gcTemplateProxyId=" + gcTemplateProxyId,
                 success: function () {
                     self.mappings.remove(function (mapping) {
                         return mapping.GcTemplateId == id;
@@ -65,12 +67,11 @@ function ViewModel() {
 jQuery(window).resize(function () {
     jQuery(".table_mappings_scroll").css("max-height", jQuery(".gathercontent-dialog").height() - 155);
     jQuery(".tabs_mapping").css("max-height", jQuery(".gathercontent-dialog").height() - 255);
-    jQuery("thead th.cell_resize").each(function(){
-        jQuery(this).find("div").css("width",jQuery(this).width())
-    })
-})
+    jQuery("thead th.cell_resize").each(function () {
+        jQuery(this).find("div").css("width", jQuery(this).width());
+    });
+});
 
 jQuery(function () {
     resizeTableHead();
-
 });

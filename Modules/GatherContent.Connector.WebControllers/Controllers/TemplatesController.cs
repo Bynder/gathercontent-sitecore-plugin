@@ -17,11 +17,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
             _templateManager = new TemplatesManager();
         }
 
-        public ActionResult Get()
+        public ActionResult Get(string gcTemplateProxyId)
         {
             try
             {
-                var model = _templateManager.GetTemplateMappingModel();
+                var model = _templateManager.GetTemplateMappingModel(gcTemplateProxyId);
                 return Json(model, JsonRequestBehavior.AllowGet);
             }
             catch (WebException exception)
@@ -37,7 +37,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
         }
 
-        public ActionResult Post(TemplateMappingModel model)
+        public ActionResult Post(TemplateMappingModel model, string gcTemplateProxyId)
         {
             try
             {

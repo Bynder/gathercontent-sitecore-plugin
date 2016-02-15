@@ -14,6 +14,7 @@ namespace GatherContent.Connector.Managers.Models.TemplateModel
 
         public List<GcProjectModel> Projects { get; set; }
         public List<int> Selected { get; set; }
+        public string GcTemplateProxyId { get; set; }
     }
 
     public class GcProjectModel
@@ -32,6 +33,6 @@ namespace GatherContent.Connector.Managers.Models.TemplateModel
     {
         public string TemplateName { get; set; }
         public int TemplateId { get; set; }
-        public bool Enabled { get; set; }
+        //public bool Enabled { get; set; }
     }
 }

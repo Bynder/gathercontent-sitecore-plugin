@@ -45,7 +45,7 @@
                     <ul data-bind="foreach: { data: Templates, as: 'item' }" class="template_items">
                         <li>
                             <div>
-                                <input type="checkbox" data-bind="value:item.TemplateId, checked: $root.Selected, enable: item.Enabled, attr: { id: item.TemplateName}" />
+                                <input type="checkbox" data-bind="value:item.TemplateId, checked: $root.Selected, attr: { id: item.TemplateName}" />
                                 <label data-bind="text: item.TemplateName, attr: {for: item.TemplateName}" />
                             </div>
                         </li>
@@ -58,7 +58,7 @@
                     <ul data-bind="foreach: { data: Templates, as: 'item' }" class="template_items">
                         <li>
                             <div>
-                                <input type="checkbox" data-bind="value:item.TemplateId, checked: $root.Selected, enable: item.Enabled, attr: { id: item.TemplateName}" />
+                                <input type="checkbox" data-bind="value:item.TemplateId, checked: $root.Selected, attr: { id: item.TemplateName}" />
                                 <label data-bind="text: item.TemplateName, attr: {for: item.TemplateName}" />
                             </div>
                         </li>

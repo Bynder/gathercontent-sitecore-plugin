@@ -40,11 +40,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
 
 
-        public ActionResult GetMapping(string id)
+        public ActionResult GetMapping(string id, string gcTemplateProxyId)
         {
             try
             {
-                var model = _mappingManager.GetTemplateMappingModel(id);
+                var model = _mappingManager.GetTemplateMappingModel(id, gcTemplateProxyId);
                 return Json(model, JsonRequestBehavior.AllowGet);
             }
             catch (WebException exception)
@@ -62,13 +62,13 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
 
         [HttpPost]
-        public ActionResult Post(List<TemplateTab> model, bool isEdit, string templateId, string selectedTemplateId)
+        public ActionResult Post(List<TemplateTab> model, bool isEdit, string templateId, string selectedTemplateId, string gcMappingTitle, string gcTemplateProxyId)
         {
             if (templateId == null)
                 return Json(new { status = "error", message = "GatherContent template isn't selected" }, JsonRequestBehavior.AllowGet);
             try
             {
-                _mappingManager.PostMapping(model, isEdit, templateId, selectedTemplateId);
+                _mappingManager.PostMapping(model, isEdit, templateId, selectedTemplateId, gcMappingTitle, gcTemplateProxyId);
                 return new EmptyResult();
             }
             catch (WebException exception)
@@ -86,11 +86,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
         }
 
         [HttpDelete]
-        public ActionResult Delete(string id)
+        public ActionResult Delete(string id, string gcTemplateProxyId)
         {
             try
             {
-                _mappingManager.DeleteMapping(id);
+                _mappingManager.DeleteMapping(id, gcTemplateProxyId);
                 return new EmptyResult();
             }
             catch (WebException exception)

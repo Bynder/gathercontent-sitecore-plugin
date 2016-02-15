@@ -130,6 +130,7 @@ namespace GatherContent.Connector.Managers.Managers
                 IsEdit = addMappingModel.IsEdit,
                 GcTemplateId = addMappingModel.GcTemplateId,
                 SelectedTemplateId = addMappingModel.SelectedTemplateId,
+                GcMappingTitle = addMappingModel.GcMappingTitle
             };
 
 
@@ -162,7 +163,7 @@ namespace GatherContent.Connector.Managers.Managers
             var mappings = _mappingRepository.GetMappings();
 
             var model = mappings.Select(cmsMappingModel => new MappingModel(cmsMappingModel.GcProjectName, cmsMappingModel.GcTemplateId,
-                cmsMappingModel.GcTemplateName, cmsMappingModel.CmsTemplateName, cmsMappingModel.LastMappedDateTime,
+                cmsMappingModel.GcTemplateName, cmsMappingModel.GcTemplateProxy, cmsMappingModel.CmsTemplateName, cmsMappingModel.LastMappedDateTime,
                 cmsMappingModel.LastUpdatedDate, cmsMappingModel.EditButtonTitle, cmsMappingModel.IsMapped, cmsMappingModel.IsHighlightingDate)).ToList();
             foreach (var mapping in model)
             {
@@ -175,7 +176,7 @@ namespace GatherContent.Connector.Managers.Managers
                         mapping.RemovedFromGc = true;
                     }
                     else
-                    {                     
+                    {
                         var gcUpdateDate = ConvertMsecToDate((double)template.Data.Updated);
                         var dateFormat = _accountSettings.DateFormat;
                         if (string.IsNullOrEmpty(dateFormat))
@@ -188,12 +189,13 @@ namespace GatherContent.Connector.Managers.Managers
                                 DateTime.ParseExact(mapping.LastMappedDateTime, dateFormat,
                                     CultureInfo.InvariantCulture) < gcUpdateDate;
                         }
+                        
                         mapping.LastUpdatedDate = gcUpdateDate.ToString(dateFormat);
                         mapping.RemovedFromGc = false;
 
                     }
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     mapping.LastUpdatedDate = "Removed from GatherContent";
                     mapping.RemovedFromGc = true;
@@ -208,7 +210,7 @@ namespace GatherContent.Connector.Managers.Managers
 
 
 
-        public TemplateMapModel GetTemplateMappingModel(string id)
+        public TemplateMapModel GetTemplateMappingModel(string id, string gcTemplateProxyId)
         {
             var model = new TemplateMapModel();
 
@@ -217,6 +219,7 @@ namespace GatherContent.Connector.Managers.Managers
 
             model.GcProjectName = project.Data.Name;
             model.GcTemplateName = template.Data.Name;
+            model.GcTemplateProxyId = gcTemplateProxyId;
 
             var templateFolderId = _accountSettings.TemplateFolderId;
             if (string.IsNullOrEmpty(templateFolderId))
@@ -228,7 +231,7 @@ namespace GatherContent.Connector.Managers.Managers
             {
                 throw new Exception("Template folder is empty");
             }
-            var addMappingModel = _mappingRepository.GetAddMappingModel(project.Data.Id.ToString(), template);
+            var addMappingModel = _mappingRepository.GetAddMappingModel(project.Data.Id.ToString(), template, gcTemplateProxyId);
 
             var templates = MapSitecoreTemplates(scTemplates);
             var addSitecoreMappingModel = MapAddMappingModel(addMappingModel);
@@ -240,16 +243,17 @@ namespace GatherContent.Connector.Managers.Managers
             return model;
         }
 
-        public void DeleteMapping(string id)
+        public void DeleteMapping(string id, string gcTemplateProxyId)
         {
             var template = _templateService.GetSingleTemplate(id);
 
-            _mappingRepository.DeleteTemplate(template);
-            _mappingRepository.DeleteMapping(template);
+            _mappingRepository.DeleteMapping(template, gcTemplateProxyId);
+            //_mappingRepository.DeleteTemplate(template);
+
 
         }
 
-        public void PostMapping(List<TemplateTab> model, bool isEdit, string templateId, string selectedTemplateId)
+        public void PostMapping(List<TemplateTab> model, bool isEdit, string templateId, string selectedTemplateId, string gcMappingTitle, string gcTemplateProxyId)
         {
             var template = _templateService.GetSingleTemplate(templateId);
             var project = _projectService.GetSingleProject(template.Data.ProjectId.ToString());
@@ -270,7 +274,9 @@ namespace GatherContent.Connector.Managers.Managers
                 {
                     SitecoreTemplateId = selectedTemplateId,
                     Name = template.Data.Name,
-                    GcTemplateId = template.Data.Id.ToString()
+                    GcTemplateId = template.Data.Id.ToString(),
+                    GcMappingTitle = gcMappingTitle,
+                    GcTemplateProxy = gcTemplateProxyId
                 }, list);
 
             }
@@ -281,7 +287,9 @@ namespace GatherContent.Connector.Managers.Managers
                     SitecoreTemplateId = selectedTemplateId,
                     Name = template.Data.Name,
                     GcTemplateId = template.Data.Id.ToString(),
-                    LastUpdated = template.Data.Updated.ToString()
+                    LastUpdated = template.Data.Updated.ToString(),
+                    GcMappingTitle = gcMappingTitle,
+                    GcTemplateProxy = gcTemplateProxyId
                 }, list);
 
             }
@@ -358,10 +366,10 @@ namespace GatherContent.Connector.Managers.Managers
             IEnumerable<IGrouping<string, MappingFieldModel>> groupedFields = template.Fields.GroupBy(i => i.CMSField);
 
             var files = new List<File>();
-            if(item.Config.SelectMany(config => config.Elements).Select(element => element.Type).Contains("files"))
+            if (item.Config.SelectMany(config => config.Elements).Select(element => element.Type).Contains("files"))
             {
 
-                foreach(var file in _itemService.GetItemFiles(item.Id.ToString()).Data)
+                foreach (var file in _itemService.GetItemFiles(item.Id.ToString()).Data)
                 {
                     files.Add(new File
                     {
@@ -374,8 +382,8 @@ namespace GatherContent.Connector.Managers.Managers
 
                 }
             }
-            
-         
+
+
             TryMapItemState mapState = TryMapFields(gcFields, groupedFields, files, out fields);
             if (mapState == TryMapItemState.FieldError)
             {
@@ -428,19 +436,19 @@ namespace GatherContent.Connector.Managers.Managers
         private TryMapItemState TryMapField(List<Element> gcFields, IGrouping<string, MappingFieldModel> fieldsMappig, List<File> files, out ImportCMSField importCMSField)
         {
             var cmsFieldName = fieldsMappig.Key;
-            
+
             var gcFieldsForMapping = GetFieldsForMapping(fieldsMappig, gcFields);
 
-            
+
             var field = gcFieldsForMapping.FirstOrDefault();
-            
+
             if (field == null)
             {
                 importCMSField = new ImportCMSField(string.Empty, cmsFieldName, null, string.Empty, null, null);
                 return TryMapItemState.FieldError;
             }
 
-            
+
             if (IsMappedFieldsHaveDifrentTypes(gcFieldsForMapping))
             {
                 importCMSField = new ImportCMSField(string.Empty, cmsFieldName, field.Label, string.Empty, null, null);

@@ -13,5 +13,6 @@ namespace GatherContent.Connector.Managers.Models.Mapping
         public List<TemplateTab> Tabs { get; set; }
         public string SelectedTemplateId { get; set; }
         public bool IsEdit { get; set; }
+        public string GcMappingTitle { get; set; }
     }
 }

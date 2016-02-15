@@ -1,5 +1,6 @@
 ﻿var id = getUrlVars()["id"];
-var url = '/api/sitecore/mappings/GetMapping?id=' + id;
+var gcTemplateProxyId = getUrlVars()["gcTemplateProxyId"];
+var url = '/api/sitecore/mappings/GetMapping?id=' + id + "&gcTemplateProxyId=" + gcTemplateProxyId;
 
 function ViewModel() {
     var self = this;
@@ -7,9 +8,11 @@ function ViewModel() {
     this.Rules = ko.observableArray();
     this.SelectedTemplate = ko.observable();
     this.IsEdit = ko.observable();
+    this.GcTemplateProxyId = ko.observable();
     this.GcProjectName = ko.observable();
     this.GcTemplateName = ko.observable();
     this.GcTemplateId = ko.observable();
+    this.GcMappingTitle = ko.observable();
     this.SelectedTemplateId = ko.observable();
     this.SitecoreTemplates = ko.observableArray();
     this.SitecoreFields = ko.observableArray();
@@ -24,7 +27,9 @@ function ViewModel() {
             self.GcTemplateName("Template:" + " " + data.GcTemplateName);
             self.SitecoreTemplates(data.SitecoreTemplates),
             self.Rules(data.Rules),
+            self.GcTemplateProxyId(data.GcTemplateProxyId),
             self.SelectedTemplate(self.find("SitrecoreTemplateId", data.AddMappingModel.SelectedTemplateId));
+            self.GcMappingTitle(data.AddMappingModel.GcMappingTitle);
             self.templateChanged();
             self.GcTemplateId(data.AddMappingModel.GcTemplateId),
             self.Tabs(data.AddMappingModel.Tabs);
@@ -62,7 +67,8 @@ function ViewModel() {
         //var dataObject = ko.toJSON(this);
  
         jQuery.ajax({
-            url: '/api/sitecore/mappings/Post?isEdit=' + self.IsEdit() + '&templateId=' + self.GcTemplateId() + '&selectedTemplateId=' + self.SelectedTemplateId(),
+            url: '/api/sitecore/mappings/Post?isEdit=' + self.IsEdit() + '&templateId=' + self.GcTemplateId() +
+                 '&selectedTemplateId=' + self.SelectedTemplateId() + '&gcMappingTitle=' + self.GcMappingTitle() + '&gcTemplateProxyId=' + self.GcTemplateProxyId(),
             type: 'post',
             data: JSON.stringify(self.Tabs()),
             contentType: 'application/json',

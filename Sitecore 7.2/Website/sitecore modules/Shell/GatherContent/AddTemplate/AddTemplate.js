@@ -21,18 +21,18 @@ function ViewModel() {
                 self.IsError(true);
             }        
             jQuery(".preloader").hide();
-            console.log()
+            console.log();
             jQuery(".template_list").prepend(" ");
-            jQuery(".btn_next").on("click",function(el){
+            jQuery(".btn_next").on("click", function (el) {
                 el.stopPropagation();
-                if(jQuery(".template_list").prop('scrollHeight')-260>jQuery(".template_list").scrollTop())
-                    jQuery(".template_list").animate({ scrollTop:jQuery(".template_list").scrollTop()+260}, 800);
-            })
-            jQuery(".btn_prev").on("click",function(el){
+                if (jQuery(".template_list").prop('scrollHeight') - 260 > jQuery(".template_list").scrollTop())
+                    jQuery(".template_list").animate({ scrollTop: jQuery(".template_list").scrollTop() + 260 }, 800);
+            });
+            jQuery(".btn_prev").on("click", function (el) {
                 el.stopPropagation();
-                if(0<jQuery(".template_list").scrollTop())
-                    jQuery(".template_list").animate({ scrollTop:jQuery(".template_list").scrollTop()-260}, 800);
-            })
+                if (0 < jQuery(".template_list").scrollTop())
+                    jQuery(".template_list").animate({ scrollTop: jQuery(".template_list").scrollTop() - 260 }, 800);
+            });
         },
         async: true
     });

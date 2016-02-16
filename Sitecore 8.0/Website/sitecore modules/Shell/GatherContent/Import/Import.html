@@ -105,6 +105,9 @@
                         <th  class="cell_resize">
                             <div>Template name</div>
                         </th>
+                        <th class="cell_resize">
+                            <div>Specify mappings</div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody data-bind="foreach: items">
@@ -112,6 +115,11 @@
                         <td><span data-bind="style: { backgroundColor : Status.color }"></span><span data-bind="text: Status.name"></span></td>
                         <td data-bind="text: Title"></td>
                         <td data-bind="text: Template.name"></td>
+                        <td>
+                            <div data-bind="if:  AvailableMappings.Mappings.length>0">
+                                <select data-bind="options: AvailableMappings.Mappings, optionsText: 'Title', optionsValue: 'Id', value: AvailableMappings.SelectedMappingId"></select>
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
             </table>

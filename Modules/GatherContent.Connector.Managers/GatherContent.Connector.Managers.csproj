@@ -127,6 +127,8 @@
     <Compile Include="Managers\ImportManager.cs" />
     <Compile Include="Managers\MappingManager.cs" />
     <Compile Include="Managers\TestConnectionManager.cs" />
+    <Compile Include="Models\ImportItems\AvailableMapping.cs" />
+    <Compile Include="Models\ImportItems\ImportItemModel.cs" />
     <Compile Include="Models\UpdateItems\UpdateListIds.cs" />
     <Compile Include="Managers\UpdateManager.cs" />
     <Compile Include="Models\ImportItems\FiltersModel.cs" />

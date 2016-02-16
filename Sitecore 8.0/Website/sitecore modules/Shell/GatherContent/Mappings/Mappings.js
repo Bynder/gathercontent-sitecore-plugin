@@ -39,7 +39,7 @@ function ViewModel() {
                 url: '/api/sitecore/mappings/Delete?id=' + id + "&gcTemplateProxyId=" + gcTemplateProxyId,
                 success: function () {
                     self.mappings.remove(function (mapping) {
-                        return mapping.GcTemplateId == id;
+                        return mapping.GcTemplateProxy == gcTemplateProxyId;
                     });
                     self.isError(false);
                 },

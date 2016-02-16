@@ -20,18 +20,25 @@ namespace GatherContent.Connector.Managers.Models.ImportItems
 
         public GCTemplate Template { get; set; }
 
-        public ImportListItem() { }
+        public AvailableMappings AvailableMappings { get; set; }
 
-        public ImportListItem(GCItem item, GCTemplate template, List<GCItem> items, string dateFormat)
+        public ImportListItem()
+        {
+            AvailableMappings = new AvailableMappings();
+        }
+
+        public ImportListItem(GCItem item, GCTemplate template, List<GCItem> items, string dateFormat, IEnumerable<AvailableMapping> mappings)
         {
             Checked = false;
+
+            AvailableMappings = new AvailableMappings();
 
             Id = item.Id.ToString();
             Title = item.Name;
             Status = item.Status.Data;
             Breadcrumb = GetBreadcrumb(item, items);
             LastUpdatedInGC = item.Updated.Date.ToString(dateFormat);
-
+            AvailableMappings.Mappings.AddRange(mappings);
             Template = template;
         }
 

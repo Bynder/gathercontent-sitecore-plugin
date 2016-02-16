@@ -12,6 +12,7 @@ namespace GatherContent.Connector.Managers.Managers
     public class ImportManager : BaseManager
     {
         private readonly ItemsRepository _itemsRepository;
+        private readonly MappingRepository _mappingRepository;
         private readonly ItemsService _itemsService;
         private readonly ProjectsService _projectsService;
         private readonly TemplatesService _templatesService;
@@ -22,6 +23,7 @@ namespace GatherContent.Connector.Managers.Managers
         public ImportManager()
         {
             _itemsRepository = new ItemsRepository();
+            _mappingRepository = new MappingRepository();
 
             var accountsRepository = new AccountsRepository();
             _gcAccountSettings = accountsRepository.GetAccountSettings();
@@ -95,16 +97,29 @@ namespace GatherContent.Connector.Managers.Managers
             {
                 dateFormat = Constants.DateFormat;
             }
-            var result = mappedItems.Select(i => new ImportListItem(i, templates.FirstOrDefault(templ => templ.Id == i.TemplateId), items, dateFormat));
+           
+            var result = new List<ImportListItem>();
+            foreach (var mappedItem in mappedItems)
+            {
+                    var mappings = _mappingRepository.GetAllMappingsForGcTemplate(mappedItem.ProjectId.ToString(),
+                        mappedItem.TemplateId.ToString());
+                var availableMappings = mappings.Select(availableMappingModel => new AvailableMapping
+                {
+                    Id = availableMappingModel.Id, 
+                    Title = !string.IsNullOrEmpty(availableMappingModel.Title) ?
+                        availableMappingModel.Title : string.Format("[{0}]", availableMappingModel.Name)
+                }).ToList();
+
+                result.Add(new ImportListItem(mappedItem, templates.FirstOrDefault(templ => templ.Id == mappedItem.TemplateId), items, dateFormat, availableMappings));
+            }
 
             return result.ToList();
         }
 
 
-        public ImportResultModel ImportItems(string itemId, List<string> items, string projectId, string statusId, string language)
-        {
-            List<GCItem> gcItems = MapItems(items);
-            List<MappingResultModel> cmsItems = _mappingManager.MapItems(gcItems, projectId);
+        public ImportResultModel ImportItems(string itemId, List<ImportItemModel> items, string projectId, string statusId, string language)
+        {           
+            List<MappingResultModel> cmsItems = _mappingManager.MapItems(items);
 
             if (cmsItems == null) return null;
             List<MappingResultModel> successfulImportedItems = GetSuccessfulImportedItems(cmsItems);

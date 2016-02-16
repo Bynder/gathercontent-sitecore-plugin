@@ -229,7 +229,7 @@
         var items = self.items();
         var itemids = [];
         items.forEach(function (item, i) {
-            itemids.push(item.Id);
+            itemids.push({ Id: item.Id, SelectedMappingId: item.AvailableMappings.SelectedMappingId });
         });
         var lang = getUrlVars()["l"];
         var status = self.statusFilter();

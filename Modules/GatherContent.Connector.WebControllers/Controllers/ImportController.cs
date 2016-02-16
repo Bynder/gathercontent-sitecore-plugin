@@ -44,15 +44,12 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
 
         [HttpPost]
-        public ActionResult ImportItems(string id, string projectId, string statusId, string language, List<string> items)
+        public ActionResult ImportItems(string id, string projectId, string statusId, string language, List<ImportItemModel> items)
         {
             try
             {
                 ImportResultModel result = _importManager.ImportItems(id, items, projectId, statusId, language);
-                
-
                 return Json(result, JsonRequestBehavior.AllowGet); 
-
             }
             catch (WebException exception)
             {

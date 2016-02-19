@@ -124,11 +124,18 @@
   <ItemGroup>
     <Compile Include="Managers\BaseManager.cs" />
     <Compile Include="Managers\CacheManager.cs" />
+    <Compile Include="Managers\DropTreeManager.cs" />
     <Compile Include="Managers\ImportManager.cs" />
     <Compile Include="Managers\MappingManager.cs" />
     <Compile Include="Managers\TestConnectionManager.cs" />
     <Compile Include="Models\ImportItems\AvailableMapping.cs" />
+    <Compile Include="Models\ImportItems\AvailableMultiLocationsMappings.cs" />
+    <Compile Include="Models\ImportItems\DropTreeModel.cs" />
+    <Compile Include="Models\ImportItems\LocationImportItemModel.cs" />
     <Compile Include="Models\ImportItems\ImportItemModel.cs" />
+    <Compile Include="Models\ImportItems\ImportItembyLocation.cs" />
+    <Compile Include="Models\ImportItems\SelectItemsForImportWithLocation.cs" />
+    <Compile Include="Models\ImportItems\ItemWithLocationDataModel.cs" />
     <Compile Include="Models\UpdateItems\UpdateListIds.cs" />
     <Compile Include="Managers\UpdateManager.cs" />
     <Compile Include="Models\ImportItems\FiltersModel.cs" />

@@ -309,7 +309,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                                                                   && map["GC Template Proxy"] == template.ID.ToString());
                         if (m != null)
                         {
-                            
+
                             var dateFormat = _accountSettings.DateFormat;
                             if (string.IsNullOrEmpty(dateFormat))
                             {
@@ -320,14 +320,14 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                             var isHighlightingDate = true;
                             if (Double.TryParse(m["Last Updated in GC"], out d))
                             {
-                                var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);                                                         
+                                var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
                                 gcUpdateDate = posixTime.AddMilliseconds(d * 1000).ToString(dateFormat);
                             }
 
 
                             var scTemplate = GetItem(m["Sitecore Template"]);
 
-                            
+
                             if (scTemplate != null)
                             {
                                 mapping.CmsTemplateName = scTemplate.Name;
@@ -398,9 +398,10 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
             var result = mappings.Select(mapping => new AvailableMappingModel
             {
-                Id = mapping.ID.ToString(), 
-                Title = mapping["Template mapping title"], 
-                Name = mapping.Name
+                Id = mapping.ID.ToString(),
+                Title = mapping["Template mapping title"],
+                Name = mapping.Name,
+                ScTemplate = GetItem(mapping["Sitecore Template"]) != null ? GetItem(mapping["Sitecore Template"]).Name : "",
             }).ToList();
 
 

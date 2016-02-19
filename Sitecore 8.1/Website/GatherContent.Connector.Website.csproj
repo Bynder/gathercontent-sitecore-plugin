@@ -85,6 +85,17 @@
     <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\js\bootstrap.min.js" />
     <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\js\npm.js" />
     <Content Include="Global.asax" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\dynatree\icons-rtl.gif" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\dynatree\icons.gif" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\dynatree\loading.gif" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\dynatree\ui.dynatree.css" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\dynatree\vline-rtl.gif" />
+    <Content Include="sitecore modules\Shell\GatherContent\css\dynatree\vline.gif" />
+    <Content Include="sitecore modules\Shell\GatherContent\Import\MultiLocationImport.js" />
+    <Content Include="sitecore modules\Shell\GatherContent\Import\MultiLocationImport.html" />
+    <Content Include="sitecore modules\Shell\GatherContent\js\jquery-ui.custom.min.js" />
+    <Content Include="sitecore modules\Shell\GatherContent\js\jquery.cookie.js" />
+    <Content Include="sitecore modules\Shell\GatherContent\js\jquery.dynatree.js" />
     <Content Include="sitecore modules\Shell\GatherContent\js\knockout-3.4.0.js" />
     <Content Include="sitecore modules\Shell\GatherContent\css\GatherContent.css" />
     <Content Include="sitecore modules\Shell\GatherContent\AddTemplate\AddTemplate.html" />
@@ -111,6 +122,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\MultipleLocationsImportCommand.cs" />
     <Compile Include="Commands\ImportCommand.cs" />
     <Compile Include="Commands\AddTemplateCommand.cs" />
     <Compile Include="Commands\TestConnectionCommand.cs" />

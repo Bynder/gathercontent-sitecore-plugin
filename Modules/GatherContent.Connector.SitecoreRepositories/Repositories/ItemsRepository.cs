@@ -40,6 +40,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             AddItems(parentItem, languageName, ref items);
         }
 
+
+        public void ImportItemsWithLocation(string languageName, Dictionary<string, string> dictionary, ref List<MappingResultModel> items)
+        {
+            items.ForEach(i => AddItem(GetItem(dictionary.FirstOrDefault(d => d.Key == i.GCItemId).Value, LanguageManager.GetLanguage(languageName)), languageName, ref i));
+        }
+
         private void AddItems(Item parent, string language, ref List<MappingResultModel> items)
         {
             items.ForEach(i => AddItem(parent, language, ref i));
@@ -47,28 +53,31 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
         private void AddItem(Item parent, string language, ref MappingResultModel item)
         {
-            using (new SecurityDisabler())
+            if(parent !=null)
             {
-                //TODO Check using LanguageSwitcher instead Context.SetLanguage()
-                //var language = Sitecore.Globalization.Language.Parse(languageName);
-                //Context.SetLanguage(language, false);
-                using (new LanguageSwitcher(language)) 
+                using (new SecurityDisabler())
                 {
-                    
-                    TemplateItem template = ContextDatabase.GetTemplate(new ID(item.CMSTemplateId));
-                    string validName = ItemUtil.ProposeValidItemName(item.Title);
-                    Item createdItem = parent.Add(validName, template);
-
-                    if (!string.IsNullOrEmpty(_accountSettings.GatherContentUrl))
+                    //TODO Check using LanguageSwitcher instead Context.SetLanguage()
+                    //var language = Sitecore.Globalization.Language.Parse(languageName);
+                    //Context.SetLanguage(language, false);
+                    using (new LanguageSwitcher(language))
                     {
-                        item.GcLink = _accountSettings.GatherContentUrl + "/item/" + item.GCItemId;
+
+                        TemplateItem template = ContextDatabase.GetTemplate(new ID(item.CMSTemplateId));
+                        string validName = ItemUtil.ProposeValidItemName(item.Title);
+                        Item createdItem = parent.Add(validName, template);
+
+                        if (!string.IsNullOrEmpty(_accountSettings.GatherContentUrl))
+                        {
+                            item.GcLink = _accountSettings.GatherContentUrl + "/item/" + item.GCItemId;
+                        }
+                        var cmsLink =
+                            string.Format(
+                                "http://{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master&sc_bw=1",
+                                HttpContext.Current.Request.Url.Host, createdItem.ID);
+                        item.CmsLink = cmsLink;
+                        SetupFields(createdItem, item);
                     }
-                    var cmsLink =
-                        string.Format(
-                            "http://{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master&sc_bw=1",
-                            HttpContext.Current.Request.Url.Host, createdItem.ID);
-                    item.CmsLink = cmsLink;
-                    SetupFields(createdItem, item);
                 }
             }
         }
@@ -368,6 +377,5 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 SetupFields(scItem, item);
             }
         }
-
     }
 }

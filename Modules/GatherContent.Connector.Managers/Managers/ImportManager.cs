@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
@@ -6,6 +7,7 @@ using GatherContent.Connector.GatherContentService.Services;
 using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.Managers.Models.ImportItems;
 using GatherContent.Connector.SitecoreRepositories.Repositories;
+using Sitecore.Data.DataProviders.Sql.FastQuery;
 
 namespace GatherContent.Connector.Managers.Managers
 {
@@ -35,7 +37,7 @@ namespace GatherContent.Connector.Managers.Managers
             _mappingManager = new MappingManager();
         }
 
-        
+
         public SelectItemsForImportModel GetModelForSelectImportItemsDialog(string itemId, string projectId)
         {
             Account account = GetAccount();
@@ -52,6 +54,26 @@ namespace GatherContent.Connector.Managers.Managers
             List<ImportListItem> mappedItems = MapItems(items, templates);
 
             var result = new SelectItemsForImportModel(mappedItems, project, projects, statuses, templates);
+
+            return result;
+        }
+
+        public SelectItemsForImportWithLocation GetDialogModelWithLocation(string itemId, string projectId)
+        {
+            Account account = GetAccount();
+
+            List<Project> projects = GetProjects(account.Id);
+
+            Project project = GetProject(projects, projectId);
+
+            List<GCTemplate> templates = GetTemplates(project.Id);
+            List<GCStatus> statuses = GetStatuses(project.Id);
+            List<GCItem> items = GetItems(project.Id);
+            items = items.OrderBy(item => item.Status.Data.Name).ToList();
+
+            List<ImportItembyLocation> mappedItems = MapItemsByLocation(items, templates);
+
+            var result = new SelectItemsForImportWithLocation(mappedItems, project, projects, statuses, templates);
 
             return result;
         }
@@ -97,17 +119,17 @@ namespace GatherContent.Connector.Managers.Managers
             {
                 dateFormat = Constants.DateFormat;
             }
-           
+
             var result = new List<ImportListItem>();
             foreach (var mappedItem in mappedItems)
             {
-                    var mappings = _mappingRepository.GetAllMappingsForGcTemplate(mappedItem.ProjectId.ToString(),
-                        mappedItem.TemplateId.ToString());
+                var mappings = _mappingRepository.GetAllMappingsForGcTemplate(mappedItem.ProjectId.ToString(),
+                    mappedItem.TemplateId.ToString());
                 var availableMappings = mappings.Select(availableMappingModel => new AvailableMapping
                 {
-                    Id = availableMappingModel.Id, 
+                    Id = availableMappingModel.Id,
                     Title = !string.IsNullOrEmpty(availableMappingModel.Title) ?
-                        availableMappingModel.Title : string.Format("[{0}]", availableMappingModel.Name)
+                        availableMappingModel.Title : string.Format("[{0}]", availableMappingModel.Name),
                 }).ToList();
 
                 result.Add(new ImportListItem(mappedItem, templates.FirstOrDefault(templ => templ.Id == mappedItem.TemplateId), items, dateFormat, availableMappings));
@@ -116,14 +138,78 @@ namespace GatherContent.Connector.Managers.Managers
             return result.ToList();
         }
 
+        private List<ImportItembyLocation> MapItemsByLocation(List<GCItem> items, List<GCTemplate> templates)
+        {
+            var mappedItems = items.Where(i => i.TemplateId != null).ToList();
+            var dateFormat = _gcAccountSettings.DateFormat;
+            if (string.IsNullOrEmpty(dateFormat))
+            {
+                dateFormat = Constants.DateFormat;
+            }
+
+            var result = new List<ImportItembyLocation>();
+            foreach (var mappedItem in mappedItems)
+            {
+                var mappings = _mappingRepository.GetAllMappingsForGcTemplate(mappedItem.ProjectId.ToString(),
+                    mappedItem.TemplateId.ToString());
+                var availableMappings = mappings.Select(availableMappingModel => new AvailableMappingByLocation
+                {
+                    Id = availableMappingModel.Id,
+                    Title = !string.IsNullOrEmpty(availableMappingModel.Title) ?
+                        availableMappingModel.Title : string.Format("[{0}]", availableMappingModel.Name),
+                    OpenerId = "drop-tree" + Guid.NewGuid(),
+                    ScTemplate = availableMappingModel.ScTemplate, 
+                    IsShowing = false
+                }).ToList();
+
+                result.Add(new ImportItembyLocation(mappedItem, templates.FirstOrDefault(templ => templ.Id == mappedItem.TemplateId), items, dateFormat, availableMappings));
+            }
+
+            return result.ToList();
+        }
+
 
         public ImportResultModel ImportItems(string itemId, List<ImportItemModel> items, string projectId, string statusId, string language)
-        {           
+        {
             List<MappingResultModel> cmsItems = _mappingManager.MapItems(items);
 
             if (cmsItems == null) return null;
             List<MappingResultModel> successfulImportedItems = GetSuccessfulImportedItems(cmsItems);
             _itemsRepository.ImportItems(itemId, language, ref successfulImportedItems);
+
+            if (!string.IsNullOrEmpty(statusId))
+            {
+                PostNewStatusesForItems(successfulImportedItems, statusId, projectId);
+            }
+
+            var result = new ImportResultModel(cmsItems);
+
+            return result;
+        }
+
+        public ImportResultModel ImportItemsWithLocation(string itemId, List<LocationImportItemModel> items, string projectId, string statusId, string language)
+        {
+            var importItems = new List<ImportItemModel>();
+            var dictionary = new Dictionary<string, string>();
+            foreach (var item in items)
+            {
+                if (item.IsImport)
+                {
+                    importItems.Add(new ImportItemModel
+                    {
+                        Id = item.Id,
+                        SelectedMappingId = item.SelectedMappingId
+                    });
+
+                    dictionary.Add(item.Id,item.SelectedLocation);
+                }
+            }
+
+            List<MappingResultModel> cmsItems = _mappingManager.MapItems(importItems);
+            if (cmsItems == null) return null;
+            List<MappingResultModel> successfulImportedItems = GetSuccessfulImportedItems(cmsItems);
+
+            _itemsRepository.ImportItemsWithLocation(language, dictionary, ref successfulImportedItems);
 
             if (!string.IsNullOrEmpty(statusId))
             {
@@ -163,5 +249,7 @@ namespace GatherContent.Connector.Managers.Managers
                 item.Status.Name = status.Data.Name;
             }
         }
+
+
     }
 }

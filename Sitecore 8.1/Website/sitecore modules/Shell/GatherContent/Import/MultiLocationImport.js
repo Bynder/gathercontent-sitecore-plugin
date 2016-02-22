@@ -261,13 +261,13 @@ var ImportManager = function () {
         var items = self.items();
         var importItems = [];
         items.forEach(function (item, i) {
-        item.Mappings.forEach(function (mapping, m) {
-            importItems.push({
-                Id: item.Id,
-                SelectedLocation: mapping.DefaultLocation,
-                IsImport: mapping.IsImport,
-                SelectedMappingId: mapping.Id
-            });
+            item.Mappings.forEach(function (mapping, m) {
+                importItems.push({
+                    Id: item.Id,
+                    SelectedLocation: mapping.DefaultLocation,
+                    IsImport: mapping.IsImport,
+                    SelectedMappingId: mapping.Id
+                });
             });
         });
         var lang = getUrlVars()["l"];
@@ -318,7 +318,19 @@ var ImportManager = function () {
 
     self.openDropTree = function () {
         var id = this.OpenerId;
+        var items = self.items();
+        for (var i = 0; i < items.length; i++) {
+            var mappings = items[i].Mappings;
+            for (var j = 0; j < mappings.length; j++) {
+                if (mappings[j].OpenerId != id) {
+                    mappings[j].IsShowing = false;
+                    //TODO use Knockout
+                    jQuery("#" + mappings[j].OpenerId).hide();
+                }
+            }
+        }
         if (!this.IsShowing) {
+            //TODO use Knockout
             jQuery("#" + id).show();
             this.IsShowing = true;
             var mapping = this;
@@ -340,13 +352,16 @@ var ImportManager = function () {
                             mode: "funnyMode"
                         }
                     });
-                }    
+                }
             });
-        } else {
+        }
+        else {
+            //TODO use Knockout
             jQuery("#" + id).hide();
             this.IsShowing = false;
         }
     }
+
 
     self.buttonClick = function (newMode) {
         if (newMode === MODE.CheckItemsBeforeImport) {

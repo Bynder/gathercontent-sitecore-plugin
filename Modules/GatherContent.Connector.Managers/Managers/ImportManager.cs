@@ -7,7 +7,6 @@ using GatherContent.Connector.GatherContentService.Services;
 using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.Managers.Models.ImportItems;
 using GatherContent.Connector.SitecoreRepositories.Repositories;
-using Sitecore.Data.DataProviders.Sql.FastQuery;
 
 namespace GatherContent.Connector.Managers.Managers
 {
@@ -158,7 +157,7 @@ namespace GatherContent.Connector.Managers.Managers
                     Title = !string.IsNullOrEmpty(availableMappingModel.Title) ?
                         availableMappingModel.Title : string.Format("[{0}]", availableMappingModel.Name),
                     OpenerId = "drop-tree" + Guid.NewGuid(),
-                    ScTemplate = availableMappingModel.ScTemplate, 
+                    ScTemplate = availableMappingModel.ScTemplate,
                     IsShowing = false
                 }).ToList();
 
@@ -175,7 +174,7 @@ namespace GatherContent.Connector.Managers.Managers
 
             if (cmsItems == null) return null;
             List<MappingResultModel> successfulImportedItems = GetSuccessfulImportedItems(cmsItems);
-            _itemsRepository.ImportItems(itemId, language, ref successfulImportedItems);
+            successfulImportedItems = _itemsRepository.ImportItems(itemId, language, successfulImportedItems);
 
             if (!string.IsNullOrEmpty(statusId))
             {
@@ -187,10 +186,11 @@ namespace GatherContent.Connector.Managers.Managers
             return result;
         }
 
-        public ImportResultModel ImportItemsWithLocation(string itemId, List<LocationImportItemModel> items, string projectId, string statusId, string language)
+        public ImportResultModel ImportItemsWithLocation(string itemId, List<LocationImportItemModel> items,
+            string projectId, string statusId, string language)
         {
             var importItems = new List<ImportItemModel>();
-            var dictionary = new Dictionary<string, string>();
+
             foreach (var item in items)
             {
                 if (item.IsImport)
@@ -198,10 +198,9 @@ namespace GatherContent.Connector.Managers.Managers
                     importItems.Add(new ImportItemModel
                     {
                         Id = item.Id,
-                        SelectedMappingId = item.SelectedMappingId
+                        SelectedMappingId = item.SelectedMappingId,
+                        DefaultLocation = item.SelectedLocation
                     });
-
-                    dictionary.Add(item.Id,item.SelectedLocation);
                 }
             }
 
@@ -209,7 +208,7 @@ namespace GatherContent.Connector.Managers.Managers
             if (cmsItems == null) return null;
             List<MappingResultModel> successfulImportedItems = GetSuccessfulImportedItems(cmsItems);
 
-            _itemsRepository.ImportItemsWithLocation(language, dictionary, ref successfulImportedItems);
+            successfulImportedItems = _itemsRepository.ImportItemsWithLocation(language, successfulImportedItems);
 
             if (!string.IsNullOrEmpty(statusId))
             {

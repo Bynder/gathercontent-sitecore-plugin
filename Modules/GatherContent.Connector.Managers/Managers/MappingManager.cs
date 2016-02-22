@@ -156,6 +156,244 @@ namespace GatherContent.Connector.Managers.Managers
             return addSitecoreMappingModel;
         }
 
+        private List<MappingResultModel> TryMapItems(List<GCItem> items, List<MappingTemplateModel> templates)
+        {
+            var result = new List<MappingResultModel>();
+            var templatesDictionary = new Dictionary<int, GCTemplate>();
+
+            foreach (GCItem gcItem in items)
+            {
+                GCTemplate gcTemplate = GetTemplate(gcItem.TemplateId.Value, templatesDictionary);
+
+                MappingResultModel cmsItem;
+                TryMapItem(gcItem, gcTemplate, templates, out cmsItem);
+                result.Add(cmsItem);
+            }
+
+            return result;
+        }
+
+        private GCTemplate GetTemplate(int templateId, Dictionary<int, GCTemplate> templatesDictionary)
+        {
+            GCTemplate gcTemplate;
+            templatesDictionary.TryGetValue(templateId, out gcTemplate);
+            if (gcTemplate == null)
+            {
+                gcTemplate = _templateService.GetSingleTemplate(templateId.ToString()).Data;
+                templatesDictionary.Add(templateId, gcTemplate);
+            }
+
+            return gcTemplate;
+        }
+
+        private void TryMapItem(GCItem gcItem, GCTemplate gcTemplate, string selectedMappingId, out MappingResultModel result, string selectedLocationId = null)
+        {
+            bool isUpdate = gcItem is UpdateGCItem;
+
+            List<Element> gcFields = gcItem.Config.SelectMany(i => i.Elements).ToList();
+            MappingTemplateModel template = _mappingRepository.GetTemplateMappingsByTemplateId(selectedMappingId);
+
+
+            if (template == null)
+            {
+                string errorMessage = isUpdate ? "Update failed: Template not mapped" : "Import failed: Template not mapped";
+                result = new MappingResultModel(gcItem, null, gcTemplate.Name, null, string.Empty, errorMessage, false, selectedLocationId);
+                return;
+            }
+
+            List<ImportCMSField> fields;
+            IEnumerable<IGrouping<string, MappingFieldModel>> groupedFields = template.Fields.GroupBy(i => i.CMSField);
+
+            var files = new List<File>();
+            if (gcItem.Config.SelectMany(config => config.Elements).Select(element => element.Type).Contains("files"))
+            {
+
+                foreach (var file in _itemService.GetItemFiles(gcItem.Id.ToString()).Data)
+                {
+                    files.Add(new File
+                    {
+                        FileName = file.FileName,
+                        Url = file.Url,
+                        FieldId = file.Field,
+                        UpdatedDate = file.Updated
+                    });
+
+
+                }
+            }
+
+
+            TryMapItemState mapState = TryMapFields(gcFields, groupedFields, files, out fields);
+            if (mapState == TryMapItemState.FieldError)
+            {
+                string errorMessage = isUpdate ? "Update failed: Template fields mismatch" : "Import failed: Template fields mismatch";
+                result = new MappingResultModel(gcItem, null, gcTemplate.Name, null, string.Empty, errorMessage, false, selectedLocationId);
+                return;
+            }
+
+            string cmsId = string.Empty;
+            string message = "Import Successful";
+            if (isUpdate)
+            {
+                cmsId = (gcItem as UpdateGCItem).CMSId;
+                message = "Update Successful";
+            }
+
+            result = new MappingResultModel(gcItem, fields, gcTemplate.Name, template.CMSTemplateId, cmsId, message, true, selectedLocationId);
+        }
+
+        private void TryMapItem(GCItem item, GCTemplate gcTemplate, List<MappingTemplateModel> templates, out MappingResultModel result)
+        {
+            bool isUpdate = item is UpdateGCItem;
+
+            List<Element> gcFields = item.Config.SelectMany(i => i.Elements).ToList();
+
+
+            MappingTemplateModel template;
+            TryMapItemState templateMapState = TryGetTemplate(templates, item.TemplateId.ToString(), out template);
+
+            if (templateMapState == TryMapItemState.TemplateError)
+            {
+                string errorMessage = isUpdate ? "Update failed: Template not mapped" : "Import failed: Template not mapped";
+                result = new MappingResultModel(item, null, gcTemplate.Name, null, string.Empty, errorMessage, false);
+                return;
+            }
+
+
+
+            List<ImportCMSField> fields;
+            IEnumerable<IGrouping<string, MappingFieldModel>> groupedFields = template.Fields.GroupBy(i => i.CMSField);
+
+            var files = new List<File>();
+            if (item.Config.SelectMany(config => config.Elements).Select(element => element.Type).Contains("files"))
+            {
+
+                foreach (var file in _itemService.GetItemFiles(item.Id.ToString()).Data)
+                {
+                    files.Add(new File
+                    {
+                        FileName = file.FileName,
+                        Url = file.Url,
+                        FieldId = file.Field,
+                        UpdatedDate = file.Updated
+                    });
+
+
+                }
+            }
+
+
+            TryMapItemState mapState = TryMapFields(gcFields, groupedFields, files, out fields);
+            if (mapState == TryMapItemState.FieldError)
+            {
+                string errorMessage = isUpdate ? "Update failed: Template fields mismatch" : "Import failed: Template fields mismatch";
+                result = new MappingResultModel(item, null, gcTemplate.Name, null, string.Empty, errorMessage, false);
+                return;
+            }
+
+            string cmsId = string.Empty;
+            string message = "Import Successful";
+            if (isUpdate)
+            {
+                cmsId = (item as UpdateGCItem).CMSId;
+                message = "Update Successful";
+            }
+
+            result = new MappingResultModel(item, fields, gcTemplate.Name, template.CMSTemplateId, cmsId, message);
+        }
+
+        private TryMapItemState TryMapField(List<Element> gcFields, IGrouping<string, MappingFieldModel> fieldsMappig, List<File> files, out ImportCMSField importCMSField)
+        {
+            var cmsFieldName = fieldsMappig.Key;
+
+            var gcFieldsForMapping = GetFieldsForMapping(fieldsMappig, gcFields);
+
+
+            var field = gcFieldsForMapping.FirstOrDefault();
+
+            if (field == null)
+            {
+                importCMSField = new ImportCMSField(string.Empty, cmsFieldName, null, string.Empty, null, null);
+                return TryMapItemState.FieldError;
+            }
+
+
+            if (IsMappedFieldsHaveDifrentTypes(gcFieldsForMapping))
+            {
+                importCMSField = new ImportCMSField(string.Empty, cmsFieldName, field.Label, string.Empty, null, null);
+                return TryMapItemState.FieldError;
+            }
+
+            var value = GetValue(gcFieldsForMapping);
+            var options = GetOptions(gcFieldsForMapping);
+            files = files.Where(item => item.FieldId == field.Name).ToList();
+
+            importCMSField = new ImportCMSField(field.Type, cmsFieldName, field.Label, value, options, files);
+
+            return TryMapItemState.Success;
+        }
+
+        private TryMapItemState TryGetTemplate(List<MappingTemplateModel> templates, string templateId, out MappingTemplateModel result)
+        {
+            if (templates == null)
+            {
+                result = null;
+                return TryMapItemState.TemplateError;
+            }
+
+            result = templates.FirstOrDefault(i => templateId == i.GCTemplateId);
+            if (result == null)
+                return TryMapItemState.TemplateError;
+
+            return TryMapItemState.Success;
+        }
+
+        private TryMapItemState TryMapFields(List<Element> gcFields, IEnumerable<IGrouping<string, MappingFieldModel>> fieldsMappig, List<File> files, out List<ImportCMSField> result)
+        {
+            result = new List<ImportCMSField>();
+            foreach (IGrouping<string, MappingFieldModel> grouping in fieldsMappig)
+            {
+                ImportCMSField cmsField;
+                TryMapItemState mapState = TryMapField(gcFields, grouping, files, out cmsField);
+                if (mapState == TryMapItemState.FieldError)
+                    return mapState;
+                result.Add(cmsField);
+            }
+
+            return TryMapItemState.Success;
+        }
+
+
+
+        private string GetValue(List<Element> fields)
+        {
+            string value = string.Join("", fields.Select(i => i.Value));
+            return value;
+        }
+
+        private List<Option> GetOptions(List<Element> fields)
+        {
+            var result = new List<Option>();
+            foreach (Element field in fields)
+            {
+                if (field.Options != null)
+                    result.AddRange(field.Options);
+            }
+            return result;
+        }
+
+        private bool IsMappedFieldsHaveDifrentTypes(List<Element> fields)
+        {
+            return fields.Select(i => i.Type).Distinct().Count() > 1;
+        }
+
+        private List<Element> GetFieldsForMapping(IGrouping<string, MappingFieldModel> fieldsMappig, List<Element> gcFields)
+        {
+            IEnumerable<string> gsFiledNames = fieldsMappig.Select(i => i.GCField);
+            IEnumerable<Element> gcFieldsForMapping = gcFields.Where(i => gsFiledNames.Contains(i.Name));
+
+            return gcFieldsForMapping.ToList();
+        }
 
         #endregion
 
@@ -208,9 +446,6 @@ namespace GatherContent.Connector.Managers.Managers
 
             return model;
         }
-
-
-
 
         public TemplateMapModel GetTemplateMappingModel(string id, string gcTemplateProxyId)
         {
@@ -298,7 +533,6 @@ namespace GatherContent.Connector.Managers.Managers
 
         }
 
-
         public List<MappingResultModel> MapItems(List<GCItem> items, string projectId)
         {
             List<MappingTemplateModel> templates = _mappingRepository.GetTemplateMappings(projectId);
@@ -316,7 +550,6 @@ namespace GatherContent.Connector.Managers.Managers
             return result;
         }
 
-
         public List<MappingResultModel> MapItems(List<ImportItemModel> items)
         {
             var result = new List<MappingResultModel>();
@@ -331,309 +564,12 @@ namespace GatherContent.Connector.Managers.Managers
                     GCTemplate gcTemplate = GetTemplate(gcItem.Data.TemplateId.Value, templatesDictionary);
 
                     MappingResultModel cmsItem;
-                    TryMapItem(gcItem.Data, gcTemplate, importItem.SelectedMappingId, out cmsItem);
+                    TryMapItem(gcItem.Data, gcTemplate, importItem.SelectedMappingId, out cmsItem, importItem.DefaultLocation);
                     result.Add(cmsItem);
                 }
             }
 
             return result;
-        }
-
-      
-
-        private List<MappingResultModel> TryMapItems(List<GCItem> items, List<MappingTemplateModel> templates)
-        {
-            var result = new List<MappingResultModel>();
-            var templatesDictionary = new Dictionary<int, GCTemplate>();
-
-            foreach (GCItem gcItem in items)
-            {
-                GCTemplate gcTemplate = GetTemplate(gcItem.TemplateId.Value, templatesDictionary);
-
-                MappingResultModel cmsItem;
-                TryMapItem(gcItem, gcTemplate, templates, out cmsItem);
-                result.Add(cmsItem);
-            }
-
-            return result;
-        }
-
-        private GCTemplate GetTemplate(int templateId, Dictionary<int, GCTemplate> templatesDictionary)
-        {
-            GCTemplate gcTemplate;
-            templatesDictionary.TryGetValue(templateId, out gcTemplate);
-            if (gcTemplate == null)
-            {
-                gcTemplate = _templateService.GetSingleTemplate(templateId.ToString()).Data;
-                templatesDictionary.Add(templateId, gcTemplate);
-            }
-
-            return gcTemplate;
-        }
-
-        private void TryMapItem(GCItem item, GCTemplate gcTemplate, List<MappingTemplateModel> templates, out MappingResultModel result)
-        {
-            bool isUpdate = item is UpdateGCItem;
-
-            List<Element> gcFields = item.Config.SelectMany(i => i.Elements).ToList();
-
-
-            MappingTemplateModel template;
-            TryMapItemState templateMapState = TryGetTemplate(templates, item.TemplateId.ToString(), out template);
-
-            if (templateMapState == TryMapItemState.TemplateError)
-            {
-                string errorMessage = isUpdate ? "Update failed: Template not mapped" : "Import failed: Template not mapped";
-                result = new MappingResultModel(item, null, gcTemplate.Name, null, string.Empty, errorMessage, false);
-                return;
-            }
-
-
-
-            List<ImportCMSField> fields;
-            IEnumerable<IGrouping<string, MappingFieldModel>> groupedFields = template.Fields.GroupBy(i => i.CMSField);
-
-            var files = new List<File>();
-            if (item.Config.SelectMany(config => config.Elements).Select(element => element.Type).Contains("files"))
-            {
-
-                foreach (var file in _itemService.GetItemFiles(item.Id.ToString()).Data)
-                {
-                    files.Add(new File
-                    {
-                        FileName = file.FileName,
-                        Url = file.Url,
-                        FieldId = file.Field,
-                        UpdatedDate = file.Updated
-                    });
-
-
-                }
-            }
-
-
-            TryMapItemState mapState = TryMapFields(gcFields, groupedFields, files, out fields);
-            if (mapState == TryMapItemState.FieldError)
-            {
-                string errorMessage = isUpdate ? "Update failed: Template fields mismatch" : "Import failed: Template fields mismatch";
-                result = new MappingResultModel(item, null, gcTemplate.Name, null, string.Empty, errorMessage, false);
-                return;
-            }
-
-            string cmsId = string.Empty;
-            string message = "Import Successful";
-            if (isUpdate)
-            {
-                cmsId = (item as UpdateGCItem).CMSId;
-                message = "Update Successful";
-            }
-
-            result = new MappingResultModel(item, fields, gcTemplate.Name, template.CMSTemplateId, cmsId, message);
-        }
-
-        private TryMapItemState TryGetTemplate(List<MappingTemplateModel> templates, string templateId, out MappingTemplateModel result)
-        {
-            if (templates == null)
-            {
-                result = null;
-                return TryMapItemState.TemplateError;
-            }
-
-            result = templates.FirstOrDefault(i => templateId == i.GCTemplateId);
-            if (result == null)
-                return TryMapItemState.TemplateError;
-
-            return TryMapItemState.Success;
-        }
-
-        private TryMapItemState TryMapFields(List<Element> gcFields, IEnumerable<IGrouping<string, MappingFieldModel>> fieldsMappig, List<File> files, out List<ImportCMSField> result)
-        {
-            result = new List<ImportCMSField>();
-            foreach (IGrouping<string, MappingFieldModel> grouping in fieldsMappig)
-            {
-                ImportCMSField cmsField;
-                TryMapItemState mapState = TryMapField(gcFields, grouping, files, out cmsField);
-                if (mapState == TryMapItemState.FieldError)
-                    return mapState;
-                result.Add(cmsField);
-            }
-
-            return TryMapItemState.Success;
-        }
-
-        private TryMapItemState TryMapField(List<Element> gcFields, IGrouping<string, MappingFieldModel> fieldsMappig, List<File> files, out ImportCMSField importCMSField)
-        {
-            var cmsFieldName = fieldsMappig.Key;
-
-            var gcFieldsForMapping = GetFieldsForMapping(fieldsMappig, gcFields);
-
-
-            var field = gcFieldsForMapping.FirstOrDefault();
-
-            if (field == null)
-            {
-                importCMSField = new ImportCMSField(string.Empty, cmsFieldName, null, string.Empty, null, null);
-                return TryMapItemState.FieldError;
-            }
-
-
-            if (IsMappedFieldsHaveDifrentTypes(gcFieldsForMapping))
-            {
-                importCMSField = new ImportCMSField(string.Empty, cmsFieldName, field.Label, string.Empty, null, null);
-                return TryMapItemState.FieldError;
-            }
-
-            var value = GetValue(gcFieldsForMapping);
-            var options = GetOptions(gcFieldsForMapping);
-            files = files.Where(item => item.FieldId == field.Name).ToList();
-
-            importCMSField = new ImportCMSField(field.Type, cmsFieldName, field.Label, value, options, files);
-
-            return TryMapItemState.Success;
-        }
-
-        private string GetValue(List<Element> fields)
-        {
-            string value = string.Join("", fields.Select(i => i.Value));
-            return value;
-        }
-
-        private List<Option> GetOptions(List<Element> fields)
-        {
-            var result = new List<Option>();
-            foreach (Element field in fields)
-            {
-                if (field.Options != null)
-                    result.AddRange(field.Options);
-            }
-            return result;
-        }
-
-        private bool IsMappedFieldsHaveDifrentTypes(List<Element> fields)
-        {
-            return fields.Select(i => i.Type).Distinct().Count() > 1;
-        }
-
-        private List<Element> GetFieldsForMapping(IGrouping<string, MappingFieldModel> fieldsMappig, List<Element> gcFields)
-        {
-            IEnumerable<string> gsFiledNames = fieldsMappig.Select(i => i.GCField);
-            IEnumerable<Element> gcFieldsForMapping = gcFields.Where(i => gsFiledNames.Contains(i.Name));
-
-            return gcFieldsForMapping.ToList();
-        }
-
-
-
-        private void TryMapItem(GCItem gcItem, GCTemplate gcTemplate, string selectedMappingId, out MappingResultModel result)
-        {
-            bool isUpdate = gcItem is UpdateGCItem;
-
-            List<Element> gcFields = gcItem.Config.SelectMany(i => i.Elements).ToList();
-            MappingTemplateModel template = _mappingRepository.GetTemplateMappingsByTemplateId(selectedMappingId);
-
-
-            if (template == null)
-            {
-                string errorMessage = isUpdate ? "Update failed: Template not mapped" : "Import failed: Template not mapped";
-                result = new MappingResultModel(gcItem, null, gcTemplate.Name, null, string.Empty, errorMessage, false);
-                return;
-            }
-
-            List<ImportCMSField> fields;
-            IEnumerable<IGrouping<string, MappingFieldModel>> groupedFields = template.Fields.GroupBy(i => i.CMSField);
-
-            var files = new List<File>();
-            if (gcItem.Config.SelectMany(config => config.Elements).Select(element => element.Type).Contains("files"))
-            {
-
-                foreach (var file in _itemService.GetItemFiles(gcItem.Id.ToString()).Data)
-                {
-                    files.Add(new File
-                    {
-                        FileName = file.FileName,
-                        Url = file.Url,
-                        FieldId = file.Field,
-                        UpdatedDate = file.Updated
-                    });
-
-
-                }
-            }
-
-
-            TryMapItemState mapState = TryMapFields(gcFields, groupedFields, files, out fields);
-            if (mapState == TryMapItemState.FieldError)
-            {
-                string errorMessage = isUpdate ? "Update failed: Template fields mismatch" : "Import failed: Template fields mismatch";
-                result = new MappingResultModel(gcItem, null, gcTemplate.Name, null, string.Empty, errorMessage, false);
-                return;
-            }
-
-            string cmsId = string.Empty;
-            string message = "Import Successful";
-            if (isUpdate)
-            {
-                cmsId = (gcItem as UpdateGCItem).CMSId;
-                message = "Update Successful";
-            }
-
-            result = new MappingResultModel(gcItem, fields, gcTemplate.Name, template.CMSTemplateId, cmsId, message);
-        }
-
-
-        private void TryMapLocationItem(GCItem gcItem, GCTemplate gcTemplate, string selectedMappingId, out MappingResultModel result)
-        {
-            bool isUpdate = gcItem is UpdateGCItem;
-
-            List<Element> gcFields = gcItem.Config.SelectMany(i => i.Elements).ToList();
-            MappingTemplateModel template = _mappingRepository.GetTemplateMappingsByTemplateId(selectedMappingId);
-
-            if (template == null)
-            {
-                string errorMessage = isUpdate ? "Update failed: Template not mapped" : "Import failed: Template not mapped";
-                result = new MappingResultModel(gcItem, null, gcTemplate.Name, null, string.Empty, errorMessage, false);
-                return;
-            }
-
-            List<ImportCMSField> fields;
-            IEnumerable<IGrouping<string, MappingFieldModel>> groupedFields = template.Fields.GroupBy(i => i.CMSField);
-
-            var files = new List<File>();
-            if (gcItem.Config.SelectMany(config => config.Elements).Select(element => element.Type).Contains("files"))
-            {
-
-                foreach (var file in _itemService.GetItemFiles(gcItem.Id.ToString()).Data)
-                {
-                    files.Add(new File
-                    {
-                        FileName = file.FileName,
-                        Url = file.Url,
-                        FieldId = file.Field,
-                        UpdatedDate = file.Updated
-                    });
-
-
-                }
-            }
-
-
-            TryMapItemState mapState = TryMapFields(gcFields, groupedFields, files, out fields);
-            if (mapState == TryMapItemState.FieldError)
-            {
-                string errorMessage = isUpdate ? "Update failed: Template fields mismatch" : "Import failed: Template fields mismatch";
-                result = new MappingResultModel(gcItem, null, gcTemplate.Name, null, string.Empty, errorMessage, false);
-                return;
-            }
-
-            string cmsId = string.Empty;
-            string message = "Import Successful";
-            if (isUpdate)
-            {
-                cmsId = (gcItem as UpdateGCItem).CMSId;
-                message = "Update Successful";
-            }
-
-            result = new MappingResultModel(gcItem, fields, gcTemplate.Name, template.CMSTemplateId, cmsId, message);
         }
      
     }

@@ -32,34 +32,31 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             _accountSettings = accountsRepository.GetAccountSettings();
         }
 
-        public void ImportItems(string itemId, string languageName, ref List<MappingResultModel> items)
-        {
-            var language = LanguageManager.GetLanguage(languageName);
-            Item parentItem = GetItem(itemId, language);
+ 
 
-            AddItems(parentItem, languageName, ref items);
+        #region Utilities
+
+        
+
+        private List<MappingResultModel> AddItems(Item parent, string language, List<MappingResultModel> items)
+        {
+            var list = new List<MappingResultModel>();
+            foreach (var successfulImportedItem in items)
+            {
+                var item = AddItem(parent, language, successfulImportedItem);
+                list.Add(item);
+            }
+            return list;
+            
         }
 
 
-        public void ImportItemsWithLocation(string languageName, Dictionary<string, string> dictionary, ref List<MappingResultModel> items)
+        private MappingResultModel AddItem(Item parent, string language, MappingResultModel item)
         {
-            items.ForEach(i => AddItem(GetItem(dictionary.FirstOrDefault(d => d.Key == i.GCItemId).Value, LanguageManager.GetLanguage(languageName)), languageName, ref i));
-        }
-
-        private void AddItems(Item parent, string language, ref List<MappingResultModel> items)
-        {
-            items.ForEach(i => AddItem(parent, language, ref i));
-        }
-
-        private void AddItem(Item parent, string language, ref MappingResultModel item)
-        {
-            if(parent !=null)
+            if (parent != null)
             {
                 using (new SecurityDisabler())
                 {
-                    //TODO Check using LanguageSwitcher instead Context.SetLanguage()
-                    //var language = Sitecore.Globalization.Language.Parse(languageName);
-                    //Context.SetLanguage(language, false);
                     using (new LanguageSwitcher(language))
                     {
 
@@ -77,9 +74,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                                 HttpContext.Current.Request.Url.Host, createdItem.ID);
                         item.CmsLink = cmsLink;
                         SetupFields(createdItem, item);
+
+                        return item;
                     }
                 }
             }
+            return item;
         }
 
         private Item GetDatasource(Item updatedItem, string fieldId, string label)
@@ -212,15 +212,15 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                             }
                             break;
                         default:
-                        {
-                            var targetFieldType = updatedItem.Fields[new ID(field.Name)].Type;
-                            var valueToUpdate = field.Value.Trim();
-                            if (targetFieldType == "Single-Line Text" || targetFieldType == "Multi-Line Text")
                             {
-                                valueToUpdate = StringUtil.RemoveTags(valueToUpdate).Trim();
-                            }
+                                var targetFieldType = updatedItem.Fields[new ID(field.Name)].Type;
+                                var valueToUpdate = field.Value.Trim();
+                                if (targetFieldType == "Single-Line Text" || targetFieldType == "Multi-Line Text")
+                                {
+                                    valueToUpdate = StringUtil.RemoveTags(valueToUpdate).Trim();
+                                }
 
-                            updatedItem.Fields[new ID(field.Name)].Value = valueToUpdate;
+                                updatedItem.Fields[new ID(field.Name)].Value = valueToUpdate;
                             }
                             break;
                     }
@@ -240,29 +240,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 updatedItem.Editing.EndEdit();
             }
         }
-
-
-        public bool EnsureMetaTemplateInherited(TemplateItem templateItem)
-        {
-            if (templateItem != null)
-            {
-                var gcLinkTemplate = templateItem.BaseTemplates.Any(bt => bt.Name == Constants.GCLinkItemTemplateName);
-                var baseTemplates =  templateItem.InnerItem[FieldIDs.BaseTemplate];
-
-                if (!gcLinkTemplate)
-                {
-                    using (new SecurityDisabler())
-                    {
-                        templateItem.InnerItem.Editing.BeginEdit();
-                        templateItem.InnerItem[FieldIDs.BaseTemplate] = string.Format("{0}|{1}", baseTemplates, Constants.GCLinkItemTemplateID);
-                        templateItem.InnerItem.Editing.EndEdit();
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
-
 
         private Item UploadFile(string path, File file)
         {
@@ -289,6 +266,48 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
             return null;
         }
+
+        private bool IsItemHasTemplate(ID templateId, Item item)
+        {
+            return item.Template.BaseTemplates.Any(i => i.ID == templateId);
+        }
+
+        private CMSUpdateItem GetCMSItem(Item item)
+        {
+            string gcItemId = item[GC_CONTENT_ID];
+            DateTime lastSyncDate = DateUtil.IsoDateToDateTime(item[LAST_SYNC_DATE]);
+            var result = new CMSUpdateItem(item.ID.ToString(), item.Name, item.TemplateName, gcItemId, lastSyncDate);
+            return result;
+        }
+
+        #endregion
+
+
+        public List<MappingResultModel> ImportItems(string itemId, string languageName, List<MappingResultModel> items)
+        {
+            var language = LanguageManager.GetLanguage(languageName);
+            Item parentItem = GetItem(itemId, language);
+
+            var result = AddItems(parentItem, languageName, items);
+            return result;
+        }
+
+
+
+        public List<MappingResultModel> ImportItemsWithLocation(string languageName, List<MappingResultModel> successfulImportedItems)
+        {
+            var list = new List<MappingResultModel>();
+            var language = LanguageManager.GetLanguage(languageName);
+            foreach (var successfulImportedItem in successfulImportedItems)
+            {
+                Item parentItem = GetItem(successfulImportedItem.DefaultLocation, language);
+                var item = AddItem(parentItem, languageName, successfulImportedItem);
+                list.Add(item);
+            }
+            return list;
+        }
+
+
 
 
         public Item CreateMedia(string rootPath, File mediaFile, string extension, Stream mediaStream)
@@ -328,7 +347,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
 
 
-
         public List<CMSUpdateItem> GetItemsForUpdate(string targetItemId)
         {
             Item parentItem = GetItem(targetItemId);
@@ -341,19 +359,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             items.AddRange(parentItem.Axes.GetDescendants().Where(i => IsItemHasTemplate(templatId, i)).ToList());
             List<CMSUpdateItem> result = items.Select(GetCMSItem).ToList();
 
-            return result;
-        }
-
-        private bool IsItemHasTemplate(ID templateId, Item item)
-        {
-            return item.Template.BaseTemplates.Any(i => i.ID == templateId);
-        }
-
-        private CMSUpdateItem GetCMSItem(Item item)
-        {
-            string gcItemId = item[GC_CONTENT_ID];
-            DateTime lastSyncDate = DateUtil.IsoDateToDateTime(item[LAST_SYNC_DATE]);
-            var result = new CMSUpdateItem(item.ID.ToString(), item.Name, item.TemplateName, gcItemId, lastSyncDate);
             return result;
         }
 
@@ -376,6 +381,28 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 scItem.Editing.EndEdit();
                 SetupFields(scItem, item);
             }
+        }
+
+
+        public bool EnsureMetaTemplateInherited(TemplateItem templateItem)
+        {
+            if (templateItem != null)
+            {
+                var gcLinkTemplate = templateItem.BaseTemplates.Any(bt => bt.Name == Constants.GCLinkItemTemplateName);
+                var baseTemplates = templateItem.InnerItem[FieldIDs.BaseTemplate];
+
+                if (!gcLinkTemplate)
+                {
+                    using (new SecurityDisabler())
+                    {
+                        templateItem.InnerItem.Editing.BeginEdit();
+                        templateItem.InnerItem[FieldIDs.BaseTemplate] = string.Format("{0}|{1}", baseTemplates, Constants.GCLinkItemTemplateID);
+                        templateItem.InnerItem.Editing.EndEdit();
+                    }
+                }
+                return true;
+            }
+            return false;
         }
     }
 }

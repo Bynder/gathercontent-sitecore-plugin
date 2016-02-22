@@ -23,9 +23,11 @@ namespace GatherContent.Connector.IRepositories.Models.Import
         public string CmsLink { get; set; }
         public string GcLink { get; set; }
 
+        public string DefaultLocation { get; set; }
+
         public List<ImportCMSField> Fields { get; set; }
 
-        public MappingResultModel(GCItem item, List<ImportCMSField> fields, string template, string cmsTemplate, string cmsId = "", string message = "", bool isImportSuccessful = true)
+        public MappingResultModel(GCItem item, List<ImportCMSField> fields, string template, string cmsTemplate, string cmsId = "", string message = "", bool isImportSuccessful = true, string defaultLocation = null)
         {      
             GCItemId = item.Id.ToString();
             Status = item.Status.Data;
@@ -35,6 +37,7 @@ namespace GatherContent.Connector.IRepositories.Models.Import
             Fields = fields;
             CMSId = cmsId;
             Message = message;
+            DefaultLocation = defaultLocation;
             IsImportSuccessful = isImportSuccessful;
         }
     }

@@ -24,10 +24,10 @@ namespace GatherContent.Connector.Managers.Managers
             if (home == null) return model;
             model.Add(new DropTreeModel
             {
-                title = home.Name,
-                key = home.ID.ToString(),
-                isLazy = true,
-                icon = home["Icon"]
+                Title = home.Name,
+                Key = home.ID.ToString(),
+                IsLazy = true,
+                Icon = home["Icon"]
             });
             return model;
         }
@@ -46,10 +46,10 @@ namespace GatherContent.Connector.Managers.Managers
 
                 model.Add(new DropTreeModel
                 {
-                    title = item.Name,
-                    key = item.ID.ToString(),
-                    isLazy = item.HasChildren,
-                    icon = item["Icon"]
+                    Title = item.Name,
+                    Key = item.ID.ToString(),
+                    IsLazy = item.HasChildren,
+                    Icon = item["Icon"]
                 });
             }
 

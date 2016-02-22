@@ -1,20 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
 
 namespace GatherContent.Connector.Managers.Models.ImportItems
 {
     public class DropTreeModel
     {
-        public DropTreeModel()
-        {
-            children = new List<DropTreeModel>();
-        }
+        [JsonProperty(PropertyName = "title")]
+        public string Title { get; set; }
 
-        //[JsonProperty(PropertyName = "id")]
-        public string title { get; set; }
-        public bool isFolder { get; set; }
-        public string key { get; set; }
-        public List<DropTreeModel> children { get; set; }
-        public bool isLazy { get; set; }
-        public string icon { get; set; }
+        //public bool isFolder { get; set; }
+
+        [JsonProperty(PropertyName = "key")]
+        public string Key { get; set; }
+
+        //public List<DropTreeModel> children { get; set; }
+
+        [JsonProperty(PropertyName = "isLazy")]
+        public bool IsLazy { get; set; }
+        [JsonProperty(PropertyName = "icon")]
+        public string Icon { get; set; }
     }
 }

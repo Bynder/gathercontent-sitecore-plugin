@@ -345,3 +345,9 @@ input[type="button"] {
     display: inline;
     padding-left: 10px;
 }
+.dynatree-container ul{
+    padding-top: 5px!important;
+}
+.dynatree-container li{
+    padding-bottom: 5px!important;
+}

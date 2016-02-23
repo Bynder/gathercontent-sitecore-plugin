@@ -12,6 +12,10 @@ function ViewModel() {
     this.GcProjectName = ko.observable();
     this.GcTemplateName = ko.observable();
     this.GcMappingTitle = ko.observable();
+    this.OpenerId = ko.observable();
+    this.DefaultLocation = ko.observable();
+    this.DefaultLocationTitle = ko.observable();
+    this.IsShowing = ko.observable();
     this.GcTemplateId = ko.observable();
     this.SelectedTemplateId = ko.observable();
     this.SitecoreTemplates = ko.observableArray();
@@ -30,6 +34,10 @@ function ViewModel() {
             self.GcTemplateProxyId(data.GcTemplateProxyId),
             self.SelectedTemplate(self.find("SitrecoreTemplateId", data.AddMappingModel.SelectedTemplateId));
             self.GcMappingTitle(data.AddMappingModel.GcMappingTitle);
+            self.OpenerId(data.AddMappingModel.OpenerId);
+            self.DefaultLocation(data.AddMappingModel.DefaultLocation);
+            self.DefaultLocationTitle(data.AddMappingModel.DefaultLocationTitle);
+            self.IsShowing(false);
             self.templateChanged();
             self.GcTemplateId(data.AddMappingModel.GcTemplateId),
             self.Tabs(data.AddMappingModel.Tabs);
@@ -65,12 +73,17 @@ function ViewModel() {
 
     this.saveMapping = function () {
         //var dataObject = ko.toJSON(this);
- 
+
+        var model;
+        model.TemplateTabs = self.Tabs();
+        model.IsEdit = self.IsEdit();
+
+
         jQuery.ajax({
             url: '/api/sitecore/mappings/Post?isEdit=' + self.IsEdit() + '&templateId=' + self.GcTemplateId() +
                 '&selectedTemplateId=' + self.SelectedTemplateId() + '&gcMappingTitle=' + self.GcMappingTitle() + '&gcTemplateProxyId=' + self.GcTemplateProxyId(),
             type: 'post',
-            data: JSON.stringify(self.Tabs()),
+            data: JSON.stringify(model),
             contentType: 'application/json',
             success: function (data) {
                 if (data.status != "error") {
@@ -79,13 +92,50 @@ function ViewModel() {
                 } else {
                     self.errorText("Error:" + " " + data.message);
                     self.isError(true);
-                }          
+                }
             },
- 
+
         });
     };
 
 
+    this.openDropTree = function () {
+        var id = this.OpenerId();
+
+        if (!this.IsShowing()) {
+            //TODO use Knockout
+            jQuery("#" + id).show();
+            this.IsShowing(true);
+            var mapping = this;
+            jQuery("#" + id).dynatree({
+                autoFocus: false,
+                imagePath: "~/icon/",
+                initAjax: {
+                    url: '/api/sitecore/Import/GetTopLevelNode',
+                    data: { mode: "funnyMode" }
+                },
+                onActivate: function (node) {
+                    jQuery('[data-openerid="' + id + '"]').val(node.data.title);
+                    mapping.DefaultLocation(node.data.key);
+                    mapping.DefaultLocationText(node.data.title);
+                },
+                onLazyRead: function (node) {
+                    node.appendAjax({
+                        url: "/api/sitecore/Import/GetChildrenAsJson?id=" + node.data.key,
+                        data: {
+                            key: node.data.key,
+                            mode: "funnyMode"
+                        }
+                    });
+                }
+            });
+        }
+        else {
+            //TODO use Knockout
+            jQuery("#" + id).hide();
+            this.IsShowing(false);
+        }
+    }
 
     this.templateChanged = function () {
         this.SitecoreFields(self.SelectedTemplate().SitecoreFields);
@@ -119,7 +169,7 @@ function ViewModel() {
         }
         return self.SelectedTemplate().SitecoreFields[0];
     };
-   
+
 
 
     this.returnFieldName = function (item) {
@@ -139,6 +189,6 @@ function ViewModel() {
     };
 };
 
-jQuery(window).resize(function() {
+jQuery(window).resize(function () {
     jQuery(".tabs_mapping").css("max-height", jQuery(".gathercontent-dialog").height() - 240);
 });

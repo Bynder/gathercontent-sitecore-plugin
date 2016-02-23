@@ -62,13 +62,13 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
 
         [HttpPost]
-        public ActionResult Post(List<TemplateTab> model, bool isEdit, string templateId, string selectedTemplateId, string gcMappingTitle, string gcTemplateProxyId)
+        public ActionResult Post(PostMappingModel model)
         {
-            if (templateId == null)
+            if (model.TemplateId == null)
                 return Json(new { status = "error", message = "GatherContent template isn't selected" }, JsonRequestBehavior.AllowGet);
             try
             {
-                _mappingManager.PostMapping(model, isEdit, templateId, selectedTemplateId, gcMappingTitle, gcTemplateProxyId);
+                _mappingManager.PostMapping(model);
                 return new EmptyResult();
             }
             catch (WebException exception)

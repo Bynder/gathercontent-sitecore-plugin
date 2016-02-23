@@ -4,9 +4,14 @@
 <script src="/sitecore/shell/Controls/Sitecore.js"></script>
 <script src="/sitecore modules/shell/GatherContent/js/knockout-3.4.0.js"></script>
 <script src="/sitecore modules/shell/GatherContent/js/GatherContent.js"></script>
-
+<script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/jquery.cookie.js"></script>
+<script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/jquery.dynatree.js"></script>
 <script src="/sitecore modules/shell/GatherContent/Mappings/AddOrUpdateMapping.js"></script>
+
+
 <link href="/sitecore modules/shell/GatherContent/css/GatherContent.css" rel="stylesheet" />
+<link href="/sitecore modules/shell/GatherContent/css/dynatree/ui.dynatree.css" rel="stylesheet" />
 <script type="text/javascript">
     jQuery(document).ready(function () {
         ko.applyBindings(new ViewModel());
@@ -37,6 +42,14 @@
                 <p data-bind="text: GcTemplateName" class="title_lvl2"></p>
                 <div><span><strong>Mapping title:</strong></span></div>
                 <input type="text" data-bind="value: GcMappingTitle" />
+                <div><span><strong>Default location:</strong></span></div>
+                <input data-bind="value: DefaultLocationTitle, attr: { 'data-openerid': OpenerId }, click: openDropTree" type="text" />
+                <input data-bind="value: DefaultLocation, visible: false, attr: { 'data-openerid': OpenerId }, click: openDropTree" type="text" />
+                <div data-bind="attr: { id: OpenerId }" style="position: absolute; left: 200px; top: 200px; width: 300px; height: 400px; z-index: 1000;">
+                    <div style="width:300px;height:400px;">
+                        <div ata-bind="css: { class: OpenerId }"> </div>
+                    </div>
+                </div>
             </div>
             <div style="float: right;" class="mapping_heading">
                 <div><span><strong>Sitecore Template:</strong></span></div>

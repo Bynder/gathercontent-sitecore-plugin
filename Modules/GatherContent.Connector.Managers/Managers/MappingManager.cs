@@ -132,7 +132,10 @@ namespace GatherContent.Connector.Managers.Managers
                 IsEdit = addMappingModel.IsEdit,
                 GcTemplateId = addMappingModel.GcTemplateId,
                 SelectedTemplateId = addMappingModel.SelectedTemplateId,
-                GcMappingTitle = addMappingModel.GcMappingTitle
+                GcMappingTitle = addMappingModel.GcMappingTitle,
+                OpenerId = "drop-tree" + Guid.NewGuid(),
+                DefaultLocation = addMappingModel.DefaultLocation,
+                DefaultLocationTitle = addMappingModel.DefaultLocationTitle
             };
 
 
@@ -480,22 +483,14 @@ namespace GatherContent.Connector.Managers.Managers
             return model;
         }
 
-        public void DeleteMapping(string id, string gcTemplateProxyId)
+
+
+        public void PostMapping(PostMappingModel model)
         {
-            var template = _templateService.GetSingleTemplate(id);
-
-            _mappingRepository.DeleteMapping(template, gcTemplateProxyId);
-            //_mappingRepository.DeleteTemplate(template);
-
-
-        }
-
-        public void PostMapping(List<TemplateTab> model, bool isEdit, string templateId, string selectedTemplateId, string gcMappingTitle, string gcTemplateProxyId)
-        {
-            var template = _templateService.GetSingleTemplate(templateId);
+            var template = _templateService.GetSingleTemplate(model.TemplateId);
             var project = _projectService.GetSingleProject(template.Data.ProjectId.ToString());
 
-            var list = (from tab in model
+            var list = (from tab in model.TemplateTabs
                         from templateField in tab.Fields
                         select new CmsTemplateField
                         {
@@ -504,16 +499,17 @@ namespace GatherContent.Connector.Managers.Managers
                             SelectedField = templateField.SelectedField,
                         }).ToList();
 
-            if (isEdit)
+            if (model.IsEdit)
             {
 
                 _mappingRepository.UpdateMapping(project.Data.Id, template.Data.Id, new TemplateMapping
                 {
-                    SitecoreTemplateId = selectedTemplateId,
+                    SitecoreTemplateId = model.SelectedTemplateId,
                     Name = template.Data.Name,
                     GcTemplateId = template.Data.Id.ToString(),
-                    GcMappingTitle = gcMappingTitle,
-                    GcTemplateProxy = gcTemplateProxyId
+                    GcMappingTitle = model.GcMappingTitle,
+                    GcTemplateProxy = model.GcTemplateProxyId,
+                    DefaultLocation = model.DefaultLocation
                 }, list);
 
             }
@@ -521,15 +517,26 @@ namespace GatherContent.Connector.Managers.Managers
             {
                 _mappingRepository.CreateMapping(project.Data.Id, new TemplateMapping
                 {
-                    SitecoreTemplateId = selectedTemplateId,
+                    SitecoreTemplateId = model.SelectedTemplateId,
                     Name = template.Data.Name,
                     GcTemplateId = template.Data.Id.ToString(),
                     LastUpdated = template.Data.Updated.ToString(),
-                    GcMappingTitle = gcMappingTitle,
-                    GcTemplateProxy = gcTemplateProxyId
+                    GcMappingTitle = model.GcMappingTitle,
+                    GcTemplateProxy = model.GcTemplateProxyId,
+                    DefaultLocation = model.DefaultLocation
                 }, list);
 
             }
+
+        }
+
+        public void DeleteMapping(string id, string gcTemplateProxyId)
+        {
+            var template = _templateService.GetSingleTemplate(id);
+
+            _mappingRepository.DeleteMapping(template, gcTemplateProxyId);
+            //_mappingRepository.DeleteTemplate(template);
+
 
         }
 

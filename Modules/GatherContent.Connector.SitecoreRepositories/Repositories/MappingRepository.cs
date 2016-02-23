@@ -226,6 +226,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                                 createdItem.Editing.BeginEdit();
                                 createdItem.Fields["Sitecore Template"].Value = templateMapping.SitecoreTemplateId;
                                 createdItem.Fields["GC Template Proxy"].Value = templateMapping.GcTemplateProxy;
+                                createdItem.Fields["Default Location"].Value = templateMapping.DefaultLocation;
                                 if (!string.IsNullOrEmpty(templateMapping.GcMappingTitle))
                                 {
                                     createdItem.Fields["Template mapping title"].Value = templateMapping.GcMappingTitle;
@@ -269,6 +270,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             {
                 template.Editing.BeginEdit();
                 template.Fields["Sitecore Template"].Value = templateMapping.SitecoreTemplateId;
+                template.Fields["Default Location"].Value = templateMapping.DefaultLocation;
                 template.Fields["GC Template Proxy"].Value = templateMapping.GcTemplateProxy;
                 if (!string.IsNullOrEmpty(templateMapping.GcMappingTitle))
                 {
@@ -417,6 +419,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             if (scMapping != null)
             {
                 model.GcMappingTitle = scMapping["Template mapping title"];
+                model.DefaultLocation = scMapping["Default Location"];
+                var defaultLocation = GetItem(scMapping["Default Location"]);
+                if (defaultLocation != null)
+                {
+                    model.DefaultLocationTitle = defaultLocation.Name;
+                }
                 model.IsEdit = true;
                 model.SelectedTemplateId = scMapping["Sitecore Template"];
             }

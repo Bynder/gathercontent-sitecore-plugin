@@ -160,6 +160,7 @@
     <Compile Include="Models\ImportItems\ImportItembyLocation.cs" />
     <Compile Include="Models\ImportItems\SelectItemsForImportWithLocation.cs" />
     <Compile Include="Models\ImportItems\ItemWithLocationDataModel.cs" />
+    <Compile Include="Models\Mapping\PostMappingModel.cs" />
     <Compile Include="Models\UpdateItems\UpdateListIds.cs" />
     <Compile Include="Managers\UpdateManager.cs" />
     <Compile Include="Models\ImportItems\FiltersModel.cs" />

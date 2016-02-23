@@ -14,5 +14,9 @@ namespace GatherContent.Connector.Managers.Models.Mapping
         public string SelectedTemplateId { get; set; }
         public bool IsEdit { get; set; }
         public string GcMappingTitle { get; set; }
+        public string OpenerId { get; set; }
+        public string DefaultLocation { get; set; }
+        public string DefaultLocationTitle { get; set; }
+        
     }
 }

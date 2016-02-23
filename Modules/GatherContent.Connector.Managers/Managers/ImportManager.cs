@@ -37,45 +37,7 @@ namespace GatherContent.Connector.Managers.Managers
         }
 
 
-        public SelectItemsForImportModel GetModelForSelectImportItemsDialog(string itemId, string projectId)
-        {
-            Account account = GetAccount();
-
-            List<Project> projects = GetProjects(account.Id);
-
-            Project project = GetProject(projects, projectId);
-
-            List<GCTemplate> templates = GetTemplates(project.Id);
-            List<GCStatus> statuses = GetStatuses(project.Id);
-            List<GCItem> items = GetItems(project.Id);
-            items = items.OrderBy(item => item.Status.Data.Name).ToList();
-
-            List<ImportListItem> mappedItems = MapItems(items, templates);
-
-            var result = new SelectItemsForImportModel(mappedItems, project, projects, statuses, templates);
-
-            return result;
-        }
-
-        public SelectItemsForImportWithLocation GetDialogModelWithLocation(string itemId, string projectId)
-        {
-            Account account = GetAccount();
-
-            List<Project> projects = GetProjects(account.Id);
-
-            Project project = GetProject(projects, projectId);
-
-            List<GCTemplate> templates = GetTemplates(project.Id);
-            List<GCStatus> statuses = GetStatuses(project.Id);
-            List<GCItem> items = GetItems(project.Id);
-            items = items.OrderBy(item => item.Status.Data.Name).ToList();
-
-            List<ImportItembyLocation> mappedItems = MapItemsByLocation(items, templates);
-
-            var result = new SelectItemsForImportWithLocation(mappedItems, project, projects, statuses, templates);
-
-            return result;
-        }
+        #region Utilities
 
         private Project GetProject(List<Project> projects, string projectIdStr)
         {
@@ -167,59 +129,6 @@ namespace GatherContent.Connector.Managers.Managers
             return result.ToList();
         }
 
-
-        public ImportResultModel ImportItems(string itemId, List<ImportItemModel> items, string projectId, string statusId, string language)
-        {
-            List<MappingResultModel> cmsItems = _mappingManager.MapItems(items);
-
-            if (cmsItems == null) return null;
-            List<MappingResultModel> successfulImportedItems = GetSuccessfulImportedItems(cmsItems);
-            successfulImportedItems = _itemsRepository.ImportItems(itemId, language, successfulImportedItems);
-
-            if (!string.IsNullOrEmpty(statusId))
-            {
-                PostNewStatusesForItems(successfulImportedItems, statusId, projectId);
-            }
-
-            var result = new ImportResultModel(cmsItems);
-
-            return result;
-        }
-
-        public ImportResultModel ImportItemsWithLocation(string itemId, List<LocationImportItemModel> items,
-            string projectId, string statusId, string language)
-        {
-            var importItems = new List<ImportItemModel>();
-
-            foreach (var item in items)
-            {
-                if (item.IsImport)
-                {
-                    importItems.Add(new ImportItemModel
-                    {
-                        Id = item.Id,
-                        SelectedMappingId = item.SelectedMappingId,
-                        DefaultLocation = item.SelectedLocation
-                    });
-                }
-            }
-
-            List<MappingResultModel> cmsItems = _mappingManager.MapItems(importItems);
-            if (cmsItems == null) return null;
-            List<MappingResultModel> successfulImportedItems = GetSuccessfulImportedItems(cmsItems);
-
-            successfulImportedItems = _itemsRepository.ImportItemsWithLocation(language, successfulImportedItems);
-
-            if (!string.IsNullOrEmpty(statusId))
-            {
-                PostNewStatusesForItems(successfulImportedItems, statusId, projectId);
-            }
-
-            var result = new ImportResultModel(cmsItems);
-
-            return result;
-        }
-
         private List<GCItem> MapItems(List<string> items)
         {
             List<GCItem> result = items.Select(GetGcItemByModel).ToList();
@@ -249,6 +158,104 @@ namespace GatherContent.Connector.Managers.Managers
             }
         }
 
+        #endregion
+
+
+        public SelectItemsForImportModel GetModelForSelectImportItemsDialog(string itemId, string projectId)
+        {
+            Account account = GetAccount();
+
+            List<Project> projects = GetProjects(account.Id);
+
+            Project project = GetProject(projects, projectId);
+
+            List<GCTemplate> templates = GetTemplates(project.Id);
+            List<GCStatus> statuses = GetStatuses(project.Id);
+            List<GCItem> items = GetItems(project.Id);
+            items = items.OrderBy(item => item.Status.Data.Name).ToList();
+
+            List<ImportListItem> mappedItems = MapItems(items, templates);
+
+            var result = new SelectItemsForImportModel(mappedItems, project, projects, statuses, templates);
+
+            return result;
+        }
+
+        public SelectItemsForImportWithLocation GetDialogModelWithLocation(string itemId, string projectId)
+        {
+            Account account = GetAccount();
+
+            List<Project> projects = GetProjects(account.Id);
+
+            Project project = GetProject(projects, projectId);
+
+            List<GCTemplate> templates = GetTemplates(project.Id);
+            List<GCStatus> statuses = GetStatuses(project.Id);
+            List<GCItem> items = GetItems(project.Id);
+            items = items.OrderBy(item => item.Status.Data.Name).ToList();
+
+            List<ImportItembyLocation> mappedItems = MapItemsByLocation(items, templates);
+
+            var result = new SelectItemsForImportWithLocation(mappedItems, project, projects, statuses, templates);
+
+            return result;
+        }
+
+
+
+        public ImportResultModel ImportItems(string itemId, List<ImportItemModel> items, string projectId, string statusId, string language)
+        {
+            List<MappingResultModel> cmsItems = _mappingManager.MapItems(items);
+
+            if (cmsItems == null) return null;
+            List<MappingResultModel> successfulImportedItems = GetSuccessfulImportedItems(cmsItems);
+            successfulImportedItems = _itemsRepository.ImportItems(itemId, language, successfulImportedItems);
+
+            if (!string.IsNullOrEmpty(statusId))
+            {
+                PostNewStatusesForItems(successfulImportedItems, statusId, projectId);
+            }
+
+            var result = new ImportResultModel(cmsItems);
+
+            return result;
+        }
+
+        public ImportResultModel ImportItemsWithLocation(string itemId, List<LocationImportItemModel> items,
+            string projectId, string statusId, string language)
+        {
+            var importItems = new List<ImportItemModel>();
+
+            if (items == null) return null;
+            
+            foreach (var item in items)
+            {
+                if (item.IsImport)
+                {
+                    importItems.Add(new ImportItemModel
+                    {
+                        Id = item.Id,
+                        SelectedMappingId = item.SelectedMappingId,
+                        DefaultLocation = item.SelectedLocation
+                    });
+                }
+            }
+
+            List<MappingResultModel> cmsItems = _mappingManager.MapItems(importItems);
+            if (cmsItems == null) return null;
+            List<MappingResultModel> successfulImportedItems = GetSuccessfulImportedItems(cmsItems);
+
+            successfulImportedItems = _itemsRepository.ImportItemsWithLocation(language, successfulImportedItems);
+
+            if (!string.IsNullOrEmpty(statusId))
+            {
+                PostNewStatusesForItems(successfulImportedItems, statusId, projectId);
+            }
+
+            var result = new ImportResultModel(cmsItems);
+
+            return result;
+        }
 
     }
 }

@@ -1,50 +1,4 @@
-﻿//var Mapping = function (data) {
-//    var self = this;
-
-//    self.Id = ko.observable(data.Id);
-//    self.Title = ko.observable(data.Title);
-//    self.ScTemplate = ko.observable(data.ScTemplate);
-//    self.OpenerId = ko.observable(data.OpenerId);
-//    self.IsShowing = ko.observable(data.IsShowing);
-//    self.IsImport = ko.observable(data.IsImport);
-//    self.DefaultLocation = ko.observable(data.DefaultLocation);
-//}
-
-//var AvailableMapping = function (data) {
-//    var self = this;
-
-//    self.SelectedMappingId = ko.observable(data.SelectedMappingId);
-//    self.Mappings = ko.observableArray();
-
-//    var items = ko.utils.arrayMap(data.Mappings, function (item) {
-//        return new Mapping(item);
-//    });
-
-//    self.Mappings(items);
-//}
-
-
-//var Item = function (data) {
-//    var self = this;
-
-//    self.Id = ko.observable(data.Id);
-//    self.Status = ko.observable(data.Status);
-//    self.Title = ko.observable(data.Title);
-//    self.LastUpdatedInGC  = ko.observable(data.LastUpdatedInGC);
-//    self.Breadcrumb  = ko.observable(data.Breadcrumb);
-//    self.Template = ko.observable(data.Template);
-
-//    self.Mappings = ko.observableArray();
-
-//    var items = ko.utils.arrayMap(data.AvailableMappings.Mappings, function (item) {
-//        return new Mapping(item);
-//    });
-
-//    self.Mappings(items);
-//}
-
-
-var ImportManager = function () {
+﻿var ImportManager = function () {
     var MODE = {
         ChooseItmesForImort: 1,
         CheckItemsBeforeImport: 2,
@@ -113,9 +67,6 @@ var ImportManager = function () {
 
     self.initVariables = function (response) {
 
-        //var items = ko.utils.arrayMap(response.Data.Items, function (item) {
-        //    return new Item(item);
-        //});
         var items = self.setupWatcher(response.Data.Items);
         self.items(items);
         allItems = items.slice(0);
@@ -261,6 +212,12 @@ var ImportManager = function () {
         var items = self.items();
         var importItems = [];
         items.forEach(function (item, i) {
+            if (item.Mappings.length == 0) {
+                importItems.push({
+                    Id: item.Id,
+                    IsImport: true,                    
+                });
+            }
             item.Mappings.forEach(function (mapping, m) {
                 importItems.push({
                     Id: item.Id,

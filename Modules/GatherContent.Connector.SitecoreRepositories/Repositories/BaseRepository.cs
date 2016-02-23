@@ -45,6 +45,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return resultItem;
         }
 
+        public TemplateItem GetItemTemplate(ID sitecoreId)
+        {
+            return ContextDatabase.GetTemplate(sitecoreId);
+        }
+
         protected IEnumerable<Item> GetAllProjects()
         {
             var accountSettingItem = ContextDatabase.GetItem(Constants.AccountItemId, ContextLanguage);

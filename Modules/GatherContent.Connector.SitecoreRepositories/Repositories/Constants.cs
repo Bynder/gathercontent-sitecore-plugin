@@ -15,6 +15,7 @@
         public const string AccountItemId = "{B99D89BD-56AB-4F41-BB02-121D116E5145}";
         public const string GcFolderId = "{5342D6D1-0ACF-4FE6-9AA2-613EDDDBEED0}";
         public const string TemplateFolderId = "{3C1715FE-6A13-4FCF-845F-DE308BA9741D}";
+        public const string DropTreeHomeNode = "{0DE95AE4-41AB-4D01-9EB0-67441B7C2450}";
 
         #endregion
 
@@ -42,5 +43,7 @@
 
 
         #endregion
+
+        
     }
 }

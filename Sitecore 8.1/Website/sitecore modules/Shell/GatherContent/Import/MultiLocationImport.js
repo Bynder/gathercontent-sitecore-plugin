@@ -336,6 +336,7 @@ var ImportManager = function () {
             var mapping = this;
             jQuery("#" + id).dynatree({
                 autoFocus: false,
+                imagePath: "~/icon/",
                 initAjax: {
                     url: '/api/sitecore/Import/GetTopLevelNode',
                     data: { mode: "funnyMode" }

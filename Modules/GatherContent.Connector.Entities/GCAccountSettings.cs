@@ -15,5 +15,7 @@
         public string AccountItemId { get; set; }
 
         public string GatherContentUrl { get; set; }
+
+        public string DropTreeHomeNode { get; set; }
     }
 }

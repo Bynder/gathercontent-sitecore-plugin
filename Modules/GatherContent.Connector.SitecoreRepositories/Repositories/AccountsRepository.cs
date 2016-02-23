@@ -20,6 +20,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     TemplateFolderId = accountSettingItem["Templates Root Folder"],
                     DateFormat = accountSettingItem["Date Format"],
                     GatherContentUrl = accountSettingItem["Platform Url"],
+                    DropTreeHomeNode = accountSettingItem["DropTree Home Node"],
                     AccountItemId = accountSettingItem.ID.ToString()
                 };
 

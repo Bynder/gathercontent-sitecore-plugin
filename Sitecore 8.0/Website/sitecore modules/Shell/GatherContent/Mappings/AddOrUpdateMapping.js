@@ -73,11 +73,16 @@ function ViewModel() {
 
     this.saveMapping = function () {
         //var dataObject = ko.toJSON(this);
-
-        var model;
-        model.TemplateTabs = self.Tabs();
-        model.IsEdit = self.IsEdit();
-
+   
+        var model = new function () {
+            this.TemplateTabs = self.Tabs();
+            this.IsEdit = self.IsEdit();
+            this.SelectedTemplateId = self.SelectedTemplateId();
+            this.TemplateId = self.GcTemplateId();
+            this.GcMappingTitle = self.GcMappingTitle();
+            this.GcTemplateProxyId = self.GcTemplateProxyId();
+            this.DefaultLocation = self.DefaultLocation();
+        }
 
         jQuery.ajax({
             url: '/api/sitecore/mappings/Post?isEdit=' + self.IsEdit() + '&templateId=' + self.GcTemplateId() +
@@ -101,6 +106,7 @@ function ViewModel() {
 
     this.openDropTree = function () {
         var id = this.OpenerId();
+        var locationId = this.DefaultLocation();
 
         if (!this.IsShowing()) {
             //TODO use Knockout
@@ -111,7 +117,7 @@ function ViewModel() {
                 autoFocus: false,
                 imagePath: "~/icon/",
                 initAjax: {
-                    url: '/api/sitecore/Import/GetTopLevelNode',
+                    url: '/api/sitecore/Import/GetTopLevelNode?id=' + locationId,
                     data: { mode: "funnyMode" }
                 },
                 onActivate: function (node) {

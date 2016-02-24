@@ -275,6 +275,7 @@
 
     self.openDropTree = function () {
         var id = this.OpenerId;
+        var locationId = this.DefaultLocation;
         var items = self.items();
         for (var i = 0; i < items.length; i++) {
             var mappings = items[i].Mappings;
@@ -295,7 +296,7 @@
                 autoFocus: false,
                 imagePath: "~/icon/",
                 initAjax: {
-                    url: '/api/sitecore/Import/GetTopLevelNode',
+                    url: '/api/sitecore/Import/GetTopLevelNode?id=' + locationId,
                     data: { mode: "funnyMode" }
                 },
                 onActivate: function (node) {

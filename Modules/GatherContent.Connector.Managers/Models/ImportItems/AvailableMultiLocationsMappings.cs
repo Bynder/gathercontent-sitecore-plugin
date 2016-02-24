@@ -11,6 +11,8 @@ namespace GatherContent.Connector.Managers.Models.ImportItems
         public bool IsShowing { get; set; }
         public bool IsImport { get; set; }
         public string DefaultLocation { get; set; }
-        
+
+
+        public string DefaultLocationTitle { get; set; }
     }
 }

@@ -120,7 +120,9 @@ namespace GatherContent.Connector.Managers.Managers
                         availableMappingModel.Title : string.Format("[{0}]", availableMappingModel.Name),
                     OpenerId = "drop-tree" + Guid.NewGuid(),
                     ScTemplate = availableMappingModel.ScTemplate,
-                    IsShowing = false
+                    IsShowing = false,
+                    DefaultLocation = availableMappingModel.DefaultLocation,
+                    DefaultLocationTitle = availableMappingModel.DefaultLocationTitle,
                 }).ToList();
 
                 result.Add(new ImportItembyLocation(mappedItem, templates.FirstOrDefault(templ => templ.Id == mappedItem.TemplateId), items, dateFormat, availableMappings));

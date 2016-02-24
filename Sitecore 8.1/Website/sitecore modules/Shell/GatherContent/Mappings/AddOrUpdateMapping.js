@@ -106,6 +106,7 @@ function ViewModel() {
 
     this.openDropTree = function () {
         var id = this.OpenerId();
+        var locationId = this.DefaultLocation();
 
         if (!this.IsShowing()) {
             //TODO use Knockout
@@ -116,7 +117,7 @@ function ViewModel() {
                 autoFocus: false,
                 imagePath: "~/icon/",
                 initAjax: {
-                    url: '/api/sitecore/Import/GetTopLevelNode',
+                    url: '/api/sitecore/Import/GetTopLevelNode?id=' + locationId,
                     data: { mode: "funnyMode" }
                 },
                 onActivate: function (node) {

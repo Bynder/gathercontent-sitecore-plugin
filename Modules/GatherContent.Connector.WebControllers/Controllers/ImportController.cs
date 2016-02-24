@@ -106,11 +106,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
         }
 
-        public string GetTopLevelNode()
+        public string GetTopLevelNode(string id)
         {
             try
             {
-                List<DropTreeModel> result = _dropTreeManager.GetTopLevelNode();
+                List<DropTreeModel> result = _dropTreeManager.GetTopLevelNode(id);
                 var model = JsonConvert.SerializeObject(result);
                 return model;
             }

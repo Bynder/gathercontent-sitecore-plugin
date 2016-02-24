@@ -402,6 +402,8 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             {
                 Id = mapping.ID.ToString(),
                 Title = mapping["Template mapping title"],
+                DefaultLocation = mapping["Default Location"],
+                DefaultLocationTitle = GetItem(mapping["Default Location"])!=null ? GetItem(mapping["Default Location"]).Name:"",               
                 Name = mapping.Name,
                 ScTemplate = GetItem(mapping["Sitecore Template"]) != null ? GetItem(mapping["Sitecore Template"]).Name : "",
             }).ToList();

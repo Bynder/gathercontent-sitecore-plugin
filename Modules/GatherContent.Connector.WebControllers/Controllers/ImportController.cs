@@ -87,11 +87,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
 
         [HttpPost]
-        public ActionResult ImportItemsWithLocation(string id, string projectId, string statusId, string language, List<LocationImportItemModel> items)
+        public ActionResult ImportItemsWithLocation(string projectId, string statusId, string language, List<LocationImportItemModel> items)
         {
             try
             {
-                ImportResultModel result = _importManager.ImportItemsWithLocation(id, items, projectId, statusId, language);
+                ImportResultModel result = _importManager.ImportItemsWithLocation(items, projectId, statusId, language);
                 return Json(result, JsonRequestBehavior.AllowGet); 
             }
             catch (WebException exception)

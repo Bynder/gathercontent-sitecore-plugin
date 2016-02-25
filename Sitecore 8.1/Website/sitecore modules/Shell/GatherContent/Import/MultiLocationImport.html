@@ -91,11 +91,10 @@
 
 <div data-bind="if: getMode(2)">
     <div>
-        <h2 class="title">Confirm import selection (<span data-bind="text: getCheckedCount"></span> items)</h2>
         <p>Please review your import selection before importing.</p>
     </div>
-    <div data-bind="foreach: items" >
-        <div data-bind="text: Title"></div>
+    <div data-bind="foreach: groupedTemplates">
+        <div data-bind="text: Template.name"></div>
         <table>
             <tr>
                 <th>
@@ -131,18 +130,13 @@
             </tbody>
         </table>
     </div>
-    
-    
-
     <div class="footer_btn">
         <div>
             <input type="checkbox" data-bind="checked: statusPostState" />
             After successful import change status of item to <select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter"></select> inside your GatherContent account.
-            <!--, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender-->
         </div>
         <input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 1)" />
-        <input type="button" value="Import>" data-bind="click: buttonClick.bind($data, 3)" />
-        <!--<input type="button" class="closeButton" value="Close" data-bind="click: buttonClick.bind($data, 5)" />-->
+        <input type="button" value="Next>" data-bind="click: buttonClick.bind($data, 3)" />
     </div>
     <div class="help-link">
         <a href="mailto:support@gathercontent.com">Need help?</a>
@@ -151,15 +145,59 @@
 </div>
 
 <div data-bind="if: getMode(3)">
+    <div>
+        <h2 class="title">Confirm import selection</h2>
+        <p>Please review your import selection before importing.</p>
+    </div>
+
+    <div data-bind="foreach: confirmItems">
+        <div data-bind="text: Title"></div>
+        <table>
+            <tr>
+                <th>
+                    <div>Mapping Name</div>
+                </th>
+                <th>
+                    <div>SC Template</div>
+                </th>
+                <th>
+                    <div>Default location</div>
+                </th>
+            </tr>
+            <tbody data-bind="foreach: Mappings">
+                <tr data-bind="if: IsImport">
+                    <td data-bind="text: Title"></td>
+                    <td data-bind="text: ScTemplate"></td>
+                    <td data-bind="text: DefaultLocationTitle"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="footer_btn">
+        <div>
+            <input type="checkbox" data-bind="checked: statusPostState" />
+            After successful import change status of item to <select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter"></select> inside your GatherContent account.
+            <!--, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender-->
+        </div>
+        <input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 2)" />
+        <input type="button" value="Import>" data-bind="click: buttonClick.bind($data, 4)" />
+        <!--<input type="button" class="closeButton" value="Close" data-bind="click: buttonClick.bind($data, 5)" />-->
+    </div>
+    <div class="help-link">
+        <a href="mailto:support@gathercontent.com">Need help?</a>
+    </div>
+
+</div>
+
+<div data-bind="if: getMode(4)">
     <div class="preloader_import text-center">
         <h2 class="title">Import in progress</h2>
         <p>Please do not close your browser. Depending on the number of Items you have selected the import can take some time.</p>
         <img src="/sitecore/shell/themes/standard/images/sc-spinner16.gif" alt="">
     </div>
-    <!--<input type="button" value="Next" data-bind="click: buttonClick.bind($data, 4)" />-->
 </div>
 
-<div data-bind="if: getMode(4)">
+<div data-bind="if: getMode(5)">
     <h2 class="title">Import complete: Results.</h2>
     <img src="~/icon/Apps/32x32/Right.png" width="20" height="20">
     <span data-bind="text: successImportedItemsCount()"></span> items were imported successfully.
@@ -211,17 +249,17 @@
         </div>
     </div>
     <div class="footer_btn">
-        <input type="button" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" value="Close" />
+        <input type="button" class="closeButton" data-bind="click: buttonClick.bind($data, 6)" value="Close" />
     </div>
     <div class="help-link">
         <a href="mailto:support@gathercontent.com">Need help?</a>
     </div>
 </div>
 
-<div data-bind="if: getMode(6)">
+<div data-bind="if: getMode(7)">
     <h2 class="title"><span data-bind="text: errorText"></span></h2>
     <div class="footer_btn">
-        <input type="button" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" value="Close" />
+        <input type="button" class="closeButton" data-bind="click: buttonClick.bind($data, 6)" value="Close" />
     </div>
     <div class="help-link">
         <a href="mailto:support@gathercontent.com">Need help?</a>

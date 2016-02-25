@@ -223,7 +223,7 @@ namespace GatherContent.Connector.Managers.Managers
             return result;
         }
 
-        public ImportResultModel ImportItemsWithLocation(string itemId, List<LocationImportItemModel> items,
+        public ImportResultModel ImportItemsWithLocation(List<LocationImportItemModel> items,
             string projectId, string statusId, string language)
         {
             var importItems = new List<ImportItemModel>();

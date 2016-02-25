@@ -1,11 +1,15 @@
-﻿var ImportManager = function () {
+﻿
+
+
+var ImportManager = function () {
     var MODE = {
         ChooseItmesForImort: 1,
         CheckItemsBeforeImport: 2,
-        Import: 3,
-        ImportResult: 4,
-        Close: 5,
-        Error: 6
+        Confirm: 3,
+        Import: 4,
+        ImportResult: 5,
+        Close: 6,
+        Error: 7
     };
 
     var allItems = [];
@@ -18,6 +22,8 @@
 
     self.projects = ko.observableArray([]),
         self.items = ko.observableArray([]),
+        self.confirmItems = ko.observableArray([]),
+        self.groupedTemplates = ko.observableArray([]),
         self.statuses = ko.observableArray([]),
         self.templates = ko.observableArray([]),
         self.statusPostState = ko.observable(false),
@@ -197,25 +203,71 @@
     self.query.subscribe(self.filter);
 
     //button click events
-    self.switchToCheckItemsBeforeImport = function () {
+    self.ChooseDefaultLocation = function () {
         var result = [];
+        var templateResult = [];
         ko.utils.arrayForEach(self.items(), function (item) {
-            if (item.Checked && item.Checked() === true)
+            if (item.Checked && item.Checked() === true) {
                 result.push(item);
-        });
 
+                var found = false;
+                for (var i = 0; i < templateResult.length; i++) {
+                    if (templateResult[i].Template.name == item.Template.name) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    templateResult.push(item);
+                }
+            }
+        });
+        self.groupedTemplates(templateResult);
         self.items(result);
     }
 
+    self.switchToCheckItemsBeforeImport = function () {
+        var result = [];
+        var items = self.items();
+        self.confirmItems.removeAll();
+        ko.utils.arrayForEach(items, function (item) {
+            if (item.Checked && item.Checked() === true) {
+                var locationItem = self.findByTemplateName(item.Template.name);
+                ko.utils.arrayForEach(locationItem.Mappings, function (mapping) {
+                    var itemMapping = self.findItemMapping(item.Mappings, mapping.Id);
+                    itemMapping.DefaultLocation = mapping.DefaultLocation;
+                    itemMapping.DefaultLocationTitle = mapping.DefaultLocationTitle;
+                    itemMapping.IsImport = mapping.IsImport;
+                });
+                result.push(item);
+            }
+        });
+
+        self.confirmItems(result);
+    }
+
+    self.findByTemplateName = function (data) {
+        return ko.utils.arrayFirst(self.groupedTemplates(), function (item) {
+            var template = item["Template"];
+            return template["name"] === data;
+        });
+    };
+
+    self.findItemMapping = function (array, data) {
+        return ko.utils.arrayFirst(array, function (item) {
+            return item["Id"] === data;
+        });
+    };
+
     self.import = function () {
         var id = getUrlVars()["id"];
-        var items = self.items();
+        var items = self.confirmItems();
         var importItems = [];
         items.forEach(function (item, i) {
             if (item.Mappings.length == 0) {
                 importItems.push({
                     Id: item.Id,
-                    IsImport: true,                    
+                    IsImport: true,
                 });
             }
             item.Mappings.forEach(function (mapping, m) {
@@ -235,7 +287,7 @@
         jQuery.ajax
         ({
             type: "POST",
-            url: '/api/sitecore/Import/ImportItemsWithLocation?id={' + id + '}&projectId=' + project + '&statusId=' + status + '&language=' + lang,
+            url: '/api/sitecore/Import/ImportItemsWithLocation?projectId=' + project + '&statusId=' + status + '&language=' + lang,
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(importItems),
@@ -302,6 +354,7 @@
                 onActivate: function (node) {
                     jQuery('[data-openerid="' + id + '"]').val(node.data.title);
                     mapping.DefaultLocation = node.data.key;
+                    mapping.DefaultLocationTitle = node.data.title;
                 },
                 onLazyRead: function (node) {
                     node.appendAjax({
@@ -328,9 +381,14 @@
                 self.errorText('Please select at least one item');
             } else {
                 self.currentMode(newMode);
-                self.switchToCheckItemsBeforeImport();
+                self.ChooseDefaultLocation();
             }
-        } else if (newMode === MODE.Import) {
+        }
+        else if (newMode === MODE.Confirm) {
+            self.currentMode(newMode);
+            self.switchToCheckItemsBeforeImport();
+        }
+        else if (newMode === MODE.Import) {
             self.currentMode(newMode);
             self.import();
         } else if (newMode === MODE.Close) {
@@ -383,7 +441,6 @@
         window.open(link);
         e.stopImmediatePropagation();
     }
-
 
     self.init();
 }

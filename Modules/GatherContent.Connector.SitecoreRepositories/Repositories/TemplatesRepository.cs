@@ -48,7 +48,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         #endregion
 
 
-      
+
 
         public void CreateTemplate(string projectId, Template template)
         {
@@ -58,21 +58,17 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 var templatesFolder = project.Children.FirstOrDefault(item => item.Name == Constants.TemplatesFolderName);
                 if (templatesFolder != null)
                 {
-                    var folders = templatesFolder.Axes.GetDescendants().Select(item => item.Name).ToList();
-                    if (!folders.Contains(template.Name))
+                    using (new SecurityDisabler())
                     {
+                        var scTemplate = ContextDatabase.GetTemplate(new ID(Constants.GcTemplate));
+                        var validFolderName = ItemUtil.ProposeValidItemName(template.Name);
+                        var createdItem = templatesFolder.Add(validFolderName, scTemplate);
                         using (new SecurityDisabler())
                         {
-                            var scTemplate = ContextDatabase.GetTemplate(new ID(Constants.GcTemplate));
-                            var validFolderName = ItemUtil.ProposeValidItemName(template.Name);
-                            var createdItem = templatesFolder.Add(validFolderName, scTemplate);
-                            using (new SecurityDisabler())
-                            {
-                                createdItem.Editing.BeginEdit();
-                                createdItem.Fields["Temaplate Id"].Value = template.Id.ToString();
-                                createdItem.Fields["Template Name"].Value = template.Name;
-                                createdItem.Editing.EndEdit();
-                            }
+                            createdItem.Editing.BeginEdit();
+                            createdItem.Fields["Temaplate Id"].Value = template.Id.ToString();
+                            createdItem.Fields["Template Name"].Value = template.Name;
+                            createdItem.Editing.EndEdit();
                         }
                     }
                 }

@@ -210,37 +210,32 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 var mappingsFolder = GetMappingFolder(scProject);
                 if (mappingsFolder != null)
                 {
-                    var mappings = mappingsFolder.Axes.GetDescendants();
-                    if (!mappings.Select(item => item.Name).ToList().Contains(templateMapping.Name))
+                    using (new SecurityDisabler())
                     {
+                        var mapping = ContextDatabase.GetTemplate(new ID(Constants.GcTemplateMapping));
+
+                        SetupLinkedGCTemplate(templateMapping);
+
+                        var validFolderName = ItemUtil.ProposeValidItemName(templateMapping.Name);
+                        var createdItem = mappingsFolder.Add(validFolderName, mapping);
                         using (new SecurityDisabler())
                         {
-                            var mapping = ContextDatabase.GetTemplate(new ID(Constants.GcTemplateMapping));
-
-                            SetupLinkedGCTemplate(templateMapping);
-
-                            var validFolderName = ItemUtil.ProposeValidItemName(templateMapping.Name);
-                            var createdItem = mappingsFolder.Add(validFolderName, mapping);
-                            using (new SecurityDisabler())
+                            createdItem.Editing.BeginEdit();
+                            createdItem.Fields["Sitecore Template"].Value = templateMapping.SitecoreTemplateId;
+                            createdItem.Fields["GC Template Proxy"].Value = templateMapping.GcTemplateProxy;
+                            createdItem.Fields["Default Location"].Value = templateMapping.DefaultLocation;
+                            if (!string.IsNullOrEmpty(templateMapping.GcMappingTitle))
                             {
-                                createdItem.Editing.BeginEdit();
-                                createdItem.Fields["Sitecore Template"].Value = templateMapping.SitecoreTemplateId;
-                                createdItem.Fields["GC Template Proxy"].Value = templateMapping.GcTemplateProxy;
-                                createdItem.Fields["Default Location"].Value = templateMapping.DefaultLocation;
-                                if (!string.IsNullOrEmpty(templateMapping.GcMappingTitle))
-                                {
-                                    createdItem.Fields["Template mapping title"].Value = templateMapping.GcMappingTitle;
-                                }
-                                createdItem.Fields["GC Template"].Value = templateMapping.GcTemplateId;
-                                createdItem.Fields["Last Mapped Date"].Value = DateUtil.ToIsoDate(DateTime.Now);
-                                createdItem.Fields["Last Updated in GC"].Value = templateMapping.LastUpdated;
-                                createdItem.Editing.EndEdit();
+                                createdItem.Fields["Template mapping title"].Value = templateMapping.GcMappingTitle;
                             }
-
-                            return createdItem;
+                            createdItem.Fields["GC Template"].Value = templateMapping.GcTemplateId;
+                            createdItem.Fields["Last Mapped Date"].Value = DateUtil.ToIsoDate(DateTime.Now);
+                            createdItem.Fields["Last Updated in GC"].Value = templateMapping.LastUpdated;
+                            createdItem.Editing.EndEdit();
                         }
+
+                        return createdItem;
                     }
-                    return mappings.FirstOrDefault(item => item.Name == templateMapping.Name);
                 }
                 return null;
             }
@@ -403,7 +398,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 Id = mapping.ID.ToString(),
                 Title = mapping["Template mapping title"],
                 DefaultLocation = mapping["Default Location"],
-                DefaultLocationTitle = GetItem(mapping["Default Location"])!=null ? GetItem(mapping["Default Location"]).Name:"",               
+                DefaultLocationTitle = GetItem(mapping["Default Location"]) != null ? GetItem(mapping["Default Location"]).Name : "",
                 Name = mapping.Name,
                 ScTemplate = GetItem(mapping["Sitecore Template"]) != null ? GetItem(mapping["Sitecore Template"]).Name : "",
             }).ToList();

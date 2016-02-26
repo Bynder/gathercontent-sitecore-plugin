@@ -385,8 +385,21 @@ var ImportManager = function () {
             }
         }
         else if (newMode === MODE.Confirm) {
-            self.currentMode(newMode);
-            self.switchToCheckItemsBeforeImport();
+            var isError = false;
+            ko.utils.arrayForEach(self.groupedTemplates(), function (item) {
+                ko.utils.arrayForEach(item.Mappings, function (mapping) {
+                    if (mapping.IsImport && mapping.DefaultLocation == "") {
+                        isError = true;
+                    }
+                });
+            });
+
+            if (!isError) {
+                self.currentMode(newMode);
+                self.switchToCheckItemsBeforeImport();
+            } else {
+                self.errorText('Please select default location');
+            }
         }
         else if (newMode === MODE.Import) {
             self.currentMode(newMode);

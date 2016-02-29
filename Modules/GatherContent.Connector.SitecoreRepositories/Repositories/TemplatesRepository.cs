@@ -2,10 +2,8 @@
 using System.Linq;
 using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.IRepositories.Models.Mapping;
-using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.Data.Managers;
-using Sitecore.SecurityModel;
 using Template = GatherContent.Connector.Entities.Entities.GCTemplate;
 using TemplateField = Sitecore.Data.Templates.TemplateField;
 
@@ -18,20 +16,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
         #region Utilities
 
-        private Item GetTemplate(string gcProjectId, string gcTemplateId)
-        {
-            var project = GetProject(gcProjectId);
-
-            if (project != null)
-            {
-                return project.Axes.GetDescendants()
-                    .FirstOrDefault(item => item["Temaplate Id"] == gcTemplateId &
-                                            item.TemplateID ==
-                                            new ID(Constants.GcTemplate));
-
-            }
-            return null;
-        }
 
         private IEnumerable<Item> GetTemplates(string id)
         {
@@ -46,34 +30,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
 
         #endregion
-
-
-
-
-        public void CreateTemplate(string projectId, Template template)
-        {
-            var project = GetProject(projectId);
-            if (project != null)
-            {
-                var templatesFolder = project.Children.FirstOrDefault(item => item.Name == Constants.TemplatesFolderName);
-                if (templatesFolder != null)
-                {
-                    using (new SecurityDisabler())
-                    {
-                        var scTemplate = ContextDatabase.GetTemplate(new ID(Constants.GcTemplate));
-                        var validFolderName = ItemUtil.ProposeValidItemName(template.Name);
-                        var createdItem = templatesFolder.Add(validFolderName, scTemplate);
-                        using (new SecurityDisabler())
-                        {
-                            createdItem.Editing.BeginEdit();
-                            createdItem.Fields["Temaplate Id"].Value = template.Id.ToString();
-                            createdItem.Fields["Template Name"].Value = template.Name;
-                            createdItem.Editing.EndEdit();
-                        }
-                    }
-                }
-            }
-        }
 
 
         public List<CmsTemplate> GetTemplatesModel(string id)
@@ -104,11 +60,5 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return model;
         }
 
-
-        public bool TemplateIsEnabled(int projectId, int templateId)
-        {
-            var template = GetTemplate(projectId.ToString(), templateId.ToString());
-            return template == null;
-        }
     }
 }

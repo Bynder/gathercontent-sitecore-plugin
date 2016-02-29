@@ -3,8 +3,8 @@ using System.Linq;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.GatherContentService.Services;
+using GatherContent.Connector.IRepositories.Models.Mapping;
 using GatherContent.Connector.Managers.Models.TemplateModel;
-using GatherContent.Connector.SitecoreRepositories;
 using GatherContent.Connector.SitecoreRepositories.Repositories;
 
 namespace GatherContent.Connector.Managers.Managers
@@ -52,9 +52,9 @@ namespace GatherContent.Connector.Managers.Managers
             return activeProjects;
         }
 
-        public TemplateMappingModel GetTemplateMappingModel(string gcTemplateProxyId)
+        public TemplateMappingModel GetTemplateMappingModel()
         {
-            var model = new TemplateMappingModel {GcTemplateProxyId = gcTemplateProxyId};
+            var model = new TemplateMappingModel();
             var account = GetAccount();
 
             var projects = GetProjects(account.Id);
@@ -94,12 +94,11 @@ namespace GatherContent.Connector.Managers.Managers
 
                     foreach (var gcTemplate in gcSelectedTemplates)
                     {
-                        var newTemplate = new GCTemplate
+                        _mappingRepository.CreateMapping(project.ProjectId.ToString(), new TemplateMapping
                         {
                             Name = gcTemplate.TemplateName,
-                            Id = gcTemplate.TemplateId
-                        };
-                        _templatesRepository.CreateTemplate(project.ProjectId.ToString(), newTemplate);
+                            GcTemplateId = gcTemplate.TemplateId.ToString()
+                        });
                     }
                 }
             }

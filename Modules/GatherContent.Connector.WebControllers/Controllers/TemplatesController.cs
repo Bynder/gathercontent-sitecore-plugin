@@ -17,11 +17,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
             _templateManager = new TemplatesManager();
         }
 
-        public ActionResult Get(string gcTemplateProxyId)
+        public ActionResult Get()
         {
             try
             {
-                var model = _templateManager.GetTemplateMappingModel(gcTemplateProxyId);
+                var model = _templateManager.GetTemplateMappingModel();
                 return Json(model, JsonRequestBehavior.AllowGet);
             }
             catch (WebException exception)

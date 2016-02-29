@@ -406,7 +406,7 @@ namespace GatherContent.Connector.Managers.Managers
             var mappings = _mappingRepository.GetMappings();
 
             var model = mappings.Select(cmsMappingModel => new MappingModel(cmsMappingModel.GcProjectName, cmsMappingModel.GcTemplateId,
-                cmsMappingModel.GcTemplateName, cmsMappingModel.GcTemplateProxy, cmsMappingModel.CmsTemplateName, cmsMappingModel.LastMappedDateTime,
+                cmsMappingModel.GcTemplateName, cmsMappingModel.CmsMappingId, cmsMappingModel.CmsTemplateName, cmsMappingModel.CmsMappingTitle, cmsMappingModel.LastMappedDateTime,
                 cmsMappingModel.LastUpdatedDate, cmsMappingModel.EditButtonTitle, cmsMappingModel.IsMapped, cmsMappingModel.IsHighlightingDate)).ToList();
             foreach (var mapping in model)
             {
@@ -442,7 +442,6 @@ namespace GatherContent.Connector.Managers.Managers
                 {
                     mapping.LastUpdatedDate = "Removed from GatherContent";
                     mapping.RemovedFromGc = true;
-                    //throw;
                 }
 
             }
@@ -450,7 +449,7 @@ namespace GatherContent.Connector.Managers.Managers
             return model;
         }
 
-        public TemplateMapModel GetTemplateMappingModel(string id, string gcTemplateProxyId)
+        public TemplateMapModel GetTemplateMappingModel(string id, string scMappingId)
         {
             var model = new TemplateMapModel();
 
@@ -459,7 +458,7 @@ namespace GatherContent.Connector.Managers.Managers
 
             model.GcProjectName = project.Data.Name;
             model.GcTemplateName = template.Data.Name;
-            model.GcTemplateProxyId = gcTemplateProxyId;
+            model.ScMappingId = scMappingId;
 
             var templateFolderId = _accountSettings.TemplateFolderId;
             if (string.IsNullOrEmpty(templateFolderId))
@@ -471,7 +470,7 @@ namespace GatherContent.Connector.Managers.Managers
             {
                 throw new Exception("Template folder is empty");
             }
-            var addMappingModel = _mappingRepository.GetAddMappingModel(project.Data.Id.ToString(), template, gcTemplateProxyId);
+            var addMappingModel = _mappingRepository.GetAddMappingModel(project.Data.Id.ToString(), template, scMappingId);
 
             var templates = MapSitecoreTemplates(scTemplates);
             var addSitecoreMappingModel = MapAddMappingModel(addMappingModel);
@@ -501,14 +500,13 @@ namespace GatherContent.Connector.Managers.Managers
 
             if (model.IsEdit)
             {
-
-                _mappingRepository.UpdateMapping(project.Data.Id, template.Data.Id, new TemplateMapping
+                _mappingRepository.UpdateMapping(project.Data.Id, new TemplateMapping
                 {
                     SitecoreTemplateId = model.SelectedTemplateId,
                     Name = template.Data.Name,
                     GcTemplateId = template.Data.Id.ToString(),
                     GcMappingTitle = model.GcMappingTitle,
-                    GcTemplateProxy = model.GcTemplateProxyId,
+                    CmsMappingId = model.ScMappingId,
                     DefaultLocation = model.DefaultLocation
                 }, list);
 
@@ -522,7 +520,7 @@ namespace GatherContent.Connector.Managers.Managers
                     GcTemplateId = template.Data.Id.ToString(),
                     LastUpdated = template.Data.Updated.ToString(),
                     GcMappingTitle = model.GcMappingTitle,
-                    GcTemplateProxy = model.GcTemplateProxyId,
+                    CmsMappingId = model.ScMappingId,
                     DefaultLocation = model.DefaultLocation
                 }, list);
 
@@ -530,14 +528,9 @@ namespace GatherContent.Connector.Managers.Managers
 
         }
 
-        public void DeleteMapping(string id, string gcTemplateProxyId)
+        public void DeleteMapping(string scMappingId)
         {
-            var template = _templateService.GetSingleTemplate(id);
-
-            _mappingRepository.DeleteMapping(template, gcTemplateProxyId);
-            //_mappingRepository.DeleteTemplate(template);
-
-
+            _mappingRepository.DeleteMapping(scMappingId);
         }
 
         public List<MappingResultModel> MapItems(List<GCItem> items, string projectId)

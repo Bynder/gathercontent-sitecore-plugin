@@ -21,25 +21,24 @@ function ViewModel() {
 
     editMapping = function () {
         var id = this.GcTemplateId;
-        var gcTemplateProxyId = this.GcTemplateProxy;
-        scForm.showModalDialog("/sitecore modules/shell/gathercontent/Mappings/AddOrUpdateMapping.html?id=" + id + "&gcTemplateProxyId=" + gcTemplateProxyId,
+        var scMappingId = this.ScMappingId;
+        scForm.showModalDialog("/sitecore modules/shell/gathercontent/Mappings/AddOrUpdateMapping.html?id=" + id + "&scMappingId=" + scMappingId,
             null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:600;dialogMinWidth:700;dialogWidth:700;dialogHeight:800;header: Manage Field Mappings");
     };
 
 
     removeMapping = function () {
 
-        var id = this.GcTemplateId;
-        var gcTemplateProxyId = this.GcTemplateProxy;
+        var scMappingId = this.ScMappingId;
 
         var confirmDelete = confirm('Are you sure you want to delete this?');
         if (confirmDelete) {
             jQuery.ajax({
                 type: 'DELETE',
-                url: '/api/sitecore/mappings/Delete?id=' + id + "&gcTemplateProxyId=" + gcTemplateProxyId,
+                url: '/api/sitecore/mappings/Delete?scMappingId=' + scMappingId,
                 success: function () {
                     self.mappings.remove(function (mapping) {
-                        return mapping.GcTemplateProxy == gcTemplateProxyId;
+                        return mapping.ScMappingId == scMappingId;
                     });
                     self.isError(false);
                 },

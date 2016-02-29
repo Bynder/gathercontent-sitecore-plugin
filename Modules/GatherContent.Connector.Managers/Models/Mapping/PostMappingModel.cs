@@ -15,7 +15,7 @@ namespace GatherContent.Connector.Managers.Models.Mapping
         public string TemplateId { get; set; }
         public string SelectedTemplateId { get; set; }
         public string GcMappingTitle { get; set; }
-        public string GcTemplateProxyId { get; set; }
+        public string ScMappingId { get; set; }
         public string DefaultLocation { get; set; }
     }
 }

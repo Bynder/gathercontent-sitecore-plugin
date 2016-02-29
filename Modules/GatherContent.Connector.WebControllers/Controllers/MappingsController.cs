@@ -40,11 +40,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
 
 
-        public ActionResult GetMapping(string id, string gcTemplateProxyId)
+        public ActionResult GetMapping(string id, string scMappingId)
         {
             try
             {
-                var model = _mappingManager.GetTemplateMappingModel(id, gcTemplateProxyId);
+                var model = _mappingManager.GetTemplateMappingModel(id, scMappingId);
                 return Json(model, JsonRequestBehavior.AllowGet);
             }
             catch (WebException exception)
@@ -86,11 +86,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
         }
 
         [HttpDelete]
-        public ActionResult Delete(string id, string gcTemplateProxyId)
+        public ActionResult Delete(string scMappingId)
         {
             try
             {
-                _mappingManager.DeleteMapping(id, gcTemplateProxyId);
+                _mappingManager.DeleteMapping(scMappingId);
                 return new EmptyResult();
             }
             catch (WebException exception)

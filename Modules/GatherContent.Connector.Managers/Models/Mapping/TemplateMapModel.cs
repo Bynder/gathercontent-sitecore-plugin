@@ -12,14 +12,11 @@ namespace GatherContent.Connector.Managers.Models.Mapping
 
         public string GcProjectName { get; set; }
         public string GcTemplateName { get; set; }
-        //public string GcMappingTitle { get; set; }
         public List<SitecoreTemplate> SitecoreTemplates { get; set; }
         public SitecoreTemplate SelectedTemplate { get; set; }
         public AddMappingModel AddMappingModel { get; set; }
         public Dictionary<string, string> Rules { get; set; }
-
-
-        public string GcTemplateProxyId { get; set; }
+        public string ScMappingId { get; set; }
     }
 
     public class TemplateTab

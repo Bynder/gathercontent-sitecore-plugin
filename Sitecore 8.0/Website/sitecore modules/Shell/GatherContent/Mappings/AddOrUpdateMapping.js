@@ -1,6 +1,6 @@
 ﻿var id = getUrlVars()["id"];
-var gcTemplateProxyId = getUrlVars()["gcTemplateProxyId"];
-var url = '/api/sitecore/mappings/GetMapping?id=' + id + "&gcTemplateProxyId=" + gcTemplateProxyId;
+var scMappingId = getUrlVars()["scMappingId"];
+var url = '/api/sitecore/mappings/GetMapping?id=' + id + "&scMappingId=" + scMappingId;
 
 function ViewModel() {
     var self = this;
@@ -8,7 +8,7 @@ function ViewModel() {
     this.Rules = ko.observableArray();
     this.SelectedTemplate = ko.observable();
     this.IsEdit = ko.observable();
-    this.GcTemplateProxyId = ko.observable();
+    this.ScMappingId = ko.observable();
     this.GcProjectName = ko.observable();
     this.GcTemplateName = ko.observable();
     this.GcMappingTitle = ko.observable();
@@ -31,7 +31,7 @@ function ViewModel() {
             self.GcTemplateName("Template:" + " " + data.GcTemplateName);
             self.SitecoreTemplates(data.SitecoreTemplates),
             self.Rules(data.Rules),
-            self.GcTemplateProxyId(data.GcTemplateProxyId),
+            self.ScMappingId(data.ScMappingId),
             self.SelectedTemplate(self.find("SitrecoreTemplateId", data.AddMappingModel.SelectedTemplateId));
             self.GcMappingTitle(data.AddMappingModel.GcMappingTitle);
             self.OpenerId(data.AddMappingModel.OpenerId);
@@ -80,13 +80,12 @@ function ViewModel() {
             this.SelectedTemplateId = self.SelectedTemplateId();
             this.TemplateId = self.GcTemplateId();
             this.GcMappingTitle = self.GcMappingTitle();
-            this.GcTemplateProxyId = self.GcTemplateProxyId();
+            this.ScMappingId = self.ScMappingId();
             this.DefaultLocation = self.DefaultLocation();
         }
 
         jQuery.ajax({
-            url: '/api/sitecore/mappings/Post?isEdit=' + self.IsEdit() + '&templateId=' + self.GcTemplateId() +
-                '&selectedTemplateId=' + self.SelectedTemplateId() + '&gcMappingTitle=' + self.GcMappingTitle() + '&gcTemplateProxyId=' + self.GcTemplateProxyId(),
+            url: '/api/sitecore/mappings/Post',
             type: 'post',
             data: JSON.stringify(model),
             contentType: 'application/json',

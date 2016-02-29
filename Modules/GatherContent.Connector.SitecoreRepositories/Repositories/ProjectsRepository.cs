@@ -12,7 +12,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
     {
         private void CreateProjectFolders(string id)
         {
-            var names = new[] { Constants.TemplatesFolderName, Constants.MappingFolderName };
+            var names = new[] { Constants.MappingFolderName };
             foreach (var name in names)
             {
                 using (new SecurityDisabler())
@@ -25,37 +25,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-        public Item AddProjectFolder(string parentSitecoreId, Project project)
-        {
-            var parentItem = GetItem(parentSitecoreId);
-            var projectsFolder = parentItem.Axes.SelectSingleItem(String.Format("./descendant::*[@@templatename='{0}']", Constants.ProjectFolderTemplateName));
-            if (projectsFolder != null)
-            {
-                var folders = projectsFolder.Axes.GetDescendants();
-                if (!folders.Select(item => item.Name).ToList().Contains(project.Name))
-                {
-                    using (new SecurityDisabler())
-                    {
-                        var template = ContextDatabase.GetTemplate(new ID(Constants.GcProject));
-                        var validFolderName = ItemUtil.ProposeValidItemName(project.Name);
-                        var createdItem = projectsFolder.Add(validFolderName, template);
-                        using (new SecurityDisabler())
-                        {
-                            createdItem.Editing.BeginEdit();
-                            createdItem.Fields["Id"].Value = project.Id.ToString();
-                            createdItem.Fields["Name"].Value = project.Name;
-                            createdItem.Editing.EndEdit();
-                        }
-
-                        CreateProjectFolders(createdItem.ID.ToString());
-
-                        return createdItem;
-                    }
-                }
-                return folders.FirstOrDefault(item => item.Name == project.Name);
-            }
-            return null;
-        }
 
 
         public Item GetProject(int projectId)
@@ -91,18 +60,5 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
             return projectItem;
         }
-
-        //public Item GetProjectFolderByName(string name)
-        //{
-        //    var parentItem = GetItem(Constants.AccountItemId);
-        //    var projectsFolder = parentItem.Axes.SelectSingleItem(String.Format("./descendant::*[@@templatename='{0}']", Constants.ProjectFolderTemplateName));
-        //    if (projectsFolder != null)
-        //    {
-        //        return projectsFolder.Axes.GetDescendant(name);
-        //    }
-        //    return null;
-        //}
-
-
     }
 }

@@ -1,29 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Web.Mvc;
-using GatherContent.Connector.Managers.Managers;
+using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.ImportItems;
 using Newtonsoft.Json;
 using Sitecore.Diagnostics;
-using Sitecore.Mvc.Controllers;
 
 namespace GatherContent.Connector.WebControllers.Controllers
 {
-    public class ImportController : SitecoreController
+    /// <summary>
+    /// 
+    /// </summary>
+    public class ImportController : BaseController
     {
-        private readonly ImportManager _importManager;
-        private readonly DropTreeManager _dropTreeManager;
+        protected IImportManager _importManager;
+        protected IDropTreeManager _dropTreeManager;
 
-        public ImportController()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dropTreeManager"></param>
+        /// <param name="importManager"></param>
+        public ImportController(IDropTreeManager dropTreeManager, IImportManager importManager)
         {
-            _importManager = new ImportManager();
-            _dropTreeManager = new DropTreeManager();
+            Debugger.Break();
+
+            _importManager = importManager;
+            _dropTreeManager = dropTreeManager;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
         public string Get(string id, string projectId)
         {
+            Debugger.Break();
+
             try
             {
                 SelectItemsForImportModel result = _importManager.GetModelForSelectImportItemsDialog(id, projectId);
@@ -43,6 +60,12 @@ namespace GatherContent.Connector.WebControllers.Controllers
             
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
         public string GetMultiLocation(string id, string projectId)
         {
             try
@@ -64,7 +87,15 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="projectId"></param>
+        /// <param name="statusId"></param>
+        /// <param name="language"></param>
+        /// <param name="items"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult ImportItems(string id, string projectId, string statusId, string language, List<ImportItemModel> items)
         {
@@ -85,7 +116,14 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="statusId"></param>
+        /// <param name="language"></param>
+        /// <param name="items"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult ImportItemsWithLocation(string projectId, string statusId, string language, List<LocationImportItemModel> items)
         {
@@ -106,6 +144,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string GetTopLevelNode(string id)
         {
             try
@@ -127,6 +170,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string GetChildrenAsJson(string id)
         {
             try
@@ -146,6 +194,5 @@ namespace GatherContent.Connector.WebControllers.Controllers
                 return exception.Message;
             }
         }
-
     }
 }

@@ -1,10 +1,18 @@
 ﻿using System;
 using System.Runtime.Caching;
+using GatherContent.Connector.Managers.Interfaces;
 
 namespace GatherContent.Connector.Managers.Managers
 {
-    class CacheManager
+    /// <summary>
+    /// 
+    /// </summary>
+    public class CacheManager : ICacheManager
     {
+	    public CacheManager()
+	    {
+		    
+	    }
         protected ObjectCache Cache
         {
             get

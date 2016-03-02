@@ -1,6 +1,6 @@
 ﻿namespace GatherContent.Connector.IRepositories.Interfaces
 {
-    public interface IProjectsRepository
+    public interface IProjectsRepository : IRepository
     {
     }
 }

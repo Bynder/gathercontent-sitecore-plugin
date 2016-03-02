@@ -3,11 +3,12 @@ using System.Text;
 using System.Web.Script.Serialization;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
+using GatherContent.Connector.GatherContentService.Interfaces;
 using GatherContent.Connector.GatherContentService.Services.Abstract;
 
 namespace GatherContent.Connector.GatherContentService.Services
 {
-    public class ItemsService : BaseService
+    public class ItemsService : BaseService, IItemsService
     {
         protected override string ServiceUrl
         {

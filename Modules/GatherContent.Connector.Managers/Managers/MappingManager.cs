@@ -4,9 +4,12 @@ using System.Globalization;
 using System.Linq;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
-using GatherContent.Connector.GatherContentService.Services;
+using GatherContent.Connector.GatherContentService.Interfaces;
+using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.IRepositories.Models.Mapping;
+using GatherContent.Connector.Managers.Enums;
+using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.Mapping;
 using GatherContent.Connector.Managers.Models.UpdateItems;
 using GatherContent.Connector.SitecoreRepositories.Repositories;
@@ -14,48 +17,61 @@ using GatherContent.Connector.Managers.Models.ImportItems;
 
 namespace GatherContent.Connector.Managers.Managers
 {
-    public enum TryMapItemState
-    {
-        Success = 0,
-        TemplateError = 1,
-        FieldError = 2
-    }
-
-    public class MappingManager : BaseManager
+    /// <summary>
+    /// 
+    /// </summary>
+    public class MappingManager : BaseManager, IMappingManager
     {
         #region Constants
+
         public const string FieldGcContentId = "{955A4DD9-6A01-458E-9791-3C99F5E076A8}";
         public const string FieldLastSyncDate = "{F9D2EA57-86A2-45CF-9C28-8D8CA72A2669}";
+
         #endregion
 
-
-        private readonly MappingRepository _mappingRepository;
-        private readonly TemplatesRepository _templatesRepository;
+        protected IMappingRepository _mappingRepository;
+        protected ITemplatesRepository _templatesRepository;
         
-        private readonly TemplatesService _templateService;
-        private readonly ProjectsService _projectService;
-        private readonly ItemsService _itemService;
+        protected IItemsService _itemService;
 
-        private readonly GCAccountSettings _accountSettings;
+        protected GCAccountSettings _accountSettings;
 
-        public MappingManager()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mappingRepository"></param>
+        /// <param name="templatesRepository"></param>
+        /// <param name="accountsService"></param>
+        /// <param name="projectsService"></param>
+        /// <param name="templateService"></param>
+        /// <param name="itemService"></param>
+        /// <param name="cacheManager"></param>
+        /// <param name="accountSettings"></param>
+        public MappingManager(
+            IMappingRepository mappingRepository,
+            ITemplatesRepository templatesRepository,
+            IAccountsService accountsService,
+            IProjectsService projectsService,
+            ITemplatesService templateService,
+            IItemsService itemService,
+            ICacheManager cacheManager,
+            GCAccountSettings accountSettings) : base(accountsService, projectsService, templateService, cacheManager)
         {
-            var accountsRepository = new AccountsRepository();
-            _accountSettings = accountsRepository.GetAccountSettings();
+	        _accountSettings = accountSettings;
 
-            _mappingRepository = new MappingRepository();
-            _templatesRepository = new TemplatesRepository();
+            _mappingRepository = mappingRepository;
+            _templatesRepository = templatesRepository;
 
-
-            _templateService = new TemplatesService(_accountSettings);
-            _itemService = new ItemsService(_accountSettings);
-            _projectService = new ProjectsService(_accountSettings);
+            _itemService = itemService;
         }
 
 
         #region Utilities
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private Dictionary<string, string> GetMapRules()
         {
             return new Dictionary<string, string>
@@ -68,8 +84,11 @@ namespace GatherContent.Connector.Managers.Managers
             };
         }
 
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
         private DateTime ConvertMsecToDate(double date)
         {
             var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
@@ -78,6 +97,11 @@ namespace GatherContent.Connector.Managers.Managers
             return gcUpdateDate;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
         private string ConvertMsecToFormattedDate(double date)
         {
             var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
@@ -91,7 +115,11 @@ namespace GatherContent.Connector.Managers.Managers
             return gcUpdateDate;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="scTemplates"></param>
+        /// <returns></returns>
         private IEnumerable<SitecoreTemplate> MapSitecoreTemplates(IEnumerable<CmsTemplate> scTemplates)
         {
             var templates = new List<SitecoreTemplate>();
@@ -124,9 +152,13 @@ namespace GatherContent.Connector.Managers.Managers
             return templates;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="addMappingModel"></param>
+        /// <returns></returns>
         private AddMappingModel MapAddMappingModel(AddMapping addMappingModel)
         {
-
             var addSitecoreMappingModel = new AddMappingModel
             {
                 IsEdit = addMappingModel.IsEdit,
@@ -137,7 +169,6 @@ namespace GatherContent.Connector.Managers.Managers
                 DefaultLocation = addMappingModel.DefaultLocation,
                 DefaultLocationTitle = addMappingModel.DefaultLocationTitle
             };
-
 
             foreach (var cmsTab in addMappingModel.Tabs)
             {
@@ -159,6 +190,12 @@ namespace GatherContent.Connector.Managers.Managers
             return addSitecoreMappingModel;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="templates"></param>
+        /// <returns></returns>
         private List<MappingResultModel> TryMapItems(List<GCItem> items, List<MappingTemplateModel> templates)
         {
             var result = new List<MappingResultModel>();
@@ -176,19 +213,33 @@ namespace GatherContent.Connector.Managers.Managers
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <param name="templatesDictionary"></param>
+        /// <returns></returns>
         private GCTemplate GetTemplate(int templateId, Dictionary<int, GCTemplate> templatesDictionary)
         {
             GCTemplate gcTemplate;
             templatesDictionary.TryGetValue(templateId, out gcTemplate);
             if (gcTemplate == null)
             {
-                gcTemplate = _templateService.GetSingleTemplate(templateId.ToString()).Data;
+                gcTemplate = TemplatesService.GetSingleTemplate(templateId.ToString()).Data;
                 templatesDictionary.Add(templateId, gcTemplate);
             }
 
             return gcTemplate;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gcItem"></param>
+        /// <param name="gcTemplate"></param>
+        /// <param name="selectedMappingId"></param>
+        /// <param name="result"></param>
+        /// <param name="selectedLocationId"></param>
         private void TryMapItem(GCItem gcItem, GCTemplate gcTemplate, string selectedMappingId, out MappingResultModel result, string selectedLocationId = null)
         {
             bool isUpdate = gcItem is UpdateGCItem;
@@ -245,6 +296,13 @@ namespace GatherContent.Connector.Managers.Managers
             result = new MappingResultModel(gcItem, fields, gcTemplate.Name, template.CMSTemplateId, cmsId, message, true, selectedLocationId);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="gcTemplate"></param>
+        /// <param name="templates"></param>
+        /// <param name="result"></param>
         private void TryMapItem(GCItem item, GCTemplate gcTemplate, List<MappingTemplateModel> templates, out MappingResultModel result)
         {
             bool isUpdate = item is UpdateGCItem;
@@ -261,16 +319,13 @@ namespace GatherContent.Connector.Managers.Managers
                 result = new MappingResultModel(item, null, gcTemplate.Name, null, string.Empty, errorMessage, false);
                 return;
             }
-
-
-
+            
             List<ImportCMSField> fields;
             IEnumerable<IGrouping<string, MappingFieldModel>> groupedFields = template.Fields.GroupBy(i => i.CMSField);
 
             var files = new List<File>();
             if (item.Config.SelectMany(config => config.Elements).Select(element => element.Type).Contains("files"))
             {
-
                 foreach (var file in _itemService.GetItemFiles(item.Id.ToString()).Data)
                 {
                     files.Add(new File
@@ -280,12 +335,9 @@ namespace GatherContent.Connector.Managers.Managers
                         FieldId = file.Field,
                         UpdatedDate = file.Updated
                     });
-
-
                 }
             }
-
-
+            
             TryMapItemState mapState = TryMapFields(gcFields, groupedFields, files, out fields);
             if (mapState == TryMapItemState.FieldError)
             {
@@ -305,6 +357,14 @@ namespace GatherContent.Connector.Managers.Managers
             result = new MappingResultModel(item, fields, gcTemplate.Name, template.CMSTemplateId, cmsId, message);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gcFields"></param>
+        /// <param name="fieldsMappig"></param>
+        /// <param name="files"></param>
+        /// <param name="importCMSField"></param>
+        /// <returns></returns>
         private TryMapItemState TryMapField(List<Element> gcFields, IGrouping<string, MappingFieldModel> fieldsMappig, List<File> files, out ImportCMSField importCMSField)
         {
             var cmsFieldName = fieldsMappig.Key;
@@ -319,8 +379,7 @@ namespace GatherContent.Connector.Managers.Managers
                 importCMSField = new ImportCMSField(string.Empty, cmsFieldName, null, string.Empty, null, null);
                 return TryMapItemState.FieldError;
             }
-
-
+            
             if (IsMappedFieldsHaveDifrentTypes(gcFieldsForMapping))
             {
                 importCMSField = new ImportCMSField(string.Empty, cmsFieldName, field.Label, string.Empty, null, null);
@@ -336,6 +395,13 @@ namespace GatherContent.Connector.Managers.Managers
             return TryMapItemState.Success;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="templates"></param>
+        /// <param name="templateId"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
         private TryMapItemState TryGetTemplate(List<MappingTemplateModel> templates, string templateId, out MappingTemplateModel result)
         {
             if (templates == null)
@@ -351,6 +417,14 @@ namespace GatherContent.Connector.Managers.Managers
             return TryMapItemState.Success;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gcFields"></param>
+        /// <param name="fieldsMappig"></param>
+        /// <param name="files"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
         private TryMapItemState TryMapFields(List<Element> gcFields, IEnumerable<IGrouping<string, MappingFieldModel>> fieldsMappig, List<File> files, out List<ImportCMSField> result)
         {
             result = new List<ImportCMSField>();
@@ -366,14 +440,22 @@ namespace GatherContent.Connector.Managers.Managers
             return TryMapItemState.Success;
         }
 
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fields"></param>
+        /// <returns></returns>
         private string GetValue(List<Element> fields)
         {
             string value = string.Join("", fields.Select(i => i.Value));
             return value;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fields"></param>
+        /// <returns></returns>
         private List<Option> GetOptions(List<Element> fields)
         {
             var result = new List<Option>();
@@ -385,11 +467,22 @@ namespace GatherContent.Connector.Managers.Managers
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fields"></param>
+        /// <returns></returns>
         private bool IsMappedFieldsHaveDifrentTypes(List<Element> fields)
         {
             return fields.Select(i => i.Type).Distinct().Count() > 1;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldsMappig"></param>
+        /// <param name="gcFields"></param>
+        /// <returns></returns>
         private List<Element> GetFieldsForMapping(IGrouping<string, MappingFieldModel> fieldsMappig, List<Element> gcFields)
         {
             IEnumerable<string> gsFiledNames = fieldsMappig.Select(i => i.GCField);
@@ -400,7 +493,10 @@ namespace GatherContent.Connector.Managers.Managers
 
         #endregion
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public List<MappingModel> GetMappingModel()
         {
             var mappings = _mappingRepository.GetMappings();
@@ -449,6 +545,12 @@ namespace GatherContent.Connector.Managers.Managers
             return model;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="scMappingId"></param>
+        /// <returns></returns>
         public TemplateMapModel GetTemplateMappingModel(string id, string scMappingId)
         {
             var model = new TemplateMapModel();
@@ -486,8 +588,8 @@ namespace GatherContent.Connector.Managers.Managers
 
         public void PostMapping(PostMappingModel model)
         {
-            var template = _templateService.GetSingleTemplate(model.TemplateId);
-            var project = _projectService.GetSingleProject(template.Data.ProjectId.ToString());
+            var template = TemplatesService.GetSingleTemplate(model.TemplateId);
+            var project = ProjectsService.GetSingleProject(template.Data.ProjectId.ToString());
 
             var list = (from tab in model.TemplateTabs
                         from templateField in tab.Fields
@@ -528,28 +630,48 @@ namespace GatherContent.Connector.Managers.Managers
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="scMappingId"></param>
         public void DeleteMapping(string scMappingId)
         {
             _mappingRepository.DeleteMapping(scMappingId);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
         public List<MappingResultModel> MapItems(List<GCItem> items, string projectId)
         {
-            List<MappingTemplateModel> templates = _mappingRepository.GetTemplateMappings(projectId);
+            List<MappingTemplateModel> templates = new List<MappingTemplateModel>(); //TODO:_mappingRepository.GetTemplateMappings(projectId);
 
             List<MappingResultModel> result = TryMapItems(items, templates);
 
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
         public List<MappingResultModel> MapItems(List<GCItem> items)
         {
-            List<MappingTemplateModel> templates = _mappingRepository.GetAllTemplateMappings();
+            List<MappingTemplateModel> templates = new List<MappingTemplateModel>(); //TODO:_mappingRepository.GetAllTemplateMappings();
             List<MappingResultModel> result = TryMapItems(items, templates);
 
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
         public List<MappingResultModel> MapItems(List<ImportItemModel> items)
         {
             var result = new List<MappingResultModel>();
@@ -571,6 +693,5 @@ namespace GatherContent.Connector.Managers.Managers
 
             return result;
         }
-     
     }
 }

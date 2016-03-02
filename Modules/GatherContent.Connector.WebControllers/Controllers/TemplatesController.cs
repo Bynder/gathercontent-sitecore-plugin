@@ -1,22 +1,28 @@
 ﻿using System;
 using System.Net;
 using System.Web.Mvc;
-using GatherContent.Connector.Managers.Managers;
+using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.TemplateModel;
 using Sitecore.Diagnostics;
-using Sitecore.Mvc.Controllers;
 
 namespace GatherContent.Connector.WebControllers.Controllers
 {
-    public class TemplatesMappingController : SitecoreController
+    /// <summary>
+    /// 
+    /// </summary>
+    public class TemplatesMappingController : BaseController
     { 
-        private readonly TemplatesManager _templateManager;
+        protected ITemplatesManager _templateManager;
 
-        public TemplatesMappingController()
+        public TemplatesMappingController(ITemplatesManager templateManager)
         {
-            _templateManager = new TemplatesManager();
+            _templateManager = templateManager;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Get()
         {
             try
@@ -37,6 +43,12 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="gcTemplateProxyId"></param>
+        /// <returns></returns>
         public ActionResult Post(TemplateMappingModel model, string gcTemplateProxyId)
         {
             try

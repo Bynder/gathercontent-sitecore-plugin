@@ -9,29 +9,46 @@ using TemplateField = Sitecore.Data.Templates.TemplateField;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class TemplatesRepository : BaseSitecoreRepository, ITemplatesRepository
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public TemplatesRepository() : base() { }
-
 
         #region Utilities
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         private IEnumerable<Item> GetTemplates(string id)
         {
             var item = GetItem(id);
             return item != null ? item.Axes.GetDescendants().Where(t => t.TemplateName == "Template").ToList() : null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="template"></param>
+        /// <returns></returns>
         private IEnumerable<TemplateField> GetFields(Item template)
         {
             return TemplateManager.GetTemplate(template.ID, ContextDatabase).GetFields();
         }
-
-
+        
         #endregion
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public List<CmsTemplate> GetTemplatesModel(string id)
         {
             var model = new List<CmsTemplate>();
@@ -59,6 +76,5 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
             return model;
         }
-
     }
 }

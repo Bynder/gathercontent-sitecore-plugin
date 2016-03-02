@@ -1,46 +1,66 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GatherContent.Connector.Entities.Entities;
-using GatherContent.Connector.GatherContentService.Services;
-using GatherContent.Connector.SitecoreRepositories.Repositories;
+using GatherContent.Connector.GatherContentService.Interfaces;
+using GatherContent.Connector.Managers.Interfaces;
 
 namespace GatherContent.Connector.Managers.Managers
 {
-    public class BaseManager
+    /// <summary>
+    /// 
+    /// </summary>
+    public class BaseManager : IManager
     {
-        private readonly AccountsService _accountsService;
-        private readonly ProjectsService _projectsService;
-        private readonly TemplatesService _templateService;
+        protected IAccountsService AccountsService;
+        protected IProjectsService ProjectsService;
+        protected ITemplatesService TemplatesService;
 
-        private readonly CacheManager _cacheManager;
+        protected ICacheManager _cacheManager;
 
-
-        public BaseManager()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accountsService"></param>
+        /// <param name="projectsService"></param>
+        /// <param name="templateService"></param>
+        /// <param name="cacheManager"></param>
+        public BaseManager(IAccountsService accountsService, IProjectsService projectsService, ITemplatesService templateService, ICacheManager cacheManager)
         {
-            var accountsRepository = new AccountsRepository();
-            var accountSettings = accountsRepository.GetAccountSettings();
+            AccountsService = accountsService;
+            ProjectsService = projectsService;
+            TemplatesService = templateService;
 
-            _accountsService = new AccountsService(accountSettings);
-            _projectsService = new ProjectsService(accountSettings);
-            _templateService = new TemplatesService(accountSettings);
-
-            _cacheManager = new CacheManager();
+            _cacheManager = cacheManager;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         protected Account GetAccount()
         {
-            var accounts = _accountsService.GetAccounts();
+            var accounts = AccountsService.GetAccounts();
             return accounts.Data.FirstOrDefault();
            
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns></returns>
         protected List<Project> GetProjects(int accountId)
         {
-            var projects = _projectsService.GetProjects(accountId);
+            var projects = ProjectsService.GetProjects(accountId);
             var activeProjects = projects.Data.Where(p => p.Active).ToList();
             return activeProjects;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         protected TemplateEntity GetGcTemplateEntity(string id)
         {
             TemplateEntity template;
@@ -51,13 +71,17 @@ namespace GatherContent.Connector.Managers.Managers
             }
             else
             {
-                template = _templateService.GetSingleTemplate(id);
+                template = TemplatesService.GetSingleTemplate(id);
                 _cacheManager.Set(key, template, 60);
             }
             return template;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         protected ProjectEntity GetGcProjectEntity(string id)
         {
             ProjectEntity project;
@@ -68,11 +92,10 @@ namespace GatherContent.Connector.Managers.Managers
             }
             else
             {
-                project = _projectsService.GetSingleProject(id);
+                project = ProjectsService.GetSingleProject(id);
                 _cacheManager.Set(key, project, 60);
             }
             return project;
         }
-
     }
 }

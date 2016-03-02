@@ -1,11 +1,12 @@
 ﻿using System.Net;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
+using GatherContent.Connector.GatherContentService.Interfaces;
 using GatherContent.Connector.GatherContentService.Services.Abstract;
 
 namespace GatherContent.Connector.GatherContentService.Services
 {
-    public class ProjectsService : BaseService
+    public class ProjectsService : BaseService, IProjectsService
     {
         protected override string ServiceUrl
         {

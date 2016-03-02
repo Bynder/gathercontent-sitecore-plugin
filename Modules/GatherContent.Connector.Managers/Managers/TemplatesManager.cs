@@ -1,57 +1,72 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
-using GatherContent.Connector.GatherContentService.Services;
-using GatherContent.Connector.IRepositories.Models.Mapping;
+using GatherContent.Connector.GatherContentService.Interfaces;
+using GatherContent.Connector.IRepositories.Interfaces;
+using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.TemplateModel;
-using GatherContent.Connector.SitecoreRepositories.Repositories;
 
 namespace GatherContent.Connector.Managers.Managers
 {
-    public class TemplatesManager //: BaseManager
+    /// <summary>
+    /// 
+    /// </summary>
+    public class TemplatesManager : BaseManager, ITemplatesManager
     {
+        protected IMappingRepository _mappingRepository;
+        protected ITemplatesRepository _templatesRepository;
+        protected IProjectsRepository _projectsRepository;
 
-        private readonly MappingRepository _mappingRepository;
-        private readonly TemplatesRepository _templatesRepository;
-        private readonly ProjectsRepository _projectsRepository;
-
-
-        private readonly AccountsService _accountsService;
-        private readonly TemplatesService _templateService;
-        private readonly ProjectsService _projectService;
-
-
-        private readonly GCAccountSettings _accountSettings;
-
-        public TemplatesManager()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mappingRepository"></param>
+        /// <param name="templatesRepository"></param>
+        /// <param name="projectsRepository"></param>
+        /// <param name="accountsService"></param>
+        /// <param name="projectsService"></param>
+        /// <param name="templateService"></param>
+        /// <param name="cacheManager"></param>
+        public TemplatesManager(
+            IMappingRepository mappingRepository,
+            ITemplatesRepository templatesRepository,
+            IProjectsRepository projectsRepository,
+            IAccountsService accountsService,
+            IProjectsService projectsService,
+            ITemplatesService templateService,
+            ICacheManager cacheManager) : base(accountsService, projectsService, templateService, cacheManager)
         {
-            var accountsRepository = new AccountsRepository();
-            _accountSettings = accountsRepository.GetAccountSettings();
-
-            _mappingRepository = new MappingRepository();
-            _projectsRepository = new ProjectsRepository();
-            _templatesRepository = new TemplatesRepository();
-
-            _accountsService = new AccountsService(_accountSettings);
-            _templateService = new TemplatesService(_accountSettings);
-            _projectService = new ProjectsService(_accountSettings);
+            _mappingRepository = mappingRepository;
+            _projectsRepository = projectsRepository;
+            _templatesRepository = templatesRepository;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         protected Account GetAccount()
         {
-            var accounts = _accountsService.GetAccounts();
+            var accounts = AccountsService.GetAccounts();
             return accounts.Data.FirstOrDefault();
-
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <returns></returns>
         protected List<Project> GetProjects(int accountId)
         {
-            var projects = _projectService.GetProjects(accountId);
+            var projects = ProjectsService.GetProjects(accountId);
             var activeProjects = projects.Data.Where(p => p.Active).ToList();
             return activeProjects;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public TemplateMappingModel GetTemplateMappingModel()
         {
             var model = new TemplateMappingModel();
@@ -65,7 +80,7 @@ namespace GatherContent.Connector.Managers.Managers
                     ProjectId = project.Id,
                     ProjectName = project.Name
                 };
-                var templates = _templateService.GetTemplates(project.Id.ToString());
+                var templates = TemplatesService.GetTemplates(project.Id.ToString());
                 if (templates.Data.Count > 0)
                 {
                     foreach (var template in templates.Data)
@@ -83,25 +98,30 @@ namespace GatherContent.Connector.Managers.Managers
             return model;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
         public void PostTemplate(TemplateMappingModel model)
         {
-            foreach (var project in model.Projects)
-            {
-                var gcSelectedTemplates = project.Templates.Where(gcTemplateModel => model.Selected.Contains(gcTemplateModel.TemplateId)).ToList();
-                if (gcSelectedTemplates.Any())
-                {
-                    _projectsRepository.CreateOrGetProject(_accountSettings.AccountItemId, new Project { Name = project.ProjectName, Id = project.ProjectId });
+            //TODO: uses sitecore item
+            //foreach (var project in model.Projects)
+            //{
+            //    var gcSelectedTemplates = project.Templates.Where(gcTemplateModel => model.Selected.Contains(gcTemplateModel.TemplateId)).ToList();
+            //    if (gcSelectedTemplates.Any())
+            //    {
+            //        _projectsRepository.CreateOrGetProject(_accountSettings.AccountItemId, new Project { Name = project.ProjectName, Id = project.ProjectId });
 
-                    foreach (var gcTemplate in gcSelectedTemplates)
-                    {
-                        _mappingRepository.CreateMapping(project.ProjectId.ToString(), new TemplateMapping
-                        {
-                            Name = gcTemplate.TemplateName,
-                            GcTemplateId = gcTemplate.TemplateId.ToString()
-                        });
-                    }
-                }
-            }
+            //        foreach (var gcTemplate in gcSelectedTemplates)
+            //        {
+            //            _mappingRepository.CreateMapping(project.ProjectId.ToString(), new TemplateMapping
+            //            {
+            //                Name = gcTemplate.TemplateName,
+            //                GcTemplateId = gcTemplate.TemplateId.ToString()
+            //            });
+            //        }
+            //    }
+            //}
         }
     }
 }

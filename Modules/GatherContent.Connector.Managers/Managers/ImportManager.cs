@@ -3,42 +3,70 @@ using System.Collections.Generic;
 using System.Linq;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
-using GatherContent.Connector.GatherContentService.Services;
+using GatherContent.Connector.GatherContentService.Interfaces;
+using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.IRepositories.Models.Import;
+using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.ImportItems;
 using GatherContent.Connector.SitecoreRepositories.Repositories;
 
 namespace GatherContent.Connector.Managers.Managers
 {
-    public class ImportManager : BaseManager
+    /// <summary>
+    /// 
+    /// </summary>
+    public class ImportManager : BaseManager, IImportManager
     {
-        private readonly ItemsRepository _itemsRepository;
-        private readonly MappingRepository _mappingRepository;
-        private readonly ItemsService _itemsService;
-        private readonly ProjectsService _projectsService;
-        private readonly TemplatesService _templatesService;
+        protected IItemsRepository _itemsRepository;
+        protected IMappingRepository _mappingRepository;
 
-        private readonly MappingManager _mappingManager;
-        private readonly GCAccountSettings _gcAccountSettings;
+        protected IItemsService _itemsService;
 
-        public ImportManager()
+        protected IMappingManager _mappingManager;
+        protected GCAccountSettings _gcAccountSettings;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemsRepository"></param>
+        /// <param name="mappingRepository"></param>
+        /// <param name="itemsService"></param>
+        /// <param name="accountsService"></param>
+        /// <param name="projectsService"></param>
+        /// <param name="templateService"></param>
+        /// <param name="cacheManager"></param>
+        /// <param name="mappingManager"></param>
+        /// <param name="gcAccountSettings"></param>
+        public ImportManager(
+            IItemsRepository itemsRepository,
+            IMappingRepository mappingRepository,
+            IItemsService itemsService,
+            IAccountsService accountsService,
+            IProjectsService projectsService,
+            ITemplatesService templateService,
+            ICacheManager cacheManager,
+            IMappingManager mappingManager,
+            GCAccountSettings gcAccountSettings) : base(accountsService, projectsService, templateService, cacheManager)
         {
-            _itemsRepository = new ItemsRepository();
-            _mappingRepository = new MappingRepository();
+            _itemsRepository = itemsRepository;
+            _mappingRepository = mappingRepository;
+            
+            _itemsService = itemsService;
 
-            var accountsRepository = new AccountsRepository();
-            _gcAccountSettings = accountsRepository.GetAccountSettings();
+            _mappingManager = mappingManager;
 
-            _itemsService = new ItemsService(_gcAccountSettings);
-            _projectsService = new ProjectsService(_gcAccountSettings);
-            _templatesService = new TemplatesService(_gcAccountSettings);
-
-            _mappingManager = new MappingManager();
+            _gcAccountSettings = gcAccountSettings;
         }
 
 
         #region Utilities
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projects"></param>
+        /// <param name="projectIdStr"></param>
+        /// <returns></returns>
         private Project GetProject(List<Project> projects, string projectIdStr)
         {
             int projectId;
@@ -49,29 +77,55 @@ namespace GatherContent.Connector.Managers.Managers
             return project;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
         private List<GCStatus> GetStatuses(int projectId)
         {
-            StatusesEntity statuses = _projectsService.GetAllStatuses(projectId.ToString());
+            StatusesEntity statuses = ProjectsService.GetAllStatuses(projectId.ToString());
             return statuses.Data;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
         private List<GCItem> GetItems(int projectId)
         {
             ItemsEntity items = _itemsService.GetItems(projectId.ToString());
             return items.Data;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
         private List<GCTemplate> GetTemplates(int projectId)
         {
             return GetTemplates(projectId.ToString());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
         private List<GCTemplate> GetTemplates(string projectId)
         {
-            TemplatesEntity templates = _templatesService.GetTemplates(projectId);
+            TemplatesEntity templates = TemplatesService.GetTemplates(projectId);
             return templates.Data;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="templates"></param>
+        /// <returns></returns>
         private List<ImportListItem> MapItems(List<GCItem> items, List<GCTemplate> templates)
         {
             var mappedItems = items.Where(i => i.TemplateId != null).ToList();
@@ -99,6 +153,12 @@ namespace GatherContent.Connector.Managers.Managers
             return result.ToList();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="templates"></param>
+        /// <returns></returns>
         private List<ImportItembyLocation> MapItemsByLocation(List<GCItem> items, List<GCTemplate> templates)
         {
             var mappedItems = items.Where(i => i.TemplateId != null).ToList();
@@ -111,8 +171,8 @@ namespace GatherContent.Connector.Managers.Managers
             var result = new List<ImportItembyLocation>();
             foreach (var mappedItem in mappedItems)
             {
-                var mappings = _mappingRepository.GetAllMappingsForGcTemplate(mappedItem.ProjectId.ToString(),
-                    mappedItem.TemplateId.ToString());
+                var mappings = _mappingRepository.GetAllMappingsForGcTemplate(mappedItem.ProjectId.ToString(), mappedItem.TemplateId.ToString());
+
                 var availableMappings = mappings.Select(availableMappingModel => new AvailableMappingByLocation
                 {
                     Id = availableMappingModel.Id,
@@ -131,12 +191,22 @@ namespace GatherContent.Connector.Managers.Managers
             return result.ToList();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
         private List<GCItem> MapItems(List<string> items)
         {
             List<GCItem> result = items.Select(GetGcItemByModel).ToList();
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         private GCItem GetGcItemByModel(string id)
         {
             ItemEntity result = _itemsService.GetSingleItem(id);
@@ -144,17 +214,28 @@ namespace GatherContent.Connector.Managers.Managers
             return result.Data;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="importResult"></param>
+        /// <returns></returns>
         private List<MappingResultModel> GetSuccessfulImportedItems(List<MappingResultModel> importResult)
         {
             return importResult.Where(i => i.IsImportSuccessful).ToList();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="statusId"></param>
+        /// <param name="projectId"></param>
         private void PostNewStatusesForItems(List<MappingResultModel> items, string statusId, string projectId)
         {
             foreach (MappingResultModel item in items)
             {
                 _itemsService.ChooseStatusForItem(item.GCItemId, statusId);
-                var status = _projectsService.GetSingleStatus(statusId, projectId);
+                var status = ProjectsService.GetSingleStatus(statusId, projectId);
                 item.Status.Color = status.Data.Color;
                 item.Status.Name = status.Data.Name;
             }
@@ -162,7 +243,12 @@ namespace GatherContent.Connector.Managers.Managers
 
         #endregion
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
         public SelectItemsForImportModel GetModelForSelectImportItemsDialog(string itemId, string projectId)
         {
             Account account = GetAccount();
@@ -183,6 +269,12 @@ namespace GatherContent.Connector.Managers.Managers
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
         public SelectItemsForImportWithLocation GetDialogModelWithLocation(string itemId, string projectId)
         {
             Account account = GetAccount();
@@ -203,8 +295,15 @@ namespace GatherContent.Connector.Managers.Managers
             return result;
         }
 
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="items"></param>
+        /// <param name="projectId"></param>
+        /// <param name="statusId"></param>
+        /// <param name="language"></param>
+        /// <returns></returns>
         public ImportResultModel ImportItems(string itemId, List<ImportItemModel> items, string projectId, string statusId, string language)
         {
             List<MappingResultModel> cmsItems = _mappingManager.MapItems(items);
@@ -223,8 +322,15 @@ namespace GatherContent.Connector.Managers.Managers
             return result;
         }
 
-        public ImportResultModel ImportItemsWithLocation(List<LocationImportItemModel> items,
-            string projectId, string statusId, string language)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="projectId"></param>
+        /// <param name="statusId"></param>
+        /// <param name="language"></param>
+        /// <returns></returns>
+        public ImportResultModel ImportItemsWithLocation(List<LocationImportItemModel> items, string projectId, string statusId, string language)
         {
             var importItems = new List<ImportItemModel>();
 
@@ -258,6 +364,5 @@ namespace GatherContent.Connector.Managers.Managers
 
             return result;
         }
-
     }
 }

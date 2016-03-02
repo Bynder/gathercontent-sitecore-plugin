@@ -2,7 +2,6 @@
 using System.IO;
 using System.Net;
 using System.Web;
-using GatherContent.Connector.Entities;
 using Sitecore;
 using System.Linq;
 using Sitecore.Data;
@@ -19,25 +18,31 @@ using File = GatherContent.Connector.IRepositories.Models.Import.File;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ItemsRepository : BaseSitecoreRepository, IItemsRepository
     {
         private const string GC_CONTENT_ID = "GC Content Id";
         private const string LAST_SYNC_DATE = "Last Sync Date";
-        private readonly GCAccountSettings _accountSettings;
 
-        public ItemsRepository()
+	    protected IAccountsRepository _accountsRepository;
+
+        public ItemsRepository(IAccountsRepository accountsRepository)
             : base()
         {
-            var accountsRepository = new AccountsRepository();
-            _accountSettings = accountsRepository.GetAccountSettings();
+            _accountsRepository = accountsRepository;
         }
-
- 
-
+        
         #region Utilities
 
-        
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="language"></param>
+        /// <param name="items"></param>
+        /// <returns></returns>
         private List<MappingResultModel> AddItems(Item parent, string language, List<MappingResultModel> items)
         {
             var list = new List<MappingResultModel>();
@@ -47,10 +52,15 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 list.Add(item);
             }
             return list;
-            
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="language"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
         private MappingResultModel AddItem(Item parent, string language, MappingResultModel item)
         {
             if (parent != null)
@@ -59,14 +69,15 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 {
                     using (new LanguageSwitcher(language))
                     {
-
                         TemplateItem template = ContextDatabase.GetTemplate(new ID(item.CMSTemplateId));
                         string validName = ItemUtil.ProposeValidItemName(item.Title);
                         Item createdItem = parent.Add(validName, template);
 
-                        if (!string.IsNullOrEmpty(_accountSettings.GatherContentUrl))
+	                    var accountSettings = _accountsRepository.GetAccountSettings();
+
+                        if (!string.IsNullOrEmpty(accountSettings.GatherContentUrl))
                         {
-                            item.GcLink = _accountSettings.GatherContentUrl + "/item/" + item.GCItemId;
+                            item.GcLink = accountSettings.GatherContentUrl + "/item/" + item.GCItemId;
                         }
                         var cmsLink =
                             string.Format(
@@ -82,6 +93,13 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return item;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="updatedItem"></param>
+        /// <param name="fieldId"></param>
+        /// <param name="label"></param>
+        /// <returns></returns>
         private Item GetDatasource(Item updatedItem, string fieldId, string label)
         {
             var dataSourcePath = GetDatasourcePath(updatedItem, fieldId);
@@ -91,6 +109,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return children;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="updatedItem"></param>
+        /// <param name="fieldId"></param>
+        /// <returns></returns>
         private string GetDatasourcePath(Item updatedItem, string fieldId)
         {
             var scField = updatedItem.Fields[new ID(fieldId)];
@@ -98,6 +122,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return dataSourcePath;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="updatedItem"></param>
+        /// <param name="fieldId"></param>
+        /// <param name="path"></param>
         private void SetDatasourcePath(Item updatedItem, string fieldId, string path)
         {
             var scField = updatedItem.Fields[new ID(fieldId)];
@@ -110,7 +140,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="updatedItem"></param>
+        /// <param name="item"></param>
         private void SetupFields(Item updatedItem, MappingResultModel item)
         {
             using (new SecurityDisabler())
@@ -241,6 +275,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
         private Item UploadFile(string path, File file)
         {
             var uri = file.Url.StartsWith("http") ? file.Url : "https://gathercontent.s3.amazonaws.com/" + file.Url;
@@ -267,11 +307,22 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
         private bool IsItemHasTemplate(ID templateId, Item item)
         {
             return item.Template.BaseTemplates.Any(i => i.ID == templateId);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         private CMSUpdateItem GetCMSItem(Item item)
         {
             string gcItemId = item[GC_CONTENT_ID];
@@ -282,7 +333,13 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
         #endregion
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="languageName"></param>
+        /// <param name="items"></param>
+        /// <returns></returns>
         public List<MappingResultModel> ImportItems(string itemId, string languageName, List<MappingResultModel> items)
         {
             var language = LanguageManager.GetLanguage(languageName);
@@ -292,8 +349,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return result;
         }
 
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="languageName"></param>
+        /// <param name="successfulImportedItems"></param>
+        /// <returns></returns>
         public List<MappingResultModel> ImportItemsWithLocation(string languageName, List<MappingResultModel> successfulImportedItems)
         {
             var list = new List<MappingResultModel>();
@@ -307,9 +368,14 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return list;
         }
 
-
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rootPath"></param>
+        /// <param name="mediaFile"></param>
+        /// <param name="extension"></param>
+        /// <param name="mediaStream"></param>
+        /// <returns></returns>
         public Item CreateMedia(string rootPath, File mediaFile, string extension, Stream mediaStream)
         {
             using (new SecurityDisabler())
@@ -345,8 +411,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="targetItemId"></param>
+        /// <returns></returns>
         public List<CMSUpdateItem> GetItemsForUpdate(string targetItemId)
         {
             Item parentItem = GetItem(targetItemId);
@@ -362,15 +431,20 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return result;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
         public void UpdateItems(List<MappingResultModel> items)
         {
             foreach (var item in items)
             {
                 var scItem = GetItem(item.CMSId);
-                if (!string.IsNullOrEmpty(_accountSettings.GatherContentUrl))
+                var accountSettings = _accountsRepository.GetAccountSettings();
+
+                if (!string.IsNullOrEmpty(accountSettings.GatherContentUrl))
                 {
-                    item.GcLink = _accountSettings.GatherContentUrl + "/item/" + item.GCItemId;
+                    item.GcLink = accountSettings.GatherContentUrl + "/item/" + item.GCItemId;
                 }
                 var cmsLink = string.Format("http://{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master&sc_bw=1", HttpContext.Current.Request.Url.Host, scItem.ID);
                 item.CmsLink = cmsLink;
@@ -383,7 +457,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="templateItem"></param>
+        /// <returns></returns>
         public bool EnsureMetaTemplateInherited(TemplateItem templateItem)
         {
             if (templateItem != null)

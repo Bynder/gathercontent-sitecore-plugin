@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.IRepositories.Interfaces;
 using Sitecore.Data;
@@ -8,8 +7,15 @@ using Sitecore.SecurityModel;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ProjectsRepository : BaseSitecoreRepository, IProjectsRepository
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
         private void CreateProjectFolders(string id)
         {
             var names = new[] { Constants.MappingFolderName };
@@ -25,8 +31,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
         public Item GetProject(int projectId)
         {
             var accountSettingItem = ContextDatabase.GetItem(Constants.AccountItemId, ContextLanguage);
@@ -34,7 +43,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return project;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parentSitecoreId"></param>
+        /// <param name="project"></param>
+        /// <returns></returns>
         public Item CreateOrGetProject(string parentSitecoreId, Project project)
         {
             var projectItem = GetProject(project.Id);

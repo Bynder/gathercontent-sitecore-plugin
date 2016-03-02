@@ -1,5 +1,8 @@
 ﻿namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Constants
     {
         public const string DateFormat = "dd/MM/yyyy hh:mm tt";
@@ -40,7 +43,5 @@
 
 
         #endregion
-
-        
     }
 }

@@ -1,24 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Web.Mvc;
-using GatherContent.Connector.Managers.Managers;
+using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.Mapping;
 using Sitecore.Diagnostics;
-using Sitecore.Mvc.Controllers;
 
 namespace GatherContent.Connector.WebControllers.Controllers
 {
-    public class MappingsController : SitecoreController
+    /// <summary>
+    /// 
+    /// </summary>
+    public class MappingsController : BaseController
     {
-        private readonly MappingManager _mappingManager;
+        protected IMappingManager _mappingManager;
 
-        public MappingsController()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mappingManager"></param>
+        public MappingsController(IMappingManager mappingManager)
         {
-            _mappingManager = new MappingManager();
+            _mappingManager = mappingManager;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Get()
         {
             try
@@ -38,8 +46,12 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
         }
 
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="scMappingId"></param>
+        /// <returns></returns>
         public ActionResult GetMapping(string id, string scMappingId)
         {
             try
@@ -60,7 +72,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Post(PostMappingModel model)
         {
@@ -85,6 +101,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="scMappingId"></param>
+        /// <returns></returns>
         [HttpDelete]
         public ActionResult Delete(string scMappingId)
         {

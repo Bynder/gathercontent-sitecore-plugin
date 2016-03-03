@@ -12,9 +12,9 @@ namespace GatherContent.Connector.IRepositories.Models.Import
 
         public List<Option> Options { get; set; }
 
-        public List<File> Files { get; set; }
+        public List<FileOld> Files { get; set; }
 
-        public ImportCMSField(string type, string name, string label, string value, List<Option> options, List<File> files)
+        public ImportCMSField(string type, string name, string label, string value, List<Option> options, List<FileOld> files)
         {
             Type = type;
             Name = name;

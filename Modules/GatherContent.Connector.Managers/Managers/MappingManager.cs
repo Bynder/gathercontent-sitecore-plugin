@@ -7,10 +7,12 @@ using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.GatherContentService.Services;
 using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.IRepositories.Models.Mapping;
+using GatherContent.Connector.IRepositories.Models.New.Import;
 using GatherContent.Connector.Managers.Models.Mapping;
 using GatherContent.Connector.Managers.Models.UpdateItems;
 using GatherContent.Connector.SitecoreRepositories.Repositories;
 using GatherContent.Connector.Managers.Models.ImportItems;
+using CmsTemplateField = GatherContent.Connector.IRepositories.Models.Mapping.CmsTemplateField;
 
 namespace GatherContent.Connector.Managers.Managers
 {
@@ -207,13 +209,13 @@ namespace GatherContent.Connector.Managers.Managers
             List<ImportCMSField> fields;
             IEnumerable<IGrouping<string, MappingFieldModel>> groupedFields = template.Fields.GroupBy(i => i.CMSField);
 
-            var files = new List<File>();
+            var files = new List<FileOld>();
             if (gcItem.Config.SelectMany(config => config.Elements).Select(element => element.Type).Contains("files"))
             {
 
                 foreach (var file in _itemService.GetItemFiles(gcItem.Id.ToString()).Data)
                 {
-                    files.Add(new File
+                    files.Add(new FileOld
                     {
                         FileName = file.FileName,
                         Url = file.Url,
@@ -267,13 +269,13 @@ namespace GatherContent.Connector.Managers.Managers
             List<ImportCMSField> fields;
             IEnumerable<IGrouping<string, MappingFieldModel>> groupedFields = template.Fields.GroupBy(i => i.CMSField);
 
-            var files = new List<File>();
+            var files = new List<FileOld>();
             if (item.Config.SelectMany(config => config.Elements).Select(element => element.Type).Contains("files"))
             {
 
                 foreach (var file in _itemService.GetItemFiles(item.Id.ToString()).Data)
                 {
-                    files.Add(new File
+                    files.Add(new FileOld
                     {
                         FileName = file.FileName,
                         Url = file.Url,
@@ -305,7 +307,7 @@ namespace GatherContent.Connector.Managers.Managers
             result = new MappingResultModel(item, fields, gcTemplate.Name, template.CMSTemplateId, cmsId, message);
         }
 
-        private TryMapItemState TryMapField(List<Element> gcFields, IGrouping<string, MappingFieldModel> fieldsMappig, List<File> files, out ImportCMSField importCMSField)
+        private TryMapItemState TryMapField(List<Element> gcFields, IGrouping<string, MappingFieldModel> fieldsMappig, List<FileOld> files, out ImportCMSField importCMSField)
         {
             var cmsFieldName = fieldsMappig.Key;
 
@@ -351,7 +353,7 @@ namespace GatherContent.Connector.Managers.Managers
             return TryMapItemState.Success;
         }
 
-        private TryMapItemState TryMapFields(List<Element> gcFields, IEnumerable<IGrouping<string, MappingFieldModel>> fieldsMappig, List<File> files, out List<ImportCMSField> result)
+        private TryMapItemState TryMapFields(List<Element> gcFields, IEnumerable<IGrouping<string, MappingFieldModel>> fieldsMappig, List<FileOld> files, out List<ImportCMSField> result)
         {
             result = new List<ImportCMSField>();
             foreach (IGrouping<string, MappingFieldModel> grouping in fieldsMappig)
@@ -403,7 +405,7 @@ namespace GatherContent.Connector.Managers.Managers
 
         public List<MappingModel> GetMappingModel()
         {
-            var mappings = _mappingRepository.GetMappings();
+            var mappings = _mappingRepository.OldGetMappings();
 
             var model = mappings.Select(cmsMappingModel => new MappingModel(cmsMappingModel.GcProjectName, cmsMappingModel.GcTemplateId,
                 cmsMappingModel.GcTemplateName, cmsMappingModel.CmsMappingId, cmsMappingModel.CmsTemplateName, cmsMappingModel.CmsMappingTitle, cmsMappingModel.LastMappedDateTime,
@@ -535,7 +537,7 @@ namespace GatherContent.Connector.Managers.Managers
 
         public List<MappingResultModel> MapItems(List<GCItem> items, string projectId)
         {
-            List<MappingTemplateModel> templates = _mappingRepository.GetTemplateMappings(projectId);
+            List<MappingTemplateModel> templates = _mappingRepository.GetTemplateMappingsByProjectId(projectId);
 
             List<MappingResultModel> result = TryMapItems(items, templates);
 

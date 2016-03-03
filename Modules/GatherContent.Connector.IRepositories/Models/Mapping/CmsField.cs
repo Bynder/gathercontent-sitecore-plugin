@@ -6,5 +6,6 @@ namespace GatherContent.Connector.IRepositories.Models.Mapping
         public string CmsFieldName { get; set; }
         public string CmsFieldId { get; set; }
         public string CmsFieldType { get; set; }
+        public string GcFieldId { get; set; }
     }
 }

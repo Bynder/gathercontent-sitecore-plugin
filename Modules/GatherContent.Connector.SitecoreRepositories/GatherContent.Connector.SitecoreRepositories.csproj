@@ -131,7 +131,6 @@
     <Compile Include="Repositories\MappingRepository.cs" />
     <Compile Include="Repositories\ProjectsRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\StatusesRepository.cs" />
     <Compile Include="Repositories\TemplatesRepository.cs" />
     <Compile Include="Utils\TypeValueResolver.cs" />
   </ItemGroup>

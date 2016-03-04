@@ -21,6 +21,8 @@ namespace GatherContent.Connector.Managers.Managers
         private readonly TemplatesService _templatesService;
         private readonly GCAccountSettings _gcAccountSettings;
         private readonly MappingManager _mappingManager;
+        private readonly ImportManager _importManager;
+        
 
         public UpdateManager()
         {
@@ -34,6 +36,7 @@ namespace GatherContent.Connector.Managers.Managers
             _templatesService = new TemplatesService(_gcAccountSettings);
 
             _mappingManager = new MappingManager();
+            _importManager = new ImportManager();
         }
 
         public SelectItemsForUpdateModel GetItemsForUpdate(string itemId)
@@ -156,7 +159,7 @@ namespace GatherContent.Connector.Managers.Managers
         public UpdateResultModel UpdateItems(string itemId, List<UpdateListIds> models)
         {
             List<GCItem> gcItems = GetGCItemsByModels(models);
-            List<MappingResultModel> resultItems = _mappingManager.MapItems(gcItems);
+            List<MappingResultModel> resultItems = _importManager.MapItems(gcItems);
             List<MappingResultModel> successfulyUpdated = resultItems.Where(i => i.IsImportSuccessful).ToList();
 
             _itemsRepository.UpdateItems(successfulyUpdated);

@@ -1,7 +1,7 @@
 ﻿
-namespace GatherContent.Connector.Managers.Models.Mapping
+namespace GatherContent.Connector.WebControllers.Models.Mapping
 {
-    public class MappingModel
+    public class TemplateMappingViewModel
     {
         public string GcProjectName { get; set; }
         public string GcTemplateId { get; set; }
@@ -11,5 +11,8 @@ namespace GatherContent.Connector.Managers.Models.Mapping
         public string LastMappedDateTime { get; set; }
         public string LastUpdatedDate { get; set; }
         public string ScMappingId { get; set; }
+        public bool IsMapped { get; set; }
+        public bool RemovedFromGc { get; set; }
+        public bool IsHighlightingDate { get; set; }
     }
 }

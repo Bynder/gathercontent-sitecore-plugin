@@ -13,7 +13,6 @@ namespace GatherContent.Connector.Managers.Managers
     {
 
         private readonly MappingRepository _mappingRepository;
-        private readonly TemplatesRepository _templatesRepository;
         private readonly ProjectsRepository _projectsRepository;
 
 
@@ -31,7 +30,7 @@ namespace GatherContent.Connector.Managers.Managers
 
             _mappingRepository = new MappingRepository();
             _projectsRepository = new ProjectsRepository();
-            _templatesRepository = new TemplatesRepository();
+            
 
             _accountsService = new AccountsService(_accountSettings);
             _templateService = new TemplatesService(_accountSettings);

@@ -10,6 +10,10 @@ namespace GatherContent.Connector.IRepositories.Interfaces
         List<TemplateMapping> GetMappingsByGcTemplateId(string gcTemplateId); 
         TemplateMapping GetMappingById(string id);
 
+
+        List<GatherContent.Connector.IRepositories.Models.New.Mapping.CmsTemplate> GetAvailableCmsTemplates();
+
+
         void CreateMapping(TemplateMapping templateMapping);
         void UpdateMapping(TemplateMapping templateMapping);
         void DeleteMapping(string id);

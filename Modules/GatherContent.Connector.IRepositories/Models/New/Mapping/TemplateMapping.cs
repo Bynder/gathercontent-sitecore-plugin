@@ -26,6 +26,8 @@ namespace GatherContent.Connector.IRepositories.Models.New.Mapping
 
         public string DefaultLocationId { get; set; }
 
+        public string DefaultLocationTitle { get; set; }
+
         public IList<FieldMapping> FieldMappings { get; set; }
     }
 }

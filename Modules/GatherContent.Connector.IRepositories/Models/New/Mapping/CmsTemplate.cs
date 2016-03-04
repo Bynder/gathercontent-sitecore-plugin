@@ -11,6 +11,6 @@ namespace GatherContent.Connector.IRepositories.Models.New.Mapping
         }
         public string TemplateId { get; set; }
         public string TemplateName { get; set; }
-        public IList<CmsTemplateField> TemplateFields { get; set; }
+        public List<CmsTemplateField> TemplateFields { get; set; }
     }
 }

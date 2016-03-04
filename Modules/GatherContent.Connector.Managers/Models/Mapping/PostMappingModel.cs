@@ -1,21 +1,18 @@
 ﻿using System.Collections.Generic;
 
-
 namespace GatherContent.Connector.Managers.Models.Mapping
 {
     public class PostMappingModel
     {
         public PostMappingModel()
         {
-            TemplateTabs = new List<TemplateTab>();
+            FieldMappings = new List<FieldMappingModel>();
         }
-
-        public List<TemplateTab> TemplateTabs { get; set; }
-        public bool IsEdit { get; set; }
-        public string TemplateId { get; set; }
-        public string SelectedTemplateId { get; set; }
-        public string GcMappingTitle { get; set; }
-        public string ScMappingId { get; set; }
+        public string MappingId { get; set; }
+        public string MappingTitle { get; set; }
+        public string GcTemplateId { get; set; }
+        public string CmsTemplateId { get; set; }
         public string DefaultLocation { get; set; }
+        public IList<FieldMappingModel> FieldMappings { get; set; }
     }
 }

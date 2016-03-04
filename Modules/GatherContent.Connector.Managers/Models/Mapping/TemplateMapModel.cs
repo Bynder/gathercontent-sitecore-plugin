@@ -6,17 +6,14 @@ namespace GatherContent.Connector.Managers.Models.Mapping
     {
         public TemplateMapModel()
         {
-            SitecoreTemplates = new List<SitecoreTemplate>();
-            Rules = new Dictionary<string, string>();
+            AvailableCmsTemplates = new List<CmsTemplateModel>();
         }
 
+        public string MappingId { get; set; }
         public string GcProjectName { get; set; }
         public string GcTemplateName { get; set; }
-        public List<SitecoreTemplate> SitecoreTemplates { get; set; }
-        public SitecoreTemplate SelectedTemplate { get; set; }
-        public AddMappingModel AddMappingModel { get; set; }
-        public Dictionary<string, string> Rules { get; set; }
-        public string ScMappingId { get; set; }
+        public List<CmsTemplateModel> AvailableCmsTemplates { get; set; }
+        public AddMappingModel AddMappingModel { get; set; }     
     }
 
     public class TemplateTab
@@ -32,29 +29,27 @@ namespace GatherContent.Connector.Managers.Models.Mapping
 
     public class TemplateField
     {
-        public string FieldName { get; set; }
-        public string FieldId { get; set; }
-        public string SelectedField { get; set; }
-        public string FieldType { get; set; }
-        
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public string SelectedFieldId { get; set; }  
     }
 
-    public class SitecoreTemplate
+    public class CmsTemplateModel
     {
-        public SitecoreTemplate()
+        public CmsTemplateModel()
         {
-            SitecoreFields = new List<SitecoreTemplateField>();
+            Fields = new List<CmsTemplateFieldModel>();
         }
-
-        public string SitrecoreTemplateName { get; set; }
-        public string SitrecoreTemplateId { get; set; }
-        public List<SitecoreTemplateField> SitecoreFields { get; set; }
+        public string Name { get; set; }
+        public string Id { get; set; }
+        public List<CmsTemplateFieldModel> Fields { get; set; }
     }
 
-    public class SitecoreTemplateField
+    public class CmsTemplateFieldModel
     {
-        public string SitrecoreFieldName { get; set; }
-        public string SitecoreFieldId { get; set; }
-        public string SitecoreFieldType { get; set; }
+        public string Name { get; set; }
+        public string Id { get; set; }
+        public string Type { get; set; }
     }
 }

@@ -496,6 +496,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         public IRepositories.Models.New.Mapping.TemplateMapping GetMappingById(string id)
         {
             var mapping = GetItem(id);
+            if (mapping == null) return null;
             var result = ConvertSitecoreTemplateToModel(mapping);
             return result;
         }

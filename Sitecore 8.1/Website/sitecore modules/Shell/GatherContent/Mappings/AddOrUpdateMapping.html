@@ -14,7 +14,8 @@
 <link href="/sitecore modules/shell/GatherContent/css/dynatree/ui.dynatree.css" rel="stylesheet" />
 <script type="text/javascript">
     jQuery(document).ready(function () {
-        ko.applyBindings(new ViewModel());
+        var data = Init();
+        ko.applyBindings(new ViewModel(data));
     });
 
 </script>
@@ -27,10 +28,10 @@
 </script>
 
 <div class="gathercontent-dialog">
-    <!-- ko if: isError -->
-    <h1 data-bind="text: errorText"></h1>
+    <!-- ko if: IsError -->
+    <h1 data-bind="text: ErrorText"></h1>
     <!-- /ko -->
-    <div data-bind="ifnot: isError">
+    <div data-bind="ifnot: IsError">
         <p class="fields-mapping-padding">
             Choose the fields you wish to map from GatherContent into Sitecore. Only map the fields you need to import.
         </p>
@@ -38,8 +39,10 @@
 
             <div class="mapping_heading">
                 <div><span><strong>GatherContent:</strong></span></div>
-                <p data-bind="text: GcProjectName" class="title_lvl2"></p>
-                <p data-bind="text: GcTemplateName" class="title_lvl2"></p>
+                <p class="title_lvl2">Project:</p>
+                <select class="custom_selected sitecore-template-select" data-bind="options: GcProjects, optionsText: 'Name', value: SelectedGcProject, event:{ change: $root.gcProjectChanged}"></select>
+                <p class="title_lvl2">Template:</p>
+                <select class="custom_selected sitecore-template-select" data-bind="options: GcTemplates, optionsText: 'Name', value: SelectedGcTemplate, event:{ change: $root.gcTemplateChanged}"></select>
                 <div><span><strong>Mapping title:</strong></span></div>
                 <input type="text" data-bind="value: GcMappingTitle" />
                 <div><span><strong>Default location:</strong></span></div>
@@ -53,7 +56,7 @@
             </div>
             <div style="float: right;" class="mapping_heading">
                 <div><span><strong>Sitecore Template:</strong></span></div>
-                <select class="custom_selected sitecore-template-select" data-bind="options: SitecoreTemplates, optionsText: 'SitrecoreTemplateName', value: SelectedTemplate, event:{ change: $root.templateChanged}"></select>
+                <select class="custom_selected sitecore-template-select" data-bind="options: SitecoreTemplates, optionsText: 'SitrecoreTemplateName', value: SelectedScTemplate, event:{ change: $root.scTemplateChanged}"></select>
             </div>
           
             <div style="clear: both;"></div>
@@ -63,7 +66,7 @@
                     <div class="row_mapping_tab">
                         <input type="text" data-bind="value: $root.returnFieldName($data)" disabled />
                         <div class="arrow"></div>
-                        <select class="custom_selected" data-bind="options: $root.GetCurrentFields($data), optionsText: 'SitrecoreFieldName', optionsValue: 'SitecoreFieldId', value: SelectedField,"></select>
+                        <select class="custom_selected" data-bind="options: $root.GetCurrentFields($data), optionsText: 'SitrecoreFieldName', optionsValue: 'SitecoreFieldId', value: SelectedScField"></select>
                     </div>
                 </div>
             </div>

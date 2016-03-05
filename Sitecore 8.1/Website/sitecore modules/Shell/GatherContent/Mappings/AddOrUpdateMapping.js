@@ -1,79 +1,78 @@
-﻿var id = getUrlVars()["id"];
+﻿var gcTemplateId = getUrlVars()["id"];
+if (gcTemplateId == undefined) {
+    gcTemplateId = "";
+}
 var scMappingId = getUrlVars()["scMappingId"];
-var url = '/api/sitecore/mappings/GetMapping?id=' + id + "&scMappingId=" + scMappingId;
+if (scMappingId == undefined) {
+    scMappingId = "";
+}
+var url = '/api/sitecore/mappings/GetMapping?gcTemplateId=' + gcTemplateId + "&scMappingId=" + scMappingId;
 
-function ViewModel() {
+
+function Init() {
+    var resultData;
+
+    jQuery.ajax({
+        url: url,
+        dataType: 'json',
+        async: false,       
+        success: function (data) {
+            resultData = data;
+            resultData.IsError = false;
+            resultData.IsShowing = false;
+            jQuery(".preloader").hide();
+            tabInitSlide();
+        }
+    });
+    //jQuery.getJSON(url, null, function (data) {
+        //if (data.status != "error") {
+        //    //self.GcProjectName("Project:" + " " + data.GcProjectName);
+        //    //self.GcTemplateName("Template:" + " " + data.GcTemplateName);
+        
+        //    self.GcProjects(data.GcProjects);
+        
+        //    self.SitecoreTemplates(data.SitecoreTemplates),
+        //    self.SelectedFields(data.SelectedFields),
+        //    self.Rules(data.Rules),
+        //    self.ScMappingId(data.ScMappingId),
+        
+        //    self.SelectedGcProject(self.find("Id", self.GcProjects(), data.GcProjectId));
+        
+        //    self.SelectedScTemplate(self.find("SitrecoreTemplateId", self.SitecoreTemplates(), data.AddMappingModel.SelectedTemplateId));
+        //    self.GcMappingTitle(data.AddMappingModel.GcMappingTitle);
+        //    self.OpenerId(data.AddMappingModel.OpenerId);
+        //    self.DefaultLocation(data.AddMappingModel.DefaultLocation);
+        //    self.DefaultLocationTitle(data.AddMappingModel.DefaultLocationTitle);
+        //    self.IsShowing(false);
+        //    self.scTemplateChanged();
+        
+        //    self.gcProjectChanged();
+        
+        //    self.GcTemplateId(data.AddMappingModel.GcTemplateId),
+        //    self.GcProjectId(data.AddMappingModel.GcProjectId),
+        //    self.IsEdit(data.AddMappingModel.IsEdit);
+        //    self.IsError(false);
+        //} else {
+        //    self.ErrorText("Error:" + " " + data.message);
+        //    self.IsError(true);
+        //}
+
+        //resultData = data;
+        //jQuery(".preloader").hide();
+        //tabInitSlide();
+    //});
+
+    return resultData;
+}
+
+
+
+
+
+function ViewModel(data) {
     var self = this;
 
-    this.Rules = ko.observableArray();
-    this.SelectedTemplate = ko.observable();
-    this.IsEdit = ko.observable();
-    this.ScMappingId = ko.observable();
-    this.GcProjectName = ko.observable();
-    this.GcTemplateName = ko.observable();
-    this.GcMappingTitle = ko.observable();
-    this.OpenerId = ko.observable();
-    this.DefaultLocation = ko.observable();
-    this.DefaultLocationTitle = ko.observable();
-    this.IsShowing = ko.observable();
-    this.GcTemplateId = ko.observable();
-    this.SelectedTemplateId = ko.observable();
-    this.SitecoreTemplates = ko.observableArray();
-    this.SitecoreFields = ko.observableArray();
-    this.Tabs = ko.observableArray();
-    this.errorText = ko.observable();
-    this.isError = ko.observable();
-
-
-    jQuery.getJSON(url, null, function (data) {
-        if (data.status != "error") {
-            self.GcProjectName("Project:" + " " + data.GcProjectName);
-            self.GcTemplateName("Template:" + " " + data.GcTemplateName);
-            self.SitecoreTemplates(data.SitecoreTemplates),
-            self.Rules(data.Rules),
-            self.ScMappingId(data.ScMappingId),
-            self.SelectedTemplate(self.find("SitrecoreTemplateId", data.AddMappingModel.SelectedTemplateId));
-            self.GcMappingTitle(data.AddMappingModel.GcMappingTitle);
-            self.OpenerId(data.AddMappingModel.OpenerId);
-            self.DefaultLocation(data.AddMappingModel.DefaultLocation);
-            self.DefaultLocationTitle(data.AddMappingModel.DefaultLocationTitle);
-            self.IsShowing(false);
-            self.templateChanged();
-            self.GcTemplateId(data.AddMappingModel.GcTemplateId),
-            self.Tabs(data.AddMappingModel.Tabs);
-            self.IsEdit(data.AddMappingModel.IsEdit);
-            self.isError(false);
-        } else {
-            self.errorText("Error:" + " " + data.message);
-            self.isError(true);
-        }
-
-        jQuery(".preloader").hide();
-        tabInitSlide();
-    });
-    function tabInitSlide() {
-        jQuery(".content_mapping").slideUp(0);
-        jQuery(".title_mapping").removeClass("open");
-        jQuery(jQuery(".title_mapping")[0]).addClass("open");
-        jQuery(jQuery(".content_mapping")[0]).slideDown(0);
-        jQuery("body").on("click", ".title_mapping", function () {
-            if (jQuery(this).hasClass("open")) {
-                jQuery(this).next(".content_mapping").slideUp(200);
-                jQuery(this).removeClass("open");
-            } else {
-                jQuery(".title_mapping.open").next(".content_mapping").slideUp(200);
-                jQuery(".title_mapping.open").removeClass("open");
-                jQuery(this).addClass("open");
-                jQuery(this).next(".content_mapping").slideDown(200);
-
-            }
-        });
-    }
-
-
     this.saveMapping = function () {
-        //var dataObject = ko.toJSON(this);
-   
         var model = new function () {
             this.TemplateTabs = self.Tabs();
             this.IsEdit = self.IsEdit();
@@ -94,8 +93,8 @@ function ViewModel() {
                     window.opener.location.reload(true);
                     window.top.dialogClose();
                 } else {
-                    self.errorText("Error:" + " " + data.message);
-                    self.isError(true);
+                    self.ErrorText("Error:" + " " + data.message);
+                    self.IsError(true);
                 }
             },
 
@@ -142,26 +141,69 @@ function ViewModel() {
         }
     }
 
-    this.templateChanged = function () {
-        this.SitecoreFields(self.SelectedTemplate().SitecoreFields);
-        this.SelectedTemplateId(self.SelectedTemplate().SitrecoreTemplateId);
+
+    this.scTemplateChanged = function () {
+        this.SitecoreFields(self.SelectedScTemplate().SitecoreFields);
+        this.SelectedTemplateId(self.SelectedScTemplate().SitrecoreTemplateId);
     }
 
+
+    this.gcProjectChanged = function () {
+
+        if (self.SelectedGcProject != undefined && self.SelectedGcProject() != null) {
+            jQuery.getJSON('/api/sitecore/mappings/GetTemplatesByProjectId?gcProjectId=' + self.SelectedGcProject().Id, null, function(data) {
+                if (data.status != "error") {
+                    self.GcTemplates(data);
+                    self.SelectedGcTemplate(find("Id", data, self.GcTemplateId()));
+                } else {
+                    self.ErrorText("Error:" + " " + data.message);
+                    self.IsError(true);
+                }
+            });
+        }
+    }
+
+
+    this.gcTemplateChanged = function () {
+        jQuery.getJSON('/api/sitecore/mappings/GetFieldsByTemplateId?gcTemplateId=' + self.SelectedGcTemplate().Id, null, function (data) {
+            if (data.status != "error") {
+                for (var t = 0; t < data.length; t++) {
+                    for (var i = 0; i < data[t].Fields.length; i++) {
+                        var currentElement = data[t].Fields[i];
+                        var selectedItem = find("GcFieldId", self.SelectedFields(), data[t].Fields[i].FieldId);
+                        if (selectedItem != null) {
+                            currentElement.SelectedScField = selectedItem.SitecoreTemplateId;
+                        }
+                    }
+                }
+                self.Tabs(data);
+            } else {
+                self.ErrorText("Error:" + " " + data.message);
+                self.IsError(true);
+            }
+        });
+    }
 
 
     this.GetCurrentFields = function (item) {
         var fieldType = item.FieldType;
         var allowedFields = self.Rules()[fieldType];
         if (typeof allowedFields === 'undefined') {
-            return self.SelectedTemplate().SitecoreFields[0];
+            return self.SelectedScTemplate().SitecoreFields[0];
         } else {
             if (allowedFields != null) {
                 var allowedFieldsArr = allowedFields.split(",");
-                var currentCollection = self.SelectedTemplate().SitecoreFields;
+                var currentCollection = self.SelectedScTemplate().SitecoreFields;
                 var resultCollection = [];
-                resultCollection.push(self.SelectedTemplate().SitecoreFields[0]);
+                resultCollection.push(self.SelectedScTemplate().SitecoreFields[0]);
                 for (var i = 0; i < currentCollection.length; i++) {
                     var currentElement = currentCollection[i];
+                    var selectedItem = find("GcFieldId", self.SelectedFields(), item.FieldId);
+                    if (selectedItem != null) {
+                        if (currentElement.SitecoreFieldId == selectedItem.SitecoreTemplateId) {
+                            currentElement.Selected = true;
+                        }
+                    }
                     for (var f = 0; f < allowedFieldsArr.length; f++) {
                         var field = allowedFieldsArr[f];
                         if (currentElement.SitecoreFieldType == field.trim()) {
@@ -172,9 +214,8 @@ function ViewModel() {
                 return resultCollection;
             }
         }
-        return self.SelectedTemplate().SitecoreFields[0];
+        return self.SelectedScTemplate().SitecoreFields[0];
     };
-
 
 
     this.returnFieldName = function (item) {
@@ -187,12 +228,70 @@ function ViewModel() {
 
 
 
-    this.find = function (prop, data) {
-        return ko.utils.arrayFirst(self.SitecoreTemplates(), function (item) {
-            return item[prop] === data;
-        });
-    };
+    this.Rules = ko.observable(data.Rules);
+    this.IsEdit = ko.observable(data.IsEdit);
+    this.ScMappingId = ko.observable(data.ScMappingId);
+    //this.GcProjectName = ko.observable();
+    //this.GcTemplateName = ko.observable();
+    this.GcMappingTitle = ko.observable(data.AddMappingModel.GcMappingTitle);
+    this.OpenerId = ko.observable(data.AddMappingModel.OpenerId);
+    this.DefaultLocation = ko.observable(data.AddMappingModel.DefaultLocation);
+    this.DefaultLocationTitle = ko.observable(data.AddMappingModel.DefaultLocationTitle);
+    this.IsShowing = ko.observable(data.IsShowing);
+    this.GcProjectId = ko.observable(data.AddMappingModel.GcProjectId);
+    this.GcTemplateId = ko.observable(data.AddMappingModel.GcTemplateId);
+    this.SelectedTemplateId = ko.observable();
+    this.SitecoreTemplates = ko.observableArray(data.SitecoreTemplates);
+    this.SelectedFields = ko.observableArray(data.SelectedFields);
+    this.GcProjects = ko.observableArray(data.GcProjects);
+    this.GcTemplates = ko.observableArray();
+    this.SitecoreFields = ko.observableArray();
+    this.Tabs = ko.observableArray();
+
+    this.ErrorText = ko.observable();
+    this.IsError = ko.observable(data.IsError);
+
+
+    this.SelectedGcProject = ko.observable(find("Id", data.GcProjects, data.GcProjectId));
+    this.SelectedGcTemplate = ko.observable();
+    this.SelectedScTemplate = ko.observable(find("SitrecoreTemplateId", data.SitecoreTemplates, data.AddMappingModel.SelectedTemplateId));  
+
+    self.gcProjectChanged();
+
+    //this.SelectedGcProject = ko.observable();
+    //this.SelectedScTemplate = ko.observable();
+
+
+
+    
 };
+
+
+find = function (prop, array, data) {
+    return ko.utils.arrayFirst(array, function (item) {
+        return item[prop] === data;
+    });
+};
+
+
+function tabInitSlide() {
+    jQuery(".content_mapping").slideUp(0);
+    jQuery(".title_mapping").removeClass("open");
+    jQuery(jQuery(".title_mapping")[0]).addClass("open");
+    jQuery(jQuery(".content_mapping")[0]).slideDown(0);
+    jQuery("body").on("click", ".title_mapping", function () {
+        if (jQuery(this).hasClass("open")) {
+            jQuery(this).next(".content_mapping").slideUp(200);
+            jQuery(this).removeClass("open");
+        } else {
+            jQuery(".title_mapping.open").next(".content_mapping").slideUp(200);
+            jQuery(".title_mapping.open").removeClass("open");
+            jQuery(this).addClass("open");
+            jQuery(this).next(".content_mapping").slideDown(200);
+
+        }
+    });
+}
 
 jQuery(window).resize(function () {
     jQuery(".tabs_mapping").css("max-height", jQuery(".gathercontent-dialog").height() - 240);

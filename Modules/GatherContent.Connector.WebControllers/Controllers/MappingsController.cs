@@ -43,11 +43,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
             {
                 foreach (var field in tab.Fields)
                 {
-                    if (field.SelectedField != "0")
+                    if (field.SelectedScField != "0")
                     {
                         var fieldMapping = new FieldMappingModel
                         {
-                            CmsTemplateId = field.SelectedField,
+                            CmsTemplateId = field.SelectedScField,
                             GcFieldId = field.FieldId,
                             GcFieldName = field.FieldName
                         };
@@ -110,78 +110,51 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
         }
 
-        public ActionResult GetMapping(string id, string scMappingId)
+        public ActionResult GetMapping(string gcTemplateId, string scMappingId)
         {
             try
             {             
-                var mappingModel = _mappingManager.GetSingleMappingModel(id, scMappingId);
-
+                var mappingModel = _mappingManager.GetSingleMappingModel(gcTemplateId, scMappingId);
               
-                var model = new GatherContent.Connector.WebControllers.Models.Mapping.TemplateMapModel
+                var model = new TemplateMapModel
                 {
                     GcProjectName = mappingModel.GcProjectName,
                     GcTemplateName = mappingModel.GcTemplateName,
-                    ScMappingId = mappingModel.MappingId
-                };
-
-             
-
-
-                var tabs = new List<TemplateTab>();
-
-                foreach (var tab in mappingModel.AddMappingModel.Tabs)
-                {
-                    var templateTab = new TemplateTab
+                    ScMappingId = mappingModel.MappingId,
+                    GcProjectId = mappingModel.GcProjectId,
+                    AddMappingModel = new AddMappingViewModel
                     {
-                        TabName = tab.TabName
-                    };
-                    
-                    foreach (var templateField in tab.Fields)
-                    {
-                        var field = new GatherContent.Connector.WebControllers.Models.Mapping.TemplateField();
-                        field.FieldId = templateField.Id;
-                        field.FieldName = templateField.Name;
-                        field.FieldType = templateField.Type;
-                        field.SelectedField = templateField.SelectedFieldId;
-                        templateTab.Fields.Add(field);
-                    }
-                    tabs.Add(templateTab);
-                }
-
-
-                model.AddMappingModel = new AddMappingViewModel
-                {
-                    DefaultLocationTitle = mappingModel.AddMappingModel.DefaultLocationTitle,
-                    DefaultLocation = mappingModel.AddMappingModel.DefaultLocation,
-                    GcMappingTitle = mappingModel.AddMappingModel.GcMappingTitle,
-                    OpenerId = "drop-tree" + Guid.NewGuid(),
-                    GcTemplateId = mappingModel.AddMappingModel.GcTemplateId,
-                    SelectedTemplateId = mappingModel.AddMappingModel.CmsTemplateId,
-                    Tabs = tabs
-
+                        DefaultLocationTitle = mappingModel.DefaultLocationTitle,
+                        DefaultLocation = mappingModel.DefaultLocation,
+                        GcMappingTitle = mappingModel.MappingTitle,
+                        OpenerId = "drop-tree" + Guid.NewGuid(),
+                        GcTemplateId = mappingModel.GcTemplateId,
+                        SelectedTemplateId = mappingModel.CmsTemplateId,
+                    },
                 };
 
 
-                if (string.IsNullOrEmpty(id) && string.IsNullOrEmpty(scMappingId))
+                foreach (var fieldMapping in mappingModel.SelectedFields)
                 {
-                    model.AddMappingModel.IsEdit = false;
-                }
-                else
-                {
-                    model.AddMappingModel.IsEdit = true;
+                    model.SelectedFields.Add(new FieldMappingViewModel
+                    {
+                        SitecoreTemplateId = fieldMapping.CmsTemplateId,
+                        GcFieldId = fieldMapping.GcFieldId                
+                    });
                 }
 
+
+                #region Available templates
 
                 var sitecoreTemplates = new List<SitecoreTemplate>();
-
-                foreach (var template in mappingModel.AvailableCmsTemplates)
+                var availableCmsTemplates = _mappingManager.GetAvailableTemplates();
+                foreach (var template in availableCmsTemplates)
                 {
                   var st = new SitecoreTemplate
                     {
                         SitrecoreTemplateId = template.Id,
                         SitrecoreTemplateName = template.Name
                     };
-
                     foreach (var field in template.Fields)
                     {
                         st.SitecoreFields.Add(new SitecoreTemplateField
@@ -191,16 +164,36 @@ namespace GatherContent.Connector.WebControllers.Controllers
                             SitecoreFieldType = field.Type
                         });
                     }
-
-
                     sitecoreTemplates.Add(st);
                 }
-
-
                 model.SitecoreTemplates = sitecoreTemplates;
+
+                #endregion
 
 
                 model.Rules = GetMapRules();
+
+                var projects =  _mappingManager.GetAllGcProjects();
+
+                foreach (var project in projects)
+                {
+                    model.GcProjects.Add(new ProjectViewModel
+                    {
+                        Id = project.Id,
+                        Name = project.Name
+                    });
+                }
+
+                if (string.IsNullOrEmpty(gcTemplateId) && string.IsNullOrEmpty(scMappingId))
+                {
+                    model.AddMappingModel.IsEdit = false;
+                }
+                else
+                {
+                    model.AddMappingModel.IsEdit = true;
+                }
+
+
                 return Json(model, JsonRequestBehavior.AllowGet);
             }
             catch (WebException exception)
@@ -212,6 +205,76 @@ namespace GatherContent.Connector.WebControllers.Controllers
             {
                 Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
                 
+                return Json(new { status = "error", message = exception.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult GetTemplatesByProjectId(string gcProjectId)
+        {
+            try
+            {
+                var model = new List<TemplateViewModel>();
+                var templates = _mappingManager.GetTemplatesByProjectId(gcProjectId);
+                foreach (var template in templates)
+                {
+                    var templateModel = new TemplateViewModel
+                    {
+                        Id = template.Id,
+                        Name = template.Name,
+                    };
+
+                    model.Add(templateModel);
+                }
+                return Json(model, JsonRequestBehavior.AllowGet);
+            }
+            catch (WebException exception)
+            {
+                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
+                return Json(new { status = "error", message = exception.Message + " Please check your credentials" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception exception)
+            {
+                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
+                return Json(new { status = "error", message = exception.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult GetFieldsByTemplateId(string gcTemplateId)
+        {
+            try
+            {
+                var model = new List<TemplateTab>();
+                var tabs = _mappingManager.GetFieldsByTemplateId(gcTemplateId);         
+
+                foreach (var tab in tabs)
+                {
+                    var templateTab = new TemplateTab
+                    {
+                        TabName = tab.TabName
+                    };
+
+                    foreach (var templateField in tab.Fields)
+                    {
+                        var field = new Models.Mapping.TemplateField
+                        {
+                            FieldId = templateField.Id,
+                            FieldName = templateField.Name,
+                            FieldType = templateField.Type,
+                        };
+                        templateTab.Fields.Add(field);
+                    }
+                    model.Add(templateTab);
+                }
+                return Json(model, JsonRequestBehavior.AllowGet);
+            }
+            catch (WebException exception)
+            {
+                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
+                return Json(new { status = "error", message = exception.Message + " Please check your credentials" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception exception)
+            {
+                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
                 return Json(new { status = "error", message = exception.Message }, JsonRequestBehavior.AllowGet);
             }
         }

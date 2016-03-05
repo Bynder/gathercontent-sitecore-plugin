@@ -11,7 +11,7 @@ using GatherContent.Connector.SitecoreRepositories.Repositories;
 
 namespace GatherContent.Connector.Managers.Managers
 {
-  
+
 
     public class MappingManager : BaseManager
     {
@@ -26,7 +26,7 @@ namespace GatherContent.Connector.Managers.Managers
 
         private readonly TemplatesService _templateService;
         private readonly ProjectsService _projectService;
-        
+
         private readonly GCAccountSettings _accountSettings;
 
         public MappingManager()
@@ -88,41 +88,27 @@ namespace GatherContent.Connector.Managers.Managers
 
 
 
-        private AddMappingModel MapAddMappingModel(TemplateMapping templateMapping, TemplateEntity gcTemplate)
+        private AddMappingModel MapAddMappingModel(TemplateMapping templateMapping)
         {
             var addSitecoreMappingModel = new AddMappingModel
             {
                 GcTemplateId = templateMapping.GcTemplate.GcTemplateId,
                 CmsTemplateId = templateMapping.CmsTemplate.TemplateId,
-                GcMappingTitle = templateMapping.MappingTitle,
+                MappingTitle = templateMapping.MappingTitle,
                 DefaultLocation = templateMapping.DefaultLocationId,
                 DefaultLocationTitle = templateMapping.DefaultLocationTitle
             };
 
-            foreach (var config in gcTemplate.Data.Config)
+
+
+            foreach (var fieldMapping in templateMapping.FieldMappings)
             {
-                var tab = new TemplateTab { TabName = config.Label };
-                foreach (var element in config.Elements)
+                addSitecoreMappingModel.SelectedFields.Add(new FieldMappingModel
                 {
-                    var tm = new TemplateField
-                    {
-                        Name = element.Label,
-                        Id = element.Name,
-                        Type = element.Type
-                    };
-
-                    if (templateMapping.FieldMappings != null)
-                    {
-                        var scField = templateMapping.FieldMappings.FirstOrDefault(item => item.GcField.Id == element.Name);
-                        if (scField != null)
-                        {
-                            tm.SelectedFieldId = scField.CmsField.TemplateField.FieldId;
-                        }
-                    }
-
-                    tab.Fields.Add(tm);
-                }
-                addSitecoreMappingModel.Tabs.Add(tab);
+                    CmsTemplateId = fieldMapping.CmsField.TemplateField.FieldId,
+                    GcFieldId = fieldMapping.GcField.Id,
+                    GcFieldName = fieldMapping.GcField.Name
+                });
             }
 
             return addSitecoreMappingModel;
@@ -212,41 +198,95 @@ namespace GatherContent.Connector.Managers.Managers
         }
 
 
-        public TemplateMapModel GetSingleMappingModel(string gcTemplateId, string cmsMappingId)
+        public AddMappingModel GetSingleMappingModel(string gcTemplateId, string cmsMappingId)
         {
-            var model = new TemplateMapModel();
-
-            if (!string.IsNullOrEmpty(gcTemplateId))
+            if (!string.IsNullOrEmpty(gcTemplateId) && !string.IsNullOrEmpty(cmsMappingId))
             {
                 var gcTemplate = GetGcTemplateEntity(gcTemplateId);
                 var gcProject = GetGcProjectEntity(gcTemplate.Data.ProjectId.ToString());
-
+                var addMappingModel = _mappingRepository.GetMappingById(cmsMappingId);
+                var model = MapAddMappingModel(addMappingModel);
                 model.GcProjectName = gcProject.Data.Name;
+                model.GcProjectId = gcProject.Data.Id.ToString();
                 model.GcTemplateName = gcTemplate.Data.Name;
-
-
-                if (!string.IsNullOrEmpty(cmsMappingId))
-                {
-                    model.MappingId = cmsMappingId;
-
-                    var addMappingModel = _mappingRepository.GetMappingById(cmsMappingId);
-                    var addCmsMappingModel = MapAddMappingModel(addMappingModel, gcTemplate);
-                    model.AddMappingModel = addCmsMappingModel;
-                }
-            
+                model.GcTemplateId = gcTemplate.Data.Id.ToString();
+                model.MappingId = cmsMappingId;
+                return model;
             }
 
+            return new AddMappingModel();
+        }
 
+
+        public List<CmsTemplateModel> GetAvailableTemplates()
+        {
             var availableTemplates = _mappingRepository.GetAvailableCmsTemplates();
             if (availableTemplates.Count == 0)
             {
                 throw new Exception("Template folder is empty");
             }
-            var templates = MapSitecoreTemplates(availableTemplates);
-            model.AvailableCmsTemplates.AddRange(templates);
+            var templates = MapSitecoreTemplates(availableTemplates).ToList();
+
+            return templates;
+        }
 
 
+        public List<GcProjectModel> GetAllGcProjects()
+        {
+            var account = GetAccount();
+            var projects = GetProjects(account.Id);
+            var model = new List<GcProjectModel>();
 
+            foreach (var project in projects)
+            {
+                model.Add(new GcProjectModel
+                {
+                    Id = project.Id.ToString(),
+                    Name = project.Name
+                });
+            }
+
+            return model;
+        }
+        
+
+        public List<GcTemplateModel> GetTemplatesByProjectId(string gcProjectId)
+        {
+            var model = new List<GcTemplateModel>();
+            var templates = _templateService.GetTemplates(gcProjectId);
+            foreach (var template in templates.Data)
+            {
+                model.Add(new GcTemplateModel
+                {
+                    Id = template.Id.ToString(),
+                    Name = template.Name
+                });
+            }
+            return model;
+        }
+
+
+        public List<TemplateTabModel> GetFieldsByTemplateId(string gcTemplateId)
+        {
+            var model = new List<TemplateTabModel>();
+            
+            var gcTemplate = _templateService.GetSingleTemplate(gcTemplateId);
+            foreach (var config in gcTemplate.Data.Config)
+            {
+                var tab = new TemplateTabModel { TabName = config.Label };
+                foreach (var element in config.Elements)
+                {
+                    var tm = new TemplateField
+                    {
+                        Name = element.Label,
+                        Id = element.Name,
+                        Type = element.Type
+                    };
+
+                    tab.Fields.Add(tm);
+                }
+                model.Add(tab);
+            }
             return model;
         }
 

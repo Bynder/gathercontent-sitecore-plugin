@@ -3,44 +3,37 @@ using GatherContent.Connector.Entities;
 using GatherContent.Connector.Managers.Models.ImportItems;
 using System.Collections.Generic;
 using GatherContent.Connector.SitecoreRepositories.Repositories;
-using Sitecore.Collections;
-using Sitecore.Data.Items;
-using Sitecore.Shell.Framework.Commands.Carousel;
 
 namespace GatherContent.Connector.Managers.Managers
 {
     public class DropTreeManager
     {
-        private readonly ItemsRepository _itemsRepository;
+        private readonly DropTreeRepository _dropTreeRepository;
         private readonly GCAccountSettings _gcAccountSettings;
         public DropTreeManager()
         {
             var accountsRepository = new AccountsRepository();
             _gcAccountSettings = accountsRepository.GetAccountSettings();
-            _itemsRepository = new ItemsRepository();
+            _dropTreeRepository = new DropTreeRepository();
 
         }
 
-
-        private List<DropTreeModel> CreateChildrenTree(string id, IEnumerable<Item> items)
+        private List<DropTreeModel> CreateChildrenTree(string id, List<IRepositories.Models.New.Import.CmsItem> items)
         {
             var list = new List<DropTreeModel>();
 
-            //List<Item> items = query.Cast<Item>().ToList();
-
-            if (items.Select(i => i.ID.ToString()).Contains(id))
+            if (items.Select(i => i.Id.ToString()).Contains(id))
             {
                 foreach (var item in items)
                 {
-                    var template = _itemsRepository.GetItemTemplate(item.TemplateID);
-                    if (id == item.ID.ToString())
+                    if (id == item.Id)
                     {
                         var node = new DropTreeModel
                         {
-                            Title = item.Name,
-                            Key = item.ID.ToString(),
+                            Title = item.Title,
+                            Key = item.Id,
                             IsLazy = true,
-                            Icon = template != null ? template.Icon : "",
+                            Icon = item.Icon,
                             Selected = true
                         };
                         list.Add(node);
@@ -49,10 +42,10 @@ namespace GatherContent.Connector.Managers.Managers
                     {
                         var node = new DropTreeModel
                         {
-                            Title = item.Name,
-                            Key = item.ID.ToString(),
+                            Title = item.Title,
+                            Key = item.Id,
                             IsLazy = true,
-                            Icon = template != null ? template.Icon : "",
+                            Icon = item.Icon,
                             Selected = false
                         };
                         list.Add(node);
@@ -63,14 +56,12 @@ namespace GatherContent.Connector.Managers.Managers
             {
                 foreach (var item in items)
                 {
-                    var template = _itemsRepository.GetItemTemplate(item.TemplateID);
-
                     var node = new DropTreeModel
                     {
-                        Title = item.Name,
-                        Key = item.ID.ToString(),
+                        Title = item.Title,
+                        Key = item.Id,
                         IsLazy = false,
-                        Icon = template != null ? template.Icon : "",
+                        Icon = item.Icon,
                         Selected = false,
                         Children = CreateChildrenTree(id, item.Children),
                         Expanded = true
@@ -78,47 +69,48 @@ namespace GatherContent.Connector.Managers.Managers
                     list.Add(node);
                 }
             }
-
             return list;
         }
-
 
 
         public List<DropTreeModel> GetTopLevelNode(string id)
         {
             var model = new List<DropTreeModel>();
-            var dropTreeHomeNode = _gcAccountSettings.DropTreeHomeNode;
-            if (string.IsNullOrEmpty(dropTreeHomeNode))
-            {
-                dropTreeHomeNode = Constants.DropTreeHomeNode;
-            }
-            var home = _itemsRepository.GetItem(dropTreeHomeNode);
-            var template = _itemsRepository.GetItemTemplate(home.TemplateID);
+            var items = _dropTreeRepository.GetHomeNode(id);
 
             if (string.IsNullOrEmpty(id) || id == "null")
             {
-                model.Add(new DropTreeModel
+                foreach (var cmsItem in items)
                 {
-                    Title = home.Name,
-                    Key = home.ID.ToString(),
-                    IsLazy = true,
-                    Icon = template != null ? template.Icon : "",
-                });
+                    model.Add(new DropTreeModel
+                    {
+                        Title = cmsItem.Title,
+                        Key = cmsItem.Id,
+                        Icon = cmsItem.Icon,
+                        IsLazy = true
+                    });
+                }
             }
             else
             {
-                var homeNode = new DropTreeModel
-                 {
-                     Title = home.Name,
-                     Key = home.ID.ToString(),
-                     IsLazy = false,
-                     Icon = template != null ? template.Icon : "",
-                     Selected = id == dropTreeHomeNode,
-                     Children = CreateChildrenTree(id, home.Children),
-                     Expanded = true
-                 };
-
-                model.Add(homeNode);
+                var dropTreeHomeNode = _gcAccountSettings.DropTreeHomeNode;
+                if (string.IsNullOrEmpty(dropTreeHomeNode))
+                {
+                    dropTreeHomeNode = Constants.DropTreeHomeNode;
+                }
+                foreach (var cmsItem in items)
+                {
+                    model.Add(new DropTreeModel
+                    {
+                        Title = cmsItem.Title,
+                        Key = cmsItem.Id,
+                        Icon = cmsItem.Icon,
+                        IsLazy = false,
+                        Selected = id == dropTreeHomeNode,
+                        Expanded = true,
+                        Children = CreateChildrenTree(id, cmsItem.Children),
+                    });
+                }
             }
 
             return model;
@@ -130,27 +122,19 @@ namespace GatherContent.Connector.Managers.Managers
         public List<DropTreeModel> GetChildrenNodes(string id)
         {
             var model = new List<DropTreeModel>();
-            var parent = _itemsRepository.GetItem(id);
-            if (parent == null) return model;
-
-            var children = parent.Children;
-
-            foreach (var child in children)
+            var items = _dropTreeRepository.GetChildren(id);
+            foreach (var cmsItem in items)
             {
-                var item = (Item)child;
-                var template = _itemsRepository.GetItemTemplate(item.TemplateID);
                 model.Add(new DropTreeModel
                 {
-                    Title = item.Name,
-                    Key = item.ID.ToString(),
-                    IsLazy = item.HasChildren,
-                    Icon = template != null ? template.Icon : ""
+                    Title = cmsItem.Title,
+                    Key = cmsItem.Id,
+                    Icon = cmsItem.Icon,
+                    IsLazy = true
                 });
             }
 
             return model;
         }
-
-
     }
 }

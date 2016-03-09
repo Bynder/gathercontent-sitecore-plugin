@@ -348,7 +348,7 @@ var ImportManager = function () {
                 autoFocus: false,
                 imagePath: "~/icon/",
                 initAjax: {
-                    url: '/api/sitecore/Import/GetTopLevelNode?id=' + locationId,
+                    url: '/api/sitecore/DropTree/GetTopLevelNode?id=' + locationId,
                     data: { mode: "funnyMode" }
                 },
                 onActivate: function (node) {
@@ -358,7 +358,7 @@ var ImportManager = function () {
                 },
                 onLazyRead: function (node) {
                     node.appendAjax({
-                        url: "/api/sitecore/Import/GetChildrenAsJson?id=" + node.data.key,
+                        url: "/api/sitecore/DropTree/GetChildren?id=" + node.data.key,
                         data: {
                             key: node.data.key,
                             mode: "funnyMode"

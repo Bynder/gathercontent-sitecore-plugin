@@ -106,46 +106,5 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
         }
 
-        public string GetTopLevelNode(string id)
-        {
-            try
-            {
-                List<DropTreeModel> result = _dropTreeManager.GetTopLevelNode(id);
-                var model = JsonConvert.SerializeObject(result);
-                return model;
-            }
-            catch (WebException exception)
-            {
-                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
-                return exception.Message + " Please check your credentials";
-            }
-            catch (Exception exception)
-            {
-                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
-                return exception.Message;
-            }
-
-        }
-
-        public string GetChildrenAsJson(string id)
-        {
-            try
-            {
-                List<DropTreeModel> result = _dropTreeManager.GetChildrenNodes(id);
-                var model = JsonConvert.SerializeObject(result);
-                return model;
-            }
-            catch (WebException exception)
-            {
-                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
-                return exception.Message + " Please check your credentials";
-            }
-            catch (Exception exception)
-            {
-                Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
-                return exception.Message;
-            }
-        }
-
     }
 }

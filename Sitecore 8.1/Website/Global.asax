@@ -1,1 +1,1 @@
-<%@Application Language='C#' Codebehind="Global.asax.cs" Inherits="GatherContent.Connector.Website.Global" %>
+<%@Application Language='C#' Inherits="Sitecore.Web.Application" %>

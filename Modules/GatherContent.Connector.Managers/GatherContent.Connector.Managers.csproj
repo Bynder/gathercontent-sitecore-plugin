@@ -97,6 +97,10 @@
       <HintPath>..\..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Release 8.1'">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\References\Sitecore\Newtonsoft.Json.dll</HintPath>
@@ -154,6 +158,10 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WebActivatorEx.2.1.0\lib\net40\WebActivatorEx.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\TryMapItemState.cs" />
@@ -163,6 +171,7 @@
     <Compile Include="Interfaces\IMappingManager.cs" />
     <Compile Include="Interfaces\ITemplatesManager.cs" />
     <Compile Include="Interfaces\IUpdateManager.cs" />
+    <Compile Include="IoC\Bootstrapper.cs" />
     <Compile Include="IoC\Installer.cs" />
     <Compile Include="Managers\BaseManager.cs" />
     <Compile Include="Managers\CacheManager.cs" />

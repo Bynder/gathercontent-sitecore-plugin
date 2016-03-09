@@ -128,7 +128,6 @@
     <Compile Include="Commands\MappingsCommand.cs" />
     <Compile Include="Commands\TestConnectionCommand.cs" />
     <Compile Include="Commands\UpdateCommand.cs" />
-    <Compile Include="IoC\Bootstrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

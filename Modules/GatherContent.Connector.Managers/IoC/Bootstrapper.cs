@@ -1,8 +1,13 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Castle.Windsor.Installer;
+using GatherContent.Connector.Managers.IoC;
 
-namespace GatherContent.Connector.Website7.IoC
+[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Bootstrapper), "Initialize")]
+
+[assembly: WebActivatorEx.ApplicationShutdownMethod(typeof(Bootstrapper), "Dispose")]
+
+namespace GatherContent.Connector.Managers.IoC
 {
     /// <summary>
     /// 

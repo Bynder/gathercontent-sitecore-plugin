@@ -99,12 +99,10 @@
     <Compile Include="Interfaces\IAccountsRepository.cs" />
     <Compile Include="Interfaces\IItemsRepository.cs" />
     <Compile Include="Interfaces\IMappingRepository.cs" />
-    <Compile Include="Interfaces\IProjectsRepository.cs" />
     <Compile Include="Models\Import\AvailableMappingModel.cs" />
     <Compile Include="Models\Import\File.cs" />
     <Compile Include="Models\Import\MappingLocationsResultModel.cs" />
     <Compile Include="Models\Import\MappingResultModel.cs" />
-    <Compile Include="Models\Mapping\CmsMapping.cs" />
     <Compile Include="Models\New\Import\CmsTemplateField.cs" />
     <Compile Include="Models\New\Import\CmsField.cs" />
     <Compile Include="Models\New\Import\CmsItem.cs" />
@@ -119,12 +117,6 @@
     <Compile Include="Models\Update\UpdateItemResponseModel.cs" />
     <Compile Include="Models\Import\MappingFieldModel.cs" />
     <Compile Include="Models\Import\MappingTemplateModel.cs" />
-    <Compile Include="Models\Mapping\AddMapping.cs" />
-    <Compile Include="Models\Mapping\CmsField.cs" />
-    <Compile Include="Models\Mapping\CmsTemplate.cs" />
-    <Compile Include="Models\Mapping\CmsTemplateField.cs" />
-    <Compile Include="Models\Mapping\CmsTemplateTab.cs" />
-    <Compile Include="Models\Mapping\CmsMappingModel.cs" />
     <Compile Include="Models\Mapping\TemplateMapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

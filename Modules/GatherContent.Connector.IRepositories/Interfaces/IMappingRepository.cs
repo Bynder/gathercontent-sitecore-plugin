@@ -11,7 +11,7 @@ namespace GatherContent.Connector.IRepositories.Interfaces
         TemplateMapping GetMappingById(string id);
 
 
-        List<GatherContent.Connector.IRepositories.Models.New.Mapping.CmsTemplate> GetAvailableCmsTemplates();
+        List<CmsTemplate> GetAvailableCmsTemplates();
 
 
         void CreateMapping(TemplateMapping templateMapping);

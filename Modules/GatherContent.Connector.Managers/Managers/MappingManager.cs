@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using GatherContent.Connector.Entities;
-using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.GatherContentService.Services;
 using GatherContent.Connector.IRepositories.Models.New.Import;
 using GatherContent.Connector.IRepositories.Models.New.Mapping;
@@ -53,7 +52,7 @@ namespace GatherContent.Connector.Managers.Managers
         }
 
 
-        private IEnumerable<CmsTemplateModel> MapSitecoreTemplates(IEnumerable<CmsTemplate> scTemplates)
+        private IEnumerable<CmsTemplateModel> MapCmsTemplates(IEnumerable<CmsTemplate> scTemplates)
         {
             var templates = new List<CmsTemplateModel>();
 
@@ -90,7 +89,7 @@ namespace GatherContent.Connector.Managers.Managers
 
         private AddMappingModel MapAddMappingModel(TemplateMapping templateMapping)
         {
-            var addSitecoreMappingModel = new AddMappingModel
+            var addCmsMappingModel = new AddMappingModel
             {
                 GcTemplateId = templateMapping.GcTemplate.GcTemplateId,
                 CmsTemplateId = templateMapping.CmsTemplate.TemplateId,
@@ -103,7 +102,7 @@ namespace GatherContent.Connector.Managers.Managers
 
             foreach (var fieldMapping in templateMapping.FieldMappings)
             {
-                addSitecoreMappingModel.SelectedFields.Add(new FieldMappingModel
+                addCmsMappingModel.SelectedFields.Add(new FieldMappingModel
                 {
                     CmsTemplateId = fieldMapping.CmsField.TemplateField.FieldId,
                     GcFieldId = fieldMapping.GcField.Id,
@@ -111,7 +110,7 @@ namespace GatherContent.Connector.Managers.Managers
                 });
             }
 
-            return addSitecoreMappingModel;
+            return addCmsMappingModel;
         }
 
 
@@ -225,7 +224,7 @@ namespace GatherContent.Connector.Managers.Managers
             {
                 throw new Exception("Template folder is empty");
             }
-            var templates = MapSitecoreTemplates(availableTemplates).ToList();
+            var templates = MapCmsTemplates(availableTemplates).ToList();
 
             return templates;
         }
@@ -303,6 +302,7 @@ namespace GatherContent.Connector.Managers.Managers
                 DefaultLocationId = model.DefaultLocation,
                 LastUpdatedDate = template.Data.Updated.ToString(),
                 GcProjectId = project.Data.Id.ToString(),
+                GcProjectName = project.Data.Name,
                 CmsTemplate = new CmsTemplate
                 {
                     TemplateId = model.CmsTemplateId

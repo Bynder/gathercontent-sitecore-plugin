@@ -116,7 +116,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
             {             
                 var mappingModel = _mappingManager.GetSingleMappingModel(gcTemplateId, scMappingId);
               
-                var model = new TemplateMapModel
+                var model = new TemplateMapViewModel
                 {
                     GcProjectName = mappingModel.GcProjectName,
                     GcTemplateName = mappingModel.GcTemplateName,
@@ -146,11 +146,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
                 #region Available templates
 
-                var sitecoreTemplates = new List<SitecoreTemplate>();
+                var sitecoreTemplates = new List<SitecoreTemplateViewModel>();
                 var availableCmsTemplates = _mappingManager.GetAvailableTemplates();
                 foreach (var template in availableCmsTemplates)
                 {
-                  var st = new SitecoreTemplate
+                  var st = new SitecoreTemplateViewModel
                     {
                         SitrecoreTemplateId = template.Id,
                         SitrecoreTemplateName = template.Name
@@ -186,11 +186,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
                 if (string.IsNullOrEmpty(gcTemplateId) && string.IsNullOrEmpty(scMappingId))
                 {
-                    model.AddMappingModel.IsEdit = false;
+                    model.IsEdit = false;
                 }
                 else
                 {
-                    model.AddMappingModel.IsEdit = true;
+                    model.IsEdit = true;
                 }
 
 

@@ -77,7 +77,7 @@ function ViewModel(data) {
             this.TemplateTabs = self.Tabs();
             this.IsEdit = self.IsEdit();
             this.SelectedTemplateId = self.SelectedTemplateId();
-            this.TemplateId = self.GcTemplateId();
+            this.TemplateId = self.SelectedGcTemplate().Id;
             this.GcMappingTitle = self.GcMappingTitle();
             this.ScMappingId = self.ScMappingId();
             this.DefaultLocation = self.DefaultLocation();

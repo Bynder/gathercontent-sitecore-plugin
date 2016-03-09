@@ -2,9 +2,9 @@
 
 namespace GatherContent.Connector.WebControllers.Models.Mapping
 {
-    public class SitecoreTemplate
+    public class SitecoreTemplateViewModel
     {
-        public SitecoreTemplate()
+        public SitecoreTemplateViewModel()
         {
             SitecoreFields = new List<SitecoreTemplateField>();
         }

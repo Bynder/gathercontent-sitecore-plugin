@@ -14,7 +14,8 @@
 <link href="/sitecore modules/shell/GatherContent/css/dynatree/ui.dynatree.css" rel="stylesheet" />
 <script type="text/javascript">
     jQuery(document).ready(function () {
-        ko.applyBindings(new ViewModel());
+        var data = Init();
+        ko.applyBindings(new ViewModel(data));
     });
 
 </script>

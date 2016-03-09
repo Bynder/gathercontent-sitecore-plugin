@@ -191,14 +191,13 @@
   <ItemGroup>
     <Compile Include="Controllers\ImportController.cs" />
     <Compile Include="Controllers\MappingsController.cs" />
-    <Compile Include="Controllers\TemplatesController.cs" />
     <Compile Include="Controllers\UpdateController.cs" />
     <Compile Include="Models\Mapping\AddMappingViewModel.cs" />
     <Compile Include="Models\Mapping\FieldMappingViewModel.cs" />
     <Compile Include="Models\Mapping\PostMappingViewModel.cs" />
     <Compile Include="Models\Mapping\ProjectViewModel.cs" />
-    <Compile Include="Models\Mapping\SitecoreTemplate.cs" />
-    <Compile Include="Models\Mapping\TemplateMapModel.cs" />
+    <Compile Include="Models\Mapping\SitecoreTemplateViewModel.cs" />
+    <Compile Include="Models\Mapping\TemplateMapViewModel.cs" />
     <Compile Include="Models\Mapping\TemplateMappingViewModel.cs" />
     <Compile Include="Models\Mapping\TemplateViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

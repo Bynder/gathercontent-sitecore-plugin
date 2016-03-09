@@ -2,6 +2,7 @@
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
+using Castle.Windsor.Installer;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.GatherContentService.Interfaces;
 using GatherContent.Connector.IRepositories.Interfaces;
@@ -22,6 +23,9 @@ namespace GatherContent.Connector.Managers.IoC
 	    public void Install(IWindsorContainer container, IConfigurationStore store)
 	    {
             Debugger.Break();
+
+            //repositories (from config file)
+            container.Install(Configuration.FromXmlFile("App_Config\\repositories.config"));
 
             //managers
             container.Register(Classes.FromThisAssembly()

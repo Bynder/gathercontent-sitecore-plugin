@@ -154,7 +154,7 @@ function ViewModel(data) {
             jQuery.getJSON('/api/sitecore/mappings/GetTemplatesByProjectId?gcProjectId=' + self.SelectedGcProject().Id, null, function(data) {
                 if (data.status != "error") {
                     self.GcTemplates(data);
-                    self.SelectedGcTemplate(find("Id", data, self.GcTemplateId()));
+                    self.SelectedGcTemplate(self.find("Id", data, self.GcTemplateId()));
                 } else {
                     self.ErrorText("Error:" + " " + data.message);
                     self.IsError(true);
@@ -165,23 +165,25 @@ function ViewModel(data) {
 
 
     this.gcTemplateChanged = function () {
-        jQuery.getJSON('/api/sitecore/mappings/GetFieldsByTemplateId?gcTemplateId=' + self.SelectedGcTemplate().Id, null, function (data) {
-            if (data.status != "error") {
-                for (var t = 0; t < data.length; t++) {
-                    for (var i = 0; i < data[t].Fields.length; i++) {
-                        var currentElement = data[t].Fields[i];
-                        var selectedItem = find("GcFieldId", self.SelectedFields(), data[t].Fields[i].FieldId);
-                        if (selectedItem != null) {
-                            currentElement.SelectedScField = selectedItem.SitecoreTemplateId;
+        if (self.SelectedGcTemplate != undefined && self.SelectedGcTemplate() != null) {
+            jQuery.getJSON('/api/sitecore/mappings/GetFieldsByTemplateId?gcTemplateId=' + self.SelectedGcTemplate().Id, null, function(data) {
+                if (data.status != "error") {
+                    for (var t = 0; t < data.length; t++) {
+                        for (var i = 0; i < data[t].Fields.length; i++) {
+                            var currentElement = data[t].Fields[i];
+                            var selectedItem = self.find("GcFieldId", self.SelectedFields(), data[t].Fields[i].FieldId);
+                            if (selectedItem != null) {
+                                currentElement.SelectedScField = selectedItem.SitecoreTemplateId;
+                            }
                         }
                     }
+                    self.Tabs(data);
+                } else {
+                    self.ErrorText("Error:" + " " + data.message);
+                    self.IsError(true);
                 }
-                self.Tabs(data);
-            } else {
-                self.ErrorText("Error:" + " " + data.message);
-                self.IsError(true);
-            }
-        });
+            });
+        }
     }
 
 
@@ -198,7 +200,7 @@ function ViewModel(data) {
                 resultCollection.push(self.SelectedScTemplate().SitecoreFields[0]);
                 for (var i = 0; i < currentCollection.length; i++) {
                     var currentElement = currentCollection[i];
-                    var selectedItem = find("GcFieldId", self.SelectedFields(), item.FieldId);
+                    var selectedItem = self.find("GcFieldId", self.SelectedFields(), item.FieldId);
                     if (selectedItem != null) {
                         if (currentElement.SitecoreFieldId == selectedItem.SitecoreTemplateId) {
                             currentElement.Selected = true;
@@ -227,12 +229,15 @@ function ViewModel(data) {
     };
 
 
+    this.find = function (prop, array, property) {
+        return ko.utils.arrayFirst(array, function (item) {
+            return item[prop] === property;
+        });
+    };
 
     this.Rules = ko.observable(data.Rules);
     this.IsEdit = ko.observable(data.IsEdit);
     this.ScMappingId = ko.observable(data.ScMappingId);
-    //this.GcProjectName = ko.observable();
-    //this.GcTemplateName = ko.observable();
     this.GcMappingTitle = ko.observable(data.AddMappingModel.GcMappingTitle);
     this.OpenerId = ko.observable(data.AddMappingModel.OpenerId);
     this.DefaultLocation = ko.observable(data.AddMappingModel.DefaultLocation);
@@ -251,27 +256,20 @@ function ViewModel(data) {
     this.ErrorText = ko.observable();
     this.IsError = ko.observable(data.IsError);
 
-
-    this.SelectedGcProject = ko.observable(find("Id", data.GcProjects, data.GcProjectId));
+    if (data.IsEdit) {
+        this.SelectedGcProject = ko.observable(self.find("Id", data.GcProjects, data.GcProjectId));
+    } else {
+        this.SelectedGcProject = ko.observable(data.GcProjects[0]);
+    }
     this.SelectedGcTemplate = ko.observable();
-    this.SelectedScTemplate = ko.observable(find("SitrecoreTemplateId", data.SitecoreTemplates, data.AddMappingModel.SelectedTemplateId));  
+    this.SelectedScTemplate = ko.observable(self.find("SitrecoreTemplateId", data.SitecoreTemplates, data.AddMappingModel.SelectedTemplateId));  
 
     self.gcProjectChanged();
-
-    //this.SelectedGcProject = ko.observable();
-    //this.SelectedScTemplate = ko.observable();
-
-
-
     
 };
 
 
-find = function (prop, array, data) {
-    return ko.utils.arrayFirst(array, function (item) {
-        return item[prop] === data;
-    });
-};
+
 
 
 function tabInitSlide() {

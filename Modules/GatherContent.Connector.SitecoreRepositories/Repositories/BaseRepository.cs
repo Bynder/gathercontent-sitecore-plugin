@@ -9,23 +9,40 @@ using Sitecore.Globalization;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class BaseSitecoreRepository
     {
         protected readonly Database ContextDatabase;
         protected readonly Language ContextLanguage;
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected BaseSitecoreRepository()
         {
             ContextDatabase = Factory.GetDatabase("master");
             ContextLanguage = Context.Language;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sitecoreId"></param>
+        /// <returns></returns>
         public Item GetItem(string sitecoreId)
         {
             var resultItem = GetItem(sitecoreId, ContextLanguage);
             return resultItem;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sitecoreId"></param>
+        /// <param name="language"></param>
+        /// <returns></returns>
         public Item GetItem(string sitecoreId, Language language)
         {
             Item resultItem = null;
@@ -35,7 +52,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return resultItem;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public Item GetItemByPath(string path)
         {
             Item resultItem = null;
@@ -45,11 +66,20 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return resultItem;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sitecoreId"></param>
+        /// <returns></returns>
         public TemplateItem GetItemTemplate(ID sitecoreId)
         {
             return ContextDatabase.GetTemplate(sitecoreId);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         protected IEnumerable<Item> GetAllProjects()
         {
             var accountSettingItem = ContextDatabase.GetItem(Constants.AccountItemId, ContextLanguage);
@@ -58,6 +88,10 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return projects == null ? Enumerable.Empty<Item>() : projects.ToList();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         protected IEnumerable<Item> GetAllMappings()
         {
             var accountSettingItem = ContextDatabase.GetItem(Constants.AccountItemId, ContextLanguage);

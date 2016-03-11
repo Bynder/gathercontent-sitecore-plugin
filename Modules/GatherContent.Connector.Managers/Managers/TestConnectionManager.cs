@@ -1,24 +1,34 @@
-﻿using GatherContent.Connector.GatherContentService.Services;
-using GatherContent.Connector.SitecoreRepositories.Repositories;
+﻿using GatherContent.Connector.GatherContentService.Interfaces;
+using GatherContent.Connector.Managers.Interfaces;
 
 namespace GatherContent.Connector.Managers.Managers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class TestConnectionManager : BaseManager
     {
-        private readonly AccountsService _accountsService;
-
-        public TestConnectionManager()
+        /// <summary>
+        /// 
+        /// </summary>
+        public TestConnectionManager(
+            IAccountsService accountsService,
+            IProjectsService projectsService,
+            ITemplatesService templateService,
+            ICacheManager cacheManager) : base(accountsService, projectsService, templateService, cacheManager)
         {
-            var accountsRepository = new AccountsRepository();
-            var accountSettings = accountsRepository.GetAccountSettings();
-            _accountsService = new AccountsService(accountSettings);
+
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public bool TestConnection()
         {
             try
             {
-                _accountsService.GetAccounts();
+                AccountsService.GetAccounts();
             }
             catch
             {

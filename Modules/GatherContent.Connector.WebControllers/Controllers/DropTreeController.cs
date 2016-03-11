@@ -1,27 +1,37 @@
 ﻿using System;
 using System.Net;
-using GatherContent.Connector.Managers.Managers;
+using GatherContent.Connector.Managers.Interfaces;
 using Newtonsoft.Json;
 using Sitecore.Diagnostics;
-using Sitecore.Mvc.Controllers;
 
 namespace GatherContent.Connector.WebControllers.Controllers
 {
-    public class DropTreeController : SitecoreController
+    /// <summary>
+    /// 
+    /// </summary>
+    public class DropTreeController : BaseController
     {
-        private readonly DropTreeManager _dropTreeManager;
+        protected IDropTreeManager DropTreeManager;
 
-        public DropTreeController()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dropTreeManager"></param>
+        public DropTreeController(IDropTreeManager dropTreeManager)
         {
-            _dropTreeManager = new DropTreeManager();
+            DropTreeManager = dropTreeManager;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string GetTopLevelNode(string id)
         {
             try
             {
-                var result = _dropTreeManager.GetTopLevelNode(id);
+                var result = DropTreeManager.GetTopLevelNode(id);
                 var model = JsonConvert.SerializeObject(result);
                 return model;
             }
@@ -38,11 +48,16 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string GetChildren(string id)
         {
             try
             {
-                var result = _dropTreeManager.GetChildrenNodes(id);
+                var result = DropTreeManager.GetChildrenNodes(id);
                 var model = JsonConvert.SerializeObject(result);
                 return model;
             }

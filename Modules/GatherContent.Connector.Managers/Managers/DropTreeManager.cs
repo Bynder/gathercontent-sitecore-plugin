@@ -2,22 +2,41 @@
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Managers.Models.ImportItems;
 using System.Collections.Generic;
+using GatherContent.Connector.IRepositories.Interfaces;
+using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.SitecoreRepositories.Repositories;
 
 namespace GatherContent.Connector.Managers.Managers
 {
-    public class DropTreeManager
+    /// <summary>
+    /// 
+    /// </summary>
+    public class DropTreeManager : IDropTreeManager
     {
-        private readonly DropTreeRepository _dropTreeRepository;
-        private readonly GCAccountSettings _gcAccountSettings;
-        public DropTreeManager()
-        {
-            var accountsRepository = new AccountsRepository();
-            _gcAccountSettings = accountsRepository.GetAccountSettings();
-            _dropTreeRepository = new DropTreeRepository();
+        protected IDropTreeRepository DropTreeRepository;
+        protected IAccountsRepository AccountsRepository;
 
+        protected GCAccountSettings GcAccountSettings;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dropTreeRepository"></param>
+        /// <param name="accountsRepository"></param>
+        /// <param name="gcAccountSettings"></param>
+        public DropTreeManager(IDropTreeRepository dropTreeRepository, IAccountsRepository accountsRepository, GCAccountSettings gcAccountSettings)
+        {
+            AccountsRepository = accountsRepository;
+            GcAccountSettings = gcAccountSettings;
+            DropTreeRepository = dropTreeRepository;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="items"></param>
+        /// <returns></returns>
         private List<DropTreeModel> CreateChildrenTree(string id, List<IRepositories.Models.New.Import.CmsItem> items)
         {
             var list = new List<DropTreeModel>();
@@ -72,11 +91,15 @@ namespace GatherContent.Connector.Managers.Managers
             return list;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public List<DropTreeModel> GetTopLevelNode(string id)
         {
             var model = new List<DropTreeModel>();
-            var items = _dropTreeRepository.GetHomeNode(id);
+            var items = DropTreeRepository.GetHomeNode(id);
 
             if (string.IsNullOrEmpty(id) || id == "null")
             {
@@ -93,7 +116,7 @@ namespace GatherContent.Connector.Managers.Managers
             }
             else
             {
-                var dropTreeHomeNode = _gcAccountSettings.DropTreeHomeNode;
+                var dropTreeHomeNode = GcAccountSettings.DropTreeHomeNode;
                 if (string.IsNullOrEmpty(dropTreeHomeNode))
                 {
                     dropTreeHomeNode = Constants.DropTreeHomeNode;
@@ -116,13 +139,15 @@ namespace GatherContent.Connector.Managers.Managers
             return model;
         }
 
-
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public List<DropTreeModel> GetChildrenNodes(string id)
         {
             var model = new List<DropTreeModel>();
-            var items = _dropTreeRepository.GetChildren(id);
+            var items = DropTreeRepository.GetChildren(id);
             foreach (var cmsItem in items)
             {
                 model.Add(new DropTreeModel

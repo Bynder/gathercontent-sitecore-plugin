@@ -2,7 +2,7 @@
 
 namespace GatherContent.Connector.IRepositories.Interfaces
 {
-    public interface IAccountsRepository
+    public interface IAccountsRepository : IRepository
     {
         GCAccountSettings GetAccountSettings();
     }

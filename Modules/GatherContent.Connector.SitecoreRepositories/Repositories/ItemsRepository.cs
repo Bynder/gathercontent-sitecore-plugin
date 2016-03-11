@@ -562,6 +562,13 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
         #region Old Methods
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="languageName"></param>
+        /// <param name="items"></param>
+        /// <returns></returns>
         public List<MappingResultModel> ImportItems(string itemId, string languageName, List<MappingResultModel> items)
         {
             var language = LanguageManager.GetLanguage(languageName);
@@ -571,7 +578,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return result;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="languageName"></param>
+        /// <param name="items"></param>
+        /// <returns></returns>
         public List<MappingResultModel> ImportItemsWithLocation(string languageName, List<MappingResultModel> items)
         {
             var list = new List<MappingResultModel>();
@@ -585,7 +597,10 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return list;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
         public void UpdateItems(List<MappingResultModel> items)
         {
             foreach (var item in items)
@@ -606,7 +621,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="targetItemId"></param>
+        /// <returns></returns>
         public List<CMSUpdateItem> GetItemsForUpdate(string targetItemId)
         {
             Item parentItem = GetItem(targetItemId);
@@ -628,7 +647,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         #endregion
 
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <param name="language"></param>
+        /// <returns></returns>
         public IList<CmsItem> GetItems(string parentId, string language)
         {
             var parentItem = GetItem(parentId);
@@ -651,7 +675,13 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return result;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="language"></param>
+        /// <param name="readAllFields"></param>
+        /// <returns></returns>
         public CmsItem GetItem(string itemId, string language, bool readAllFields = false)
         {
             var item = ContextDatabase.GetItem(itemId);
@@ -691,7 +721,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return null;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <param name="cmsItem"></param>
         public void CreateItem(string parentId, CmsItem cmsItem)
         {
             if (parentId != null)
@@ -728,7 +762,10 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-    
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
         public void UpdateItem(CmsItem item)
         {
             var scItem = GetItem(item.Id);

@@ -3,22 +3,28 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
 using System.Web.Mvc;
-using GatherContent.Connector.Managers.Managers;
+using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.Mapping;
 using GatherContent.Connector.WebControllers.Models.Mapping;
 using Sitecore.Diagnostics;
-using Sitecore.Mvc.Controllers;
 using TemplateTab = GatherContent.Connector.WebControllers.Models.Mapping.TemplateTab;
 
 namespace GatherContent.Connector.WebControllers.Controllers
 {
-    public class MappingsController : SitecoreController
+    /// <summary>
+    /// 
+    /// </summary>
+    public class MappingsController : BaseController
     {
-        private readonly MappingManager _mappingManager;
+        protected IMappingManager MappingManager;
 
-        public MappingsController()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mappingManager"></param>
+        public MappingsController(IMappingManager mappingManager)
         {
-            _mappingManager = new MappingManager();
+            MappingManager = mappingManager;
         }
 
 
@@ -36,6 +42,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
             };
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tabs"></param>
+        /// <returns></returns>
         private static List<FieldMappingModel> GetFieldMappings(IEnumerable<TemplateTab> tabs)
         {
             var fieldMappings = new List<FieldMappingModel>();
@@ -61,14 +72,16 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         #endregion
 
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Get()
         {
             try
             {
                 var model = new List<TemplateMappingViewModel>();
-                var mappings = _mappingManager.GetMappingModel();
+                var mappings = MappingManager.GetMappingModel();
                 foreach (var mapping in mappings)
                 {
                     var mappingModel = new TemplateMappingViewModel
@@ -110,11 +123,17 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gcTemplateId"></param>
+        /// <param name="scMappingId"></param>
+        /// <returns></returns>
         public ActionResult GetMapping(string gcTemplateId, string scMappingId)
         {
             try
             {             
-                var mappingModel = _mappingManager.GetSingleMappingModel(gcTemplateId, scMappingId);
+                var mappingModel = MappingManager.GetSingleMappingModel(gcTemplateId, scMappingId);
               
                 var model = new TemplateMapViewModel
                 {
@@ -147,7 +166,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
                 #region Available templates
 
                 var sitecoreTemplates = new List<SitecoreTemplateViewModel>();
-                var availableCmsTemplates = _mappingManager.GetAvailableTemplates();
+                var availableCmsTemplates = MappingManager.GetAvailableTemplates();
                 foreach (var template in availableCmsTemplates)
                 {
                   var st = new SitecoreTemplateViewModel
@@ -173,7 +192,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
                 model.Rules = GetMapRules();
 
-                var projects =  _mappingManager.GetAllGcProjects();
+                var projects =  MappingManager.GetAllGcProjects();
 
                 foreach (var project in projects)
                 {
@@ -209,12 +228,17 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gcProjectId"></param>
+        /// <returns></returns>
         public ActionResult GetTemplatesByProjectId(string gcProjectId)
         {
             try
             {
                 var model = new List<TemplateViewModel>();
-                var templates = _mappingManager.GetTemplatesByProjectId(gcProjectId);
+                var templates = MappingManager.GetTemplatesByProjectId(gcProjectId);
                 foreach (var template in templates)
                 {
                     var templateModel = new TemplateViewModel
@@ -239,12 +263,17 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gcTemplateId"></param>
+        /// <returns></returns>
         public ActionResult GetFieldsByTemplateId(string gcTemplateId)
         {
             try
             {
                 var model = new List<TemplateTab>();
-                var tabs = _mappingManager.GetFieldsByTemplateId(gcTemplateId);         
+                var tabs = MappingManager.GetFieldsByTemplateId(gcTemplateId);         
 
                 foreach (var tab in tabs)
                 {
@@ -279,6 +308,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Post(PostMappingViewModel model)
         {
@@ -297,11 +331,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
                 };
                 if (model.IsEdit)
                 {
-                    _mappingManager.UpdateMapping(postMappingModel);
+                    MappingManager.UpdateMapping(postMappingModel);
                 }
                 else
                 {
-                    _mappingManager.CreateMapping(postMappingModel);
+                    MappingManager.CreateMapping(postMappingModel);
                 }
                 
                 return new EmptyResult();
@@ -320,12 +354,17 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="scMappingId"></param>
+        /// <returns></returns>
         [HttpDelete]
         public ActionResult Delete(string scMappingId)
         {
             try
             {
-                _mappingManager.DeleteMapping(scMappingId);
+                MappingManager.DeleteMapping(scMappingId);
                 return new EmptyResult();
             }
             catch (WebException exception)

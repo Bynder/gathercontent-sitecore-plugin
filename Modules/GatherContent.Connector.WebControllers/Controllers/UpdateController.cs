@@ -2,28 +2,39 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Web.Mvc;
-using GatherContent.Connector.Managers.Managers;
+using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.UpdateItems;
 using Newtonsoft.Json;
 using Sitecore.Diagnostics;
-using Sitecore.Mvc.Controllers;
 
 namespace GatherContent.Connector.WebControllers.Controllers
 {
-    public class UpdateController : SitecoreController
+    /// <summary>
+    /// 
+    /// </summary>
+    public class UpdateController : BaseController
     {
-        private readonly UpdateManager _updateManager;
+        protected IUpdateManager UpdateManager;
 
-        public UpdateController()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="updateManager"></param>
+        public UpdateController(IUpdateManager updateManager)
         {
-            _updateManager = new UpdateManager();
+            UpdateManager = updateManager;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string Get(string id)
         {
             try
             {
-                SelectItemsForUpdateModel result = _updateManager.GetItemsForUpdate(id);
+                SelectItemsForUpdateModel result = UpdateManager.GetItemsForUpdate(id);
                 var model = JsonConvert.SerializeObject(result);
                 return model;
             }
@@ -39,11 +50,18 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="statusId"></param>
+        /// <param name="items"></param>
+        /// <returns></returns>
         public ActionResult UpdateItems(string id, string statusId, List<UpdateListIds> items)
         {
             try
             {
-                UpdateResultModel result = _updateManager.UpdateItems(id, items);
+                UpdateResultModel result = UpdateManager.UpdateItems(id, items);
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
             catch (WebException exception)

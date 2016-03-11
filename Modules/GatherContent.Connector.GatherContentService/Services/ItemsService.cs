@@ -3,22 +3,35 @@ using System.Text;
 using System.Web.Script.Serialization;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
+using GatherContent.Connector.GatherContentService.Interfaces;
 using GatherContent.Connector.GatherContentService.Services.Abstract;
 
 namespace GatherContent.Connector.GatherContentService.Services
 {
-    public class ItemsService : BaseService
+    /// <summary>
+    /// 
+    /// </summary>
+    public class ItemsService : BaseService, IItemsService
     {
         protected override string ServiceUrl
         {
             get { return "items"; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accountSettings"></param>
         public ItemsService(GCAccountSettings accountSettings)
             : base(accountSettings)
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
         public ItemsEntity GetItems(string projectId)
         {
             string url = string.Format("{0}?project_id={1}", ServiceUrl, projectId);
@@ -28,6 +41,11 @@ namespace GatherContent.Connector.GatherContentService.Services
             return ReadResponse<ItemsEntity>(webrequest);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <returns></returns>
         public ItemEntity GetSingleItem(string itemId)
         {
             string url = string.Format("{0}/{1}", ServiceUrl, itemId);
@@ -37,6 +55,11 @@ namespace GatherContent.Connector.GatherContentService.Services
             return ReadResponse<ItemEntity>(webrequest);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <returns></returns>
         public ItemFiles GetItemFiles(string itemId)
         {
             var url = string.Format("{0}/{1}/files", ServiceUrl, itemId);
@@ -46,6 +69,14 @@ namespace GatherContent.Connector.GatherContentService.Services
             return ReadResponse<ItemFiles>(webrequest);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="name"></param>
+        /// <param name="parentId"></param>
+        /// <param name="templateId"></param>
+        /// <param name="config"></param>
         public void PostItem(string projectId, string name, string parentId = null, string templateId = null, Config config = null)
         {
             var data = new StringBuilder();
@@ -73,9 +104,13 @@ namespace GatherContent.Connector.GatherContentService.Services
             AddPostData(data.ToString(), webrequest);
 
             ReadResponse(webrequest);
-
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="config"></param>
         public void SaveItem(string itemId, Config config = null)
         {
             var data = string.Empty;
@@ -94,6 +129,11 @@ namespace GatherContent.Connector.GatherContentService.Services
             ReadResponse(webrequest);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="templateId"></param>
         public void ApplyTemplateToItem(string itemId, string templateId)
         {
             var data = string.Format("template_id={0}", templateId);
@@ -106,6 +146,11 @@ namespace GatherContent.Connector.GatherContentService.Services
             ReadResponse(webrequest);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="statusId"></param>
         public void ChooseStatusForItem(string itemId, string statusId)
         {
             var data = string.Format("status_id={0}", statusId);

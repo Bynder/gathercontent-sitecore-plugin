@@ -54,21 +54,21 @@ namespace GatherContent.Connector.Website.Commands
                 return;
             }
 
-            var testConnectionManager = new TestConnectionManager();
-            var uri = "/sitecore modules/shell/gathercontent/testconnection/testconnection.html";
-            var path = string.Format("{0}?success={1}", uri, testConnectionManager.TestConnection());
+            //var testConnectionManager = new TestConnectionManager();
+            //var uri = "/sitecore modules/shell/gathercontent/testconnection/testconnection.html";
+            //var path = string.Format("{0}?success={1}", uri, testConnectionManager.TestConnection());
 
-            var options = new ModalDialogOptions(path)
-            {
-                Width = "250",
-                Height = "100",
-                MinWidth = "250",
-                MinHeight = "100",
-                Maximizable = false,
-                Header = "Test Connection"
-            };
+            //var options = new ModalDialogOptions(path)
+            //{
+            //    Width = "250",
+            //    Height = "100",
+            //    MinWidth = "250",
+            //    MinHeight = "100",
+            //    Maximizable = false,
+            //    Header = "Test Connection"
+            //};
 
-            Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(options), "Shell");
+            //Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(options), "Shell");
         }
     }
 }

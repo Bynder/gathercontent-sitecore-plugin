@@ -12,20 +12,20 @@ using Sitecore.Data.Items;
 using Sitecore.Data.Managers;
 using Sitecore.Data.Templates;
 using Sitecore.SecurityModel;
-using TemplateMapping = GatherContent.Connector.IRepositories.Models.Mapping.TemplateMapping;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MappingRepository : BaseSitecoreRepository, IMappingRepository
     {
+        protected IAccountsRepository AccountsRepository;
 
-        private readonly GCAccountSettings _accountSettings;
-
-        public MappingRepository()
+        public MappingRepository(IAccountsRepository accountsRepository)
             : base()
         {
-            var accountsRepository = new AccountsRepository();
-            _accountSettings = accountsRepository.GetAccountSettings();
+            AccountsRepository = accountsRepository;
         }
 
 
@@ -207,7 +207,8 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
             };
 
-            var dateFormat = _accountSettings.DateFormat;
+            var accountSettings = AccountsRepository.GetAccountSettings();
+            var dateFormat = accountSettings.DateFormat;
             if (string.IsNullOrEmpty(dateFormat))
             {
                 dateFormat = Constants.DateFormat;
@@ -351,7 +352,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
             if (projectItem == null)
             {
-                var parentItem = GetItem(_accountSettings.AccountItemId);
+                var accountSettings = AccountsRepository.GetAccountSettings();
+
+                var parentItem = GetItem(accountSettings.AccountItemId);
 
                 using (new SecurityDisabler())
                 {
@@ -567,7 +570,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
         public List<CmsTemplate> GetAvailableCmsTemplates()
         {
-            var templateFolderId = _accountSettings.TemplateFolderId;
+            var accountSettings = AccountsRepository.GetAccountSettings();
+
+            var templateFolderId = accountSettings.TemplateFolderId;
             if (string.IsNullOrEmpty(templateFolderId))
             {
                 templateFolderId = Constants.TemplateFolderId;

@@ -4,44 +4,75 @@ using System.Net;
 using System.Web;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
-using GatherContent.Connector.GatherContentService.Services;
+using GatherContent.Connector.GatherContentService.Interfaces;
+using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.IRepositories.Models.Update;
+using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.UpdateItems;
 using GatherContent.Connector.SitecoreRepositories.Repositories;
 using Sitecore.Diagnostics;
 
 namespace GatherContent.Connector.Managers.Managers
 {
-    public class UpdateManager : BaseManager
+    /// <summary>
+    /// 
+    /// </summary>
+    public class UpdateManager : BaseManager, IUpdateManager
     {
-        private readonly ItemsRepository _itemsRepository;
-        private readonly ItemsService _itemsService;
-        private readonly ProjectsService _projectsService;
-        private readonly TemplatesService _templatesService;
-        private readonly GCAccountSettings _gcAccountSettings;
-        private readonly MappingManager _mappingManager;
-        private readonly ImportManager _importManager;
-        
+        protected IItemsRepository ItemsRepository;
 
-        public UpdateManager()
+        protected IItemsService ItemsService;
+
+        protected IMappingManager MappingManager;
+
+        protected IImportManager ImportManager;
+
+        protected GCAccountSettings GcAccountSettings;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemsRepository"></param>
+        /// <param name="itemsService"></param>
+        /// <param name="mappingManager"></param>
+        /// <param name="importManager"></param>
+        /// <param name="accountsService"></param>
+        /// <param name="projectsService"></param>
+        /// <param name="templateService"></param>
+        /// <param name="cacheManager"></param>
+        /// <param name="gcAccountSettings"></param>
+        public UpdateManager(
+            IItemsRepository itemsRepository,
+            IItemsService itemsService,
+            IMappingManager mappingManager,
+            IImportManager importManager,
+            IAccountsService accountsService,
+            IProjectsService projectsService,
+            ITemplatesService templateService,
+            ICacheManager cacheManager,
+            GCAccountSettings gcAccountSettings)
+            : base(accountsService, projectsService, templateService, cacheManager)
         {
-            _itemsRepository = new ItemsRepository();
+            ItemsRepository = itemsRepository;
 
-            var accountsRepository = new AccountsRepository();
-            _gcAccountSettings = accountsRepository.GetAccountSettings();
+            ItemsService = itemsService;
 
-            _itemsService = new ItemsService(_gcAccountSettings);
-            _projectsService = new ProjectsService(_gcAccountSettings);
-            _templatesService = new TemplatesService(_gcAccountSettings);
+            MappingManager = mappingManager;
 
-            _mappingManager = new MappingManager();
-            _importManager = new ImportManager();
+            ImportManager = importManager;
+
+            GcAccountSettings = gcAccountSettings;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <returns></returns>
         public SelectItemsForUpdateModel GetItemsForUpdate(string itemId)
         {
-            List<CMSUpdateItem> cmsItems = _itemsRepository.GetItemsForUpdate(itemId);
+            List<CMSUpdateItem> cmsItems = ItemsRepository.GetItemsForUpdate(itemId);
 
             List<GCTemplate> templates;
             List<GCStatus> statuses;
@@ -53,6 +84,15 @@ namespace GatherContent.Connector.Managers.Managers
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cmsItems"></param>
+        /// <param name="templates"></param>
+        /// <param name="statuses"></param>
+        /// <param name="items"></param>
+        /// <param name="projects"></param>
+        /// <returns></returns>
         private bool TryToGetModelData(List<CMSUpdateItem> cmsItems, out List<GCTemplate> templates, out List<GCStatus> statuses, out List<UpdateListItem> items, out List<Project> projects)
         {
             var projectsDictionary = new Dictionary<int, Project>();
@@ -68,7 +108,7 @@ namespace GatherContent.Connector.Managers.Managers
                     ItemEntity entity = null;
                     try
                     {
-                        entity = _itemsService.GetSingleItem(cmsItem.GCItemId);
+                        entity = ItemsService.GetSingleItem(cmsItem.GCItemId);
                     }
                     catch (WebException exception)
                     {
@@ -91,11 +131,11 @@ namespace GatherContent.Connector.Managers.Managers
                             GCTemplate template = GetTemplate(templatesDictionary, gcItem.TemplateId.Value);
 
                             string gcLink = null;
-                            if (!string.IsNullOrEmpty(_gcAccountSettings.GatherContentUrl))
+                            if (!string.IsNullOrEmpty(GcAccountSettings.GatherContentUrl))
                             {
-                                gcLink = _gcAccountSettings.GatherContentUrl + "/item/" + gcItem.Id;
+                                gcLink = GcAccountSettings.GatherContentUrl + "/item/" + gcItem.Id;
                             }
-                            var dateFormat = _gcAccountSettings.DateFormat;
+                            var dateFormat = GcAccountSettings.DateFormat;
                             if (string.IsNullOrEmpty(dateFormat))
                             {
                                 dateFormat = Constants.DateFormat;
@@ -114,9 +154,7 @@ namespace GatherContent.Connector.Managers.Managers
                                 statuses.Add(status);
                             }
                         }
-
                     }
-
                 }
             }
 
@@ -127,6 +165,12 @@ namespace GatherContent.Connector.Managers.Managers
             return true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="templates"></param>
+        /// <param name="templateId"></param>
+        /// <returns></returns>
         private GCTemplate GetTemplate(Dictionary<int, GCTemplate> templates, int templateId)
         {
             GCTemplate template;
@@ -141,6 +185,12 @@ namespace GatherContent.Connector.Managers.Managers
             return template;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projects"></param>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
         private Project GetProject(Dictionary<int, Project> projects, int projectId)
         {
             Project project;
@@ -155,27 +205,37 @@ namespace GatherContent.Connector.Managers.Managers
             return project;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="models"></param>
+        /// <returns></returns>
         public UpdateResultModel UpdateItems(string itemId, List<UpdateListIds> models)
         {
             List<GCItem> gcItems = GetGCItemsByModels(models);
-            List<MappingResultModel> resultItems = _importManager.MapItems(gcItems);
+            List<MappingResultModel> resultItems = ImportManager.MapItems(gcItems);
             List<MappingResultModel> successfulyUpdated = resultItems.Where(i => i.IsImportSuccessful).ToList();
 
-            _itemsRepository.UpdateItems(successfulyUpdated);
+            ItemsRepository.UpdateItems(successfulyUpdated);
 
             var result = new UpdateResultModel(resultItems);
 
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="models"></param>
+        /// <returns></returns>
         private List<GCItem> GetGCItemsByModels(List<UpdateListIds> models)
         {
             var result = new List<GCItem>();
 
             foreach (var item in models)
             {
-                GCItem gcItem = _itemsService.GetSingleItem(item.GCId).Data;
+                GCItem gcItem = ItemsService.GetSingleItem(item.GCId).Data;
                 var gcItemWithCmsId = new UpdateGCItem(gcItem, item.CMSId);
                 result.Add(gcItemWithCmsId);
             }

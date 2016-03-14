@@ -329,6 +329,7 @@ var ImportManager = function () {
         var id = this.OpenerId;
         var locationId = this.DefaultLocation;
         var items = self.items();
+        var t = this;
         for (var i = 0; i < items.length; i++) {
             var mappings = items[i].Mappings;
             for (var j = 0; j < mappings.length; j++) {
@@ -353,6 +354,8 @@ var ImportManager = function () {
                 },
                 onActivate: function (node) {
                     jQuery('[data-openerid="' + id + '"]').val(node.data.title);
+                    jQuery("#" + id).hide();
+                    t.IsShowing(false);
                     mapping.DefaultLocation = node.data.key;
                     mapping.DefaultLocationTitle = node.data.title;
                 },

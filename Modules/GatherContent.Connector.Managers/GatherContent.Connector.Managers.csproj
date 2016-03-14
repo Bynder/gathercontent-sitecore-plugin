@@ -202,7 +202,6 @@
     <Compile Include="Models\ImportItems\SelectItemsForImportModel.cs" />
     <Compile Include="Models\ImportItems\TableDataModel.cs" />
     <Compile Include="Models\Mapping\AddMappingModel.cs" />
-    <Compile Include="Models\TemplateModel\TemplateMappingModel.cs" />
     <Compile Include="Models\UpdateItems\FiltersModel.cs" />
     <Compile Include="Models\UpdateItems\SelectItemsForUpdateModel.cs" />
     <Compile Include="Models\UpdateItems\TableDataModel.cs" />

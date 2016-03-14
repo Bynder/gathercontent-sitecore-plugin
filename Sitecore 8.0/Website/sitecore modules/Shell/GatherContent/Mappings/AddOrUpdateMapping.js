@@ -106,6 +106,8 @@ function ViewModel(data) {
         var id = this.OpenerId();
         var locationId = this.DefaultLocation();
 
+        var t = this;
+
         if (!this.IsShowing()) {
             //TODO use Knockout
             jQuery("#" + id).show();
@@ -115,17 +117,19 @@ function ViewModel(data) {
                 autoFocus: false,
                 imagePath: "~/icon/",
                 initAjax: {
-                    url: '/api/sitecore/Import/GetTopLevelNode?id=' + locationId,
+                    url: '/api/sitecore/DropTree/GetTopLevelNode?id=' + locationId,
                     data: { mode: "funnyMode" }
                 },
                 onActivate: function (node) {
                     jQuery('[data-openerid="' + id + '"]').val(node.data.title);
+                    jQuery("#" + id).hide();
+                    t.IsShowing(false);
                     mapping.DefaultLocation(node.data.key);
-                    mapping.DefaultLocationText(node.data.title);
+                    mapping.DefaultLocationText(node.data.title);        
                 },
                 onLazyRead: function (node) {
                     node.appendAjax({
-                        url: "/api/sitecore/Import/GetChildrenAsJson?id=" + node.data.key,
+                        url: "/api/sitecore/DropTree/GetChildren?id=" + node.data.key,
                         data: {
                             key: node.data.key,
                             mode: "funnyMode"

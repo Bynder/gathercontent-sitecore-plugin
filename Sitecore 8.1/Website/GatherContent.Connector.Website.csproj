@@ -91,6 +91,8 @@
     <Content Include="sitecore modules\Shell\GatherContent\css\dynatree\ui.dynatree.css" />
     <Content Include="sitecore modules\Shell\GatherContent\css\dynatree\vline-rtl.gif" />
     <Content Include="sitecore modules\Shell\GatherContent\css\dynatree\vline.gif" />
+    <Content Include="sitecore modules\Shell\GatherContent\Experience Editor\GatherContentImport.js" />
+    <Content Include="sitecore modules\Shell\GatherContent\Experience Editor\GatherContentMLImport.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Import\MultiLocationImport.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Import\MultiLocationImport.html" />
     <Content Include="sitecore modules\Shell\GatherContent\js\jquery-ui.custom.min.js" />
@@ -165,6 +167,7 @@
   <ItemGroup>
     <None Include="Properties\PublishProfiles\acc.pubxml" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

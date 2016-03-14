@@ -24,43 +24,6 @@ function Init() {
             tabInitSlide();
         }
     });
-    //jQuery.getJSON(url, null, function (data) {
-        //if (data.status != "error") {
-        //    //self.GcProjectName("Project:" + " " + data.GcProjectName);
-        //    //self.GcTemplateName("Template:" + " " + data.GcTemplateName);
-        
-        //    self.GcProjects(data.GcProjects);
-        
-        //    self.SitecoreTemplates(data.SitecoreTemplates),
-        //    self.SelectedFields(data.SelectedFields),
-        //    self.Rules(data.Rules),
-        //    self.ScMappingId(data.ScMappingId),
-        
-        //    self.SelectedGcProject(self.find("Id", self.GcProjects(), data.GcProjectId));
-        
-        //    self.SelectedScTemplate(self.find("SitrecoreTemplateId", self.SitecoreTemplates(), data.AddMappingModel.SelectedTemplateId));
-        //    self.GcMappingTitle(data.AddMappingModel.GcMappingTitle);
-        //    self.OpenerId(data.AddMappingModel.OpenerId);
-        //    self.DefaultLocation(data.AddMappingModel.DefaultLocation);
-        //    self.DefaultLocationTitle(data.AddMappingModel.DefaultLocationTitle);
-        //    self.IsShowing(false);
-        //    self.scTemplateChanged();
-        
-        //    self.gcProjectChanged();
-        
-        //    self.GcTemplateId(data.AddMappingModel.GcTemplateId),
-        //    self.GcProjectId(data.AddMappingModel.GcProjectId),
-        //    self.IsEdit(data.AddMappingModel.IsEdit);
-        //    self.IsError(false);
-        //} else {
-        //    self.ErrorText("Error:" + " " + data.message);
-        //    self.IsError(true);
-        //}
-
-        //resultData = data;
-        //jQuery(".preloader").hide();
-        //tabInitSlide();
-    //});
 
     return resultData;
 }
@@ -155,13 +118,24 @@ function ViewModel(data) {
     this.gcProjectChanged = function () {
 
         if (self.SelectedGcProject != undefined && self.SelectedGcProject() != null) {
-            jQuery.getJSON('/api/sitecore/mappings/GetTemplatesByProjectId?gcProjectId=' + self.SelectedGcProject().Id, null, function(data) {
-                if (data.status != "error") {
-                    self.GcTemplates(data);
-                    self.SelectedGcTemplate(self.find("Id", data, self.GcTemplateId()));
-                } else {
-                    self.ErrorText("Error:" + " " + data.message);
-                    self.IsError(true);
+            jQuery.ajax({
+                url: '/api/sitecore/mappings/GetTemplatesByProjectId?gcProjectId=' + self.SelectedGcProject().Id,
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                    if (data.status != "error") {
+                        self.GcTemplates(data);
+                        if (self.IsEdit()) {
+                            self.SelectedGcTemplate(self.find("Id", data, self.GcTemplateId()));
+                        } else {
+                            self.SelectedGcTemplate(data[0]);
+                        }
+                        
+                        self.gcTemplateChanged();
+                    } else {
+                        self.ErrorText("Error:" + " " + data.message);
+                        self.IsError(true);
+                    }
                 }
             });
         }
@@ -170,21 +144,26 @@ function ViewModel(data) {
 
     this.gcTemplateChanged = function () {
         if (self.SelectedGcTemplate != undefined && self.SelectedGcTemplate() != null) {
-            jQuery.getJSON('/api/sitecore/mappings/GetFieldsByTemplateId?gcTemplateId=' + self.SelectedGcTemplate().Id, null, function(data) {
-                if (data.status != "error") {
-                    for (var t = 0; t < data.length; t++) {
-                        for (var i = 0; i < data[t].Fields.length; i++) {
-                            var currentElement = data[t].Fields[i];
-                            var selectedItem = self.find("GcFieldId", self.SelectedFields(), data[t].Fields[i].FieldId);
-                            if (selectedItem != null) {
-                                currentElement.SelectedScField = selectedItem.SitecoreTemplateId;
+            jQuery.ajax({
+                url: '/api/sitecore/mappings/GetFieldsByTemplateId?gcTemplateId=' + self.SelectedGcTemplate().Id,
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                    if (data.status != "error") {
+                        for (var t = 0; t < data.length; t++) {
+                            for (var i = 0; i < data[t].Fields.length; i++) {
+                                var currentElement = data[t].Fields[i];
+                                var selectedItem = self.find("GcFieldId", self.SelectedFields(), data[t].Fields[i].FieldId);
+                                if (selectedItem != null) {
+                                    currentElement.SelectedScField = selectedItem.SitecoreTemplateId;
+                                }
                             }
                         }
+                        self.Tabs(data);
+                    } else {
+                        self.ErrorText("Error:" + " " + data.message);
+                        self.IsError(true);
                     }
-                    self.Tabs(data);
-                } else {
-                    self.ErrorText("Error:" + " " + data.message);
-                    self.IsError(true);
                 }
             });
         }
@@ -262,8 +241,10 @@ function ViewModel(data) {
 
     if (data.IsEdit) {
         this.SelectedGcProject = ko.observable(self.find("Id", data.GcProjects, data.GcProjectId));
+        this.SelectedTemplateId(data.AddMappingModel.SelectedTemplateId);
     } else {
         this.SelectedGcProject = ko.observable(data.GcProjects[0]);
+        this.SelectedTemplateId(this.SitecoreTemplates()[0].SitrecoreTemplateId);
     }
     this.SelectedGcTemplate = ko.observable();
     this.SelectedScTemplate = ko.observable(self.find("SitrecoreTemplateId", data.SitecoreTemplates, data.AddMappingModel.SelectedTemplateId));  

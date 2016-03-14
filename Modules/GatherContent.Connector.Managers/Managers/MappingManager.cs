@@ -89,7 +89,7 @@ namespace GatherContent.Connector.Managers.Managers
                     Name = cmsTemplate.TemplateName,
                     Id = cmsTemplate.TemplateId
                 };
-                templateModel.Fields.Add(new CmsTemplateFieldModel { Id = "0", Name = "Do not map" });
+                
                 foreach (var field in cmsTemplate.TemplateFields)
                 {
                     if (field.FieldId != FieldGcContentId &&

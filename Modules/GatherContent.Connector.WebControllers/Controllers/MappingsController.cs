@@ -174,6 +174,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
                         SitrecoreTemplateId = template.Id,
                         SitrecoreTemplateName = template.Name
                     };
+                  st.SitecoreFields.Add(new SitecoreTemplateField
+                  {
+                      SitecoreFieldId = "0",
+                      SitrecoreFieldName = "Do not map",
+                  });
                     foreach (var field in template.Fields)
                     {
                         st.SitecoreFields.Add(new SitecoreTemplateField

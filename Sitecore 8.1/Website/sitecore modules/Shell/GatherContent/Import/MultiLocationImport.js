@@ -355,7 +355,7 @@ var ImportManager = function () {
                 onActivate: function (node) {
                     jQuery('[data-openerid="' + id + '"]').val(node.data.title);
                     jQuery("#" + id).hide();
-                    t.IsShowing(false);
+                    t.IsShowing = false;
                     mapping.DefaultLocation = node.data.key;
                     mapping.DefaultLocationTitle = node.data.title;
                 },

@@ -169,7 +169,6 @@
     <Compile Include="Interfaces\IImportManager.cs" />
     <Compile Include="Interfaces\IManager.cs" />
     <Compile Include="Interfaces\IMappingManager.cs" />
-    <Compile Include="Interfaces\ITemplatesManager.cs" />
     <Compile Include="Interfaces\IUpdateManager.cs" />
     <Compile Include="IoC\Bootstrapper.cs" />
     <Compile Include="IoC\Installer.cs" />

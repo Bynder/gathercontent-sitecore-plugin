@@ -170,14 +170,14 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return parentItem.Axes.GetDescendants().ToList();
         }
 
-        private IEnumerable<IRepositories.Models.New.Mapping.TemplateMapping> ConvertSitecoreTemplatesToModel(IEnumerable<Item> templates)
+        private IEnumerable<TemplateMapping> ConvertSitecoreTemplatesToModel(IEnumerable<Item> templates)
         {
             return ConvertSitecoreTemplatesToModel(templates, null);
         }
 
-        private IEnumerable<IRepositories.Models.New.Mapping.TemplateMapping> ConvertSitecoreTemplatesToModel(IEnumerable<Item> templates, string projectName = null)
+        private IEnumerable<TemplateMapping> ConvertSitecoreTemplatesToModel(IEnumerable<Item> templates, string projectName = null)
         {
-            var result = new List<IRepositories.Models.New.Mapping.TemplateMapping>();
+            var result = new List<TemplateMapping>();
             foreach (var templateMapping in templates)
             {
                 var mapping = ConvertSitecoreTemplateToModel(templateMapping, projectName);
@@ -187,15 +187,15 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return result;
         }
 
-        private IRepositories.Models.New.Mapping.TemplateMapping ConvertSitecoreTemplateToModel(Item templateMapping)
+        private TemplateMapping ConvertSitecoreTemplateToModel(Item templateMapping)
         {
             return ConvertSitecoreTemplateToModel(templateMapping, null);
         }
 
-        private IRepositories.Models.New.Mapping.TemplateMapping ConvertSitecoreTemplateToModel(Item templateMapping, string projectName = null)
+        private TemplateMapping ConvertSitecoreTemplateToModel(Item templateMapping, string projectName = null)
         {
             var fields = ConvertSitecoreFieldsToModel(templateMapping.Children);
-            var mapping = new IRepositories.Models.New.Mapping.TemplateMapping
+            var mapping = new TemplateMapping
             {
                 MappingId = templateMapping.ID.ToString(),
                 FieldMappings = fields.ToList(),
@@ -224,7 +224,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             var scTemplate = GetItem(templateMapping["Sitecore Template"]);
             if (scTemplate != null)
             {
-                mapping.CmsTemplate = new GatherContent.Connector.IRepositories.Models.New.Mapping.CmsTemplate
+                mapping.CmsTemplate = new CmsTemplate
                 {
                     TemplateName = scTemplate.Name,
                     TemplateId = scTemplate.ID.ToString(),
@@ -242,7 +242,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
             else
             {
-                mapping.CmsTemplate = new GatherContent.Connector.IRepositories.Models.New.Mapping.CmsTemplate
+                mapping.CmsTemplate = new CmsTemplate
                 {
                     TemplateName = "Not mapped"
                 };
@@ -312,7 +312,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return result;
         }
 
-        private void SetupLinkedGcTemplate(IRepositories.Models.New.Mapping.TemplateMapping templateMapping)
+        private void SetupLinkedGcTemplate(TemplateMapping templateMapping)
         {
             var linkedGcTemplate = ContextDatabase.GetTemplate(new ID(Constants.GCLinkItemTemplateID));
             if (templateMapping.CmsTemplate == null) return;
@@ -374,7 +374,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return projectItem;
         }
 
-        private Item CreateTemplateMapping(IRepositories.Models.New.Mapping.TemplateMapping templateMapping)
+        private Item CreateTemplateMapping(TemplateMapping templateMapping)
         {
             var scProject = CreateOrGetProject(templateMapping.GcProjectId, templateMapping.GcProjectName);
             
@@ -433,7 +433,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-        private void UpdateTemplateMapping(Item item, IRepositories.Models.New.Mapping.TemplateMapping templateMapping)
+        private void UpdateTemplateMapping(Item item, TemplateMapping templateMapping)
         {
             using (new SecurityDisabler())
             {
@@ -473,9 +473,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         #endregion
 
 
-        public List<IRepositories.Models.New.Mapping.TemplateMapping> GetMappings()
+        public List<TemplateMapping> GetMappings()
         {
-            var model = new List<IRepositories.Models.New.Mapping.TemplateMapping>();
+            var model = new List<TemplateMapping>();
             var scProjects = GetAllProjects();
 
             foreach (var project in scProjects)
@@ -490,7 +490,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return model;
         }
 
-        public List<IRepositories.Models.New.Mapping.TemplateMapping> GetMappingsByGcProjectId(string projectId)
+        public List<TemplateMapping> GetMappingsByGcProjectId(string projectId)
         {
             var projectFolder = GetProject(projectId);
             if (projectFolder == null) return null;
@@ -501,14 +501,14 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return result.ToList();
         }
 
-        public List<IRepositories.Models.New.Mapping.TemplateMapping> GetMappingsByGcTemplateId(string gcTemplateId)
+        public List<TemplateMapping> GetMappingsByGcTemplateId(string gcTemplateId)
         {
             var mappings = GetTemplateMappingsByGcTemplateId(gcTemplateId);
             var result = ConvertSitecoreTemplatesToModel(mappings);
             return result.ToList();
         }
 
-        public IRepositories.Models.New.Mapping.TemplateMapping GetMappingById(string id)
+        public TemplateMapping GetMappingById(string id)
         {
             var mapping = GetItem(id);
             if (mapping == null) return null;
@@ -516,7 +516,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return result;
         }
 
-        public void CreateMapping(IRepositories.Models.New.Mapping.TemplateMapping templateMapping)
+        public void CreateMapping(TemplateMapping templateMapping)
         {
             var templateMappingItem = CreateTemplateMapping(templateMapping);
 
@@ -526,7 +526,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-        public void UpdateMapping(IRepositories.Models.New.Mapping.TemplateMapping templateMapping)
+        public void UpdateMapping(TemplateMapping templateMapping)
         {
             var templateMappingItem = GetItem(templateMapping.MappingId);
 

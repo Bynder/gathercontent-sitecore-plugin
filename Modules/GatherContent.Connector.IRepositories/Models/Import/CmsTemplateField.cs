@@ -1,5 +1,5 @@
 ﻿
-namespace GatherContent.Connector.IRepositories.Models.New.Import
+namespace GatherContent.Connector.IRepositories.Models.Import
 {
     public class CmsTemplateField
     {

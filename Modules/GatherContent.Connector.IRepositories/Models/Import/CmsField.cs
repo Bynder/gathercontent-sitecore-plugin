@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GatherContent.Connector.IRepositories.Models.New.Import
+namespace GatherContent.Connector.IRepositories.Models.Import
 {
     public class CmsField
     {

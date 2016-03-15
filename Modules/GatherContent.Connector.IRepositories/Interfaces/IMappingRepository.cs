@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using GatherContent.Connector.IRepositories.Models.Import;
-using GatherContent.Connector.IRepositories.Models.New.Mapping;
+using GatherContent.Connector.IRepositories.Models.Mapping;
 
 namespace GatherContent.Connector.IRepositories.Interfaces
 {
@@ -19,9 +18,6 @@ namespace GatherContent.Connector.IRepositories.Interfaces
         void UpdateMapping(TemplateMapping templateMapping);
         void DeleteMapping(string id);
 
-        List<MappingTemplateModel> GetTemplateMappingsByProjectId(string projectId);
-        List<MappingTemplateModel> GetAllTemplateMappings();
-        MappingTemplateModel GetTemplateMappingsByTemplateId(string templateId);
-        List<AvailableMappingModel> GetAllMappingsForGcTemplate(string gcProjectId, string gcTemplateId);
+
     }
 }

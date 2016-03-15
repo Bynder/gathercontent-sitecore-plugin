@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GatherContent.Connector.Entities;
 using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.IRepositories.Models.Import;
-using GatherContent.Connector.IRepositories.Models.New.Import;
-using GatherContent.Connector.IRepositories.Models.New.Mapping;
+using GatherContent.Connector.IRepositories.Models.Mapping;
 using Sitecore;
 using Sitecore.Data;
 using Sitecore.Data.Items;
@@ -28,92 +26,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             AccountsRepository = accountsRepository;
         }
 
-
-        #region Old Methods
-
-        #region Old Utilities
-
-
-
-        private IEnumerable<MappingTemplateModel> OldConvertSitecoreTemplatesToModel(IEnumerable<Item> templates)
-        {
-            IEnumerable<MappingTemplateModel> result = templates.Select(OldConvertSitecoreTemplateToModel);
-            return result;
-        }
-
-
-
-        private MappingTemplateModel OldConvertSitecoreTemplateToModel(Item template)
-        {
-            IEnumerable<GatherContent.Connector.IRepositories.Models.Import.MappingFieldModel> fields = OldConvertSitecoreFieldsToModel(template.Children);
-            var result = new MappingTemplateModel(template["Sitecore Template"], template["GC Template"], fields.ToList());
-
-            return result;
-        }
-
-        private GatherContent.Connector.IRepositories.Models.Import.MappingFieldModel OldConvertSitecoreFieldToModel(Item field)
-        {
-            var result = new GatherContent.Connector.IRepositories.Models.Import.MappingFieldModel(field["Sitecore Field"], field["GC Field Id"]);
-            return result;
-        }
-
-
-        #endregion
-
-
-
-
-
-        public List<MappingTemplateModel> GetAllTemplateMappings()
-        {
-            IEnumerable<Item> mappings = GetAllMappings();
-            IEnumerable<MappingTemplateModel> result = OldConvertSitecoreTemplatesToModel(mappings);
-
-            return result.ToList();
-        }
-
-        public List<MappingTemplateModel> GetTemplateMappingsByProjectId(string projectId)
-        {
-            Item projectFolder = GetProject(projectId);
-            if (projectFolder == null) return null;
-            Item mappingFolder = GetMappingFolder(projectFolder);
-
-            IEnumerable<Item> mappings = GetTemplateMappings(mappingFolder);
-            IEnumerable<MappingTemplateModel> result = OldConvertSitecoreTemplatesToModel(mappings);
-
-            return result.ToList();
-        }
-
-        public MappingTemplateModel GetTemplateMappingsByTemplateId(string templateId)
-        {
-            var template = GetItem(templateId);
-            if (template == null) return null;
-            var result = OldConvertSitecoreTemplateToModel(template);
-            return result;
-        }
-
-        public List<AvailableMappingModel> GetAllMappingsForGcTemplate(string gcProjectId, string gcTemplateId)
-        {
-            var mappings = GetTemplateMappings(gcProjectId, gcTemplateId);
-
-            var result = mappings.Select(mapping => new AvailableMappingModel
-            {
-                Id = mapping.ID.ToString(),
-                Title = mapping["Template mapping title"],
-                DefaultLocation = mapping["Default Location"],
-                DefaultLocationTitle = GetItem(mapping["Default Location"]) != null ? GetItem(mapping["Default Location"]).Name : "",
-                Name = mapping.Name,
-                ScTemplate = GetItem(mapping["Sitecore Template"]) != null ? GetItem(mapping["Sitecore Template"]).Name : "",
-            }).ToList();
-
-
-            return result.ToList();
-        }
-
-
-
-
-        #endregion
 
 
         #region Utilities
@@ -260,12 +172,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
         private List<CmsTemplateField> GetTemplateFields(Item scTemplate)
         {
-            var result = new List<GatherContent.Connector.IRepositories.Models.New.Import.CmsTemplateField>();
+            var result = new List<CmsTemplateField>();
             var fields = GetFields(scTemplate);
             result.AddRange(
                 from f in fields
                 where !f.Name.StartsWith("__")
-                select new GatherContent.Connector.IRepositories.Models.New.Import.CmsTemplateField
+                select new CmsTemplateField
                 {
                     FieldName = f.Name,
                     FieldId = f.ID.ToString(),
@@ -286,19 +198,14 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return result;
         }
 
-        private IEnumerable<MappingFieldModel> OldConvertSitecoreFieldsToModel(IEnumerable<Item> fields)
-        {
-            IEnumerable<GatherContent.Connector.IRepositories.Models.Import.MappingFieldModel> result = fields.Select(OldConvertSitecoreFieldToModel);
-            return result;
-        }
 
         private FieldMapping ConvertSitecoreFieldToModel(Item field)
         {
             var result = new FieldMapping
             {
-                CmsField = new IRepositories.Models.New.Import.CmsField
+                CmsField = new CmsField
                 {
-                    TemplateField = new IRepositories.Models.New.Import.CmsTemplateField
+                    TemplateField = new CmsTemplateField
                     {
                         FieldId = field["Sitecore Field"]
                     }

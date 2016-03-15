@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using GatherContent.Connector.IRepositories.Models.New.Import;
+using GatherContent.Connector.IRepositories.Models.Import;
 
-namespace GatherContent.Connector.IRepositories.Models.New.Mapping
+namespace GatherContent.Connector.IRepositories.Models.Mapping
 {
     public class CmsTemplate
     {

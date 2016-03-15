@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GatherContent.Connector.IRepositories.Models.Update
+namespace GatherContent.Connector.Managers.Models.UpdateItems
 {
     public class CMSUpdateItem
     {

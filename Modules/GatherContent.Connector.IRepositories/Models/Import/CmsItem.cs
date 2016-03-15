@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using GatherContent.Connector.IRepositories.Models.New.Mapping;
+using GatherContent.Connector.IRepositories.Models.Mapping;
 
-namespace GatherContent.Connector.IRepositories.Models.New.Import
+namespace GatherContent.Connector.IRepositories.Models.Import
 {
    public class CmsItem
     {

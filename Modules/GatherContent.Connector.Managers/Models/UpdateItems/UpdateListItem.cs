@@ -1,5 +1,4 @@
 ﻿using GatherContent.Connector.Entities.Entities;
-using GatherContent.Connector.IRepositories.Models.Update;
 
 namespace GatherContent.Connector.Managers.Models.UpdateItems
 {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using GatherContent.Connector.Entities.Entities;
 
-namespace GatherContent.Connector.IRepositories.Models.Import
+namespace GatherContent.Connector.Managers.Models.ImportItems
 {
     public class MappingResultModel
     {

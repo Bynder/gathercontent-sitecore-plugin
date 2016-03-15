@@ -2,6 +2,7 @@
 using System.Linq;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.IRepositories.Interfaces;
+using GatherContent.Connector.IRepositories.Models.Import;
 using Sitecore.Data.Items;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories
@@ -15,9 +16,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             var accountsRepository = new AccountsRepository();
             _accountSettings = accountsRepository.GetAccountSettings();
         }
-        private List<IRepositories.Models.New.Import.CmsItem> CreateChildrenTree(string id, IEnumerable<Item> items)
+        private List<CmsItem> CreateChildrenTree(string id, IEnumerable<Item> items)
         {
-            var list = new List<IRepositories.Models.New.Import.CmsItem>();
+            var list = new List<CmsItem>();
 
             if (items.Select(i => i.ID.ToString()).Contains(id))
             {
@@ -26,7 +27,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     var template = GetItemTemplate(item.TemplateID);
                     if (id == item.ID.ToString())
                     {
-                        var node = new IRepositories.Models.New.Import.CmsItem
+                        var node = new CmsItem
                         {
                             Title = item.Name,
                             Id = item.ID.ToString(),
@@ -36,7 +37,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     }
                     else
                     {
-                        var node = new IRepositories.Models.New.Import.CmsItem
+                        var node = new CmsItem
                         {
                             Title = item.Name,
                             Id = item.ID.ToString(),                            
@@ -52,7 +53,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 {
                     var template = GetItemTemplate(item.TemplateID);
 
-                    var node = new IRepositories.Models.New.Import.CmsItem
+                    var node = new CmsItem
                     {
                         Title = item.Name,
                         Id = item.ID.ToString(),
@@ -66,9 +67,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return list;
         }
 
-        public List<IRepositories.Models.New.Import.CmsItem> GetHomeNode(string id)
+        public List<CmsItem> GetHomeNode(string id)
         {
-            var model = new List<IRepositories.Models.New.Import.CmsItem>();
+            var model = new List<CmsItem>();
             var dropTreeHomeNode = _accountSettings.DropTreeHomeNode;
             if (string.IsNullOrEmpty(dropTreeHomeNode))
             {
@@ -79,7 +80,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
             if (string.IsNullOrEmpty(id) || id == "null")
             {
-                model.Add(new IRepositories.Models.New.Import.CmsItem
+                model.Add(new CmsItem
                 {
                     Title = home.Name,
                     Id = home.ID.ToString(),
@@ -88,7 +89,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
             else
             {
-                var homeNode = new IRepositories.Models.New.Import.CmsItem
+                var homeNode = new CmsItem
                 {
                     Title = home.Name,
                     Id = home.ID.ToString(),
@@ -102,9 +103,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return model;
         }
 
-        public List<IRepositories.Models.New.Import.CmsItem> GetChildren(string id)
+        public List<CmsItem> GetChildren(string id)
         {
-            var model = new List<IRepositories.Models.New.Import.CmsItem>();
+            var model = new List<CmsItem>();
             var parent = GetItem(id);
             if (parent == null) return model;
 
@@ -114,7 +115,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             {
                 var item = (Item)child;
                 var template = GetItemTemplate(item.TemplateID);
-                model.Add(new IRepositories.Models.New.Import.CmsItem
+                model.Add(new CmsItem
                 {
                     Title = item.Name,
                     Id = item.ID.ToString(),

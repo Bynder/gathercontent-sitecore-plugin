@@ -181,9 +181,11 @@
     <Compile Include="Models\ImportItems\AvailableMapping.cs" />
     <Compile Include="Models\ImportItems\AvailableMultiLocationsMappings.cs" />
     <Compile Include="Models\ImportItems\DropTreeModel.cs" />
+    <Compile Include="Models\ImportItems\ImportCMSFiled.cs" />
     <Compile Include="Models\ImportItems\LocationImportItemModel.cs" />
     <Compile Include="Models\ImportItems\ImportItemModel.cs" />
     <Compile Include="Models\ImportItems\ImportItembyLocation.cs" />
+    <Compile Include="Models\ImportItems\MappingResultModel.cs" />
     <Compile Include="Models\ImportItems\SelectItemsForImportWithLocation.cs" />
     <Compile Include="Models\ImportItems\ItemWithLocationDataModel.cs" />
     <Compile Include="Models\Mapping\CmsTemplateModel.cs" />
@@ -193,6 +195,7 @@
     <Compile Include="Models\Mapping\GcProjectModel.cs" />
     <Compile Include="Models\Mapping\GcTemplateModel.cs" />
     <Compile Include="Models\Mapping\TemplateTabModel.cs" />
+    <Compile Include="Models\UpdateItems\CMSUpdateItem.cs" />
     <Compile Include="Models\UpdateItems\UpdateListIds.cs" />
     <Compile Include="Managers\UpdateManager.cs" />
     <Compile Include="Models\ImportItems\FiltersModel.cs" />

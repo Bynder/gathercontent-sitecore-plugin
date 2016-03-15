@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using GatherContent.Connector.Entities;
+using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.Managers.Models.ImportItems;
 using System.Collections.Generic;
 using GatherContent.Connector.IRepositories.Interfaces;
@@ -37,7 +38,7 @@ namespace GatherContent.Connector.Managers.Managers
         /// <param name="id"></param>
         /// <param name="items"></param>
         /// <returns></returns>
-        private List<DropTreeModel> CreateChildrenTree(string id, List<IRepositories.Models.New.Import.CmsItem> items)
+        private List<DropTreeModel> CreateChildrenTree(string id, List<CmsItem> items)
         {
             var list = new List<DropTreeModel>();
 

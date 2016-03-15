@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GatherContent.Connector.IRepositories.Models.New.Mapping
+namespace GatherContent.Connector.IRepositories.Models.Mapping
 {
     public class TemplateMapping
     {

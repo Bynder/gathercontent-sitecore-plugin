@@ -35,33 +35,42 @@ function Init() {
 function ViewModel(data) {
     var self = this;
 
+    
+
     this.saveMapping = function () {
-        var model = new function () {
-            this.TemplateTabs = self.Tabs();
-            this.IsEdit = self.IsEdit();
-            this.SelectedTemplateId = self.SelectedTemplateId();
-            this.TemplateId = self.SelectedGcTemplate().Id;
-            this.GcMappingTitle = self.GcMappingTitle();
-            this.ScMappingId = self.ScMappingId();
-            this.DefaultLocation = self.DefaultLocation();
+
+        if (self.GcMappingTitle() != null) {
+
+            var model = new function() {
+                this.TemplateTabs = self.Tabs();
+                this.IsEdit = self.IsEdit();
+                this.SelectedTemplateId = self.SelectedTemplateId();
+                this.TemplateId = self.SelectedGcTemplate().Id;
+                this.GcMappingTitle = self.GcMappingTitle();
+                this.ScMappingId = self.ScMappingId();
+                this.DefaultLocation = self.DefaultLocation();
+            }
+
+            jQuery.ajax({
+                url: '/api/sitecore/mappings/Post',
+                type: 'post',
+                data: JSON.stringify(model),
+                contentType: 'application/json',
+                success: function(data) {
+                    if (data.status != "error") {
+                        window.opener.location.reload(true);
+                        window.top.dialogClose();
+                    } else {
+                        self.ErrorText("Error:" + " " + data.message);
+                        self.IsError(true);
+                    }
+                },
+
+            });
+
+        } else {
+            self.ValidationMessage("Mapping Title is mandatory  field");
         }
-
-        jQuery.ajax({
-            url: '/api/sitecore/mappings/Post',
-            type: 'post',
-            data: JSON.stringify(model),
-            contentType: 'application/json',
-            success: function (data) {
-                if (data.status != "error") {
-                    window.opener.location.reload(true);
-                    window.top.dialogClose();
-                } else {
-                    self.ErrorText("Error:" + " " + data.message);
-                    self.IsError(true);
-                }
-            },
-
-        });
     };
 
 
@@ -218,6 +227,8 @@ function ViewModel(data) {
         });
     };
 
+
+
     this.Rules = ko.observable(data.Rules);
     this.IsEdit = ko.observable(data.IsEdit);
     this.ScMappingId = ko.observable(data.ScMappingId);
@@ -238,6 +249,7 @@ function ViewModel(data) {
 
     this.ErrorText = ko.observable();
     this.IsError = ko.observable(data.IsError);
+    this.ValidationMessage = ko.observable();
 
     if (data.IsEdit) {
         this.SelectedGcProject = ko.observable(self.find("Id", data.GcProjects, data.GcProjectId));

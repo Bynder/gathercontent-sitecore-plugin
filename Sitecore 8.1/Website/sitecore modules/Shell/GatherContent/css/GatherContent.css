@@ -510,3 +510,6 @@ table {
 .import-padding {
     padding: 15px 0;
 }
+.validation-message {
+    color: red;
+}

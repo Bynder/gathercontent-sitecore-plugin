@@ -23,7 +23,7 @@ function ViewModel() {
         var id = this.GcTemplateId;
         var scMappingId = this.ScMappingId;
         scForm.showModalDialog("/sitecore modules/shell/gathercontent/Mappings/AddOrUpdateMapping.html?id=" + id + "&scMappingId=" + scMappingId,
-            null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:600;dialogMinWidth:700;dialogWidth:700;dialogHeight:800;header: Manage Field Mappings");
+            null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:600;dialogMinWidth:700;dialogWidth:700;dialogHeight:1000;header: Manage Field Mappings");
     };
 
 
@@ -52,7 +52,8 @@ function ViewModel() {
 
 
     addMoreTemplates = function () {
-        scForm.showModalDialog("/sitecore modules/shell/gathercontent/mappings/AddOrUpdateMapping.html", null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:550;dialogMinWidth:600;dialogWidth:800;dialogHeight:550;header: Setup template mapping");
+        scForm.showModalDialog("/sitecore modules/shell/gathercontent/mappings/AddOrUpdateMapping.html",
+            null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:600;dialogMinWidth:700;dialogWidth:700;dialogHeight:1000;header: Manage Field Mappings");
     }
 
 

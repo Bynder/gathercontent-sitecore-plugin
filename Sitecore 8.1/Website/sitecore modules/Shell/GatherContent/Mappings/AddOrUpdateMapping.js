@@ -21,7 +21,6 @@ function Init() {
             resultData.IsError = false;
             resultData.IsShowing = false;
             jQuery(".preloader").hide();
-            tabInitSlide();
         }
     });
 
@@ -33,13 +32,13 @@ function Init() {
 
 
 function ViewModel(data) {
-    var self = this;
+    var self = this; 
 
-    
 
+    //Methods
     this.saveMapping = function () {
 
-        if (self.GcMappingTitle() != null) {
+        if (self.GcMappingTitle() != null && self.GcMappingTitle() != "") {
 
             var model = new function() {
                 this.TemplateTabs = self.Tabs();
@@ -72,7 +71,6 @@ function ViewModel(data) {
             self.ValidationMessage("Mapping Title is mandatory  field");
         }
     };
-
 
     this.openDropTree = function () {
         var id = this.OpenerId();
@@ -117,12 +115,10 @@ function ViewModel(data) {
         }
     }
 
-
     this.scTemplateChanged = function () {
         this.SitecoreFields(self.SelectedScTemplate().SitecoreFields);
         this.SelectedTemplateId(self.SelectedScTemplate().SitrecoreTemplateId);
     }
-
 
     this.gcProjectChanged = function () {
 
@@ -150,7 +146,6 @@ function ViewModel(data) {
         }
     }
 
-
     this.gcTemplateChanged = function () {
         if (self.SelectedGcTemplate != undefined && self.SelectedGcTemplate() != null) {
             jQuery.ajax({
@@ -177,7 +172,6 @@ function ViewModel(data) {
             });
         }
     }
-
 
     this.GetCurrentFields = function (item) {
         var fieldType = item.FieldType;
@@ -211,7 +205,6 @@ function ViewModel(data) {
         return self.SelectedScTemplate().SitecoreFields[0];
     };
 
-
     this.returnFieldName = function (item) {
         if (item.FieldName === null) {
             return "[Empty]" + " (" + item.FieldId + ")";
@@ -219,7 +212,6 @@ function ViewModel(data) {
             return item.FieldName;
         }
     };
-
 
     this.find = function (prop, array, property) {
         return ko.utils.arrayFirst(array, function (item) {
@@ -229,6 +221,8 @@ function ViewModel(data) {
 
 
 
+
+    //Fields
     this.Rules = ko.observable(data.Rules);
     this.IsEdit = ko.observable(data.IsEdit);
     this.ScMappingId = ko.observable(data.ScMappingId);
@@ -262,6 +256,7 @@ function ViewModel(data) {
     this.SelectedScTemplate = ko.observable(self.find("SitrecoreTemplateId", data.SitecoreTemplates, data.AddMappingModel.SelectedTemplateId));  
 
     self.gcProjectChanged();
+
     
 };
 

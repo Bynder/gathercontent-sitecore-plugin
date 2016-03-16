@@ -148,7 +148,7 @@ namespace GatherContent.Connector.Managers.Managers
             }
 
             List<ImportCMSField> fields;
-            
+
             IEnumerable<IGrouping<string, FieldMapping>> groupedFields = template.FieldMappings.GroupBy(i => i.CmsField.TemplateField.FieldId);
 
             var files = new List<File>();
@@ -161,7 +161,7 @@ namespace GatherContent.Connector.Managers.Managers
                     {
                         FileName = file.FileName,
                         Url = file.Url,
-                        
+
                         UpdatedDate = file.Updated
                     });
 
@@ -202,7 +202,6 @@ namespace GatherContent.Connector.Managers.Managers
 
             List<Element> gcFields = item.Config.SelectMany(i => i.Elements).ToList();
 
-
             TemplateMapping template;
             TryMapItemState templateMapState = TryGetTemplate(templates, item.TemplateId.ToString(), out template);
 
@@ -212,8 +211,6 @@ namespace GatherContent.Connector.Managers.Managers
                 result = new MappingResultModel(item, null, gcTemplate.Name, null, string.Empty, errorMessage, false);
                 return;
             }
-
-            
 
             List<ImportCMSField> fields;
             IEnumerable<IGrouping<string, FieldMapping>> groupedFields = template.FieldMappings.GroupBy(i => i.CmsField.TemplateField.FieldId);
@@ -288,8 +285,8 @@ namespace GatherContent.Connector.Managers.Managers
             var value = GetValue(gcFieldsForMapping);
             var options = GetOptions(gcFieldsForMapping);
             //files = files.Where(item => item.FieldId == field.Name).ToList();
-
-            importCMSField = new ImportCMSField(field.Type, cmsFieldName, field.Label, value, options, files);
+            //TODO: used new List<Option>() here to build; will be removed soon
+            importCMSField = new ImportCMSField(field.Type, cmsFieldName, field.Label, value.ToString(), new List<Option>(), files);
 
             return TryMapItemState.Success;
         }
@@ -344,7 +341,7 @@ namespace GatherContent.Connector.Managers.Managers
         /// </summary>
         /// <param name="fields"></param>
         /// <returns></returns>
-        private string GetValue(List<Element> fields)
+        private object GetValue(IEnumerable<Element> fields)
         {
             string value = string.Join("", fields.Select(i => i.Value));
             return value;
@@ -355,13 +352,13 @@ namespace GatherContent.Connector.Managers.Managers
         /// </summary>
         /// <param name="fields"></param>
         /// <returns></returns>
-        private List<Option> GetOptions(List<Element> fields)
+        private List<string> GetOptions(IEnumerable<Element> fields)
         {
-            var result = new List<Option>();
+            var result = new List<string>();
             foreach (Element field in fields)
             {
                 if (field.Options != null)
-                    result.AddRange(field.Options);
+                    result.AddRange(field.Options.Select(x => x.Label));
             }
             return result;
         }
@@ -610,28 +607,137 @@ namespace GatherContent.Connector.Managers.Managers
         /// <returns></returns>
         public ImportResultModel ImportItems(string itemId, List<ImportItemModel> items, string projectId, string statusId, string language)
         {
-            List<MappingResultModel> cmsItems = MapItems(items);
+            var templateMappings = new List<TemplateMapping>();
 
-            if (cmsItems == null) return null;
-            List<MappingResultModel> successfulImportedItems = GetSuccessfulImportedItems(cmsItems);
+            var mappingDictionary = new Dictionary<string, string>();
 
-            foreach (var successfulImportedItem in successfulImportedItems)
+            foreach (var importItem in items)
             {
-                ItemsRepository.CreateItem(itemId,new CmsItem
+                var gcItem = ItemsService.GetSingleItem(importItem.Id);
+
+                if (gcItem != null && gcItem.Data != null && gcItem.Data.TemplateId != null)
                 {
+                    //element that corresponds to item in CMS that holds mappings
+                    TemplateMapping templateMapping = MappingRepository.GetMappingById(importItem.SelectedMappingId);
                     
-                });
-                
+                    List<Element> gcFields = gcItem.Data.Config.SelectMany(i => i.Elements).ToList();
+
+                    if (templateMapping != null) // template found, now map fields here
+                    {
+                        mappingDictionary.Add(importItem.SelectedMappingId, gcItem.Data.Name);//save selected mapping id and gc item name to use as item name later
+
+                        var files = new List<File>();
+                        if (gcItem.Data.Config.SelectMany(config => config.Elements).Select(element => element.Type).Contains("files"))
+                        {
+                            foreach (var file in ItemsService.GetItemFiles(gcItem.Data.Id.ToString()).Data)
+                            {
+                                files.Add(new File
+                                {
+                                    FileName = file.FileName,
+                                    Url = file.Url,
+                                    FieldId = file.Field,
+                                    UpdatedDate = file.Updated
+                                });
+                            }
+                        }
+
+                        bool fieldError = false;
+
+                        var groupedFields = templateMapping.FieldMappings.GroupBy(i => i.CmsField);
+
+                        foreach (var grouping in groupedFields)
+                        {
+                            CmsField cmsField = grouping.Key;
+
+                            var gcFieldIds = grouping.Select(i => i.GcField.Id);
+                            var gcFieldsToMap = grouping.Select(i => i.GcField);
+
+                            IEnumerable<Element> gcFieldsForMapping = gcFields.Where(i => gcFieldIds.Contains(i.Name)).ToList();
+
+                            var gcField = gcFieldsForMapping.FirstOrDefault();
+                            
+                            if (gcField != null)
+                            {
+                                var value = GetValue(gcFieldsForMapping);
+                                var options = GetOptions(gcFieldsForMapping);
+
+                                files = files.Where(x => x.FieldId == gcField.Label).ToList(); //TODO: check files
+
+                                cmsField.Files = files;
+                                cmsField.Value = value;
+                                cmsField.Options = options;
+
+                                //update GC fields' type
+                                foreach (var field in gcFieldsToMap)
+                                {
+                                    field.Type = gcField.Type;
+                                }
+                            }
+                            else
+                            {
+                                //if field error, set error message
+                                fieldError = true;
+                                break;
+                            }
+                        }
+
+                        if (!fieldError)
+                        {
+                            templateMappings.Add(templateMapping);
+                        }
+                    }
+                    else
+                    {
+                        //no template mapping, set error message
+                    }
+                }
             }
-            
+
+            //run through template mappings
+            foreach (var templateMapping in templateMappings)
+            {
+                var cmsItem = new CmsItem
+                {
+                    Template = templateMapping.CmsTemplate,
+                    Title = mappingDictionary[templateMapping.MappingId],
+                    Fields = templateMapping.FieldMappings.Select(x => x.CmsField).ToList(),
+                    Language = language
+                };
+
+                ItemsRepository.CreateItem(itemId, cmsItem);
+
+                var fields = templateMapping.FieldMappings;
+
+                foreach (var field in fields)
+                {
+                    switch (field.GcField.Type)
+                    {
+                        case "choice_radio":
+                        case "choice_checkbox":
+                            {
+                                ItemsRepository.MapChoice(cmsItem, field.CmsField);
+                            }
+                            break;
+                        case "files":
+                            {
+                                ItemsRepository.MapFile(cmsItem, field.CmsField);
+                            }
+                            break;
+                        default:
+                            {
+                                ItemsRepository.MapText(cmsItem, field.CmsField);
+                            }
+                            break;
+                    }
+                }
+            }
+
             if (!string.IsNullOrEmpty(statusId))
             {
-                PostNewStatusesForItems(successfulImportedItems, statusId, projectId);
+                //PostNewStatusesForItems(successfulImportedItems, statusId, projectId);//TODO: statuses + colors + return type
             }
 
-            var result = new ImportResultModel(cmsItems);
-
-            return result;
+            return new ImportResultModel(null); //TODO: return type
         }
 
         /// <summary>
@@ -647,7 +753,7 @@ namespace GatherContent.Connector.Managers.Managers
             var importItems = new List<ImportItemModel>();
 
             if (items == null) return null;
-            
+
             foreach (var item in items)
             {
                 if (item.IsImport)
@@ -672,8 +778,6 @@ namespace GatherContent.Connector.Managers.Managers
 
                 });
             }
-
-            
 
             if (!string.IsNullOrEmpty(statusId))
             {

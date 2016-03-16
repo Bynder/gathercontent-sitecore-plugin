@@ -20,6 +20,10 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
     {
         protected IAccountsRepository AccountsRepository;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accountsRepository"></param>
         public MappingRepository(IAccountsRepository accountsRepository)
             : base()
         {
@@ -207,13 +211,15 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 {
                     TemplateField = new CmsTemplateField
                     {
-                        FieldId = field["Sitecore Field"]
+                        FieldId = field["Sitecore Field"],
+                        FieldName = field.Name,
+                        FieldType = "todo"
                     }
                 },
                 GcField = new GcField
                {
-
-                   Id = field["GC Field Id"]
+                   Id = field["GC Field Id"],
+                   Name = field["GC Field"]
                }
             };
             return result;

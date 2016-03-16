@@ -16,5 +16,10 @@ namespace GatherContent.Connector.IRepositories.Interfaces
 
         void UpdateItem(CmsItem cmsItem);
 
+        void MapText(CmsItem item, CmsField field);
+
+        void MapChoice(CmsItem item, CmsField field);
+
+        void MapFile(CmsItem item, CmsField field);
     }
 }

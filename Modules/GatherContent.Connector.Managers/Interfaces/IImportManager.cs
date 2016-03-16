@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using GatherContent.Connector.Entities.Entities;
-using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.Managers.Models.ImportItems;
 
 namespace GatherContent.Connector.Managers.Interfaces

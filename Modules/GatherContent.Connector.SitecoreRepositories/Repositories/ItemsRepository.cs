@@ -402,7 +402,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                         if (parent != null)
                         {
                             var createdItem = parent.Add(validName, template);
-                            SetupFields(cmsItem, createdItem);
+                            
                             try
                             {
                                 EnsureMetaTemplateInherited(createdItem.Template);
@@ -416,7 +416,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                             }
                             catch (Exception)
                             {
-                                throw new Exception("Your template(" + createdItem.TemplateName + ") is not inherited from the GC Linked Item.");
+                                throw new Exception(string.Format("Your template({0}) is not inherited from the GC Linked Item.", createdItem.TemplateName));
                             }
                         }
                     }
@@ -436,6 +436,108 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             scItem.Name = validName;
             scItem.Editing.EndEdit();
             SetupFields(item, scItem);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="cmsField"></param>
+        public void MapText(CmsItem item, CmsField cmsField)
+        {
+            Item createdItem = GetItem(item.Id);
+
+            using (new SecurityDisabler())
+            {
+                createdItem.Editing.BeginEdit();
+
+                var value = StringUtil.RemoveTags(cmsField.Value.ToString()).Trim();
+                createdItem[cmsField.TemplateField.FieldName] = value;
+
+                createdItem.Editing.EndEdit();
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="cmsField"></param>
+        public void MapChoice(CmsItem item, CmsField cmsField)
+        {
+            Item createdItem = GetItem(item.Id);
+
+            var path = GetMediaItemPath(item.Title, createdItem, cmsField);
+
+            using (new SecurityDisabler())
+            {
+                createdItem.Editing.BeginEdit();
+                if (cmsField.Files != null && cmsField.Files.Any())
+                {
+                    var value = string.Empty;
+                    var filesValue = cmsField.Value as FieldValueFiles;
+                    if (filesValue != null)
+                    {
+                        foreach (var file in filesValue.Files)
+                        {
+                            if (file != null)
+                            {
+                                var media = UploadFile(path, file);
+                                if (media != null) value += media.ID + "|";
+                            }
+                        }
+                    }
+                    value = value.TrimEnd('|');
+                    if (!string.IsNullOrEmpty(value))
+                    {
+                        createdItem[cmsField.TemplateField.FieldName] = value;
+                    }
+                }
+                else if (cmsField.Options != null && cmsField.Options.Any())
+                {
+                    var value = string.Empty;
+                    var optionsValue = cmsField.Value as FieldValueOptions;
+                    if (optionsValue != null)
+                    {
+                        foreach (var option in optionsValue.Options)
+                        {
+                            var children = GetDatasource(createdItem, cmsField.TemplateField.FieldName, option);
+                            //option = GC option.Label
+                            if (children != null) value += children.ID + "|";
+                        }
+                    }
+                    value = value.TrimEnd('|');
+                    if (!string.IsNullOrEmpty(value)) createdItem[cmsField.TemplateField.FieldName] = value;
+                }
+
+                createdItem.Editing.EndEdit();
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="cmsField"></param>
+        public void MapFile(CmsItem item, CmsField cmsField)
+        {
+            Item createdItem = GetItem(item.Id);
+            var path = GetMediaItemPath(item.Title, createdItem, cmsField);
+
+            if (cmsField.TemplateField != null)
+            {
+                var file = cmsField.Files.FirstOrDefault();
+                if (file != null)
+                {
+                    var media = UploadFile(path, file);
+
+                    var mediaUrl = MediaManager.GetMediaUrl(media,
+                        new MediaUrlOptions { UseItemPath = false, AbsolutePath = false });
+                    var value = "<file mediaid=\"" + media.ID + "\" src=\"" + mediaUrl + "\" />";
+
+                    createdItem[cmsField.TemplateField.FieldName] = value;
+                }
+            }
         }
     }
 }

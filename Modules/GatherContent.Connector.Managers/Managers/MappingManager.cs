@@ -47,7 +47,8 @@ namespace GatherContent.Connector.Managers.Managers
             ITemplatesService templateService,
             IItemsService itemService,
             ICacheManager cacheManager,
-            GCAccountSettings accountSettings)  : base(accountsService, projectsService, templateService, cacheManager)
+            GCAccountSettings accountSettings)
+            : base(accountsService, projectsService, templateService, cacheManager)
         {
             AccountSettings = accountSettings;
 
@@ -89,7 +90,7 @@ namespace GatherContent.Connector.Managers.Managers
                     Name = cmsTemplate.TemplateName,
                     Id = cmsTemplate.TemplateId
                 };
-                
+
                 foreach (var field in cmsTemplate.TemplateFields)
                 {
                     if (field.FieldId != FieldGcContentId &&
@@ -115,20 +116,26 @@ namespace GatherContent.Connector.Managers.Managers
         /// </summary>
         /// <param name="templateMapping"></param>
         /// <returns></returns>
-        private AddMappingModel MapAddMappingModel(TemplateMapping templateMapping)
+        private MappingModel MapAddMappingModel(TemplateMapping templateMapping)
         {
-            var addCmsMappingModel = new AddMappingModel
+            var addCmsMappingModel = new MappingModel
             {
-                GcTemplateId = templateMapping.GcTemplate.GcTemplateId,
-                CmsTemplateId = templateMapping.CmsTemplate.TemplateId,
+                GcTemplate = new GcTemplateModel
+                {
+                     Id = templateMapping.GcTemplate.GcTemplateId,
+                },
+                CmsTemplate = new CmsTemplateModel
+                {
+                    Id = templateMapping.CmsTemplate.TemplateId,
+                },
                 MappingTitle = templateMapping.MappingTitle,
-                DefaultLocation = templateMapping.DefaultLocationId,
+                DefaultLocationId = templateMapping.DefaultLocationId,
                 DefaultLocationTitle = templateMapping.DefaultLocationTitle
             };
 
             foreach (var fieldMapping in templateMapping.FieldMappings)
             {
-                addCmsMappingModel.SelectedFields.Add(new FieldMappingModel
+                addCmsMappingModel.FieldMappings.Add(new FieldMappingModel
                 {
                     CmsTemplateId = fieldMapping.CmsField.TemplateField.FieldId,
                     GcFieldId = fieldMapping.GcField.Id,
@@ -186,11 +193,20 @@ namespace GatherContent.Connector.Managers.Managers
             {
                 var mappingModel = new MappingModel
                 {
-                    GcProjectName = templateMapping.GcProjectName,
-                    GcTemplateId = templateMapping.GcTemplate.GcTemplateId,
-                    GcTemplateName = templateMapping.GcTemplate.GcTemplateName,
-                    CmsTemplateName = templateMapping.CmsTemplate.TemplateName,
-                    CmsMappingId = templateMapping.MappingId,
+                    GcProject = new GcProjectModel
+                    {
+                        Name = templateMapping.GcProjectName
+                    },
+                    GcTemplate = new GcTemplateModel
+                    {
+                        Id =  templateMapping.GcTemplate.GcTemplateId,
+                        Name = templateMapping.GcTemplate.GcTemplateName,
+                    },
+                    CmsTemplate = new CmsTemplateModel
+                    {
+                        Name = templateMapping.CmsTemplate.TemplateName,
+                    },
+                    MappingId = templateMapping.MappingId,
                     MappingTitle = templateMapping.MappingTitle,
                     LastMappedDateTime = templateMapping.LastMappedDateTime,
                     LastUpdatedDate = templateMapping.LastUpdatedDate,
@@ -202,7 +218,7 @@ namespace GatherContent.Connector.Managers.Managers
             {
                 try
                 {
-                    var template = GetGcTemplateEntity(mapping.GcTemplateId);
+                    var template = GetGcTemplateEntity(mapping.GcTemplate.Id);
                     if (template == null)
                     {
                         mapping.LastUpdatedDate = "Removed from GatherContent";
@@ -234,7 +250,7 @@ namespace GatherContent.Connector.Managers.Managers
         /// <param name="gcTemplateId"></param>
         /// <param name="cmsMappingId"></param>
         /// <returns></returns>
-        public AddMappingModel GetSingleMappingModel(string gcTemplateId, string cmsMappingId)
+        public MappingModel GetSingleMappingModel(string gcTemplateId, string cmsMappingId)
         {
             if (!string.IsNullOrEmpty(gcTemplateId) && !string.IsNullOrEmpty(cmsMappingId))
             {
@@ -242,15 +258,21 @@ namespace GatherContent.Connector.Managers.Managers
                 var gcProject = GetGcProjectEntity(gcTemplate.Data.ProjectId.ToString());
                 var addMappingModel = MappingRepository.GetMappingById(cmsMappingId);
                 var model = MapAddMappingModel(addMappingModel);
-                model.GcProjectName = gcProject.Data.Name;
-                model.GcProjectId = gcProject.Data.Id.ToString();
-                model.GcTemplateName = gcTemplate.Data.Name;
-                model.GcTemplateId = gcTemplate.Data.Id.ToString();
+                model.GcProject = new GcProjectModel
+                {
+                    Name = gcProject.Data.Name,
+                    Id = gcProject.Data.Id.ToString()
+                };
+                model.GcTemplate = new GcTemplateModel
+                {
+                    Name = gcTemplate.Data.Name,
+                    Id = gcTemplate.Data.Id.ToString()
+                };
                 model.MappingId = cmsMappingId;
                 return model;
             }
 
-            return new AddMappingModel();
+            return new MappingModel();
         }
 
         /// <summary>
@@ -290,7 +312,7 @@ namespace GatherContent.Connector.Managers.Managers
 
             return model;
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -316,17 +338,17 @@ namespace GatherContent.Connector.Managers.Managers
         /// </summary>
         /// <param name="gcTemplateId"></param>
         /// <returns></returns>
-        public List<TemplateTabModel> GetFieldsByTemplateId(string gcTemplateId)
+        public List<GcTabModel> GetFieldsByTemplateId(string gcTemplateId)
         {
-            var model = new List<TemplateTabModel>();
-            
+            var model = new List<GcTabModel>();
+
             var gcTemplate = TemplateService.GetSingleTemplate(gcTemplateId);
             foreach (var config in gcTemplate.Data.Config)
             {
-                var tab = new TemplateTabModel { TabName = config.Label };
+                var tab = new GcTabModel { TabName = config.Label };
                 foreach (var element in config.Elements)
                 {
-                    var tm = new TemplateField
+                    var tm = new GcFieldModel
                     {
                         Name = element.Label,
                         Id = element.Name,
@@ -344,22 +366,22 @@ namespace GatherContent.Connector.Managers.Managers
         /// 
         /// </summary>
         /// <param name="model"></param>
-        public void CreateMapping(PostMappingModel model)
+        public void CreateMapping(MappingModel model)
         {
-            var template = TemplateService.GetSingleTemplate(model.GcTemplateId);
+            var template = TemplateService.GetSingleTemplate(model.GcTemplate.Id);
             var project = ProjectsService.GetSingleProject(template.Data.ProjectId.ToString());
 
             var templateMapping = new TemplateMapping
             {
                 MappingId = model.MappingId,
                 MappingTitle = model.MappingTitle,
-                DefaultLocationId = model.DefaultLocation,
+                DefaultLocationId = model.DefaultLocationId,
                 LastUpdatedDate = template.Data.Updated.ToString(),
                 GcProjectId = project.Data.Id.ToString(),
                 GcProjectName = project.Data.Name,
                 CmsTemplate = new CmsTemplate
                 {
-                    TemplateId = model.CmsTemplateId
+                    TemplateId = model.CmsTemplate.Id
                 },
                 GcTemplate = new GcTemplate
                 {
@@ -378,20 +400,20 @@ namespace GatherContent.Connector.Managers.Managers
         /// 
         /// </summary>
         /// <param name="model"></param>
-        public void UpdateMapping(PostMappingModel model)
+        public void UpdateMapping(MappingModel model)
         {
-            var template = TemplateService.GetSingleTemplate(model.GcTemplateId);
+            var template = TemplateService.GetSingleTemplate(model.GcTemplate.Id);
             var project = ProjectsService.GetSingleProject(template.Data.ProjectId.ToString());
 
             var templateMapping = new TemplateMapping
             {
                 MappingId = model.MappingId,
                 MappingTitle = model.MappingTitle,
-                DefaultLocationId = model.DefaultLocation,
+                DefaultLocationId = model.DefaultLocationId,
                 GcProjectId = project.Data.Id.ToString(),
                 CmsTemplate = new CmsTemplate
                 {
-                    TemplateId = model.CmsTemplateId
+                    TemplateId = model.CmsTemplate.Id
                 },
                 GcTemplate = new GcTemplate
                 {

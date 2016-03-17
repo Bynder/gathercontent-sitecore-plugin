@@ -12,11 +12,4 @@ namespace GatherContent.Connector.Managers.Models.Mapping
         public string Id { get; set; }
         public List<CmsTemplateFieldModel> Fields { get; set; }
     }
-
-    public class CmsTemplateFieldModel
-    {
-        public string Name { get; set; }
-        public string Id { get; set; }
-        public string Type { get; set; }
-    }
 }

@@ -188,13 +188,14 @@
     <Compile Include="Models\ImportItems\MappingResultModel.cs" />
     <Compile Include="Models\ImportItems\SelectItemsForImportWithLocation.cs" />
     <Compile Include="Models\ImportItems\ItemWithLocationDataModel.cs" />
+    <Compile Include="Models\Mapping\CmsTemplateFieldModel.cs" />
     <Compile Include="Models\Mapping\CmsTemplateModel.cs" />
     <Compile Include="Models\Mapping\FieldMappingModel.cs" />
-    <Compile Include="Models\Mapping\PostMappingModel.cs" />
+    <Compile Include="Models\Mapping\GcFieldModel.cs" />
     <Compile Include="Models\Mapping\MappingModel.cs" />
     <Compile Include="Models\Mapping\GcProjectModel.cs" />
     <Compile Include="Models\Mapping\GcTemplateModel.cs" />
-    <Compile Include="Models\Mapping\TemplateTabModel.cs" />
+    <Compile Include="Models\Mapping\GcTabModel.cs" />
     <Compile Include="Models\UpdateItems\CMSUpdateItem.cs" />
     <Compile Include="Models\UpdateItems\UpdateListIds.cs" />
     <Compile Include="Managers\UpdateManager.cs" />
@@ -204,7 +205,6 @@
     <Compile Include="Models\ImportItems\ImportResultModel.cs" />
     <Compile Include="Models\ImportItems\SelectItemsForImportModel.cs" />
     <Compile Include="Models\ImportItems\TableDataModel.cs" />
-    <Compile Include="Models\Mapping\AddMappingModel.cs" />
     <Compile Include="Models\UpdateItems\FiltersModel.cs" />
     <Compile Include="Models\UpdateItems\SelectItemsForUpdateModel.cs" />
     <Compile Include="Models\UpdateItems\TableDataModel.cs" />

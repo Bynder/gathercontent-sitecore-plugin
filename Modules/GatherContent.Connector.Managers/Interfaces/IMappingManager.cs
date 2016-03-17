@@ -8,7 +8,7 @@ namespace GatherContent.Connector.Managers.Interfaces
     /// </summary>
     public interface IMappingManager : IManager
     {
-        AddMappingModel GetSingleMappingModel(string gcTemplateId, string cmsMappingId);
+        MappingModel GetSingleMappingModel(string gcTemplateId, string cmsMappingId);
 
         List<MappingModel> GetMappingModel();
 
@@ -18,11 +18,11 @@ namespace GatherContent.Connector.Managers.Interfaces
 
         List<GcTemplateModel> GetTemplatesByProjectId(string gcProjectId);
 
-        List<TemplateTabModel> GetFieldsByTemplateId(string gcTemplateId);
+        List<GcTabModel> GetFieldsByTemplateId(string gcTemplateId);
 
-        void UpdateMapping(PostMappingModel model);
+        void UpdateMapping(MappingModel model);
 
-        void CreateMapping(PostMappingModel model);
+        void CreateMapping(MappingModel model);
 
         void DeleteMapping(string scMappingId);
     }

@@ -86,11 +86,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
                 {
                     var mappingModel = new TemplateMappingViewModel
                     {
-                        GcProjectName = mapping.GcProjectName,
-                        GcTemplateId = mapping.GcTemplateId,
-                        GcTemplateName = mapping.GcTemplateName,
-                        ScTemplateName = mapping.CmsTemplateName,
-                        ScMappingId = mapping.CmsMappingId,
+                        GcProjectName = mapping.GcProject.Name,
+                        GcTemplateId = mapping.GcTemplate.Id,
+                        GcTemplateName = mapping.GcTemplate.Name,
+                        ScTemplateName = mapping.CmsTemplate.Name,
+                        ScMappingId = mapping.MappingId,
                         MappingTitle = mapping.MappingTitle,
                         LastMappedDateTime = mapping.LastMappedDateTime,
                         LastUpdatedDate = mapping.LastUpdatedDate,
@@ -119,7 +119,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
             catch (Exception exception)
             {
                 Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
-                return Json(new {status = "error", message = exception.Message}, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", message = exception.Message }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -132,33 +132,33 @@ namespace GatherContent.Connector.WebControllers.Controllers
         public ActionResult GetMapping(string gcTemplateId, string scMappingId)
         {
             try
-            {             
+            {
                 var mappingModel = MappingManager.GetSingleMappingModel(gcTemplateId, scMappingId);
-              
+
                 var model = new TemplateMapViewModel
                 {
-                    GcProjectName = mappingModel.GcProjectName,
-                    GcTemplateName = mappingModel.GcTemplateName,
+                    GcProjectName = mappingModel.GcProject.Name,
+                    GcTemplateName = mappingModel.GcTemplate.Name,
                     ScMappingId = mappingModel.MappingId,
-                    GcProjectId = mappingModel.GcProjectId,
+                    GcProjectId = mappingModel.GcProject.Id,
                     AddMappingModel = new AddMappingViewModel
                     {
                         DefaultLocationTitle = mappingModel.DefaultLocationTitle,
-                        DefaultLocation = mappingModel.DefaultLocation,
+                        DefaultLocation = mappingModel.DefaultLocationId,
                         GcMappingTitle = mappingModel.MappingTitle,
                         OpenerId = "drop-tree" + Guid.NewGuid(),
-                        GcTemplateId = mappingModel.GcTemplateId,
-                        SelectedTemplateId = mappingModel.CmsTemplateId,
+                        GcTemplateId = mappingModel.GcTemplate.Id,
+                        SelectedTemplateId = mappingModel.CmsTemplate.Id,
                     },
                 };
 
 
-                foreach (var fieldMapping in mappingModel.SelectedFields)
+                foreach (var fieldMapping in mappingModel.FieldMappings)
                 {
                     model.SelectedFields.Add(new FieldMappingViewModel
                     {
                         SitecoreTemplateId = fieldMapping.CmsTemplateId,
-                        GcFieldId = fieldMapping.GcFieldId                
+                        GcFieldId = fieldMapping.GcFieldId
                     });
                 }
 
@@ -169,16 +169,16 @@ namespace GatherContent.Connector.WebControllers.Controllers
                 var availableCmsTemplates = MappingManager.GetAvailableTemplates();
                 foreach (var template in availableCmsTemplates)
                 {
-                  var st = new SitecoreTemplateViewModel
+                    var st = new SitecoreTemplateViewModel
+                      {
+                          SitrecoreTemplateId = template.Id,
+                          SitrecoreTemplateName = template.Name
+                      };
+                    st.SitecoreFields.Add(new SitecoreTemplateField
                     {
-                        SitrecoreTemplateId = template.Id,
-                        SitrecoreTemplateName = template.Name
-                    };
-                  st.SitecoreFields.Add(new SitecoreTemplateField
-                  {
-                      SitecoreFieldId = "0",
-                      SitrecoreFieldName = "Do not map",
-                  });
+                        SitecoreFieldId = "0",
+                        SitrecoreFieldName = "Do not map",
+                    });
                     foreach (var field in template.Fields)
                     {
                         st.SitecoreFields.Add(new SitecoreTemplateField
@@ -197,7 +197,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
                 model.Rules = GetMapRules();
 
-                var projects =  MappingManager.GetAllGcProjects();
+                var projects = MappingManager.GetAllGcProjects();
 
                 foreach (var project in projects)
                 {
@@ -228,7 +228,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
             catch (Exception exception)
             {
                 Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
-                
+
                 return Json(new { status = "error", message = exception.Message }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -278,7 +278,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
             try
             {
                 var model = new List<TemplateTab>();
-                var tabs = MappingManager.GetFieldsByTemplateId(gcTemplateId);         
+                var tabs = MappingManager.GetFieldsByTemplateId(gcTemplateId);
 
                 foreach (var tab in tabs)
                 {
@@ -289,7 +289,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
                     foreach (var templateField in tab.Fields)
                     {
-                        var field = new Models.Mapping.TemplateField
+                        var field = new TemplateField
                         {
                             FieldId = templateField.Id,
                             FieldName = templateField.Name,
@@ -325,13 +325,13 @@ namespace GatherContent.Connector.WebControllers.Controllers
                 return Json(new { status = "error", message = "GatherContent template isn't selected" }, JsonRequestBehavior.AllowGet);
             try
             {
-                var postMappingModel = new PostMappingModel
+                var postMappingModel = new MappingModel
                 {
-                    DefaultLocation   = model.DefaultLocation,
+                    DefaultLocationId = model.DefaultLocation,
                     MappingTitle = model.GcMappingTitle,
                     MappingId = model.ScMappingId,
-                    GcTemplateId = model.TemplateId,
-                    CmsTemplateId = model.SelectedTemplateId,
+                    GcTemplate = new GcTemplateModel { Id = model.TemplateId },
+                    CmsTemplate = new CmsTemplateModel { Id = model.SelectedTemplateId },
                     FieldMappings = GetFieldMappings(model.TemplateTabs)
                 };
                 if (model.IsEdit)
@@ -342,7 +342,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
                 {
                     MappingManager.CreateMapping(postMappingModel);
                 }
-                
+
                 return new EmptyResult();
             }
             catch (WebException exception)
@@ -353,7 +353,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
             catch (Exception e)
             {
                 Log.Error("GatherContent message: " + e.Message + e.StackTrace, e);
-                
+
                 return Json(new { status = "error", message = e.Message }, JsonRequestBehavior.AllowGet);
             }
 
@@ -380,7 +380,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
             catch (Exception e)
             {
                 Log.Error("GatherContent message: " + e.Message + e.StackTrace, e);
-                
+
                 return Json(new { status = "error", message = e.Message }, JsonRequestBehavior.AllowGet);
             }
         }

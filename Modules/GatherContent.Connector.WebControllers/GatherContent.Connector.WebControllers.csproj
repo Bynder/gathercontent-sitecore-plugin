@@ -207,6 +207,7 @@
     <Compile Include="Controllers\UpdateController.cs" />
     <Compile Include="IoC\Installer.cs" />
     <Compile Include="IoC\WindsorControllerFactory.cs" />
+    <Compile Include="Models\Import\MappingResultViewModel.cs" />
     <Compile Include="Models\Mapping\AddMappingViewModel.cs" />
     <Compile Include="Models\Mapping\FieldMappingViewModel.cs" />
     <Compile Include="Models\Mapping\PostMappingViewModel.cs" />

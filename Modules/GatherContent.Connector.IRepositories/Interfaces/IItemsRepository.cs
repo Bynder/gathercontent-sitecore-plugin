@@ -12,7 +12,7 @@ namespace GatherContent.Connector.IRepositories.Interfaces
 
         CmsItem GetItem(string itemId, string language, bool readAllFields = false);
 
-        void CreateItem(string parentId, CmsItem cmsItem);
+        string CreateItem(string parentId, CmsItem cmsItem);
 
         void UpdateItem(CmsItem cmsItem);
 

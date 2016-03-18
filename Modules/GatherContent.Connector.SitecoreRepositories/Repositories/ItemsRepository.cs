@@ -388,7 +388,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         /// </summary>
         /// <param name="parentId"></param>
         /// <param name="cmsItem"></param>
-        public void CreateItem(string parentId, CmsItem cmsItem)
+        public string CreateItem(string parentId, CmsItem cmsItem)
         {
             if (parentId != null)
             {
@@ -409,10 +409,13 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                                 var idField = cmsItem.Fields.FirstOrDefault(f => f.TemplateField.FieldName == "GC Content Id");
                                 if (idField != null)
                                 {
+                                    createdItem.Editing.BeginEdit();
                                     createdItem.Fields[GC_CONTENT_ID].Value = idField.Value.ToString();
                                     var isoDate = DateUtil.ToIsoDate(DateTime.UtcNow);
                                     createdItem.Fields[LAST_SYNC_DATE].Value = isoDate;
+                                    createdItem.Editing.EndEdit();
                                 }
+                                return createdItem.ID.ToString();
                             }
                             catch (Exception)
                             {
@@ -422,6 +425,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     }
                 }
             }
+            return null;
         }
 
         /// <summary>
@@ -446,7 +450,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         public void MapText(CmsItem item, CmsField cmsField)
         {
             Item createdItem = GetItem(item.Id);
-
+            if (createdItem == null) return;
             using (new SecurityDisabler())
             {
                 createdItem.Editing.BeginEdit();

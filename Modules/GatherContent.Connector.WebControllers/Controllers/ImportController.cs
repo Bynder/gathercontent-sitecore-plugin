@@ -5,6 +5,7 @@ using System.Net;
 using System.Web.Mvc;
 using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.ImportItems;
+using GatherContent.Connector.WebControllers.Models.Import;
 using Newtonsoft.Json;
 using Sitecore.Diagnostics;
 
@@ -97,8 +98,26 @@ namespace GatherContent.Connector.WebControllers.Controllers
         {
             try
             {
-                ImportResultModel result = ImportManager.ImportItems(id, items, projectId, statusId, language);
-                return Json(result, JsonRequestBehavior.AllowGet); 
+                var model = new List<ImportResultViewModel>();
+                var result = ImportManager.ImportItems(id, items, projectId, statusId, language);
+                foreach (var item in result)
+                {
+                    model.Add(new ImportResultViewModel
+                    {
+                        Title = item.GcItem.Title,
+                        IsImportSuccessful = item.IsImportSuccessful,
+                        Message = item.ImportMessage,
+                        CmsLink = item.CmsLink,
+                        GcLink = item.GcLink,
+                        Status = new StatusViewModel
+                        {
+                            Color = item.Status.Color,
+                            Name = item.Status.Name
+                        },
+                        GcTemplateName = item.GcTemplate.Name
+                    });
+                }
+                return Json(model, JsonRequestBehavior.AllowGet); 
             }
             catch (WebException exception)
             {

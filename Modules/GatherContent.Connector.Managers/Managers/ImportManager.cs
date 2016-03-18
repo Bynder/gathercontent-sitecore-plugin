@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.GatherContentService.Interfaces;
@@ -10,8 +11,10 @@ using GatherContent.Connector.IRepositories.Models.Mapping;
 using GatherContent.Connector.Managers.Enums;
 using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.ImportItems;
+using GatherContent.Connector.Managers.Models.Mapping;
 using GatherContent.Connector.Managers.Models.UpdateItems;
 using GatherContent.Connector.SitecoreRepositories.Repositories;
+using GatherContent.Connector.Managers.Models.ImportItems.New;
 
 namespace GatherContent.Connector.Managers.Managers
 {
@@ -49,7 +52,8 @@ namespace GatherContent.Connector.Managers.Managers
             ITemplatesService templateService,
             ICacheManager cacheManager,
             IMappingManager mappingManager,
-            GCAccountSettings gcAccountSettings) : base(accountsService, projectsService, templateService, cacheManager)
+            GCAccountSettings gcAccountSettings)
+            : base(accountsService, projectsService, templateService, cacheManager)
         {
             ItemsRepository = itemsRepository;
             MappingRepository = mappingRepository;
@@ -605,21 +609,49 @@ namespace GatherContent.Connector.Managers.Managers
         /// <param name="statusId"></param>
         /// <param name="language"></param>
         /// <returns></returns>
-        public ImportResultModel ImportItems(string itemId, List<ImportItemModel> items, string projectId, string statusId, string language)
+        public List<ItemResponseModel> ImportItems(string itemId, List<ImportItemModel> items, string projectId, string statusId, string language)
         {
+            var model = new List<ItemResponseModel>();
             var templateMappings = new List<TemplateMapping>();
 
             var mappingDictionary = new Dictionary<string, string>();
 
             foreach (var importItem in items)
             {
+                var itemResponseModel = new ItemResponseModel
+                {
+                    IsImportSuccessful = true,
+                    ImportMessage = "Import Successful",
+                };
                 var gcItem = ItemsService.GetSingleItem(importItem.Id);
 
                 if (gcItem != null && gcItem.Data != null && gcItem.Data.TemplateId != null)
                 {
+                    if (!string.IsNullOrEmpty(GcAccountSettings.GatherContentUrl))
+                    {
+                        itemResponseModel.GcLink = GcAccountSettings.GatherContentUrl + "/item/" + gcItem.Data.Id;
+                    }
+                    itemResponseModel.GcItem = new GcItemModel
+                    {
+                        Id = gcItem.Data.Id.ToString(),
+                        Title = gcItem.Data.Name
+                    };
+
+                    itemResponseModel.Status = new StatusModel
+                    {
+                        Color = gcItem.Data.Status.Data.Color,
+                        Name = gcItem.Data.Status.Data.Name,
+                    };
+                    var gcTemplate = TemplatesService.GetSingleTemplate(gcItem.Data.TemplateId.ToString());
+                    itemResponseModel.GcTemplate = new GcTemplateModel
+                    {
+                        Id = gcTemplate.Data.Id.ToString(),
+                        Name = gcTemplate.Data.Name
+                    };
+
                     //element that corresponds to item in CMS that holds mappings
                     TemplateMapping templateMapping = MappingRepository.GetMappingById(importItem.SelectedMappingId);
-                    
+
                     List<Element> gcFields = gcItem.Data.Config.SelectMany(i => i.Elements).ToList();
 
                     if (templateMapping != null) // template found, now map fields here
@@ -655,7 +687,7 @@ namespace GatherContent.Connector.Managers.Managers
                             IEnumerable<Element> gcFieldsForMapping = gcFields.Where(i => gcFieldIds.Contains(i.Name)).ToList();
 
                             var gcField = gcFieldsForMapping.FirstOrDefault();
-                            
+
                             if (gcField != null)
                             {
                                 var value = GetValue(gcFieldsForMapping);
@@ -676,10 +708,22 @@ namespace GatherContent.Connector.Managers.Managers
                             else
                             {
                                 //if field error, set error message
+                                itemResponseModel.ImportMessage = "Import failed: Template fields mismatch";
+                                itemResponseModel.IsImportSuccessful = false;
                                 fieldError = true;
                                 break;
                             }
                         }
+
+                        templateMapping.FieldMappings.Add(new FieldMapping
+                        {
+                            CmsField = new CmsField
+                            {
+                                TemplateField = new CmsTemplateField { FieldName = "GC Content Id" },
+                                Value = gcItem.Data.Id.ToString()
+                            }
+                        });
+
 
                         if (!fieldError)
                         {
@@ -689,8 +733,11 @@ namespace GatherContent.Connector.Managers.Managers
                     else
                     {
                         //no template mapping, set error message
+                        itemResponseModel.ImportMessage = "Import failed: Template not mapped";
+                        itemResponseModel.IsImportSuccessful = false;
                     }
                 }
+                model.Add(itemResponseModel);
             }
 
             //run through template mappings
@@ -704,30 +751,44 @@ namespace GatherContent.Connector.Managers.Managers
                     Language = language
                 };
 
-                ItemsRepository.CreateItem(itemId, cmsItem);
+                var createdItemId = ItemsRepository.CreateItem(itemId, cmsItem);
+                cmsItem.Id = createdItemId;
+
+                var cmsLink =
+                         string.Format(
+                             "http://{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master&sc_bw=1",
+                             HttpContext.Current.Request.Url.Host, createdItemId);
+
+                var idField = cmsItem.Fields.FirstOrDefault(f => f.TemplateField.FieldName == "GC Content Id");
+                var itemResponseModel = model.FirstOrDefault(item => idField != null && item.GcItem.Id == idField.Value.ToString());
+                if (itemResponseModel != null) itemResponseModel.CmsLink = cmsLink;
+
 
                 var fields = templateMapping.FieldMappings;
 
                 foreach (var field in fields)
                 {
-                    switch (field.GcField.Type)
+                    if (field.GcField != null)
                     {
-                        case "choice_radio":
-                        case "choice_checkbox":
-                            {
-                                ItemsRepository.MapChoice(cmsItem, field.CmsField);
-                            }
-                            break;
-                        case "files":
-                            {
-                                ItemsRepository.MapFile(cmsItem, field.CmsField);
-                            }
-                            break;
-                        default:
-                            {
-                                ItemsRepository.MapText(cmsItem, field.CmsField);
-                            }
-                            break;
+                        switch (field.GcField.Type)
+                        {
+                            case "choice_radio":
+                            case "choice_checkbox":
+                                {
+                                    ItemsRepository.MapChoice(cmsItem, field.CmsField);
+                                }
+                                break;
+                            case "files":
+                                {
+                                    ItemsRepository.MapFile(cmsItem, field.CmsField);
+                                }
+                                break;
+                            default:
+                                {
+                                    ItemsRepository.MapText(cmsItem, field.CmsField);
+                                }
+                                break;
+                        }
                     }
                 }
             }
@@ -737,7 +798,7 @@ namespace GatherContent.Connector.Managers.Managers
                 //PostNewStatusesForItems(successfulImportedItems, statusId, projectId);//TODO: statuses + colors + return type
             }
 
-            return new ImportResultModel(null); //TODO: return type
+            return model;
         }
 
         /// <summary>

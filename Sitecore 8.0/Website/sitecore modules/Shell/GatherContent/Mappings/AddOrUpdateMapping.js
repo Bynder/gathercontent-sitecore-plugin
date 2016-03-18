@@ -21,7 +21,6 @@ function Init() {
             resultData.IsError = false;
             resultData.IsShowing = false;
             jQuery(".preloader").hide();
-            tabInitSlide();
         }
     });
 
@@ -33,37 +32,45 @@ function Init() {
 
 
 function ViewModel(data) {
-    var self = this;
+    var self = this; 
 
+
+    //Methods
     this.saveMapping = function () {
-        var model = new function () {
-            this.TemplateTabs = self.Tabs();
-            this.IsEdit = self.IsEdit();
-            this.SelectedTemplateId = self.SelectedTemplateId();
-            this.TemplateId = self.SelectedGcTemplate().Id;
-            this.GcMappingTitle = self.GcMappingTitle();
-            this.ScMappingId = self.ScMappingId();
-            this.DefaultLocation = self.DefaultLocation();
+
+        if (self.GcMappingTitle() != null && self.GcMappingTitle() != "") {
+
+            var model = new function() {
+                this.TemplateTabs = self.Tabs();
+                this.IsEdit = self.IsEdit();
+                this.SelectedTemplateId = self.SelectedTemplateId();
+                this.TemplateId = self.SelectedGcTemplate().Id;
+                this.GcMappingTitle = self.GcMappingTitle();
+                this.ScMappingId = self.ScMappingId();
+                this.DefaultLocation = self.DefaultLocation();
+            }
+
+            jQuery.ajax({
+                url: '/api/sitecore/mappings/Post',
+                type: 'post',
+                data: JSON.stringify(model),
+                contentType: 'application/json',
+                success: function(data) {
+                    if (data.status != "error") {
+                        window.opener.location.reload(true);
+                        window.top.dialogClose();
+                    } else {
+                        self.ErrorText("Error:" + " " + data.message);
+                        self.IsError(true);
+                    }
+                },
+
+            });
+
+        } else {
+            self.ValidationMessage("Mapping Title is mandatory  field");
         }
-
-        jQuery.ajax({
-            url: '/api/sitecore/mappings/Post',
-            type: 'post',
-            data: JSON.stringify(model),
-            contentType: 'application/json',
-            success: function (data) {
-                if (data.status != "error") {
-                    window.opener.location.reload(true);
-                    window.top.dialogClose();
-                } else {
-                    self.ErrorText("Error:" + " " + data.message);
-                    self.IsError(true);
-                }
-            },
-
-        });
     };
-
 
     this.openDropTree = function () {
         var id = this.OpenerId();
@@ -108,12 +115,10 @@ function ViewModel(data) {
         }
     }
 
-
     this.scTemplateChanged = function () {
         this.SitecoreFields(self.SelectedScTemplate().SitecoreFields);
         this.SelectedTemplateId(self.SelectedScTemplate().SitrecoreTemplateId);
     }
-
 
     this.gcProjectChanged = function () {
 
@@ -141,7 +146,6 @@ function ViewModel(data) {
         }
     }
 
-
     this.gcTemplateChanged = function () {
         if (self.SelectedGcTemplate != undefined && self.SelectedGcTemplate() != null) {
             jQuery.ajax({
@@ -168,7 +172,6 @@ function ViewModel(data) {
             });
         }
     }
-
 
     this.GetCurrentFields = function (item) {
         var fieldType = item.FieldType;
@@ -202,7 +205,6 @@ function ViewModel(data) {
         return self.SelectedScTemplate().SitecoreFields[0];
     };
 
-
     this.returnFieldName = function (item) {
         if (item.FieldName === null) {
             return "[Empty]" + " (" + item.FieldId + ")";
@@ -211,13 +213,16 @@ function ViewModel(data) {
         }
     };
 
-
     this.find = function (prop, array, property) {
         return ko.utils.arrayFirst(array, function (item) {
             return item[prop] === property;
         });
     };
 
+
+
+
+    //Fields
     this.Rules = ko.observable(data.Rules);
     this.IsEdit = ko.observable(data.IsEdit);
     this.ScMappingId = ko.observable(data.ScMappingId);
@@ -238,6 +243,7 @@ function ViewModel(data) {
 
     this.ErrorText = ko.observable();
     this.IsError = ko.observable(data.IsError);
+    this.ValidationMessage = ko.observable();
 
     if (data.IsEdit) {
         this.SelectedGcProject = ko.observable(self.find("Id", data.GcProjects, data.GcProjectId));
@@ -250,6 +256,7 @@ function ViewModel(data) {
     this.SelectedScTemplate = ko.observable(self.find("SitrecoreTemplateId", data.SitecoreTemplates, data.AddMappingModel.SelectedTemplateId));  
 
     self.gcProjectChanged();
+
     
 };
 

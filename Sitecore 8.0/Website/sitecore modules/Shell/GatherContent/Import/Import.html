@@ -188,7 +188,7 @@
                         <td><span data-bind="style: { backgroundColor : Status.Color }"></span><span data-bind="text: Status.Name"></span></td>
                         <td data-bind="text: Title"></td>
                         <td data-bind="text: Message, style: { color: $root.getImportResultMessageColor($data) }"></td>
-                        <td data-bind="text: GCTemplate, style: { color: $root.getImportResultTemplateColor($data) }"></td>
+                        <td data-bind="text: GcTemplateName, style: { color: $root.getImportResultTemplateColor($data) }"></td>
                         <td><a data-bind="if: CmsLink!=null, click: $root.openCmsLink, attr: { href: CmsLink, title: CmsLink }">Open</a></td>
                         <td><a data-bind="if: GcLink!=null, click: $root.openGcLink, attr: { href: GcLink, title: GcLink }">Open</a></td>
                     </tr>

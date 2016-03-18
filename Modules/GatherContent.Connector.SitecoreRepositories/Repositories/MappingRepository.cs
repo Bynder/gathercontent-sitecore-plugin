@@ -203,23 +203,24 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         }
 
 
-        private FieldMapping ConvertSitecoreFieldToModel(Item field)
+        private FieldMapping ConvertSitecoreFieldToModel(Item fieldMapping)
         {
+            var field = GetItem(fieldMapping["Sitecore Field"]);
             var result = new FieldMapping
             {
                 CmsField = new CmsField
                 {
                     TemplateField = new CmsTemplateField
                     {
-                        FieldId = field["Sitecore Field"],
+                        FieldId = fieldMapping["Sitecore Field"],
                         FieldName = field.Name,
                         FieldType = "todo"
                     }
                 },
                 GcField = new GcField
                {
-                   Id = field["GC Field Id"],
-                   Name = field["GC Field"]
+                   Id = fieldMapping["GC Field Id"],
+                   Name = fieldMapping["GC Field"]
                }
             };
             return result;

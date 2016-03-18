@@ -546,6 +546,14 @@ namespace GatherContent.Connector.Managers.Managers
             }
         }
 
+        private StatusModel PostNewItemStatus(string gcItemId, string statusId, string projectId)
+        {
+            ItemsService.ChooseStatusForItem(gcItemId, statusId);
+            var status = ProjectsService.GetSingleStatus(statusId, projectId);
+            var statusModel = new StatusModel { Color = status.Data.Color, Name = status.Data.Name };
+            return statusModel;
+        }
+
         #endregion
 
         /// <summary>
@@ -791,15 +799,23 @@ namespace GatherContent.Connector.Managers.Managers
                         }
                     }
                 }
-            }
 
-            if (!string.IsNullOrEmpty(statusId))
-            {
-                //PostNewStatusesForItems(successfulImportedItems, statusId, projectId);//TODO: statuses + colors + return type
-            }
+                if (!string.IsNullOrEmpty(statusId))
+                {
+                    if (idField != null)
+                    {
+                        var status = PostNewItemStatus(idField.Value.ToString(), statusId, projectId);
+                        if (itemResponseModel == null) continue;
+                        itemResponseModel.Status.Color = status.Color;
+                        itemResponseModel.Status.Name = status.Name;
+                    }
+                }
 
+            }
             return model;
         }
+
+
 
         /// <summary>
         /// 

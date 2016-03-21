@@ -10,10 +10,4 @@ namespace GatherContent.Connector.Entities.Entities
         [JsonProperty(PropertyName = "meta")]
         public Meta Meta { get; set; }
     }
-
-    public class Meta
-    {
-        [JsonProperty(PropertyName = "templates")]
-        public int Templates { get; set; }
-    }
 }

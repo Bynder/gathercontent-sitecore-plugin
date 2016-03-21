@@ -254,7 +254,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         private string GetMediaItemPath(string itemTitle, Item createdItem, CmsField cmsField)
         {
             var dataSourcePath = GetDatasourcePath(createdItem,
-                cmsField.TemplateField.FieldName);
+                cmsField.TemplateField.FieldId);
             string path;
             if (string.IsNullOrEmpty(dataSourcePath))
             {
@@ -264,7 +264,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     : string.Format("/sitecore/media library/GatherContent/{0}/{1}/",
                         itemTitle,
                         cmsField.TemplateField.FieldName);
-                SetDatasourcePath(createdItem, cmsField.TemplateField.FieldName, path);
+                SetDatasourcePath(createdItem, cmsField.TemplateField.FieldId, path);
             }
             else
             {
@@ -402,7 +402,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                         if (parent != null)
                         {
                             var createdItem = parent.Add(validName, template);
-                            
+
                             try
                             {
                                 EnsureMetaTemplateInherited(createdItem.Template);
@@ -479,16 +479,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 if (cmsField.Files != null && cmsField.Files.Any())
                 {
                     var value = string.Empty;
-                    var filesValue = cmsField.Value as FieldValueFiles;
-                    if (filesValue != null)
+                    foreach (var file in cmsField.Files)
                     {
-                        foreach (var file in filesValue.Files)
+                        if (file != null)
                         {
-                            if (file != null)
-                            {
-                                var media = UploadFile(path, file);
-                                if (media != null) value += media.ID + "|";
-                            }
+                            var media = UploadFile(path, file);
+                            if (media != null) value += media.ID + "|";
                         }
                     }
                     value = value.TrimEnd('|');
@@ -500,15 +496,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 else if (cmsField.Options != null && cmsField.Options.Any())
                 {
                     var value = string.Empty;
-                    var optionsValue = cmsField.Value as FieldValueOptions;
-                    if (optionsValue != null)
+                    foreach (var option in cmsField.Options)
                     {
-                        foreach (var option in optionsValue.Options)
-                        {
-                            var children = GetDatasource(createdItem, cmsField.TemplateField.FieldName, option);
-                            //option = GC option.Label
-                            if (children != null) value += children.ID + "|";
-                        }
+                        var children = GetDatasource(createdItem, cmsField.TemplateField.FieldId, option);
+                        //option = GC option.Label
+                        if (children != null) value += children.ID + "|";
                     }
                     value = value.TrimEnd('|');
                     if (!string.IsNullOrEmpty(value)) createdItem[cmsField.TemplateField.FieldName] = value;
@@ -539,7 +531,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                         new MediaUrlOptions { UseItemPath = false, AbsolutePath = false });
                     var value = "<file mediaid=\"" + media.ID + "\" src=\"" + mediaUrl + "\" />";
 
+                    createdItem.Editing.BeginEdit();
                     createdItem[cmsField.TemplateField.FieldName] = value;
+                    createdItem.Editing.EndEdit();
                 }
             }
         }

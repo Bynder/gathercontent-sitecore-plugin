@@ -8,6 +8,7 @@ namespace GatherContent.Connector.IRepositories.Models.Import
        public CmsItem()
        {
            Children = new List<CmsItem>();
+           Fields = new List<CmsField>();
        }
         public string Id { get; set; }
         public string Title { get; set; }

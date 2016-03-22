@@ -148,9 +148,21 @@ namespace GatherContent.Connector.Managers.Managers
                                     HttpContext.Current.Request.Url.Host, cmsItem.Id);
 
 
-                            var lastUpdate = cmsItem.Fields.FirstOrDefault(f => f.TemplateField.FieldName == "Last Sync Date");
+                            var lastUpdate = new DateTime();
+                            string cmsTemplateName = null;
+                            var lastUpdateField = cmsItem.Fields.FirstOrDefault(f => f.TemplateField.FieldName == "Last Sync Date");
+                            if (lastUpdateField != null)
+                            {
+                                lastUpdate = (DateTime)lastUpdateField.Value;
+                            }
 
-                            var cmsUpdateItem = new CMSUpdateItem(cmsItem.Id, cmsItem.Title, cmsItem.Template.TemplateId, idField.Value.ToString(), (DateTime)lastUpdate.Value);
+                            var cmsTemplateNameField = cmsItem.Fields.FirstOrDefault(f => f.TemplateField.FieldName == "Template");
+                            if (cmsTemplateNameField != null)
+                            {
+                                cmsTemplateName = cmsTemplateNameField.Value.ToString();
+                            }
+
+                            var cmsUpdateItem = new CMSUpdateItem(cmsItem.Id, cmsItem.Title, cmsTemplateName, idField.Value.ToString(), lastUpdate);
                             var listItem = new UpdateListItem(gcItem, template, cmsUpdateItem, dateFormat, project.Name,
                                 cmsLink, gcLink);
                             items.Add(listItem);

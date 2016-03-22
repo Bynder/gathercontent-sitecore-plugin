@@ -16,10 +16,16 @@ using File = GatherContent.Connector.IRepositories.Models.Import.File;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ItemsRepository : BaseSitecoreRepository, IItemsRepository
     {
         private const string GC_CONTENT_ID = "GC Content Id";
         private const string LAST_SYNC_DATE = "Last Sync Date";
+        private const string GC_PATH = "GC Path";
+        private const string MAPPING_ID = "Mapping Id";
+
         private readonly GCAccountSettings _accountSettings;
 
         public ItemsRepository()
@@ -388,7 +394,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         /// </summary>
         /// <param name="parentId"></param>
         /// <param name="cmsItem"></param>
-        public void CreateItem(string parentId, CmsItem cmsItem)
+        /// <param name="mappingId"></param>
+        /// <param name="gcPath"></param>
+        public void CreateItem(string parentId, CmsItem cmsItem, string mappingId, string gcPath)
         {
             if (parentId != null)
             {
@@ -402,16 +410,18 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                         if (parent != null)
                         {
                             var createdItem = parent.Add(validName, template);
-                            
+
                             try
                             {
                                 EnsureMetaTemplateInherited(createdItem.Template);
-                                var idField = cmsItem.Fields.FirstOrDefault(f => f.TemplateField.FieldName == "GC Content Id");
+                                var idField = cmsItem.Fields.FirstOrDefault(f => f.TemplateField.FieldName == GC_CONTENT_ID);
                                 if (idField != null)
                                 {
                                     createdItem.Fields[GC_CONTENT_ID].Value = idField.Value.ToString();
                                     var isoDate = DateUtil.ToIsoDate(DateTime.UtcNow);
                                     createdItem.Fields[LAST_SYNC_DATE].Value = isoDate;
+                                    createdItem.Fields[MAPPING_ID].Value = mappingId;
+                                    createdItem.Fields[GC_PATH].Value = gcPath;
                                 }
                             }
                             catch (Exception)
@@ -536,6 +546,85 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     var value = "<file mediaid=\"" + media.ID + "\" src=\"" + mediaUrl + "\" />";
 
                     createdItem[cmsField.TemplateField.FieldName] = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <param name="cmsItem"></param>
+        /// <param name="mappingId"></param>
+        /// <param name="gcPath"></param>
+        /// <returns></returns>
+        public bool ItemExists(string parentId, CmsItem cmsItem, string mappingId, string gcPath)
+        {
+            if (parentId != null)
+            {
+                using (new SecurityDisabler())
+                {
+                    using (new LanguageSwitcher(cmsItem.Language))
+                    {
+                        var parent = ContextDatabase.GetItem(new ID(parentId));
+                        if (parent != null)
+                        {
+                            if (parent.Axes.SelectItems(string.Format("*/mappingid='{0}' and gcpath='{1}'", mappingId, gcPath)).Any())
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <param name="cmsItem"></param>
+        /// <param name="mappingId"></param>
+        /// <param name="gcPath"></param>
+        public void AddNewVersion(string parentId, CmsItem cmsItem, string mappingId, string gcPath)
+        {
+            if (parentId != null)
+            {
+                using (new SecurityDisabler())
+                {
+                    using (new LanguageSwitcher(cmsItem.Language))
+                    {
+                        var parent = ContextDatabase.GetItem(new ID(parentId));
+                        if (parent != null)
+                        {
+                            var items = parent.Axes.SelectItems(string.Format("*/mappingid='{0}' and gcpath='{1}'", mappingId, gcPath));
+
+                            foreach (var item in items)
+                            {
+                                //TODO: add new method for update and create
+                                var newVersion = item.Versions.AddVersion();
+
+                                try
+                                {
+                                    EnsureMetaTemplateInherited(newVersion.Template);
+                                    var idField = cmsItem.Fields.FirstOrDefault(f => f.TemplateField.FieldName == GC_CONTENT_ID);
+                                    if (idField != null)
+                                    {
+                                        newVersion.Fields[GC_CONTENT_ID].Value = idField.Value.ToString();
+                                        var isoDate = DateUtil.ToIsoDate(DateTime.UtcNow);
+                                        newVersion.Fields[LAST_SYNC_DATE].Value = isoDate;
+                                        newVersion.Fields[MAPPING_ID].Value = mappingId;
+                                        newVersion.Fields[GC_PATH].Value = gcPath;
+                                    }
+                                }
+                                catch (Exception)
+                                {
+                                    throw new Exception(string.Format("Your template({0}) is not inherited from the GC Linked Item.", newVersion.TemplateName));
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

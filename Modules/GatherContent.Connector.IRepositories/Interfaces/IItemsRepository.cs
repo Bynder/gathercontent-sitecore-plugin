@@ -12,7 +12,7 @@ namespace GatherContent.Connector.IRepositories.Interfaces
 
         CmsItem GetItem(string itemId, string language, bool readAllFields = false);
 
-        void CreateItem(string parentId, CmsItem cmsItem);
+        void CreateItem(string parentId, CmsItem cmsItem, string mappingId, string gcPath);
 
         void UpdateItem(CmsItem cmsItem);
 
@@ -21,5 +21,9 @@ namespace GatherContent.Connector.IRepositories.Interfaces
         void MapChoice(CmsItem item, CmsField field);
 
         void MapFile(CmsItem item, CmsField field);
+
+        bool ItemExists(string itemId, CmsItem cmsItem, string mappingId, string gcPath);
+
+        void AddNewVersion(string itemId, CmsItem cmsItem, string mappingId, string gcPath);
     }
 }

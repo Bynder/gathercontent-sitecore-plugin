@@ -16,6 +16,7 @@
     jQuery(document).ready(function () {
         var data = Init();
         ko.applyBindings(new ViewModel(data));
+        tabInitSlide();
     });
 
 </script>
@@ -28,6 +29,11 @@
 </script>
 
 <div class="gathercontent-dialog">
+    <div data-bind="attr: { id: OpenerId }" style="position: absolute; left: 230px; top: 285px; width: 300px; height: 400px; z-index: 1000;">
+        <div style="width:300px;height:400px;">
+            <div ata-bind="css: { class: OpenerId }"> </div>
+        </div>
+    </div>
     <!-- ko if: IsError -->
     <h1 data-bind="text: ErrorText"></h1>
     <!-- /ko -->
@@ -43,16 +49,11 @@
                 <select class="custom_selected sitecore-template-select" data-bind="options: GcProjects, optionsText: 'Name', value: SelectedGcProject, event:{ change: $root.gcProjectChanged}"></select>
                 <p class="title_lvl2">Template:</p>
                 <select class="custom_selected sitecore-template-select" data-bind="options: GcTemplates, optionsText: 'Name', value: SelectedGcTemplate, event:{ change: $root.gcTemplateChanged}"></select>
-                <div><span><strong>Mapping title:</strong></span></div>
-                <input type="text" data-bind="value: GcMappingTitle" />
+                <div><span><strong>* Mapping title:</strong></span></div>
+                <input type="text" data-bind="value: GcMappingTitle" class="mapping-input" /> <span data-bind="text: ValidationMessage" class="validation-message"></span>
                 <div><span><strong>Default location:</strong></span></div>
-                <input data-bind="value: DefaultLocationTitle, attr: { 'data-openerid': OpenerId }, click: openDropTree" type="text" />
+                <input class="mapping-input" data-bind="value: DefaultLocationTitle, attr: { 'data-openerid': OpenerId }, click: openDropTree" type="text" />
                 <input data-bind="value: DefaultLocation, visible: false, attr: { 'data-openerid': OpenerId }, click: openDropTree" type="text" />
-                <div data-bind="attr: { id: OpenerId }" style="position: absolute; left: 200px; top: 200px; width: 300px; height: 400px; z-index: 1000;">
-                    <div style="width:300px;height:400px;">
-                        <div ata-bind="css: { class: OpenerId }"> </div>
-                    </div>
-                </div>
             </div>
             <div style="float: right;" class="mapping_heading">
                 <div><span><strong>Sitecore Template:</strong></span></div>

@@ -23,8 +23,8 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
     {
         private const string GC_CONTENT_ID = "GC Content Id";
         private const string LAST_SYNC_DATE = "Last Sync Date";
-        private const string GC_PATH = "GC Path";
-        private const string MAPPING_ID = "Mapping Id";
+        private const string GC_PATH = "GCPath";
+        private const string MAPPING_ID = "MappingId";
 
         private readonly GCAccountSettings _accountSettings;
 
@@ -260,7 +260,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         private string GetMediaItemPath(string itemTitle, Item createdItem, CmsField cmsField)
         {
             var dataSourcePath = GetDatasourcePath(createdItem,
-                cmsField.TemplateField.FieldName);
+                cmsField.TemplateField.FieldId);
             string path;
             if (string.IsNullOrEmpty(dataSourcePath))
             {
@@ -270,7 +270,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     : string.Format("/sitecore/media library/GatherContent/{0}/{1}/",
                         itemTitle,
                         cmsField.TemplateField.FieldName);
-                SetDatasourcePath(createdItem, cmsField.TemplateField.FieldName, path);
+                SetDatasourcePath(createdItem, cmsField.TemplateField.FieldId, path);
             }
             else
             {
@@ -396,7 +396,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         /// <param name="cmsItem"></param>
         /// <param name="mappingId"></param>
         /// <param name="gcPath"></param>
-        public void CreateItem(string parentId, CmsItem cmsItem, string mappingId, string gcPath)
+        public string CreateMappedItem(string parentId, CmsItem cmsItem, string mappingId, string gcPath)
         {
             if (parentId != null)
             {
@@ -417,12 +417,15 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                                 var idField = cmsItem.Fields.FirstOrDefault(f => f.TemplateField.FieldName == GC_CONTENT_ID);
                                 if (idField != null)
                                 {
+                                    createdItem.Editing.BeginEdit();
                                     createdItem.Fields[GC_CONTENT_ID].Value = idField.Value.ToString();
                                     var isoDate = DateUtil.ToIsoDate(DateTime.UtcNow);
                                     createdItem.Fields[LAST_SYNC_DATE].Value = isoDate;
                                     createdItem.Fields[MAPPING_ID].Value = mappingId;
                                     createdItem.Fields[GC_PATH].Value = gcPath;
+                                    createdItem.Editing.EndEdit();
                                 }
+                                return createdItem.ID.ToString();
                             }
                             catch (Exception)
                             {
@@ -432,6 +435,46 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     }
                 }
             }
+            return null;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <param name="cmsItem"></param>
+        /// <returns></returns>
+        public string CreateNotMappedItem(string parentId, CmsItem cmsItem)
+        {
+            if (parentId != null)
+            {
+                using (new SecurityDisabler())
+                {
+                    using (new LanguageSwitcher(cmsItem.Language))
+                    {
+                        var templateItem = ContextDatabase.GetItem("/sitecore/templates/GatherContent/Not Mapped Item");
+                        if (templateItem != null)
+                        {
+                            var template = ContextDatabase.GetTemplate(new ID(templateItem.ID.Guid));
+                            var validName = ItemUtil.ProposeValidItemName(cmsItem.Title);
+                            var parent = ContextDatabase.GetItem(new ID(parentId));
+                            if (parent != null)
+                            {
+                                try
+                                {
+                                    var createdItem = parent.Add(validName, template);
+                                    return createdItem.ID.ToString();
+                                }
+                                catch (Exception)
+                                {
+                                    throw new Exception(string.Format("Item cannot be created: parent='{0}l cmsItem.Title='{1}'", parent.Name, cmsItem.Title));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
         }
 
         /// <summary>
@@ -456,7 +499,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         public void MapText(CmsItem item, CmsField cmsField)
         {
             Item createdItem = GetItem(item.Id);
-
+            if (createdItem == null) return;
             using (new SecurityDisabler())
             {
                 createdItem.Editing.BeginEdit();
@@ -485,16 +528,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 if (cmsField.Files != null && cmsField.Files.Any())
                 {
                     var value = string.Empty;
-                    var filesValue = cmsField.Value as FieldValueFiles;
-                    if (filesValue != null)
+                    foreach (var file in cmsField.Files)
                     {
-                        foreach (var file in filesValue.Files)
+                        if (file != null)
                         {
-                            if (file != null)
-                            {
-                                var media = UploadFile(path, file);
-                                if (media != null) value += media.ID + "|";
-                            }
+                            var media = UploadFile(path, file);
+                            if (media != null) value += media.ID + "|";
                         }
                     }
                     value = value.TrimEnd('|');
@@ -506,15 +545,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 else if (cmsField.Options != null && cmsField.Options.Any())
                 {
                     var value = string.Empty;
-                    var optionsValue = cmsField.Value as FieldValueOptions;
-                    if (optionsValue != null)
+                    foreach (var option in cmsField.Options)
                     {
-                        foreach (var option in optionsValue.Options)
-                        {
-                            var children = GetDatasource(createdItem, cmsField.TemplateField.FieldName, option);
-                            //option = GC option.Label
-                            if (children != null) value += children.ID + "|";
-                        }
+                        var children = GetDatasource(createdItem, cmsField.TemplateField.FieldId, option);
+                        //option = GC option.Label
+                        if (children != null) value += children.ID + "|";
                     }
                     value = value.TrimEnd('|');
                     if (!string.IsNullOrEmpty(value)) createdItem[cmsField.TemplateField.FieldName] = value;
@@ -541,11 +576,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 {
                     var media = UploadFile(path, file);
 
-                    var mediaUrl = MediaManager.GetMediaUrl(media,
-                        new MediaUrlOptions { UseItemPath = false, AbsolutePath = false });
-                    var value = "<file mediaid=\"" + media.ID + "\" src=\"" + mediaUrl + "\" />";
+                    var mediaUrl = MediaManager.GetMediaUrl(media, new MediaUrlOptions { UseItemPath = false, AbsolutePath = false });
+                    var value = string.Format("<file mediaid=\"{0}\" src=\"{1}\" />", media.ID, mediaUrl);
 
+                    createdItem.Editing.BeginEdit();
                     createdItem[cmsField.TemplateField.FieldName] = value;
+                    createdItem.Editing.EndEdit();
                 }
             }
         }
@@ -558,7 +594,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         /// <param name="mappingId"></param>
         /// <param name="gcPath"></param>
         /// <returns></returns>
-        public bool ItemExists(string parentId, CmsItem cmsItem, string mappingId, string gcPath)
+        public bool IfMappedItemExists(string parentId, CmsItem cmsItem, string mappingId, string gcPath)
         {
             if (parentId != null)
             {
@@ -566,10 +602,42 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 {
                     using (new LanguageSwitcher(cmsItem.Language))
                     {
+                        var validName = ItemUtil.ProposeValidItemName(cmsItem.Title);
                         var parent = ContextDatabase.GetItem(new ID(parentId));
                         if (parent != null)
                         {
-                            if (parent.Axes.SelectItems(string.Format("*/mappingid='{0}' and gcpath='{1}'", mappingId, gcPath)).Any())
+                            var items = parent.Axes.SelectItems(string.Format("./*[@MappingId='{0}' and @GCPath='{1}' and @@name='{2}']", mappingId, gcPath, validName));
+                            if (items != null && items.Any())
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <param name="cmsItem"></param>
+        /// <returns></returns>
+        public bool IfNotMappedItemExists(string parentId, CmsItem cmsItem)
+        {
+            if (parentId != null)
+            {
+                using (new SecurityDisabler())
+                {
+                    using (new LanguageSwitcher(cmsItem.Language))
+                    {
+                        var validName = ItemUtil.ProposeValidItemName(cmsItem.Title);
+                        var parent = ContextDatabase.GetItem(new ID(parentId));
+                        if (parent != null)
+                        {
+                            var items = parent.Axes.SelectItems(string.Format("./*[@@name='{0}']", validName));
+                            if (items != null && items.Any())
                             {
                                 return true;
                             }
@@ -587,7 +655,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         /// <param name="cmsItem"></param>
         /// <param name="mappingId"></param>
         /// <param name="gcPath"></param>
-        public void AddNewVersion(string parentId, CmsItem cmsItem, string mappingId, string gcPath)
+        public string AddNewVersion(string parentId, CmsItem cmsItem, string mappingId, string gcPath)
         {
             if (parentId != null)
             {
@@ -595,10 +663,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 {
                     using (new LanguageSwitcher(cmsItem.Language))
                     {
+                        var validName = ItemUtil.ProposeValidItemName(cmsItem.Title);
                         var parent = ContextDatabase.GetItem(new ID(parentId));
                         if (parent != null)
                         {
-                            var items = parent.Axes.SelectItems(string.Format("*/mappingid='{0}' and gcpath='{1}'", mappingId, gcPath));
+                            var items = parent.Axes.SelectItems(string.Format("./*[@MappingId='{0}' and @GCPath='{1}' and @@name='{2}']", mappingId, gcPath, validName));
 
                             foreach (var item in items)
                             {
@@ -617,6 +686,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                                         newVersion.Fields[MAPPING_ID].Value = mappingId;
                                         newVersion.Fields[GC_PATH].Value = gcPath;
                                     }
+                                    return newVersion.ID.ToString();
                                 }
                                 catch (Exception)
                                 {
@@ -627,6 +697,48 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     }
                 }
             }
+            return null;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="host"></param>
+        /// <param name="itemId"></param>
+        /// <returns></returns>
+        public string GetCmsItemLink(string host, string itemId)
+        {
+            return string.Format("http://{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master&sc_bw=1", host, itemId);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <param name="cmsItem"></param>
+        /// <returns></returns>
+        public string GetItemId(string parentId, CmsItem cmsItem)
+        {
+            if (parentId != null)
+            {
+                using (new SecurityDisabler())
+                {
+                    using (new LanguageSwitcher(cmsItem.Language))
+                    {
+                        var validName = ItemUtil.ProposeValidItemName(cmsItem.Title);
+                        var parent = ContextDatabase.GetItem(new ID(parentId));
+                        if (parent != null)
+                        {
+                            var items = parent.Axes.SelectItems(string.Format("./*[@@name='{0}']", validName));
+                            if (items != null && items.Any())
+                            {
+                                return items.First().ID.ToString();
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
         }
     }
 }

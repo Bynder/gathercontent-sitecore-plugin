@@ -247,10 +247,10 @@
                 if (response.status == 'error') {
                     self.postErrorHandle(response.message);
                 }
-                var notImportedItemsCount = self.getNotImportedItemsCount(response.Items);
+                var notImportedItemsCount = self.getNotImportedItemsCount(response);
                 self.notImportedItemsCount(notImportedItemsCount);
-                self.successImportedItemsCount(response.Items.length - notImportedItemsCount);
-                self.items(response.Items);
+                self.successImportedItemsCount(response.length - notImportedItemsCount);
+                self.items(response);
                 self.buttonClick(MODE.ImportResult);
             },
             error: function (response) {

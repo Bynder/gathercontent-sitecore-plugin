@@ -117,18 +117,29 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Account.cs" />
     <Compile Include="Entities\AccountEntity.cs" />
     <Compile Include="Entities\Config.cs" />
+    <Compile Include="Entities\DueDates.cs" />
+    <Compile Include="Entities\Element.cs" />
     <Compile Include="Entities\FileEntity.cs" />
+    <Compile Include="Entities\GCItem.cs" />
+    <Compile Include="Entities\GCStatus.cs" />
+    <Compile Include="Entities\GCTemplate.cs" />
+    <Compile Include="Entities\ItemDate.cs" />
     <Compile Include="Entities\ItemEntity.cs" />
     <Compile Include="Entities\ItemFiles.cs" />
     <Compile Include="Entities\ItemsEntity.cs" />
+    <Compile Include="Entities\Meta.cs" />
+    <Compile Include="Entities\Option.cs" />
+    <Compile Include="Entities\Project.cs" />
     <Compile Include="Entities\ProjectEntity.cs" />
     <Compile Include="Entities\ProjectsEntity.cs" />
     <Compile Include="Entities\StatusEntity.cs" />
     <Compile Include="Entities\StatusesEntity.cs" />
     <Compile Include="Entities\TemplateEntity.cs" />
     <Compile Include="Entities\TemplatesEntity.cs" />
+    <Compile Include="Entities\Usage.cs" />
     <Compile Include="GCAccountSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

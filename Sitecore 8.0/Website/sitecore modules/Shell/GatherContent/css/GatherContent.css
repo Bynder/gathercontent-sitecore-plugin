@@ -55,10 +55,11 @@ body {
     bottom: 20px;
     padding: 10px 20px 0;
 }
-.footer_btn p{
-    margin-bottom: 0;
 
-}
+    .footer_btn p {
+        margin-bottom: 0;
+    }
+
 .help-link {
     position: absolute;
     right: 0;
@@ -123,9 +124,11 @@ table {
         white-space: nowrap;
         max-width: 120px;
     }
-        .gathercontent-dialog table tbody tr td:first-child{
+
+        .gathercontent-dialog table tbody tr td:first-child {
             border-left: none;
         }
+
         .gathercontent-dialog table tbody tr td:last-child {
             white-space: nowrap;
             text-decoration: underline;
@@ -200,11 +203,14 @@ table {
     cursor: pointer;
     background-color: #e4e3e3;
 }
-.text-center{
+
+.text-center {
     text-align: center;
 }
+
 .mappings-btn:hover {
-    background-color:#f0eeee;;
+    background-color: #f0eeee;
+    ;
 }
 
 .mappings-btn:focus {
@@ -213,6 +219,12 @@ table {
 /*mapping*/
 .mapping-empty {
     margin: 60px 25%;
+}
+
+.mapping-input {
+    width: 200px;
+    height: 30px;
+    padding-left: 5px;
 }
 
 .custom_selected {
@@ -352,10 +364,12 @@ table {
     overflow-y: hidden;
     margin-top: -20px;
 }
-.template_list>li:first-child{
-    margin-top: 20px;
-}
-.carousel{
+
+    .template_list > li:first-child {
+        margin-top: 20px;
+    }
+
+.carousel {
     padding-top: 20px;
     padding-bottom: 20px;
     position: relative;
@@ -363,35 +377,38 @@ table {
     height: 280px;
     overflow-y: hidden;
 }
-.carousel .btn_next,.carousel .btn_prev{
-    position: absolute;
-    left: 0;
-    height: 20px;
-    width: 50%;
-    background-color: #E4E4E4;
-    background-image: url('../img/slide_arrow.png');
-    background-repeat: no-repeat;
-    background-position: center center;
-    border: 1px solid #fff;
-    background-size: 17px;
-    box-sizing: border-box;
-    outline: none;
-}
-.carousel .btn_next:hover,.carousel .btn_prev:hover{
-    background-color: #EFEFEF;
-}
 
-.carousel .btn_prev{
-    top: 0;
-    transform: rotate(180deg);
-    border-right:none ;
-}
-.carousel .btn_next{
-    bottom: 0;
-    border-bottom: none;
-    border-left: none;
+    .carousel .btn_next, .carousel .btn_prev {
+        position: absolute;
+        left: 0;
+        height: 20px;
+        width: 50%;
+        background-color: #E4E4E4;
+        background-image: url('../img/slide_arrow.png');
+        background-repeat: no-repeat;
+        background-position: center center;
+        border: 1px solid #fff;
+        background-size: 17px;
+        box-sizing: border-box;
+        outline: none;
+    }
 
-}
+        .carousel .btn_next:hover, .carousel .btn_prev:hover {
+            background-color: #EFEFEF;
+        }
+
+    .carousel .btn_prev {
+        top: 0;
+        transform: rotate(180deg);
+        border-right: none;
+    }
+
+    .carousel .btn_next {
+        bottom: 0;
+        border-bottom: none;
+        border-left: none;
+    }
+
 .template_list_title:after {
     content: "";
     display: block;
@@ -417,10 +434,12 @@ table {
         .template_list_title h2:first-child {
             border-right: 1px solid #fff;
         }
-.add_template h2{
+
+.add_template h2 {
     margin-bottom: 0;
     padding-bottom: 0;
 }
+
 .template_list:after {
     content: "";
     display: block;
@@ -504,9 +523,13 @@ table {
 }
 
 .fields-mapping-padding {
-    padding: 0 ;
+    padding: 0;
 }
 
 .import-padding {
     padding: 15px 0;
+}
+
+.validation-message {
+    color: red;
 }

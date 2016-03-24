@@ -125,5 +125,17 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
             return model;
         }
+
+
+        public string GetHomeNodeId()
+        {
+            var dropTreeHomeNode = _accountSettings.DropTreeHomeNode;
+            if (string.IsNullOrEmpty(dropTreeHomeNode))
+            {
+                dropTreeHomeNode = Constants.DropTreeHomeNode;
+            }
+
+            return dropTreeHomeNode;
+        }
     }
 }

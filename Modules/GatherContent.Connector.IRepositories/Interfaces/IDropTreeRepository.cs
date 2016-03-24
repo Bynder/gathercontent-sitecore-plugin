@@ -7,5 +7,6 @@ namespace GatherContent.Connector.IRepositories.Interfaces
     {
         List<CmsItem> GetHomeNode(string id);
         List<CmsItem> GetChildren(string id);
+        string GetHomeNodeId();
     }
 }

@@ -137,21 +137,35 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
                 var model = new TemplateMapViewModel
                 {
-                    GcProjectName = mappingModel.GcProject.Name,
-                    GcTemplateName = mappingModel.GcTemplate.Name,
                     ScMappingId = mappingModel.MappingId,
-                    GcProjectId = mappingModel.GcProject.Id,
-                    AddMappingModel = new AddMappingViewModel
-                    {
-                        DefaultLocationTitle = mappingModel.DefaultLocationTitle,
-                        DefaultLocation = mappingModel.DefaultLocationId,
-                        GcMappingTitle = mappingModel.MappingTitle,
-                        OpenerId = "drop-tree" + Guid.NewGuid(),
-                        GcTemplateId = mappingModel.GcTemplate.Id,
-                        SelectedTemplateId = mappingModel.CmsTemplate.Id,
-                    },
                 };
 
+                if (mappingModel.GcProject != null)
+                {
+                    model.GcProjectId = mappingModel.GcProject.Id;
+                    model.GcProjectName = mappingModel.GcProject.Name;
+                }
+                var addMappingModel = new AddMappingViewModel
+                {
+                    DefaultLocationTitle = mappingModel.DefaultLocationTitle,
+                    DefaultLocation = mappingModel.DefaultLocationId,
+                    GcMappingTitle = mappingModel.MappingTitle,
+                    OpenerId = "drop-tree" + Guid.NewGuid(),
+                   
+                };
+
+                if (mappingModel.GcTemplate != null)
+                {
+                    model.GcTemplateName = mappingModel.GcTemplate.Name;
+                    addMappingModel.GcTemplateId = mappingModel.GcTemplate.Id;
+                }
+
+                if (mappingModel.CmsTemplate != null)
+                {
+                    addMappingModel.SelectedTemplateId = mappingModel.CmsTemplate.Id;
+                }
+
+                model.AddMappingModel = addMappingModel;
 
                 foreach (var fieldMapping in mappingModel.FieldMappings)
                 {

@@ -5,7 +5,6 @@ using GatherContent.Connector.Managers.Models.ImportItems;
 using System.Collections.Generic;
 using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.Managers.Interfaces;
-using GatherContent.Connector.SitecoreRepositories.Repositories;
 
 namespace GatherContent.Connector.Managers.Managers
 {
@@ -117,11 +116,9 @@ namespace GatherContent.Connector.Managers.Managers
             }
             else
             {
-                var dropTreeHomeNode = GcAccountSettings.DropTreeHomeNode;
-                if (string.IsNullOrEmpty(dropTreeHomeNode))
-                {
-                    dropTreeHomeNode = Constants.DropTreeHomeNode;
-                }
+             
+               var dropTreeHomeNode = DropTreeRepository.GetHomeNodeId();
+
                 foreach (var cmsItem in items)
                 {
                     model.Add(new DropTreeModel

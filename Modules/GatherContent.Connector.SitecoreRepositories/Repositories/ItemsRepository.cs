@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using GatherContent.Connector.Entities;
 using GatherContent.Connector.IRepositories.Models.Import;
 using Sitecore;
 using System.Linq;
@@ -26,22 +25,28 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         private const string GC_PATH = "GCPath";
         private const string MAPPING_ID = "MappingId";
 
-        private readonly GCAccountSettings _accountSettings;
+        protected IAccountsRepository AccountsRepository;
 
-        public ItemsRepository()
-            : base()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accountsRepository"></param>
+        public ItemsRepository(IAccountsRepository accountsRepository) : base()
         {
-            var accountsRepository = new AccountsRepository();
-            _accountSettings = accountsRepository.GetAccountSettings();
+            AccountsRepository = accountsRepository;
         }
 
-
-
-
+        
         #region Utilities
 
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="updatedItem"></param>
+        /// <param name="fieldId"></param>
+        /// <param name="label"></param>
+        /// <returns></returns>
         private Item GetDatasource(Item updatedItem, string fieldId, string label)
         {
             var dataSourcePath = GetDatasourcePath(updatedItem, fieldId);
@@ -51,6 +56,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return children;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="updatedItem"></param>
+        /// <param name="fieldId"></param>
+        /// <returns></returns>
         private string GetDatasourcePath(Item updatedItem, string fieldId)
         {
             var scField = updatedItem.Fields[new ID(fieldId)];
@@ -58,6 +69,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return dataSourcePath;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="updatedItem"></param>
+        /// <param name="fieldId"></param>
+        /// <param name="path"></param>
         private void SetDatasourcePath(Item updatedItem, string fieldId, string path)
         {
             var scField = updatedItem.Fields[new ID(fieldId)];
@@ -70,6 +87,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cmsItem"></param>
+        /// <param name="createdItem"></param>
         private void SetupFields(CmsItem cmsItem, Item createdItem)
         {
             foreach (var cmsField in cmsItem.Fields)
@@ -194,7 +216,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
         private Item UploadFile(string path, File file)
         {
             var uri = file.Url.StartsWith("http") ? file.Url : "https://gathercontent.s3.amazonaws.com/" + file.Url;
@@ -221,12 +248,18 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return null;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rootPath"></param>
+        /// <param name="mediaFile"></param>
+        /// <param name="extension"></param>
+        /// <param name="mediaStream"></param>
+        /// <returns></returns>
         private Item CreateMedia(string rootPath, File mediaFile, string extension, Stream mediaStream)
         {
             using (new SecurityDisabler())
             {
-
                 var validItemName = ItemUtil.ProposeValidItemName(mediaFile.FileName);
 
                 var filesFolder = GetItemByPath(rootPath);
@@ -257,6 +290,13 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemTitle"></param>
+        /// <param name="createdItem"></param>
+        /// <param name="cmsField"></param>
+        /// <returns></returns>
         private string GetMediaItemPath(string itemTitle, Item createdItem, CmsField cmsField)
         {
             var dataSourcePath = GetDatasourcePath(createdItem,
@@ -279,14 +319,22 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return path;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
         private bool IsItemHasTemplate(ID templateId, Item item)
         {
             return item.Template.BaseTemplates.Any(i => i.ID == templateId);
         }
 
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="templateItem"></param>
+        /// <returns></returns>
         private bool EnsureMetaTemplateInherited(TemplateItem templateItem)
         {
             if (templateItem != null)

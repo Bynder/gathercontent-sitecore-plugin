@@ -1,21 +1,33 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using GatherContent.Connector.Entities;
 using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.IRepositories.Models.Import;
 using Sitecore.Data.Items;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class DropTreeRepository : BaseSitecoreRepository, IDropTreeRepository
     {
-        private readonly GCAccountSettings _accountSettings;
+        protected IAccountsRepository AccountsRepository;
 
-        public DropTreeRepository()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accountsRepository"></param>
+        public DropTreeRepository(IAccountsRepository accountsRepository) : base()
         {
-            var accountsRepository = new AccountsRepository();
-            _accountSettings = accountsRepository.GetAccountSettings();
+            AccountsRepository = accountsRepository;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="items"></param>
+        /// <returns></returns>
         private List<CmsItem> CreateChildrenTree(string id, IEnumerable<Item> items)
         {
             var list = new List<CmsItem>();
@@ -67,10 +79,16 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return list;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public List<CmsItem> GetHomeNode(string id)
         {
             var model = new List<CmsItem>();
-            var dropTreeHomeNode = _accountSettings.DropTreeHomeNode;
+            var accountSettings = AccountsRepository.GetAccountSettings();
+            var dropTreeHomeNode = accountSettings.DropTreeHomeNode;
             if (string.IsNullOrEmpty(dropTreeHomeNode))
             {
                 dropTreeHomeNode = Constants.DropTreeHomeNode;
@@ -103,6 +121,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return model;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public List<CmsItem> GetChildren(string id)
         {
             var model = new List<CmsItem>();
@@ -126,10 +149,15 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return model;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public string GetHomeNodeId()
         {
-            var dropTreeHomeNode = _accountSettings.DropTreeHomeNode;
+            var accountSettings = AccountsRepository.GetAccountSettings();
+
+            var dropTreeHomeNode = accountSettings.DropTreeHomeNode;
             if (string.IsNullOrEmpty(dropTreeHomeNode))
             {
                 dropTreeHomeNode = Constants.DropTreeHomeNode;

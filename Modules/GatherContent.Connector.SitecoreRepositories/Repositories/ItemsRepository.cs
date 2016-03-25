@@ -547,15 +547,21 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         public void MapText(CmsItem item, CmsField cmsField)
         {
             Item createdItem = GetItem(item.Id);
-            if (createdItem == null) return;
+            if (createdItem == null)
+            {
+                return;
+            }
             using (new SecurityDisabler())
             {
-                createdItem.Editing.BeginEdit();
+                using (new LanguageSwitcher(item.Language))
+                {
+                    createdItem.Editing.BeginEdit();
 
-                var value = StringUtil.RemoveTags(cmsField.Value.ToString()).Trim();
-                createdItem[cmsField.TemplateField.FieldName] = value;
+                    var value = StringUtil.RemoveTags(cmsField.Value.ToString()).Trim();
+                    createdItem[cmsField.TemplateField.FieldName] = value;
 
-                createdItem.Editing.EndEdit();
+                    createdItem.Editing.EndEdit();
+                }
             }
         }
 
@@ -572,38 +578,41 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
             using (new SecurityDisabler())
             {
-                createdItem.Editing.BeginEdit();
-                if (cmsField.Files != null && cmsField.Files.Any())
+                using (new LanguageSwitcher(item.Language))
                 {
-                    var value = string.Empty;
-                    foreach (var file in cmsField.Files)
+                    createdItem.Editing.BeginEdit();
+                    if (cmsField.Files != null && cmsField.Files.Any())
                     {
-                        if (file != null)
+                        var value = string.Empty;
+                        foreach (var file in cmsField.Files)
                         {
-                            var media = UploadFile(path, file);
-                            if (media != null) value += media.ID + "|";
+                            if (file != null)
+                            {
+                                var media = UploadFile(path, file);
+                                if (media != null) value += media.ID + "|";
+                            }
+                        }
+                        value = value.TrimEnd('|');
+                        if (!string.IsNullOrEmpty(value))
+                        {
+                            createdItem[cmsField.TemplateField.FieldName] = value;
                         }
                     }
-                    value = value.TrimEnd('|');
-                    if (!string.IsNullOrEmpty(value))
+                    else if (cmsField.Options != null && cmsField.Options.Any())
                     {
-                        createdItem[cmsField.TemplateField.FieldName] = value;
+                        var value = string.Empty;
+                        foreach (var option in cmsField.Options)
+                        {
+                            var children = GetDatasource(createdItem, cmsField.TemplateField.FieldId, option);
+                            //option = GC option.Label
+                            if (children != null) value += children.ID + "|";
+                        }
+                        value = value.TrimEnd('|');
+                        if (!string.IsNullOrEmpty(value)) createdItem[cmsField.TemplateField.FieldName] = value;
                     }
-                }
-                else if (cmsField.Options != null && cmsField.Options.Any())
-                {
-                    var value = string.Empty;
-                    foreach (var option in cmsField.Options)
-                    {
-                        var children = GetDatasource(createdItem, cmsField.TemplateField.FieldId, option);
-                        //option = GC option.Label
-                        if (children != null) value += children.ID + "|";
-                    }
-                    value = value.TrimEnd('|');
-                    if (!string.IsNullOrEmpty(value)) createdItem[cmsField.TemplateField.FieldName] = value;
-                }
 
-                createdItem.Editing.EndEdit();
+                    createdItem.Editing.EndEdit();
+                }
             }
         }
 
@@ -617,19 +626,25 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             Item createdItem = GetItem(item.Id);
             var path = GetMediaItemPath(item.Title, createdItem, cmsField);
 
-            if (cmsField.TemplateField != null)
+            using (new SecurityDisabler())
             {
-                var file = cmsField.Files.FirstOrDefault();
-                if (file != null)
+                using (new LanguageSwitcher(item.Language))
                 {
-                    var media = UploadFile(path, file);
+                    if (cmsField.TemplateField != null)
+                    {
+                        var file = cmsField.Files.FirstOrDefault();
+                        if (file != null)
+                        {
+                            var media = UploadFile(path, file);
 
-                    var mediaUrl = MediaManager.GetMediaUrl(media, new MediaUrlOptions { UseItemPath = false, AbsolutePath = false });
-                    var value = string.Format("<file mediaid=\"{0}\" src=\"{1}\" />", media.ID, mediaUrl);
+                            var mediaUrl = MediaManager.GetMediaUrl(media, new MediaUrlOptions {UseItemPath = false, AbsolutePath = false});
+                            var value = string.Format("<file mediaid=\"{0}\" src=\"{1}\" />", media.ID, mediaUrl);
 
-                    createdItem.Editing.BeginEdit();
-                    createdItem[cmsField.TemplateField.FieldName] = value;
-                    createdItem.Editing.EndEdit();
+                            createdItem.Editing.BeginEdit();
+                            createdItem[cmsField.TemplateField.FieldName] = value;
+                            createdItem.Editing.EndEdit();
+                        }
+                    }
                 }
             }
         }

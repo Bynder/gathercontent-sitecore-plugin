@@ -221,9 +221,11 @@ table {
         height: 10px;
         margin-right: 4px;
     }
-    table tbody tr td input[type="checkbox"]{
+
+    table tbody tr td input[type="checkbox"] {
         margin-top: 0;
     }
+
     table tbody tr td a {
         text-decoration: none;
         cursor: pointer;
@@ -343,11 +345,37 @@ input[type="button"] {
 .warning-message {
     color: red;
     display: inline;
-    padding-left: 10px;
+    padding-left: 15px;
 }
-.dynatree-container ul{
-    padding-top: 5px!important;
+
+.dynatree-container ul {
+    padding-top: 5px !important;
 }
-.dynatree-container li{
-    padding-bottom: 5px!important;
+
+.dynatree-container li {
+    padding-bottom: 5px !important;
+}
+
+.import-grid {
+    border: 1px solid rgb(212,212,212);
+    width: 100%;
+    height: 75%;
+}
+
+.import-result-grid {
+    border: 1px solid rgb(212,212,212);
+    width: 100%;
+    height: 65%;
+}
+
+.import-confirm-grid {
+    border: 1px solid rgb(212,212,212);
+    width: 100%;
+    height: 75%;
+}
+
+.status {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
 }

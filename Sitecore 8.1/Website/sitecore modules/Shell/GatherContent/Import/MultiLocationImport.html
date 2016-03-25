@@ -2,9 +2,11 @@
 <link href="/sitecore modules/shell/GatherContent/css/dynatree/ui.dynatree.css" rel="stylesheet" />
 <link href="/sitecore modules/shell/GatherContent/Import/Import.css" rel="stylesheet" />
 <link href="/sitecore modules/shell/GatherContent/css/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+<link href="/sitecore modules/shell/GatherContent/css/KoGrid.css" rel="stylesheet" />
 
 <script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/jquery_2.1.1.min.js"></script>
 <script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/knockout-3.4.0.js"></script>
+<script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/koGrid-2.1.1.js"></script>
 <script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/GatherContent.js"></script>
 <script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/jquery-ui.custom.min.js"></script>
 <script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/jquery.cookie.js"></script>
@@ -20,11 +22,14 @@
 </script>
 
 
-<div data-bind="if: getMode(1)" class="gathercontent-import">
+<div data-bind="visible: getMode(1)" class="gathercontent-import">
+
     <div class="filter_wrapper_import">
         <div class="title_filter">GATHER CONTENT PROJECT</div>
         <select class="custom_select" style="width: 250px" data-bind="options: projects, optionsText: 'name', optionsValue: 'id', value: project, event:{ change: $root.projectChanged}"></select>
     </div>
+
+
     <div class="filter_wrapper">
         <div class="filter_wrapper_import">
             <div class="title_filter" style="padding-right: 135px;">FILTER</div>
@@ -35,54 +40,15 @@
             <input placeholder="FILTER BY ITEM NAME (SEARCH)" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
         </div>
     </div>
-    <div class="table_import_wrapper">
-        <div class="table_import_scroll">
-            <table class="table_point">
-                <thead>
-                    <tr>
-                        <th class="checkbox_table">
-                            <div><input type="checkbox" data-bind="checked: AllChecked" /></div>
-                        </th>
-                        <th class="status cell_resize">
-                            <div>Status</div>
-                        </th>
-                        <th class="cell_resize">
-                            <div>Item name</div>
-                        </th>
-                        <th style="width: 150px">
-                            <div>Last updated in GatherContent</div>
-                        </th>
-                        <th class="cell_resize">
-                            <div>Path</div>
-                        </th>
-                        <th class="cell_resize">
-                            <div>Template name</div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody data-bind="foreach: items">
-                    <tr data-bind="click: $root.checkRow">
-                        <td><input type="checkbox" data-bind="checked: Checked, click: function(){return true}, clickBubble: false" /></td>
-                        <td><span data-bind="style: { backgroundColor : Status.color }"></span><span data-bind="text: Status.name"></span></td>
-                        <td data-bind="text: Title"></td>
-                        <td data-bind="text: LastUpdatedInGC"></td>
-                        <td data-bind="text: Breadcrumb"></td>
-                        <td data-bind="text: Template.name"></td>
-                    </tr>
-                </tbody>
-            </table>
 
+    <div class="import-grid" data-bind="koGrid: gridOptions"></div>
 
-        </div>
-    </div>
     <div class="footer_btn">
-        <div>
-            <span data-bind="text: getCheckedCount"></span> Items selected
-        </div>
-        <div>
-            <input type="button" class="mappings-btn" value="Next>" data-bind="click: buttonClick.bind($data, 2)" />
-            <div data-bind="text: errorText" class="warning-message"></div>
-        </div>
+
+        <input type="button" class="mappings-btn" style="margin-top: 0" value="Next>" data-bind="click: buttonClick.bind($data, 2)" />
+        <div data-bind="text: errorText" class="warning-message"></div>
+
+        <!--<input type="button" value="Close" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" />-->
     </div>
     <div class="help-link">
         <a href="mailto:support@gathercontent.com">Need help?</a>
@@ -93,43 +59,7 @@
     <div>
         <p>Please review your import selection before importing.</p>
     </div>
-    <div data-bind="foreach: groupedTemplates">
-        <div data-bind="text: Template.name"></div>
-        <table>
-            <tr>
-                <th>
-                    <div>Mapping Name</div>
-                </th>
-                <th>
-                    <div>SC Template</div>
-                </th>
-                <th>
-                    <div>Default location</div>
-                </th>
-                <th>
-                    <div>Import</div>
-                </th>
-            </tr>
-            <tbody data-bind="foreach: Mappings">
-                <tr>
-                    <td data-bind="text: Title"></td>
-                    <td data-bind="text: ScTemplate"></td>
-                    <td>
-                        <input data-bind="value: DefaultLocationTitle, attr: { 'data-openerid': OpenerId }, click: $root.openDropTree" type="text" />
-                        <input data-bind="value: DefaultLocation, visible: false" type="text" />
-                        <div data-bind="attr: { id: OpenerId }" style="position: absolute; left: 750px; top: 130px; width: 300px; height: 400px; z-index: 1000;">
-                            <div style="width:300px;height:400px;">
-                                <div ata-bind="css: { class: OpenerId }"> </div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <input type="checkbox" data-bind="checked: IsImport" />
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <div class="import-grid" data-bind="koGrid: groupedGridOptions"></div>
     <div class="footer_btn">
         <div>
             <input type="checkbox" data-bind="checked: statusPostState" />
@@ -150,30 +80,8 @@
         <h2 class="title">Confirm import selection</h2>
         <p>Please review your import selection before importing.</p>
     </div>
-
-    <div data-bind="foreach: confirmItems">
-        <div data-bind="text: Title"></div>
-        <table>
-            <tr>
-                <th>
-                    <div>Mapping Name</div>
-                </th>
-                <th>
-                    <div>SC Template</div>
-                </th>
-                <th>
-                    <div>Default location</div>
-                </th>
-            </tr>
-            <tbody data-bind="foreach: Mappings">
-                <tr data-bind="if: IsImport">
-                    <td data-bind="text: Title"></td>
-                    <td data-bind="text: ScTemplate"></td>
-                    <td data-bind="text: DefaultLocationTitle"></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    
+    <div class="import-grid" data-bind="koGrid: confirmGridOptions"></div>
     <div class="footer_btn">
         <div>
             <input type="checkbox" data-bind="checked: statusPostState" />
@@ -206,7 +114,10 @@
         <div data-bind="if: notImportedItemsCount() > 0" class="import-padding">
             <img src="~/icon/Apps/32x32/Warning (1).png" width="20" height="20"> <span data-bind=" text: notImportedItemsCount()"></span> items were not imported. Check errors below.
         </div>
-        <div class="table_import_wrapper">
+        
+        <div class="import-result-grid" data-bind="koGrid: gridResultOptions"></div>  
+
+        <!--<div class="table_import_wrapper">
             <div class="table_import_scroll">
                 <table>
                     <thead>
@@ -243,7 +154,10 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div>-->
+        
+        
+
         <div data-bind="if: notImportedItemsCount() > 0" class="import-padding">
             <span>Template not mapped:</span> Please check template mapping.<br />
             <span>Template fields mismatch:</span> This could be because the template in GatherContent has changed and the changed template has not been updated on Sitecore.

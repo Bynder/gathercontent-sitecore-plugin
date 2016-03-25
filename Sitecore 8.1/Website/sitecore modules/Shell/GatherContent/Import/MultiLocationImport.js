@@ -1,7 +1,4 @@
-﻿
-
-
-var ImportManager = function () {
+﻿var ImportManager = function () {
     var MODE = {
         ChooseItmesForImort: 1,
         CheckItemsBeforeImport: 2,
@@ -23,7 +20,7 @@ var ImportManager = function () {
     self.projects = ko.observableArray([]),
         self.items = ko.observableArray([]),
         self.confirmItems = ko.observableArray([]),
-        self.groupedTemplates = ko.observableArray([]),
+        self.groupedItems = ko.observableArray([]),
         self.statuses = ko.observableArray([]),
         self.templates = ko.observableArray([]),
         self.statusPostState = ko.observable(false),
@@ -34,30 +31,84 @@ var ImportManager = function () {
 
     self.query = ko.observable(''),
 
-    self.init = function () {
-        var callbackFunction = function (response) {
-            self.initVariables(response);
-        }
-        self.initRequestHandler(callbackFunction);
-    },
+    self.selectedGroupItems = ko.observableArray([]),
+    self.selectedItems = ko.observableArray([]);
+    self.resultItems = ko.observableArray([]);
 
-    self.initRequestHandler = function (callbackFunction) {
+    self.filterOptions = {
+        filterText: ko.observable(""),
+        useExternalFilter: false
+    };
+
+    self.pagingOptions = {
+        pageSizes: ko.observableArray([15, 20, 30]),
+        pageSize: ko.observable(10),
+        totalServerItems: ko.observable(0),
+        currentPage: ko.observable(1)
+    };
+
+    self.groupedGridPagingOptions = {
+        pageSizes: ko.observableArray([15, 20, 30]),
+        pageSize: ko.observable(10),
+        totalServerItems: ko.observable(0),
+        currentPage: ko.observable(1)
+    };
+
+    self.groupedGridFilterOptions = {
+        filterText: ko.observable(""),
+        useExternalFilter: true
+    };
+
+    self.confirmedFilterOptions = {
+        filterText: ko.observable(""),
+        useExternalFilter: false
+    };
+
+    self.confirmedPagingOptions = {
+        pageSizes: ko.observableArray([15, 20, 30]),
+        pageSize: ko.observable(10),
+        totalServerItems: ko.observable(0),
+        currentPage: ko.observable(1)
+    };
+
+    self.filterResultOptions = {
+        filterText: ko.observable(""),
+        useExternalFilter: true
+    };
+
+    self.pagingResultOptions = {
+        pageSizes: ko.observableArray([15, 20, 30]),
+        pageSize: ko.observable(10),
+        totalServerItems: ko.observable(0),
+        currentPage: ko.observable(1)
+    };
+
+    self.setPagingData = function (data, page, pageSize) {
+        var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
+        self.items(pagedData);
+        self.pagingOptions.totalServerItems(data.length);
+    };
+
+    this.getPagedData = function (pageSize, page) {
         var id = getUrlVars()["id"];
         var project = self.project();
         project = project ? project : 0;
-
-        jQuery.getJSON('/api/sitecore/Import/GetMultiLocation?id={' + id + '}&projectId=' + project).success(function (response) {
-            callbackFunction(response);
-            jQuery(".preloader").hide();
-            jQuery(".tooltip").remove();
-            initTooltip();
-            resizeTableHead();
-        }).error(function (response) {
-            self.errorCallbackHandle(response);
+        jQuery.ajax({
+            url: '/api/sitecore/Import/GetMultiLocation?id={' + id + '}&projectId=' + project,
+            dataType: 'json',
+            async: false,
+            success: function (response) {
+                self.setPagingData(response.Data.Items, page, pageSize);
+                self.initVariables(response);
+                jQuery(".preloader").hide();
+            },
+            error: function (response) {
+                self.errorCallbackHandle(response);
+            }
         });
-        document_resize();
-        resizeTableHead();
-    }
+    };
+
+
 
     self.errorCallbackHandle = function (response) {
         jQuery(".preloader").hide();
@@ -72,11 +123,9 @@ var ImportManager = function () {
     }
 
     self.initVariables = function (response) {
-
-        var items = self.setupWatcher(response.Data.Items);
-        self.items(items);
+        //self.allItems(response.Data.Items);
+        var items = response.Data.Items;
         allItems = items.slice(0);
-
         self.projects(response.Filters.Projects);
         self.project(response.Filters.Project);
 
@@ -88,11 +137,7 @@ var ImportManager = function () {
     self.projectChanged = function (obj, event) {
         if (event.originalEvent) {
             jQuery(".preloader").show();
-            var callbackFunction = function (response) {
-                self.initVariables(response);
-                self.setupDefaultValuesToFilters();
-            }
-            self.initRequestHandler(callbackFunction);
+            self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());
         }
     },
 
@@ -164,121 +209,91 @@ var ImportManager = function () {
         return resultCollection;
     }
 
-    //table rendering
-    self.AllChecked = ko.computed({
-        read: function () {
-            var items = self.items();
-            if (items.length === 0)
-                return false;
-
-            var firstUnchecked = ko.utils.arrayFirst(items, function (item) {
-                if (item.Checked)
-                    return item.Checked() === false;
-            });
-
-            return firstUnchecked == null;
-        },
-        write: function (value) {
-            ko.utils.arrayForEach(self.items(), function (item) {
-                item.Checked(value);
-            });
-        }
-    });
-
-    self.getCheckedCount = ko.computed(function () {
-        var counter = 0;
-        ko.utils.arrayForEach(self.items(), function (item) {
-            if (item.Checked && item.Checked() === true)
-                counter++;
-        });
-
-        return counter;
-    });
-
-
-    self.checkRow = function () {
-        this.Checked(!this.Checked());
-    }
 
     self.query.subscribe(self.filter);
 
     //button click events
     self.ChooseDefaultLocation = function () {
+        var selectedItems = self.selectedItems();
+
         var result = [];
-        var templateResult = [];
-        ko.utils.arrayForEach(self.items(), function (item) {
-            if (item.Checked && item.Checked() === true) {
-                result.push(item);
+        ko.utils.arrayForEach(selectedItems, function (item) {
+            ko.utils.arrayForEach(item.Mappings, function (mapping) {
 
                 var found = false;
-                for (var i = 0; i < templateResult.length; i++) {
-                    if (templateResult[i].Template.name == item.Template.name) {
+                for (var i = 0; i < result.length; i++) {
+                    if (result[i].MappingName == mapping.Title) {
                         found = true;
                         break;
                     }
                 }
                 if (!found) {
-                    templateResult.push(item);
+                    result.push({
+                        Id: mapping.Id,
+                        TemplateName: item.Template.name,
+                        MappingName: mapping.Title,
+                        ScTemplate: mapping.ScTemplate,
+                        DefaultLocation: mapping.DefaultLocation,
+                        DefaultLocationTitle: mapping.DefaultLocationTitle,
+                        OpenerId: mapping.OpenerId
+                    });
                 }
-            }
+
+            });
         });
-        self.groupedTemplates(templateResult);
-        self.items(result);
+        self.groupedItems(result);
+
     }
 
     self.switchToCheckItemsBeforeImport = function () {
         var result = [];
-        var items = self.items();
+        var items = self.selectedItems();
         self.confirmItems.removeAll();
         ko.utils.arrayForEach(items, function (item) {
-            if (item.Checked && item.Checked() === true) {
-                var locationItem = self.findByTemplateName(item.Template.name);
-                ko.utils.arrayForEach(locationItem.Mappings, function (mapping) {
-                    var itemMapping = self.findItemMapping(item.Mappings, mapping.Id);
-                    itemMapping.DefaultLocation = mapping.DefaultLocation;
-                    itemMapping.DefaultLocationTitle = mapping.DefaultLocationTitle;
-                    itemMapping.IsImport = mapping.IsImport;
+            var templateItems = self.findByTemplateName(item.Template.name);
+            ko.utils.arrayForEach(templateItems, function (templateItem) {
+                ko.utils.arrayForEach(item.Mappings, function (mapping) {
+                    if (mapping.Id == templateItem.Id) {
+                        result.push({
+                            ItemId: item.Id,
+                            ItemTitle: item.Title,
+                            TemplateName: item.Template.name,
+                            MappingId: mapping.Id,
+                            MappingName: mapping.Title,
+                            ScTemplate: mapping.ScTemplate,
+                            DefaultLocation: templateItem.DefaultLocation,
+                            DefaultLocationTitle: templateItem.DefaultLocationTitle,
+                        });
+                    }
                 });
-                result.push(item);
-            }
+            });
         });
 
         self.confirmItems(result);
     }
 
     self.findByTemplateName = function (data) {
-        return ko.utils.arrayFirst(self.groupedTemplates(), function (item) {
-            var template = item["Template"];
-            return template["name"] === data;
+        var result = [];
+        ko.utils.arrayForEach(self.selectedGroupItems(), function (item) {
+            if (item.TemplateName === data) {
+                result.push(item);
+            }
         });
+        return result;
     };
 
-    self.findItemMapping = function (array, data) {
-        return ko.utils.arrayFirst(array, function (item) {
-            return item["Id"] === data;
-        });
-    };
 
     self.import = function () {
-        var id = getUrlVars()["id"];
-        var items = self.confirmItems();
         var importItems = [];
-        items.forEach(function (item, i) {
-            if (item.Mappings.length == 0) {
-                importItems.push({
-                    Id: item.Id,
-                    IsImport: true,
-                });
-            }
-            item.Mappings.forEach(function (mapping, m) {
-                importItems.push({
-                    Id: item.Id,
-                    SelectedLocation: mapping.DefaultLocation,
-                    IsImport: mapping.IsImport,
-                    SelectedMappingId: mapping.Id
-                });
+        ko.utils.arrayForEach(self.confirmItems(), function (item) {
+            importItems.push({
+                Id: item.ItemId,
+                SelectedLocation: item.DefaultLocation,
+                IsImport: true, // TODO redundant?
+                SelectedMappingId: item.MappingId
             });
         });
+
         var lang = getUrlVars()["l"];
         var status = self.statusFilter();
         var project = self.project();
@@ -298,7 +313,7 @@ var ImportManager = function () {
                 var notImportedItemsCount = self.getNotImportedItemsCount(response.Items);
                 self.notImportedItemsCount(notImportedItemsCount);
                 self.successImportedItemsCount(response.Items.length - notImportedItemsCount);
-                self.items(response.Items);
+                self.resultItems(response.Items);
                 self.buttonClick(MODE.ImportResult);
             },
             error: function (response) {
@@ -321,29 +336,25 @@ var ImportManager = function () {
         window.top.dialogClose();
     }
 
-    self.backButtonClick = function () {
-        self.items(allItems.slice(0));
-    }
 
-    self.openDropTree = function () {
-        var id = this.OpenerId;
-        var locationId = this.DefaultLocation;
-        var items = self.items();
-        var t = this;
+    self.openDropTree = function (item) {
+        var id = item.OpenerId;
+        var locationId = item.DefaultLocation;
+        var items = self.groupedItems();
+
         for (var i = 0; i < items.length; i++) {
-            var mappings = items[i].Mappings;
-            for (var j = 0; j < mappings.length; j++) {
-                if (mappings[j].OpenerId != id) {
-                    mappings[j].IsShowing = false;
-                    //TODO use Knockout
-                    jQuery("#" + mappings[j].OpenerId).hide();
-                }
+            if (items[i].OpenerId != id) {
+                items[i].IsShowing = false;
+                //TODO use Knockout
+                jQuery("#" + items[i].OpenerId).hide();
             }
         }
-        if (!this.IsShowing) {
+
+
+        if (!item.IsShowing) {
             //TODO use Knockout
             jQuery("#" + id).show();
-            this.IsShowing = true;
+            item.IsShowing = true;
             var mapping = this;
             jQuery("#" + id).dynatree({
                 autoFocus: false,
@@ -355,7 +366,7 @@ var ImportManager = function () {
                 onActivate: function (node) {
                     jQuery('[data-openerid="' + id + '"]').val(node.data.title);
                     jQuery("#" + id).hide();
-                    t.IsShowing = false;
+                    item.IsShowing = false;
                     mapping.DefaultLocation = node.data.key;
                     mapping.DefaultLocationTitle = node.data.title;
                 },
@@ -373,14 +384,14 @@ var ImportManager = function () {
         else {
             //TODO use Knockout
             jQuery("#" + id).hide();
-            this.IsShowing = false;
+            item.IsShowing = false;
         }
     }
 
 
     self.buttonClick = function (newMode) {
         if (newMode === MODE.CheckItemsBeforeImport) {
-            if (self.getCheckedCount() == 0) {
+            if (self.selectedItems().length == 0) {
                 self.errorText('Please select at least one item');
             } else {
                 self.currentMode(newMode);
@@ -389,12 +400,10 @@ var ImportManager = function () {
         }
         else if (newMode === MODE.Confirm) {
             var isError = false;
-            ko.utils.arrayForEach(self.groupedTemplates(), function (item) {
-                ko.utils.arrayForEach(item.Mappings, function (mapping) {
-                    if (mapping.IsImport && mapping.DefaultLocation == "") {
-                        isError = true;
-                    }
-                });
+            ko.utils.arrayForEach(self.selectedGroupItems(), function (item) {
+                if (item.DefaultLocation == "") {
+                    isError = true;
+                }
             });
 
             if (!isError) {
@@ -413,11 +422,10 @@ var ImportManager = function () {
         } else if (newMode === MODE.ChooseItmesForImort) {
             self.statusFilter = ko.observable();
             self.currentMode(newMode);
-            self.backButtonClick();
         } else {
             self.currentMode(newMode);
         }
-        resizeTableHead();
+
     }
 
     self.getMode = function (section) {
@@ -427,13 +435,6 @@ var ImportManager = function () {
         return false;
     }
 
-    self.setupWatcher = function (items) {
-        for (var i = 0; i < items.length; i++) {
-            items[i].Checked = ko.observable(false);
-        }
-
-        return items;
-    }
 
     self.getImportResultTemplateColor = function (item) {
         if (!item.IsImportSuccessful)
@@ -446,33 +447,141 @@ var ImportManager = function () {
         return 'green';
     }
 
-    self.openCmsLink = function (data, e) {
-        var link = data.CmsLink;
+    self.openCmsLink = function (item) {
+        var link = item.CmsLink;
         window.open(link);
-        e.stopImmediatePropagation();
     }
 
-    self.openGcLink = function (data, e) {
-        var link = data.GcLink;
+    self.openGcLink = function (item) {
+        var link = item.GcLink;
         window.open(link);
-        e.stopImmediatePropagation();
     }
 
-    self.init();
+    self.filterOptions.filterText.subscribe(function (data) {
+        self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage(), self.filterOptions.filterText());
+    });
+
+    self.pagingOptions.pageSizes.subscribe(function (data) {
+        self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage(), self.filterOptions.filterText());
+    });
+    self.pagingOptions.pageSize.subscribe(function (data) {
+        self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage(), self.filterOptions.filterText());
+    });
+    self.pagingOptions.totalServerItems.subscribe(function (data) {
+        self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage(), self.filterOptions.filterText());
+    });
+    self.pagingOptions.currentPage.subscribe(function (data) {
+        self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage(), self.filterOptions.filterText());
+    });
+
+    self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());
+
+    var options =
+            {
+                showColumnMenu: false,
+                showFilter: false,
+                data: self.items,
+                selectedItems: self.selectedItems,
+                enablePaging: true,
+                pagingOptions: self.pagingOptions,
+                filterOptions: self.filterOptions,
+                columnDefs: [
+                    {
+                        field: 'Status.name',
+                        displayName: 'Status', cellTemplate: '<div><div class="status" data-bind="style: { backgroundColor : $parent.entity.Status.color }"></div><span data-bind="text: $parent.entity.Status.name"></span></div>'
+                    },
+                    { field: 'Title', displayName: 'Item name' },
+                    { field: 'LastUpdatedInGC', displayName: 'Last updated in GatherContent' },
+                    { field: 'Breadcrumb', displayName: 'Path' },
+                    { field: 'Template.name', displayName: 'Template name' }
+                ]
+            };
+
+
+    this.gridOptions = options;
+
+    var groupedOptions =
+        {
+            showColumnMenu: false,
+            showFilter: false,
+            canSelectRows: true,
+            data: self.groupedItems,
+            selectedItems: self.selectedGroupItems,
+            enablePaging: true,
+            pagingOptions: self.groupedGridPagingOptions,
+            filterOptions: self.groupedGridFilterOptions,
+            groups: ["TemplateName"],
+            columnDefs: [
+                { field: 'TemplateName', displayName: 'Template Name' },
+                { field: 'MappingName', displayName: 'Mapping Name' },
+                { field: 'ScTemplate', displayName: 'Sitecore Template' },
+                {
+                    field: 'DefaultLocationTitle', displayName: 'Default Location',
+                    cellTemplate: '<div><input data-bind="value: $parent.entity.DefaultLocationTitle, attr: {\'data-openerid\': $parent.entity.OpenerId }, click: function(){$parent.$userViewModel.openDropTree($parent.entity)}" type="text" />' +
+                           //'<input data-bind="value: $parent.entity.DefaultLocation, visible: false" type="text" />' +
+                           '<div data-bind="attr: { id: $parent.entity.OpenerId }" style="position: absolute; left: 750px; top: 130px; width: 300px; height: 400px; z-index: 1000;">' +
+                              '<div style="width:300px;height:400px;">' +
+                                  '<div data-bind="css: { \'class\': $parent.entity.OpenerId }"> </div>' +
+                              '</div>' +
+                           '</div></div>'
+                }
+            ]
+        };
+
+    this.groupedGridOptions = groupedOptions;
+
+
+    var confirmOptions =
+    {
+        displaySelectionCheckbox: false,
+        canSelectRows: false,
+        showColumnMenu: false,
+        showFilter: false,
+        data: self.confirmItems,
+        enablePaging: true,
+        pagingOptions: self.confirmedPagingOptions,
+        filterOptions: self.confirmedFilterOptions,
+        groups: ["ItemTitle"],
+        columnDefs: [
+            { field: 'ItemTitle', displayName: 'Title' },
+            { field: 'MappingName', displayName: 'Mapping Name' },
+            { field: 'ScTemplate', displayName: 'Sitecore Template' },
+            { field: 'DefaultLocationTitle', displayName: 'Default Location' }
+        ]
+    };
+
+    this.confirmGridOptions = confirmOptions;
+
+
+    var resultOptions =
+   {
+       displaySelectionCheckbox: false,
+       canSelectRows: false,
+       showColumnMenu: false,
+       showFilter: false,
+       data: self.resultItems,
+       enablePaging: true,
+       pagingOptions: self.pagingResultOptions,
+       filterOptions: self.filterResultOptions,
+       columnDefs: [
+           {
+               field: 'Status.Name',
+               displayName: 'Status', cellTemplate: '<div>' +
+                   '<div class="status" data-bind="style: { backgroundColor : $parent.entity.Status.Color }">' +
+                   '</div>' +
+                   '<span data-bind="text: $parent.entity.Status.Name">' +
+                   '</span>' +
+                   '</div>'
+           },
+           { field: 'Title', displayName: 'Item name' },
+           { field: 'Message', displayName: 'Import status' },
+           { field: 'GCTemplate', displayName: 'Template name' },
+           { displayName: 'Open in Sitecore', cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null", click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
+           { displayName: 'Open in GatherContent', cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>' }
+       ]
+   };
+
+    this.gridResultOptions = resultOptions;
+
 }
-jQuery(window).resize(function () {
-    resizeTableHead();
-});
 
-jQuery(function () {
-    jQuery("thead th.cell_resize").each(function () {
-        jQuery(this).find("div").css("width", jQuery(this).width());
-    });
-    jQuery("thead th div").each(function () {
-        if (jQuery(this).height() > 18) {
-            jQuery(this).css("padding-top", 0);
-            jQuery(this).css("margin-top", 7);
-        }
-    });
-
-});

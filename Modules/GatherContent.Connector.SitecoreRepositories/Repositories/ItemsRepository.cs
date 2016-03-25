@@ -669,7 +669,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                         var parent = ContextDatabase.GetItem(new ID(parentId));
                         if (parent != null)
                         {
-                            var items = parent.Axes.SelectItems(string.Format("./*[@MappingId='{0}' and @GCPath='{1}' and @@name='{2}']", mappingId, gcPath, validName));
+                            var items = parent.Axes.SelectItems(string.Format("./*[@GCPath='{0}' and @@name='{1}']", gcPath, validName));
                             if (items != null && items.Any())
                             {
                                 return true;
@@ -730,7 +730,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                         var parent = ContextDatabase.GetItem(new ID(parentId));
                         if (parent != null)
                         {
-                            var items = parent.Axes.SelectItems(string.Format("./*[@MappingId='{0}' and @GCPath='{1}' and @@name='{2}']", mappingId, gcPath, validName));
+                            var items = parent.Axes.SelectItems(string.Format("./*[@GCPath='{0}' and @@name='{1}']", gcPath, validName));
 
                             foreach (var item in items)
                             {

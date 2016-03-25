@@ -18,7 +18,6 @@
     self.currentMode = ko.observable(MODE.ChooseItmesForImort);
 
     self.projects = ko.observableArray([]),
-        self.allItems = ko.observableArray([]),
         self.items = ko.observableArray([]),
         self.confirmItems = ko.observableArray([]),
         self.groupedItems = ko.observableArray([]),
@@ -124,8 +123,9 @@
     }
 
     self.initVariables = function (response) {
-        self.allItems(response.Data.Items);
-
+        //self.allItems(response.Data.Items);
+        var items = response.Data.Items;
+        allItems = items.slice(0);
         self.projects(response.Filters.Projects);
         self.project(response.Filters.Project);
 
@@ -137,11 +137,7 @@
     self.projectChanged = function (obj, event) {
         if (event.originalEvent) {
             jQuery(".preloader").show();
-            var callbackFunction = function (response) {
-                self.initVariables(response);
-                self.setupDefaultValuesToFilters();
-            }
-            self.initRequestHandler(callbackFunction);
+            self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());
         }
     },
 

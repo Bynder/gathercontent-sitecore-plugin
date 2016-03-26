@@ -32,8 +32,9 @@ function Init() {
 
 
 function ViewModel(data) {
-    var self = this; 
+    var self = this;
 
+    this.NotValid = ko.observable(false);
 
     //Methods
     this.saveMapping = function () {
@@ -68,7 +69,8 @@ function ViewModel(data) {
             });
 
         } else {
-            self.ValidationMessage("Mapping Title is mandatory  field");
+            //self.ValidationMessage("Mapping Title is mandatory  field");
+            self.NotValid(true);
         }
     };
 

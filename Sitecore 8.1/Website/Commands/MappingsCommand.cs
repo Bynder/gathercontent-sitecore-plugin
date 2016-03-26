@@ -59,10 +59,11 @@ namespace GatherContent.Connector.Website.Commands
             var options = new ModalDialogOptions(path)
             {
                 Width = "1280",
-                Height = "500",
-                MinWidth = "900",
-                MinHeight = "400",
+                Height = "530",
+                MinWidth = "1280",
+                MinHeight = "530",
                 Maximizable = false,
+                Resizable = false,
                 Header = "Manage template mappings"
             };
 

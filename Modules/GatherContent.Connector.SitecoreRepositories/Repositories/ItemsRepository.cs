@@ -546,16 +546,16 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         /// <param name="cmsField"></param>
         public void MapText(CmsItem item, CmsField cmsField)
         {
+            Item createdItem = GetItem(item.Id, Sitecore.Data.Managers.LanguageManager.GetLanguage(item.Language));
+            if (createdItem == null)
+            {
+                return;
+            }
+
             using (new SecurityDisabler())
             {
                 using (new LanguageSwitcher(item.Language))
                 {
-                    Item createdItem = GetItem(item.Id, Sitecore.Data.Managers.LanguageManager.GetLanguage(item.Language));
-                    if (createdItem == null)
-                    {
-                        return;
-                    }
-
                     createdItem.Editing.BeginEdit();
 
                     var value = StringUtil.RemoveTags(cmsField.Value.ToString()).Trim();
@@ -573,14 +573,13 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         /// <param name="cmsField"></param>
         public void MapChoice(CmsItem item, CmsField cmsField)
         {
+            Item createdItem = GetItem(item.Id, Sitecore.Data.Managers.LanguageManager.GetLanguage(item.Language));
+            var path = GetMediaItemPath(item.Title, createdItem, cmsField);
+
             using (new SecurityDisabler())
             {
                 using (new LanguageSwitcher(item.Language))
                 {
-                    Item createdItem = GetItem(item.Id, Sitecore.Data.Managers.LanguageManager.GetLanguage(item.Language));
-
-                    var path = GetMediaItemPath(item.Title, createdItem, cmsField);
-
                     createdItem.Editing.BeginEdit();
                     if (cmsField.Files != null && cmsField.Files.Any())
                     {
@@ -624,13 +623,13 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         /// <param name="cmsField"></param>
         public void MapFile(CmsItem item, CmsField cmsField)
         {
+            Item createdItem = GetItem(item.Id, Sitecore.Data.Managers.LanguageManager.GetLanguage(item.Language));
+            var path = GetMediaItemPath(item.Title, createdItem, cmsField);
+
             using (new SecurityDisabler())
             {
                 using (new LanguageSwitcher(item.Language))
                 {
-                    Item createdItem = GetItem(item.Id, Sitecore.Data.Managers.LanguageManager.GetLanguage(item.Language));
-                    var path = GetMediaItemPath(item.Title, createdItem, cmsField);
-
                     if (cmsField.TemplateField != null)
                     {
                         var file = cmsField.Files.FirstOrDefault();

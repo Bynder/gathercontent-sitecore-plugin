@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Castle.MicroKernel.Registration;
+﻿using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using GatherContent.Connector.WebControllers.Controllers;

@@ -896,49 +896,6 @@ namespace GatherContent.Connector.Managers.Managers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="itemId"></param>
-        /// <param name="projectId"></param>
-        /// <returns></returns>
-        //public string GetGcItemPath(string itemId, string projectId)
-        //{
-        //    var accounts = AccountsService.GetAccounts();
-        //    var account = accounts.Data.FirstOrDefault();
-
-        //    if (account != null)
-        //    {
-        //        var project = ProjectsService.GetProjects(account.Id).Data.FirstOrDefault(p => p.Active && p.Id.ToString() == projectId);
-
-        //        if (project != null)
-        //        {
-        //            List<GCItem> items = GetItems(project.Id);
-        //            var gcItem = items.FirstOrDefault(x => x.Id.ToString() == itemId);
-        //            var path = new List<string>();
-
-        //            while (true)
-        //            {
-        //                if (gcItem != null)
-        //                {
-        //                    path.Add(gcItem.Name);
-        //                    if (gcItem.ParentId != 0)
-        //                    {
-        //                        gcItem = items.FirstOrDefault(x => x.Id == gcItem.ParentId);
-        //                        continue;
-        //                    }
-        //                }
-        //                break;
-        //            }
-        //            path.Reverse();
-
-        //            return string.Join("/", path);
-        //        }
-        //    }
-
-        //    return string.Empty;
-        //}
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="projectId"></param>
         /// <param name="gcItemIds"></param>
         /// <returns></returns>

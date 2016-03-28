@@ -3,6 +3,8 @@
 function ViewModel() {
     var self = this;
 
+    var allItems = [];
+
     this.mappings = ko.observableArray();
     this.errorText = ko.observable();
     this.isError = ko.observable();
@@ -32,6 +34,7 @@ function ViewModel() {
             async: false,
             success: function (loadData) {
                 if (loadData.status != "error") {
+                    allItems = loadData.slice(0);
                     self.setPagingData(loadData, page, pageSize);
                     jQuery(".preloader").hide();
                 } else {
@@ -82,20 +85,19 @@ function ViewModel() {
     }
 
     self.filterOptions.filterText.subscribe(function (data) {
-        self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage(), self.filterOptions.filterText());
+        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
-
     self.pagingOptions.pageSizes.subscribe(function (data) {
-        self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage(), self.filterOptions.filterText());
+        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.pagingOptions.pageSize.subscribe(function (data) {
-        self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage(), self.filterOptions.filterText());
+        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.pagingOptions.totalServerItems.subscribe(function (data) {
-        self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage(), self.filterOptions.filterText());
+        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.pagingOptions.currentPage.subscribe(function (data) {
-        self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage(), self.filterOptions.filterText());
+        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
 
     self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());

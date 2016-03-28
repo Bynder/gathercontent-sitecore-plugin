@@ -8,11 +8,11 @@
 <script src="/sitecore modules/shell/GatherContent/js/GatherContent.js"></script>
 <link href="/sitecore modules/shell/GatherContent/css/KoGrid.css" rel="stylesheet" />
 <link href="/sitecore modules/shell/GatherContent/css/GatherContent.css" rel="stylesheet" />
+<link href="/sitecore modules/shell/GatherContent/Mappings/Mappings.css" rel="stylesheet" />
 <script type="text/javascript">
-  
+
     jQuery(document).ready(function () {
         ko.applyBindings(new ViewModel());
-
     });
 
 </script>
@@ -26,14 +26,21 @@
 
 
 <div class="gathercontent-dialog">
-    
-    <div class="gridStyle" data-bind="koGrid: gridOptions"></div>    
-
+    <!-- ko if: isError -->
+    <h1 data-bind="text: errorText"></h1>
+    <!-- /ko -->
+    <!-- ko if: mappings().length>0 -->
+    <p>Choose which templates you wish to manage.</p>
+    <!-- /ko -->
+    <!-- ko if: mappings().length==0 -->
+    <p> There are no mapping defined. Please click Add Mappings to start.</p>
+    <!-- /ko -->
+    <div class="gridStyle" data-bind="koGrid: gridOptions"></div>
     <div class="footer_btn">
-        <input class="mappings-btn" style="width: 160px;" id="AddMore" type="button" value="Add templates" data-bind="click: addMoreTemplates" />
+        <input class="mappings-btn" style="width: 160px;" id="AddMore" type="button" value="Add Mappings" data-bind="click: addMoreTemplates" />
     </div>
     <div class="help-link">
-        <a href="mailto:support@gathercontent.com">Need help?</a>
+        <!--<a href="mailto:support@gathercontent.com">Need help?</a>-->
     </div>
 </div>
 <div class="preloader"></div>

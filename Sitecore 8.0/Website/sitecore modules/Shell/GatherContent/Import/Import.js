@@ -17,7 +17,7 @@
     self.currentMode = ko.observable(MODE.ChooseItmesForImort);
 
     self.projects = ko.observableArray([]),
-    self.items = ko.observableArray([]),
+    self.items = ko.observableArray(),
     self.statuses = ko.observableArray([]),
     self.templates = ko.observableArray([]),
 
@@ -29,30 +29,70 @@
 
     self.query = ko.observable(''),
 
-    self.init = function () {
-        var callbackFunction = function (response) {
-            self.initVariables(response);
-        }
-        self.initRequestHandler(callbackFunction);
-    },
+    self.selectedItems = ko.observableArray([]);
+    self.resultItems = ko.observableArray([]);
 
-    self.initRequestHandler = function (callbackFunction) {
-         var id = getUrlVars()["id"];
-         var project = self.project();
-         project = project ? project : 0;
+    self.filterOptions = {
+        filterText: ko.observable(""),
+        useExternalFilter: false
+    };
 
-        jQuery.getJSON('/api/sitecore/Import/Get?id={' + id + '}&projectId=' + project).success(function (response) {
-             callbackFunction(response);
-             jQuery(".preloader").hide();
-            jQuery(".tooltip").remove();
-             initTooltip();
-             resizeTableHead();
-         }).error(function (response) {
-             self.errorCallbackHandle(response);
-         });
-         document_resize();
-        resizeTableHead();
-     }
+    self.pagingOptions = {
+        pageSizes: ko.observableArray([15, 20, 30]),
+        pageSize: ko.observable(10),
+        totalServerItems: ko.observable(0),
+        currentPage: ko.observable(1)
+    };
+
+    self.filterConfirmOptions = {
+        filterText: ko.observable(""),
+        useExternalFilter: true
+    };
+
+    self.pagingConfirmOptions = {
+        pageSizes: ko.observableArray([15, 20, 30]),
+        pageSize: ko.observable(10),
+        totalServerItems: ko.observable(0),
+        currentPage: ko.observable(1)
+    };
+
+    self.filterResultOptions = {
+        filterText: ko.observable(""),
+        useExternalFilter: true
+    };
+
+    self.pagingResultOptions = {
+        pageSizes: ko.observableArray([15, 20, 30]),
+        pageSize: ko.observable(10),
+        totalServerItems: ko.observable(0),
+        currentPage: ko.observable(1)
+    };
+
+    self.setPagingData = function (data, page, pageSize) {
+        var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
+        self.items(pagedData);
+        self.pagingOptions.totalServerItems(data.length);
+    };
+
+    this.getPagedData = function (pageSize, page) {
+        var id = getUrlVars()["id"];
+        var project = self.project();
+        project = project ? project : 0;
+        jQuery.ajax({
+            url: '/api/sitecore/Import/Get?id={' + id + '}&projectId=' + project,
+            dataType: 'json',
+            async: false,
+            success: function (response) {
+                self.setPagingData(response.Data.Items, page, pageSize);
+                self.initVariables(response);
+                jQuery(".preloader").hide();
+            },
+            error: function (response) {
+                self.errorCallbackHandle(response);
+            }
+        });
+    };
+
 
     self.errorCallbackHandle = function (response) {
         jQuery(".preloader").hide();
@@ -67,8 +107,7 @@
     }
 
     self.initVariables = function (response) {
-        var items = self.setupWatcher(response.Data.Items);
-        self.items(items);
+        var items = response.Data.Items;
         allItems = items.slice(0);
 
         self.projects(response.Filters.Projects);
@@ -82,11 +121,7 @@
     self.projectChanged = function (obj, event) {
         if (event.originalEvent) {
             jQuery(".preloader").show();
-            var callbackFunction = function (response) {
-                self.initVariables(response);
-                self.setupDefaultValuesToFilters();
-            }
-            self.initRequestHandler(callbackFunction);
+            self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());
         }
     },
 
@@ -106,9 +141,6 @@
         currentCollection = self.filterByTemplate(currentCollection);
 
         self.items(currentCollection);
-        resizeTableHead();
-        jQuery(".tooltip").remove();
-        initTooltip();
     }
 
     self.search = function (currentCollection) {
@@ -158,78 +190,17 @@
         return resultCollection;
     }
 
-    //table rendering
-    self.AllChecked = ko.computed({
-        read: function () {
-            var items = self.items();
-            if (items.length === 0)
-                return false;
-
-            var firstUnchecked = ko.utils.arrayFirst(items, function (item) {
-                if (item.Checked)
-                    return item.Checked() === false;
-            });
-
-            return firstUnchecked == null;
-        },
-        write: function (value) {
-            ko.utils.arrayForEach(self.items(), function (item) {
-                item.Checked(value);
-            });
-        }
-    });
-
-    self.getCheckedCount = ko.computed(function () {
-        var counter = 0;
-        ko.utils.arrayForEach(self.items(), function (item) {
-            if (item.Checked && item.Checked() === true)
-                counter++;
-        });
-
-        return counter;
-    });
-
-    //self.afterStatusesSelectRender = function (option, status) {
-    //    if (status.color) {
-    //        option.style.color = status.color;
-    //    }
-    //};
-
-    //self.getSelectedStatusColor = function () {
-    //    var result = "";
-    //    ko.utils.arrayForEach(self.statuses(), function (status) {
-    //        if (status.id.toLowerCase() === self.statusFilter()) {
-    //            result = status.color;
-    //            return;
-    //        }
-    //    });
-
-    //    return result;
-    //}
-
-    self.checkRow = function () {
-        this.Checked(!this.Checked());
-    }
 
     self.query.subscribe(self.filter);
 
     //button click events
-    self.switchToCheckItemsBeforeImport = function () {
-        var result = [];
-        ko.utils.arrayForEach(self.items(), function (item) {
-            if (item.Checked && item.Checked() === true)
-                result.push(item);
-        });
-
-        self.items(result);
-    }
 
     self.import = function () {
         var id = getUrlVars()["id"];
-        var items = self.items();
-        var itemids = [];
-        items.forEach(function (item, i) {
-            itemids.push({ Id: item.Id, SelectedMappingId: item.AvailableMappings.SelectedMappingId });
+        var selectedItems = self.selectedItems();
+        var items = [];
+        selectedItems.forEach(function (item, i) {
+            items.push({ Id: item.Id, SelectedMappingId: item.AvailableMappings.SelectedMappingId });
         });
         var lang = getUrlVars()["l"];
         var status = self.statusFilter();
@@ -242,7 +213,7 @@
             url: '/api/sitecore/Import/ImportItems?id={' + id + '}&projectId=' + project + '&statusId=' + status + '&language=' + lang,
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(itemids),
+            data: JSON.stringify(items),
             success: function (response) {
                 if (response.status == 'error') {
                     self.postErrorHandle(response.message);
@@ -250,7 +221,7 @@
                 var notImportedItemsCount = self.getNotImportedItemsCount(response);
                 self.notImportedItemsCount(notImportedItemsCount);
                 self.successImportedItemsCount(response.length - notImportedItemsCount);
-                self.items(response);
+                self.resultItems(response);
                 self.buttonClick(MODE.ImportResult);
             },
             error: function (response) {
@@ -261,7 +232,7 @@
 
     self.getNotImportedItemsCount = function (items) {
         var count = 0;
-        items.forEach(function(item) {
+        items.forEach(function (item) {
             if (!item.IsImportSuccessful)
                 count++;
         });
@@ -273,32 +244,26 @@
         window.top.dialogClose();
     }
 
-    self.backButtonClick = function () {
-        self.items(allItems.slice(0));
-    }
 
     self.buttonClick = function (newMode) {
         if (newMode === MODE.CheckItemsBeforeImport) {
-            if (self.getCheckedCount() == 0) {
+            if (self.selectedItems().length == 0) {
                 self.errorText('Please select at least one item');
             } else {
                 self.currentMode(newMode);
-                self.switchToCheckItemsBeforeImport();
             }
         } else if (newMode === MODE.Import) {
-                self.currentMode(newMode);
-                self.import();
-            } else if (newMode === MODE.Close) {
-                self.currentMode(newMode);
-                self.close();
-            } else if (newMode === MODE.ChooseItmesForImort) {
-                self.statusFilter = ko.observable();
-                self.currentMode(newMode);
-                self.backButtonClick();
-            } else {
-                self.currentMode(newMode);
-            }
-        resizeTableHead();
+            self.currentMode(newMode);
+            self.import();
+        } else if (newMode === MODE.Close) {
+            self.currentMode(newMode);
+            self.close();
+        } else if (newMode === MODE.ChooseItmesForImort) {
+            self.statusFilter = ko.observable();
+            self.currentMode(newMode);
+        } else {
+            self.currentMode(newMode);
+        }
     }
 
     self.getMode = function (section) {
@@ -327,33 +292,118 @@
         return 'green';
     }
 
-    self.openCmsLink = function (data, e) {
-        var link = data.CmsLink;
+    self.openCmsLink = function (item) {
+        var link = item.CmsLink;
         window.open(link);
-        e.stopImmediatePropagation();
     }
 
-    self.openGcLink = function (data, e) {
-        var link = data.GcLink;
+    self.openGcLink = function (item) {
+        var link = item.GcLink;
         window.open(link);
-        e.stopImmediatePropagation();
     }
 
-    self.init();
+    self.filterOptions.filterText.subscribe(function (data) {
+        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+    });
+    self.pagingOptions.pageSizes.subscribe(function (data) {
+        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+    });
+    self.pagingOptions.pageSize.subscribe(function (data) {
+        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+    });
+    self.pagingOptions.totalServerItems.subscribe(function (data) {
+        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+    });
+    self.pagingOptions.currentPage.subscribe(function (data) {
+        self.setPagingData(allItems,  self.pagingOptions.currentPage(),self.pagingOptions.pageSize());
+    });
+
+    self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());
+
+    var options =
+    {
+        showColumnMenu: false,
+        showFilter: false,
+        data: self.items,
+        selectedItems: self.selectedItems,
+        enablePaging: true,
+        pagingOptions: self.pagingOptions,
+        filterOptions: self.filterOptions,       
+        columnDefs: [
+            {
+                field: 'Status.name',
+                displayName: 'Status', cellTemplate: '<div><div class="status" data-bind="style: { backgroundColor : $parent.entity.Status.color }"></div><span data-bind="text: $parent.entity.Status.name"></span></div>'
+            },
+            { field: 'Title', displayName: 'Item name' },
+            { field: 'LastUpdatedInGC', displayName: 'Last updated in GatherContent' },
+            { field: 'Breadcrumb', displayName: 'Path' },
+            { field: 'Template.name', displayName: 'Template name' }
+        ]
+    };
+
+
+    this.gridOptions = options;
+
+
+    var confirmOptions =
+      {
+          canSelectRows: false,
+          showColumnMenu: false,
+          showFilter: false,
+          data: self.selectedItems,
+          enablePaging: true,
+          pagingOptions: self.pagingConfirmOptions,
+          filterOptions: self.filterConfirmOptions,
+          columnDefs: [
+              {
+                  field: 'Status.name',
+                  displayName: 'Status', cellTemplate: '<div><div class="status" data-bind="style: { backgroundColor : $parent.entity.Status.color }"></div><span data-bind="text: $parent.entity.Status.name"></span></div>'
+              },
+              { field: 'Title', displayName: 'Item name' },
+              { field: 'Template.name', displayName: 'Template name' },
+              {
+                  displayName: 'Specify mappings', cellTemplate: '<div data-bind="if: $parent.entity.AvailableMappings.Mappings.length > 0"><select class=\"mappings\" \
+                   data-bind="options: $parent.entity.AvailableMappings.Mappings, \
+                   optionsValue: \'Id\', \
+                   optionsText: \'Title\',\
+                   value: $parent.entity.AvailableMappings.SelectedMappingId"> \
+                         </select></div>'
+              }
+          ]
+      };
+
+    this.gridConfirmOptions = confirmOptions;
+
+
+    var resultOptions =
+    {
+        displaySelectionCheckbox: false,
+        canSelectRows: false,
+        showColumnMenu: false,
+        showFilter: false,
+        data: self.resultItems,
+        enablePaging: true,
+        pagingOptions: self.pagingResultOptions,
+        filterOptions: self.filterResultOptions,
+        columnDefs: [
+            {
+                field: 'Status.Name',
+                displayName: 'Status', cellTemplate: '<div>' +
+                    '<div class="status" data-bind="style: { backgroundColor : $parent.entity.Status.Color }">' +
+                    '</div>' +
+                    '<span data-bind="text: $parent.entity.Status.Name">' +
+                    '</span>' +
+                    '</div>'
+            },
+            { field: 'Title', displayName: 'Item name' },
+            { field: 'Message', displayName: 'Import status' },
+            { field: 'GcTemplateName', displayName: 'Template name' },
+            { displayName: 'Open in Sitecore', cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null", click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
+            { displayName: 'Open in GatherContent', cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>' }
+        ]
+    };
+
+    this.gridResultOptions = resultOptions;
+
 }
-jQuery(window).resize(function() {
-    resizeTableHead();
-});
 
-jQuery(function () {
-    jQuery("thead th.cell_resize").each(function(){
-        jQuery(this).find("div").css("width",jQuery(this).width());
-    });
-    jQuery("thead th div").each(function() {
-        if (jQuery(this).height() > 18) {
-            jQuery(this).css("padding-top", 0);
-            jQuery(this).css("margin-top", 7);
-        }
-    });
-
-});

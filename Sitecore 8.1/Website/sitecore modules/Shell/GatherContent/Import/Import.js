@@ -141,9 +141,6 @@
         currentCollection = self.filterByTemplate(currentCollection);
 
         self.items(currentCollection);
-        resizeTableHead();
-        jQuery(".tooltip").remove();
-        initTooltip();
     }
 
     self.search = function (currentCollection) {
@@ -306,20 +303,19 @@
     }
 
     self.filterOptions.filterText.subscribe(function (data) {
-        self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage(), self.filterOptions.filterText());
+        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
-
     self.pagingOptions.pageSizes.subscribe(function (data) {
-        self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage(), self.filterOptions.filterText());
+        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.pagingOptions.pageSize.subscribe(function (data) {
-        self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage(), self.filterOptions.filterText());
+        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.pagingOptions.totalServerItems.subscribe(function (data) {
-        self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage(), self.filterOptions.filterText());
+        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.pagingOptions.currentPage.subscribe(function (data) {
-        self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage(), self.filterOptions.filterText());
+        self.setPagingData(allItems,  self.pagingOptions.currentPage(),self.pagingOptions.pageSize());
     });
 
     self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());

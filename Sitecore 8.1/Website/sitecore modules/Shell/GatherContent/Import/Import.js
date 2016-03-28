@@ -69,6 +69,8 @@
     };
 
     self.setPagingData = function (data, page, pageSize) {
+        var items = data;
+        allItems = items.slice(0);
         var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
         self.items(pagedData);
         self.pagingOptions.totalServerItems(data.length);
@@ -83,7 +85,7 @@
             dataType: 'json',
             async: false,
             success: function (response) {
-                self.setPagingData(response.Data.Items, page, pageSize);
+                self.setPagingData(response.Items, page, pageSize);
                 self.initVariables(response);
                 jQuery(".preloader").hide();
             },
@@ -107,8 +109,6 @@
     }
 
     self.initVariables = function (response) {
-        var items = response.Data.Items;
-        allItems = items.slice(0);
 
         self.projects(response.Filters.Projects);
         self.project(response.Filters.Project);
@@ -125,11 +125,11 @@
         }
     },
 
-    self.setupDefaultValuesToFilters = function () {
-        self.query('');
-        self.statusFilter();
-        self.templateFilter();
-    }
+    //self.setupDefaultValuesToFilters = function () {
+    //    self.query('');
+    //    self.statusFilter();
+    //    self.templateFilter();
+    //}
 
     //filters
     self.filter = function () {
@@ -166,7 +166,7 @@
             resultCollection = [];
             for (var i = 0; i < currentCollection.length; i++) {
                 var currentElement = currentCollection[i];
-                if (currentElement.Status.id === value) {
+                if (currentElement.Status.Id === value) {
                     resultCollection.push(currentElement);
                 }
             }
@@ -181,7 +181,7 @@
             resultCollection = [];
             for (var i = 0; i < currentCollection.length; i++) {
                 var currentElement = currentCollection[i];
-                if (currentElement.Template.id === value) {
+                if (currentElement.Template.Id === value) {
                     resultCollection.push(currentElement);
                 }
             }
@@ -332,12 +332,12 @@
         columnDefs: [
             {
                 field: 'Status.name',
-                displayName: 'Status', cellTemplate: '<div><div class="status" data-bind="style: { backgroundColor : $parent.entity.Status.color }"></div><span data-bind="text: $parent.entity.Status.name"></span></div>'
+                displayName: 'Status', cellTemplate: '<div><div class="status" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
             },
             { field: 'Title', displayName: 'Item name' },
             { field: 'LastUpdatedInGC', displayName: 'Last updated in GatherContent' },
             { field: 'Breadcrumb', displayName: 'Path' },
-            { field: 'Template.name', displayName: 'Template name' }
+            { field: 'Template.Name', displayName: 'Template name' }
         ]
     };
 
@@ -357,10 +357,10 @@
           columnDefs: [
               {
                   field: 'Status.name',
-                  displayName: 'Status', cellTemplate: '<div><div class="status" data-bind="style: { backgroundColor : $parent.entity.Status.color }"></div><span data-bind="text: $parent.entity.Status.name"></span></div>'
+                  displayName: 'Status', cellTemplate: '<div><div class="status" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
               },
               { field: 'Title', displayName: 'Item name' },
-              { field: 'Template.name', displayName: 'Template name' },
+              { field: 'Template.Name', displayName: 'Template name' },
               {
                   displayName: 'Specify mappings', cellTemplate: '<div data-bind="if: $parent.entity.AvailableMappings.Mappings.length > 0"><select class=\"mappings\" \
                    data-bind="options: $parent.entity.AvailableMappings.Mappings, \

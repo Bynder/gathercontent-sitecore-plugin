@@ -450,6 +450,30 @@ namespace GatherContent.Connector.Managers.Managers
             return templates.Data;
         }
 
+        private string GetBreadcrumb(GCItem item, List<GCItem> items)
+        {
+            var names = new List<string>();
+            string result = BuildBreadcrumb(item, items, names);
+            return result;
+        }
+
+        private string BuildBreadcrumb(GCItem item, List<GCItem> items, List<string> names)
+        {
+            names.Add(item.Name);
+
+            if (item.ParentId != 0)
+            {
+                GCItem next = items.FirstOrDefault(i => i.Id == item.ParentId);
+                return BuildBreadcrumb(next, items, names);
+            }
+
+            names.Reverse();
+
+            string url = string.Join("/", names);
+
+            return string.Format("/{0}", url);
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -479,6 +503,57 @@ namespace GatherContent.Connector.Managers.Managers
             }
 
             return result.ToList();
+        }
+
+
+        private List<ItemModel> MapImportItems(List<GCItem> items, List<GCTemplate> templates)
+        {
+            var model = new List<ItemModel>();
+            var mappedItems = items.Where(i => i.TemplateId != null).ToList();
+            var dateFormat = GcAccountSettings.DateFormat;
+            if (string.IsNullOrEmpty(dateFormat))
+            {
+                dateFormat = Constants.DateFormat;
+            }
+
+
+            foreach (var mappedItem in mappedItems)
+            {
+                var template = templates.FirstOrDefault(templ => templ.Id == mappedItem.TemplateId);
+                var mappings = MappingRepository.GetMappingsByGcTemplateId(mappedItem.TemplateId.ToString());
+                var availableMappings = mappings.Select(availableMappingModel => new AvailableMapping
+                {
+                    Id = availableMappingModel.MappingId,
+                    Title = availableMappingModel.MappingTitle,
+                }).ToList();
+
+                model.Add(new ItemModel
+                {
+                    GcItem = new GcItemModel
+                    {
+                        Id = mappedItem.Id.ToString(),
+                        Title = mappedItem.Name,
+                        LastUpdatedInGc = mappedItem.Updated.Date.ToString(dateFormat)
+                    },
+                    GcTemplate = new GcTemplateModel
+                    {
+                        Name = template != null ? template.Name : "",
+                        Id = template != null ? template.Id.ToString() : ""
+                    },
+                    Status = new GcStatusModel
+                    {
+                        Id = mappedItem.Status.Data.Id,
+                        Name = mappedItem.Status.Data.Name,
+                        Color = mappedItem.Status.Data.Color
+                    },
+                    AvailableMappings = new AvailableMappings
+                    {
+                        Mappings = availableMappings
+                    },
+                    Breadcrumb = GetBreadcrumb(mappedItem, items),
+                });
+            }
+            return model;
         }
 
         /// <summary>
@@ -546,40 +621,104 @@ namespace GatherContent.Connector.Managers.Managers
             }
         }
 
-        private StatusModel PostNewItemStatus(string gcItemId, string statusId, string projectId)
+        private GcStatusModel PostNewItemStatus(string gcItemId, string statusId, string projectId)
         {
             ItemsService.ChooseStatusForItem(gcItemId, statusId);
             var status = ProjectsService.GetSingleStatus(statusId, projectId);
-            var statusModel = new StatusModel { Color = status.Data.Color, Name = status.Data.Name };
+            var statusModel = new GcStatusModel { Color = status.Data.Color, Name = status.Data.Name };
             return statusModel;
         }
 
         #endregion
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="itemId"></param>
-        /// <param name="projectId"></param>
-        /// <returns></returns>
-        public SelectItemsForImportModel GetModelForSelectImportItemsDialog(string itemId, string projectId)
+  
+
+
+        public List<ItemModel> GetImportDialogModel(string itemId, string projectId)
+        {
+            var model = new List<ItemModel>();
+            if (projectId == "0") return null;
+
+            var project = GetGcProjectEntity(projectId);
+
+            if (project != null)
+            {
+                List<GCTemplate> templates = GetTemplates(project.Data.Id);
+
+                List<GCItem> items = GetItems(project.Data.Id);
+                items = items.OrderBy(item => item.Status.Data.Name).ToList();
+                model = MapImportItems(items, templates);
+                return model;
+            }
+
+            return model;
+        }
+
+   
+
+        public GatherContent.Connector.Managers.Models.ImportItems.New.FiltersModel GetFilters(string projectId)
         {
             Account account = GetAccount();
 
-            List<Project> projects = GetProjects(account.Id);
+            List<Project> gcProjects = GetProjects(account.Id);
 
-            Project project = GetProject(projects, projectId);
+            var projects = new List<GcProjectModel>();
+            foreach (var gcProject in gcProjects)
+            {
+                projects.Add(new GcProjectModel
+                {
+                    Id = gcProject.Id.ToString(),
+                    Name = gcProject.Name
+                });
+            }
 
-            List<GCTemplate> templates = GetTemplates(project.Id);
-            List<GCStatus> statuses = GetStatuses(project.Id);
-            List<GCItem> items = GetItems(project.Id);
-            items = items.OrderBy(item => item.Status.Data.Name).ToList();
+            if (projectId != "0")
+            {
+                Project gcProject = GetProject(gcProjects, projectId);
 
-            List<ImportListItem> mappedItems = MapItems(items, templates);
+                List<GCTemplate> gcTemplates = GetTemplates(gcProject.Id);
+                var templates = new List<GcTemplateModel>();
+                foreach (var gcTemplate in gcTemplates)
+                {
+                    templates.Add(new GcTemplateModel
+                    {
+                        Id = gcTemplate.Id.ToString(),
+                        Name = gcTemplate.Name
 
-            var result = new SelectItemsForImportModel(mappedItems, project, projects, statuses, templates);
+                    });
+                }
+                List<GCStatus> gcStatuses = GetStatuses(gcProject.Id);
 
-            return result;
+                var statuses = new List<GcStatusModel>();
+                foreach (var gcStatus in gcStatuses)
+                {
+                    statuses.Add(new GcStatusModel
+                    {
+                        Id = gcStatus.Id.ToString(),
+                        Name = gcStatus.Name,
+                        Color = gcStatus.Color
+                    });
+                }
+
+
+                return new GatherContent.Connector.Managers.Models.ImportItems.New.FiltersModel
+                {
+                    CurrentProject = new GcProjectModel
+                {
+                    Id = gcProject.Id.ToString(),
+                    Name = gcProject.Name
+                },
+                    Projects = projects,
+                    Statuses = statuses,
+                    Templates = templates
+                };
+
+            }
+
+            return new GatherContent.Connector.Managers.Models.ImportItems.New.FiltersModel
+            {
+                Projects = projects
+            };
         }
 
         /// <summary>
@@ -617,16 +756,16 @@ namespace GatherContent.Connector.Managers.Managers
         /// <param name="statusId"></param>
         /// <param name="language"></param>
         /// <returns></returns>
-        public List<ItemResponseModel> ImportItems(string itemId, List<ImportItemModel> items, string projectId, string statusId, string language)
+        public List<ItemResultModel> ImportItems(string itemId, List<ImportItemModel> items, string projectId, string statusId, string language)
         {
-            var model = new List<ItemResponseModel>();
+            var model = new List<ItemResultModel>();
             var templateMappings = new List<TemplateMapping>();
 
             var gcDataDictionary = new Dictionary<string, string>(); //(GC Id, GC Name)
 
             foreach (var importItem in items)
             {
-                var itemResponseModel = new ItemResponseModel
+                var itemResponseModel = new ItemResultModel
                 {
                     IsImportSuccessful = true,
                     ImportMessage = "Import Successful",
@@ -646,7 +785,7 @@ namespace GatherContent.Connector.Managers.Managers
                         Title = gcItem.Data.Name
                     };
 
-                    itemResponseModel.Status = new StatusModel
+                    itemResponseModel.Status = new GcStatusModel
                     {
                         Color = gcItem.Data.Status.Data.Color,
                         Name = gcItem.Data.Status.Data.Name,
@@ -813,7 +952,7 @@ namespace GatherContent.Connector.Managers.Managers
                         //когда доходим по последнего айтема в пути, то есть до выбранного импортировать - делаем уже нормальный айтем
                         if (ItemsRepository.IfMappedItemExists(parentId, cmsItem, templateMapping.MappingId, gcPath))
                         {
-                            cmsItem.Id = ItemsRepository.AddNewVersion(parentId, cmsItem, templateMapping.MappingId, gcPath); 
+                            cmsItem.Id = ItemsRepository.AddNewVersion(parentId, cmsItem, templateMapping.MappingId, gcPath);
                         }
                         else
                         {
@@ -841,19 +980,19 @@ namespace GatherContent.Connector.Managers.Managers
                                 {
                                     case "choice_radio":
                                     case "choice_checkbox":
-                                    {
-                                        ItemsRepository.MapChoice(cmsItem, field.CmsField);
-                                    }
+                                        {
+                                            ItemsRepository.MapChoice(cmsItem, field.CmsField);
+                                        }
                                         break;
                                     case "files":
-                                    {
-                                        ItemsRepository.MapFile(cmsItem, field.CmsField);
-                                    }
+                                        {
+                                            ItemsRepository.MapFile(cmsItem, field.CmsField);
+                                        }
                                         break;
                                     default:
-                                    {
-                                        ItemsRepository.MapText(cmsItem, field.CmsField);
-                                    }
+                                        {
+                                            ItemsRepository.MapText(cmsItem, field.CmsField);
+                                        }
                                         break;
                                 }
                             }
@@ -888,11 +1027,11 @@ namespace GatherContent.Connector.Managers.Managers
                             parentId = ItemsRepository.GetItemId(parentId, notMappedCmsItem);
                         }
                     }
-                }             
+                }
             }
             return model;
         }
-        
+
         /// <summary>
         /// 
         /// </summary>

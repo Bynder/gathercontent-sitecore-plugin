@@ -1,7 +1,7 @@
 ﻿
-namespace GatherContent.Connector.Managers.Models.ImportItems.New
+namespace GatherContent.Connector.Managers.Models.Mapping
 {
-    public class StatusModel
+    public class GcStatusModel
     {
         public string Id { get; set; }
         public string Name { get; set; }

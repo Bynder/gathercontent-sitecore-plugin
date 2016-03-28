@@ -241,6 +241,11 @@ input {
     cursor:default;
 }
 
+
+.kgCell .manage,.kgCell .edit{
+    
+}
+
 /******** Footer ********/
 .kgFooterPanel{
     background-color: rgb(234, 234, 234);

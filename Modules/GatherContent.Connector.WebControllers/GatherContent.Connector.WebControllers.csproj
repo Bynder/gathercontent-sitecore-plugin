@@ -207,8 +207,15 @@
     <Compile Include="Controllers\UpdateController.cs" />
     <Compile Include="IoC\Installer.cs" />
     <Compile Include="IoC\WindsorControllerFactory.cs" />
+    <Compile Include="Models\Import\AvailableMappingsViewModel.cs" />
+    <Compile Include="Models\Import\AvailableMappingViewModel.cs" />
+    <Compile Include="Models\Import\FiltersViewModel.cs" />
+    <Compile Include="Models\Import\ImportListItemViewModel.cs" />
     <Compile Include="Models\Import\ImportResultViewModel.cs" />
+    <Compile Include="Models\Import\ImportViewModel.cs" />
+    <Compile Include="Models\Import\ProjectViewModel.cs" />
     <Compile Include="Models\Import\StatusViewModel.cs" />
+    <Compile Include="Models\Import\TemplateViewModel.cs" />
     <Compile Include="Models\Mapping\AddMappingViewModel.cs" />
     <Compile Include="Models\Mapping\FieldMappingViewModel.cs" />
     <Compile Include="Models\Mapping\PostMappingViewModel.cs" />

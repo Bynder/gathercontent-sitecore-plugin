@@ -379,3 +379,119 @@ input[type="button"] {
     width: 10px;
     height: 10px;
 }
+
+/*top*/
+
+.kgTopPanel {
+    background: #5e5e5e;
+    height: 40px !important
+}
+.kgHeaderText {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12.8px;
+    margin: 11px 0;
+    padding-right: 30px;
+    padding: 1px 5px;
+    border-left: 1px solid #fff;
+    color: #fff;
+}
+.kgTopPanel .kgHeaderCell:first-child .kgHeaderText {
+    border-left: 0;
+}
+
+.kgHeaderCell {
+    border: 0;
+}
+
+
+button.kgPagerButton {
+    border-radius: 0;
+    border: none;
+    text-transform: uppercase;
+    font-weight: 700;
+    box-shadow: inset 1px 1px 2px #BBB;
+    cursor: pointer;
+    outline: none;
+}
+button.kgPagerButton:hover {
+    box-shadow: 1px 1px 4px #4A4949;
+}
+.kgSortButtonDown {
+    right: 7px;
+    left: auto;
+    top: 48%;
+    border-color: rgb(255, 255, 255) transparent;
+    border-width: 7px 7px 0px;
+}
+.kgSortButtonUp {
+    right: 7px;
+    left: auto;
+    top: 44%;
+    border-color:   rgb(255, 255, 255) transparent;
+    border-width: 0 7px 7px 7px;
+}
+.kgTotalSelectContainer {
+    margin-top: 14px;
+}
+.kglabel {
+    margin-top: 6px !important;
+}
+.kgPagerContainer select {
+    width: 50px !important;
+}
+.kgPagerCurrent {
+    background-color: transparent;
+    text-align: center;
+    outline: none;
+    width: 50px !important;
+    margin-top: 1px;
+    padding: 0px 4px 0 14px !important;
+    border: 0
+}
+.kgHeaderCell:last-child {
+    border-right:0;
+}
+.kgCell {
+    box-sizing: border-box;
+}
+.kgCell:first-child {
+    border-left: 1px solid rgb(212, 212, 212);
+}
+.kgViewport {
+    outline: none;
+}
+.gridStyle {
+    border: 0;
+}
+.kgRow {
+    border-bottom: 1px solid rgb(212, 212, 212);
+}
+.kgCellText {
+   line-height: 19px;
+}
+
+/*footer*/
+.kgFooterPanel {
+    background-color: transparent;
+}
+
+/*end footer*/
+
+.gathercontent-dialog .mappings-btn {
+    border-radius: 0;
+    border: none;
+    margin-top: 20px;
+    padding: 10px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    font-weight: 700;
+    box-shadow: inset 1px 1px 2px #BBB;
+}
+
+.kgPagerButton[disabled] {
+    opacity: 0.5;
+    cursor: default;
+}
+.kgPagerButton[disabled]:hover {
+    box-shadow: inset 1px 1px 2px #BBB;
+}

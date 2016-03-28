@@ -186,9 +186,11 @@
     <Compile Include="Models\ImportItems\ImportItemModel.cs" />
     <Compile Include="Models\ImportItems\ImportItembyLocation.cs" />
     <Compile Include="Models\ImportItems\MappingResultModel.cs" />
+    <Compile Include="Models\ImportItems\New\FiltersModel.cs" />
     <Compile Include="Models\ImportItems\New\GcItemModel.cs" />
-    <Compile Include="Models\ImportItems\New\ItemResponseModel.cs" />
-    <Compile Include="Models\ImportItems\New\StatusModel.cs" />
+    <Compile Include="Models\ImportItems\New\ItemModel.cs" />
+    <Compile Include="Models\ImportItems\New\ItemResultModel.cs" />
+    <Compile Include="Models\Mapping\GcStatusModel.cs" />
     <Compile Include="Models\ImportItems\SelectItemsForImportWithLocation.cs" />
     <Compile Include="Models\ImportItems\ItemWithLocationDataModel.cs" />
     <Compile Include="Models\Mapping\CmsTemplateFieldModel.cs" />

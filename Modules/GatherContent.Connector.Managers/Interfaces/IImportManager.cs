@@ -12,11 +12,13 @@ namespace GatherContent.Connector.Managers.Interfaces
     {
         SelectItemsForImportWithLocation GetDialogModelWithLocation(string itemId, string projectId);
 
-        List<ItemResponseModel> ImportItems(string itemId, List<ImportItemModel> items, string projectId, string statusId, string language);
+        List<ItemResultModel> ImportItems(string itemId, List<ImportItemModel> items, string projectId, string statusId, string language);
 
         ImportResultModel ImportItemsWithLocation(List<LocationImportItemModel> items, string projectId, string statusId, string language);
 
-        SelectItemsForImportModel GetModelForSelectImportItemsDialog(string itemId, string projectId);
+        List<ItemModel> GetImportDialogModel(string itemId, string projectId);
+
+        GatherContent.Connector.Managers.Models.ImportItems.New.FiltersModel GetFilters(string projectId);
 
         List<MappingResultModel> MapItems(List<GCItem> items);
     }

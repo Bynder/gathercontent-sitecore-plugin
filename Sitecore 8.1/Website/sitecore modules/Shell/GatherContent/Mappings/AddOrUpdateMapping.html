@@ -8,6 +8,7 @@
 <script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/jquery.cookie.js"></script>
 <script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/jquery.dynatree.js"></script>
 <script src="/sitecore modules/shell/GatherContent/Mappings/AddOrUpdateMapping.js"></script>
+<link href="/sitecore modules/shell/GatherContent/Mappings/Mappings.css" rel="stylesheet" />
 
 
 <link href="/sitecore modules/shell/GatherContent/css/GatherContent.css" rel="stylesheet" />
@@ -28,8 +29,8 @@
     scSitecore.prototype.Settings.SessionTimeout = 1200000;
 </script>
 
-<div class="gathercontent-dialog">
-    <div data-bind="attr: { id: OpenerId }" style="position: absolute; left: 230px; top: 285px; width: 300px; height: 400px; z-index: 1000;">
+<div class="gathercontent-dialog footer_glued" >
+    <div class="hide" data-bind="attr: { id: OpenerId }" style="position: absolute;top: 115px;width: 300px;height: 400px;z-index: 1000;display: block">
         <div style="width:300px;height:400px;">
             <div ata-bind="css: { class: OpenerId }"> </div>
         </div>
@@ -37,26 +38,34 @@
     <!-- ko if: IsError -->
     <h1 data-bind="text: ErrorText"></h1>
     <!-- /ko -->
-    <div data-bind="ifnot: IsError">
+    <div data-bind="ifnot: IsError" style="height: 80%;">
         <p class="fields-mapping-padding">
             Choose the fields you wish to map from GatherContent into Sitecore. Only map the fields you need to import.
         </p>
+        <input type="text" data-bind="value: GcMappingTitle, css: { notvalid: NotValid() == true }" class="mapping-input block" placeholder="Mapping name *"/>
+
+        <input class="mapping-input block" placeholder="Default location" data-bind="value: DefaultLocationTitle, attr: { 'data-openerid': OpenerId }, click: openDropTree" type="text" />
+
+
         <div class="mapping_tabs_wrapper">
 
             <div class="mapping_heading">
-                <div><span><strong>GatherContent:</strong></span></div>
-                <p class="title_lvl2">Project:</p>
+                <div class="heading">
+                    <span>
+                        <strong>GatherContent:</strong>
+                    </span>
+                </div>
                 <select class="custom_selected sitecore-template-select" data-bind="options: GcProjects, optionsText: 'Name', value: SelectedGcProject, event:{ change: $root.gcProjectChanged}"></select>
-                <p class="title_lvl2">Template:</p>
                 <select class="custom_selected sitecore-template-select" data-bind="options: GcTemplates, optionsText: 'Name', value: SelectedGcTemplate, event:{ change: $root.gcTemplateChanged}"></select>
-                <div><span><strong>* Mapping title:</strong></span></div>
-                <input type="text" data-bind="value: GcMappingTitle" class="mapping-input" /> <span data-bind="text: ValidationMessage" class="validation-message"></span>
-                <div><span><strong>Default location:</strong></span></div>
-                <input class="mapping-input" data-bind="value: DefaultLocationTitle, attr: { 'data-openerid': OpenerId }, click: openDropTree" type="text" />
+
+                 <!--<span data-bind="text: ValidationMessage" class="validation-message"></span>-->
                 <input data-bind="value: DefaultLocation, visible: false, attr: { 'data-openerid': OpenerId }, click: openDropTree" type="text" />
             </div>
             <div style="float: right;" class="mapping_heading">
-                <div><span><strong>Sitecore Template:</strong></span></div>
+                <div class="heading"><span><strong>Sitecore:</strong></span></div>
+                <div class="clear">
+
+                </div>
                 <select class="custom_selected sitecore-template-select" data-bind="options: SitecoreTemplates, optionsText: 'SitrecoreTemplateName', value: SelectedScTemplate, event:{ change: $root.scTemplateChanged}"></select>
             </div>
           
@@ -72,15 +81,19 @@
                 </div>
             </div>
         </div>
+    </div>
+    <footer>
+
         <div class="footer_btn">
             <input class="mappings-btn" id="AddMore" type="button" value="Save mapping configuration" data-bind="click: saveMapping" style="margin-top: 15px;" />
             <p>
                 You can always change your mapping later.
             </p>
         </div>
-    </div>
-    <div class="help-link">
-        <a href="mailto:support@gathercontent.com">Need help?</a>
-    </div>
+
+        <div class="help-link">
+            <a href="mailto:support@gathercontent.com">Need help?</a>
+        </div>
+    </footer>
 </div>
 <div class="preloader"></div>

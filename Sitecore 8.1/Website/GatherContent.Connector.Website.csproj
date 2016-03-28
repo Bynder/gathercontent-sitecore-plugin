@@ -94,6 +94,9 @@
     <Content Include="sitecore modules\Shell\GatherContent\css\KoGrid.css" />
     <Content Include="sitecore modules\Shell\GatherContent\Experience Editor\GatherContentImport.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Experience Editor\GatherContentMLImport.js" />
+    <Content Include="sitecore modules\Shell\GatherContent\Import\img\arrow_select.png" />
+    <Content Include="sitecore modules\Shell\GatherContent\Import\img\bkt_left.png" />
+    <Content Include="sitecore modules\Shell\GatherContent\Import\img\bkt_right.png" />
     <Content Include="sitecore modules\Shell\GatherContent\Import\MultiLocationImport.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Import\MultiLocationImport.html" />
     <Content Include="sitecore modules\Shell\GatherContent\js\jquery-ui.custom.min.js" />
@@ -109,6 +112,7 @@
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\AddOrUpdateMapping.js" />
     <Content Include="sitecore modules\Shell\GatherContent\css\img\arrow.png" />
     <Content Include="sitecore modules\Shell\GatherContent\css\img\arrow_select.png" />
+    <Content Include="sitecore modules\Shell\GatherContent\Mappings\Mappings.css" />
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\Mappings.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Import\Import.html" />
     <Content Include="sitecore modules\Shell\GatherContent\img\arrow_select.png" />
@@ -116,6 +120,9 @@
     <Content Include="sitecore modules\Shell\GatherContent\img\bkt_right.png" />
     <Content Include="sitecore modules\Shell\GatherContent\TestConnection\testconnection.html" />
     <Content Include="sitecore modules\Shell\GatherContent\TestConnection\testconnection.js" />
+    <Content Include="sitecore modules\Shell\GatherContent\Update\img\arrow_select.png" />
+    <Content Include="sitecore modules\Shell\GatherContent\Update\img\bkt_left.png" />
+    <Content Include="sitecore modules\Shell\GatherContent\Update\img\bkt_right.png" />
     <Content Include="sitecore modules\Shell\GatherContent\Update\Update.css" />
     <Content Include="sitecore modules\Shell\GatherContent\Update\Update.html" />
     <Content Include="sitecore modules\Shell\GatherContent\Update\Update.js" />

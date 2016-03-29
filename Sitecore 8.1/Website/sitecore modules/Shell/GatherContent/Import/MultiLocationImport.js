@@ -354,7 +354,6 @@
             //TODO use Knockout
             jQuery("#" + id).show();
             item.IsShowing = true;
-            var mapping = this;
             jQuery("#" + id).dynatree({
                 autoFocus: false,
                 imagePath: "~/icon/",
@@ -366,8 +365,8 @@
                     jQuery('[data-openerid="' + id + '"]').val(node.data.title);
                     jQuery("#" + id).hide();
                     item.IsShowing = false;
-                    mapping.DefaultLocation = node.data.key;
-                    mapping.DefaultLocationTitle = node.data.title;
+                    item.DefaultLocation = node.data.key;
+                    item.DefaultLocationTitle = node.data.title;
                 },
                 onLazyRead: function (node) {
                     node.appendAjax({
@@ -398,18 +397,21 @@
             }
         }
         else if (newMode === MODE.Confirm) {
-            var isError = false;
-            ko.utils.arrayForEach(self.selectedGroupItems(), function (item) {
-                if (item.DefaultLocation == "") {
-                    isError = true;
-                }
-            });
-
-            if (!isError) {
-                self.currentMode(newMode);
-                self.switchToCheckItemsBeforeImport();
+            var emptyLocationError = false;
+            if (self.selectedGroupItems().length == 0) {
+                self.errorText('Please select at least one item');
             } else {
-                self.errorText('Please select default location');
+                ko.utils.arrayForEach(self.selectedGroupItems(), function (item) {
+                    if (item.DefaultLocation == "") {
+                        emptyLocationError = true;
+                    }
+                });
+                if (!emptyLocationError) {
+                    self.currentMode(newMode);
+                    self.switchToCheckItemsBeforeImport();
+                } else {
+                    self.errorText('Please select default location');
+                }
             }
         }
         else if (newMode === MODE.Import) {
@@ -428,7 +430,7 @@
     }
 
     self.getMode = function (section) {
-        if (self.currentMode() === section) {
+        if (self.currentMode() === section) { 
             return true;
         }
         return false;
@@ -476,6 +478,7 @@
 
     var options =
             {
+                afterSelectionChange: function () { return true; },
                 showColumnMenu: false,
                 showFilter: false,
                 data: self.items,
@@ -486,7 +489,7 @@
                 columnDefs: [
                     {
                         field: 'Status.name',
-                        displayName: 'Status', cellTemplate: '<div><div class="status" data-bind="style: { backgroundColor : $parent.entity.Status.color }"></div><span data-bind="text: $parent.entity.Status.name"></span></div>'
+                        displayName: 'Status', cellTemplate: '<div class="cell-padding"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.color }"></div><span data-bind="text: $parent.entity.Status.name"></span></div>'
                     },
                     { field: 'Title', displayName: 'Item name' },
                     { field: 'LastUpdatedInGC', displayName: 'Last updated in GatherContent' },
@@ -500,6 +503,8 @@
 
     var groupedOptions =
         {
+            afterSelectionChange: function () { return true; },
+            selectWithCheckboxOnly:true,
             showColumnMenu: false,
             showFilter: false,
             canSelectRows: true,
@@ -516,8 +521,8 @@
                 {
                     field: 'DefaultLocationTitle', displayName: 'Default Location',
                     cellTemplate: '<div><input data-bind="value: $parent.entity.DefaultLocationTitle, attr: {\'data-openerid\': $parent.entity.OpenerId }, click: function(){$parent.$userViewModel.openDropTree($parent.entity)}" type="text" />' +
-                           //'<input data-bind="value: $parent.entity.DefaultLocation, visible: false" type="text" />' +
-                           '<div data-bind="attr: { id: $parent.entity.OpenerId }" style="position: absolute; left: 750px; top: 130px; width: 300px; height: 400px; z-index: 1000;">' +
+                           '<input data-bind="value: $parent.entity.DefaultLocation, visible: false" type="text" />' +
+                           '<div data-bind="attr: { id: $parent.entity.OpenerId }" style="position: absolute; left: 180px; top: 0; width: 300px; height: 400px; z-index: 1000;">' +
                               '<div style="width:300px;height:400px;">' +
                                   '<div data-bind="css: { \'class\': $parent.entity.OpenerId }"> </div>' +
                               '</div>' +
@@ -539,7 +544,6 @@
         enablePaging: true,
         pagingOptions: self.confirmedPagingOptions,
         filterOptions: self.confirmedFilterOptions,
-        groups: ["ItemTitle"],
         columnDefs: [
             { field: 'ItemTitle', displayName: 'Title' },
             { field: 'MappingName', displayName: 'Mapping Name' },
@@ -564,8 +568,8 @@
        columnDefs: [
            {
                field: 'Status.Name',
-               displayName: 'Status', cellTemplate: '<div>' +
-                   '<div class="status" data-bind="style: { backgroundColor : $parent.entity.Status.Color }">' +
+               displayName: 'Status', cellTemplate: '<div class="cell-padding">' +
+                   '<div class="status-color"  data-bind="style: { backgroundColor : $parent.entity.Status.Color }">' +
                    '</div>' +
                    '<span data-bind="text: $parent.entity.Status.Name">' +
                    '</span>' +

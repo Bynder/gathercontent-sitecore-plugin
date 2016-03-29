@@ -374,10 +374,18 @@ input[type="button"] {
     height: 75%;
 }
 
-.status {
+.cell-padding {
+    padding: 5px;
+}
+.mappings-cell {
+    margin: 5px;
+}
+
+.status-color {
     display: inline-block;
     width: 10px;
     height: 10px;
+    margin-right: 5px;
 }
 
 /*top*/
@@ -453,6 +461,7 @@ button.kgPagerButton:hover {
 }
 .kgCell {
     box-sizing: border-box;
+    overflow: visible;
 }
 .kgCell:first-child {
     border-left: 1px solid rgb(212, 212, 212);

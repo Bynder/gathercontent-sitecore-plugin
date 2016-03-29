@@ -83,7 +83,7 @@
         jQuery.ajax({
             url: '/api/sitecore/Import/Get?id={' + id + '}&projectId=' + project,
             dataType: 'json',
-            async: false,
+            async: true,
             success: function (response) {
                 self.setPagingData(response.Items, page, pageSize);
                 self.initVariables(response);
@@ -125,11 +125,6 @@
         }
     },
 
-    //self.setupDefaultValuesToFilters = function () {
-    //    self.query('');
-    //    self.statusFilter();
-    //    self.templateFilter();
-    //}
 
     //filters
     self.filter = function () {
@@ -322,6 +317,7 @@
 
     var options =
     {
+        afterSelectionChange: function () { return true; },
         showColumnMenu: false,
         showFilter: false,
         data: self.items,
@@ -331,8 +327,8 @@
         filterOptions: self.filterOptions,       
         columnDefs: [
             {
-                field: 'Status.name',
-                displayName: 'Status', cellTemplate: '<div><div class="status" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
+                field: 'Status.Name',
+                displayName: 'Status', cellTemplate: '<div class="cell-padding"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
             },
             { field: 'Title', displayName: 'Item name' },
             { field: 'LastUpdatedInGC', displayName: 'Last updated in GatherContent' },
@@ -356,18 +352,31 @@
           filterOptions: self.filterConfirmOptions,
           columnDefs: [
               {
-                  field: 'Status.name',
-                  displayName: 'Status', cellTemplate: '<div><div class="status" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
+                  field: 'Status.Name',
+                  displayName: 'Status', cellTemplate: '<div class="cell-padding"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
               },
               { field: 'Title', displayName: 'Item name' },
               { field: 'Template.Name', displayName: 'Template name' },
               {
-                  displayName: 'Specify mappings', cellTemplate: '<div data-bind="if: $parent.entity.AvailableMappings.Mappings.length > 0"><select class=\"mappings\" \
-                   data-bind="options: $parent.entity.AvailableMappings.Mappings, \
-                   optionsValue: \'Id\', \
-                   optionsText: \'Title\',\
-                   value: $parent.entity.AvailableMappings.SelectedMappingId"> \
-                         </select></div>'
+                  displayName: 'Specify mappings', cellTemplate: '<div data-bind="if: $parent.entity.AvailableMappings.Mappings.length > 0">' +
+                      '<div data-bind="if: $parent.entity.AvailableMappings.Mappings.length == 1">' +
+                      '<span class="cell-padding" data-bind="text: $parent.entity.AvailableMappings.Mappings[0].Title"></span>' +
+                      '<select class=\"mappings-cell\" \
+                               data-bind="visible:false, options: $parent.entity.AvailableMappings.Mappings, \
+                               optionsValue: \'Id\', \
+                               optionsText: \'Title\',\
+                               value: $parent.entity.AvailableMappings.SelectedMappingId"> \
+                         </select>' +
+                      '</div>' +
+                      '<div data-bind="if: $parent.entity.AvailableMappings.Mappings.length > 1">' +
+                          '<select class=\"mappings-cell\" \
+                               data-bind="options: $parent.entity.AvailableMappings.Mappings, \
+                               optionsValue: \'Id\', \
+                               optionsText: \'Title\',\
+                               value: $parent.entity.AvailableMappings.SelectedMappingId"> \
+                         </select>' +
+                      '</div>' +
+                      '</div>'
               }
           ]
       };
@@ -388,8 +397,8 @@
         columnDefs: [
             {
                 field: 'Status.Name',
-                displayName: 'Status', cellTemplate: '<div>' +
-                    '<div class="status" data-bind="style: { backgroundColor : $parent.entity.Status.Color }">' +
+                displayName: 'Status', cellTemplate: '<div class="cell-padding">' +
+                    '<div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }">' +
                     '</div>' +
                     '<span data-bind="text: $parent.entity.Status.Name">' +
                     '</span>' +

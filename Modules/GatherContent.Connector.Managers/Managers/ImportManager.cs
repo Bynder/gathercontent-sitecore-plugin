@@ -756,22 +756,55 @@ namespace GatherContent.Connector.Managers.Managers
         /// <param name="statusId"></param>
         /// <param name="language"></param>
         /// <returns></returns>
-        public List<ItemResultModel> ImportItems(string itemId, List<ImportItemModel> items, string projectId, string statusId, string language)
+        private List<ItemResultModel> Import(string itemId, List<ImportItemModel> items, string projectId, string statusId, string language)
         {
             var model = new List<ItemResultModel>();
-            var templateMappings = new List<TemplateMapping>();
 
-            var gcDataDictionary = new Dictionary<string, string>(); //(GC Id, GC Name)
+            //get all paths
+            var fullGcPaths = GetItemsMap(projectId, items.Select(x => x.Id));
+            var pathItemsToBeRemoved = new List<int>();
 
-            foreach (var importItem in items)
+            Dictionary<string, List<ItemEntity>> shortPaths = new Dictionary<string, List<ItemEntity>>();
+            if (fullGcPaths.Count() > 1)
+            {
+                var firstPath = fullGcPaths.First();
+                foreach (var path in firstPath.Value)
+                {
+                    //if all paths start with same item and this item is not selected
+                    //TODO: check all cases work: add UT
+                    if (fullGcPaths.Select(x => x.Value).All(x => x.First().Data.Id == path.Data.Id) && !items.Select(x => x.Id).Contains(path.Data.Id.ToString()))
+                    {
+                        pathItemsToBeRemoved.Add(path.Data.Id);
+                    }
+                }
+            }
+
+            foreach (var item in fullGcPaths)
+            {
+                List<ItemEntity> itemsToAdd = new List<ItemEntity>();
+
+                foreach (var gcPathItem in item.Value)
+                {
+                    if (!pathItemsToBeRemoved.Contains(gcPathItem.Data.Id))
+                    {
+                        itemsToAdd.Add(gcPathItem);
+                    }
+                }
+                shortPaths.Add(item.Key, itemsToAdd);
+            }
+
+            var sorted = shortPaths.OrderBy(x => x.Value.Count).ThenBy(x => x.Value.First().Data.Name);//sort to start from shortest and alphabetically asc
+
+            foreach (var path in sorted)
             {
                 var itemResponseModel = new ItemResultModel
                 {
                     IsImportSuccessful = true,
-                    ImportMessage = "Import Successful",
+                    ImportMessage = "Import Successful"
                 };
 
-                var gcItem = ItemsService.GetSingleItem(importItem.Id);
+                var gcItem = path.Value.Last(); //this is the item we selected to import
+                var item = items.FirstOrDefault(x => x.Id == gcItem.Data.Id.ToString()); //item coming from UI; selected mapping and other info
 
                 if (gcItem != null && gcItem.Data != null && gcItem.Data.TemplateId != null)
                 {
@@ -799,15 +832,12 @@ namespace GatherContent.Connector.Managers.Managers
                     };
 
                     //element that corresponds to item in CMS that holds mappings
-                    TemplateMapping templateMapping = MappingRepository.GetMappingById(importItem.SelectedMappingId);
+                    TemplateMapping templateMapping = MappingRepository.GetMappingById(item.SelectedMappingId);
 
                     List<Element> gcFields = gcItem.Data.Config.SelectMany(i => i.Elements).ToList();
 
                     if (templateMapping != null) // template found, now map fields here
                     {
-                        //save id and gc item name to use as item name later
-                        gcDataDictionary.Add(gcItem.Data.Id.ToString(), gcItem.Data.Name);
-
                         var files = new List<File>();
                         if (gcItem.Data.Config.SelectMany(config => config.Elements).Select(element => element.Type).Contains("files"))
                         {
@@ -865,18 +895,127 @@ namespace GatherContent.Connector.Managers.Managers
                             }
                         }
 
-                        templateMapping.FieldMappings.Add(new FieldMapping
-                        {
-                            CmsField = new CmsField
-                            {
-                                TemplateField = new CmsTemplateField { FieldName = "GC Content Id" },
-                                Value = gcItem.Data.Id.ToString()
-                            }
-                        });
-
                         if (!fieldError)
                         {
-                            templateMappings.Add(templateMapping);
+                            var cmsContentIdField = new FieldMapping
+                            {
+                                CmsField = new CmsField
+                                {
+                                    TemplateField = new CmsTemplateField { FieldName = "GC Content Id" },
+                                    Value = gcItem.Data.Id.ToString()
+                                }
+                            };
+                            templateMapping.FieldMappings.Add(cmsContentIdField);
+
+                            var cmsItem = new CmsItem
+                            {
+                                Template = templateMapping.CmsTemplate,
+                                Title = gcItem.Data.Name,
+                                Fields = templateMapping.FieldMappings.Select(x => x.CmsField).ToList(),
+                                Language = language
+                            };
+
+                            var gcPath = string.Join("/", path.Value.Select(x => x.Data.Name));
+
+                            var parentId = itemId;
+
+                            bool alreadyMappedItemInPath = false;
+                            //for each mapping which is fact GC Item => Sitecore/Umbraco item - get GC Path and run through its each item
+                            for (int i = 0; i < path.Value.Count; i++)
+                            {
+                                //for each path item check if it exists already in CMS and if yes - skip; otherwise - add not mapped item
+                                if (i == path.Value.Count - 1)
+                                {
+                                    //if we at the last item in the path - import mapped item
+                                    if (ItemsRepository.IfMappedItemExists(parentId, cmsItem, templateMapping.MappingId, gcPath))
+                                    {
+                                        cmsItem.Id = ItemsRepository.AddNewVersion(parentId, cmsItem, templateMapping.MappingId, gcPath);
+                                    }
+                                    else
+                                    {
+                                        cmsItem.Id = ItemsRepository.CreateMappedItem(parentId, cmsItem, templateMapping.MappingId, gcPath);
+                                    }
+                                    parentId = cmsItem.Id;
+                                    //
+
+                                    var fields = templateMapping.FieldMappings;
+
+                                    foreach (var field in fields)
+                                    {
+                                        if (field.GcField != null)
+                                        {
+                                            switch (field.GcField.Type)
+                                            {
+                                                case "choice_radio":
+                                                case "choice_checkbox":
+                                                {
+                                                    ItemsRepository.MapChoice(cmsItem, field.CmsField);
+                                                }
+                                                    break;
+                                                case "files":
+                                                {
+                                                    ItemsRepository.MapFile(cmsItem, field.CmsField);
+                                                }
+                                                    break;
+                                                default:
+                                                {
+                                                    ItemsRepository.MapText(cmsItem, field.CmsField);
+                                                }
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                    //set CMS link after we got out CMS Id
+                                    var cmsLink = ItemsRepository.GetCmsItemLink(HttpContext.Current.Request.Url.Host, cmsItem.Id);
+                                    itemResponseModel.CmsLink = cmsLink;
+                                    
+
+                                    if (!string.IsNullOrEmpty(statusId))
+                                    {
+                                        var status = PostNewItemStatus(gcItem.Data.Id.ToString(), statusId, projectId);
+                                        if (itemResponseModel == null) continue;
+                                        itemResponseModel.Status.Color = status.Color;
+                                        itemResponseModel.Status.Name = status.Name;
+                                    }
+                                }
+                                else
+                                {
+                                    var currentCmsItem = new CmsItem
+                                    {
+                                        Title = path.Value[i].Data.Name,
+                                        Language = language
+                                    };
+                                    //if we are not at the selected item, somewhere in the middle
+                                    //1. если замапленный айтем существует (такое же название и такой же gc path?), то тогда выставляем alreadyMappedItemInPath = тру
+                                    //и пропускаем всякое создание, сеттим только парент id
+                                    //2. иначе если есть незамапленный айтем:
+                                    // - alreadyMappedItemInPath == true = - скипуем создание, выставляем его как парент айди
+                                    // - alreadyMappedItemInPath == false, - скипуем всё, парент айди не меняем
+                                    //3. айтема никакого нет
+                                    // - alreadyMappedItemInPath == true = - создаём незамапленный айтем, выставляем его как парент айди
+                                    // - alreadyMappedItemInPath == false, - скипуем всё, парент айди не меняем
+                                    if (ItemsRepository.IfMappedItemExists(parentId, currentCmsItem))
+                                    {
+                                        //cmsItem.Id = ItemsRepository.CreateNotMappedItem(parentId, notMappedCmsItem);
+                                        parentId = cmsItem.Id;
+                                        alreadyMappedItemInPath = true;
+                                    }
+                                    else if (ItemsRepository.IfNotMappedItemExists(parentId, currentCmsItem))
+                                    {
+                                        if (alreadyMappedItemInPath)
+                                        {
+                                            parentId = ItemsRepository.GetItemId(parentId, currentCmsItem);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (alreadyMappedItemInPath)
+                                        {
+                                            parentId = ItemsRepository.CreateNotMappedItem(parentId, currentCmsItem);
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                     else
@@ -889,147 +1028,21 @@ namespace GatherContent.Connector.Managers.Managers
                 model.Add(itemResponseModel);
             }
 
-            var itemsMap = GetItemsMap(projectId, model.Select(x => x.GcItem.Id));
-
-            //make paths short as much as possible
-            //get first path and remove all same parent items for all paths
-            var pathItemsToBeRemoved = new List<string>();
-
-            Dictionary<string, List<GcPathItem>> shortPaths = new Dictionary<string, List<GcPathItem>>();
-            if (itemsMap.Count() > 1)
-            {
-                var firstPath = itemsMap.First();
-                foreach (var path in firstPath.Value)
-                {
-                    //if all paths start with same item and this item is not selected
-                    //TODO: check all cases work: add UT
-                    if (itemsMap.Select(x => x.Value).All(x => x.First().Id == path.Id) && !items.Select(x => x.Id).Contains(path.Id))
-                    {
-                        pathItemsToBeRemoved.Add(path.Id);
-                    }
-                }
-            }
-
-            foreach (var item in itemsMap)
-            {
-                List<GcPathItem> itemsToAdd = new List<GcPathItem>();
-
-                foreach (var gcPathItem in item.Value)
-                {
-                    if (!pathItemsToBeRemoved.Contains(gcPathItem.Id))
-                    {
-                        itemsToAdd.Add(gcPathItem);
-                    }
-                }
-                itemsToAdd.Reverse();
-                shortPaths.Add(item.Key, itemsToAdd);
-            }
-
-            //run through template mappings
-            foreach (var templateMapping in templateMappings)
-            {
-                var gcContentId = templateMapping.FieldMappings.Select(x => x.CmsField).First(f => f.TemplateField.FieldName == "GC Content Id").Value.ToString();
-
-                var cmsItem = new CmsItem
-                {
-                    Template = templateMapping.CmsTemplate,
-                    Title = gcDataDictionary[gcContentId],
-                    Fields = templateMapping.FieldMappings.Select(x => x.CmsField).ToList(),
-                    Language = language
-                };
-
-                var path = shortPaths[gcContentId];//path for gc item we are going to import now
-                var gcPath = string.Join("/", path.Select(x => x.Name));
-
-                var parentId = itemId;
-
-                //для каждого маппинга (что по сути gc айтем => sitecore/umbraco айтем) берём GC путь и бежим по нему.
-                for (int i = 0; i < path.Count; i++)
-                {
-                    //для каждого айтема в пути смотрим, существует ли он уже в CMS (независимо от языка); если да - скипуем, если нет - добавляем фейковый(дефолтный)
-                    if (i == path.Count - 1)
-                    {
-                        //когда доходим по последнего айтема в пути, то есть до выбранного импортировать - делаем уже нормальный айтем
-                        if (ItemsRepository.IfMappedItemExists(parentId, cmsItem, templateMapping.MappingId, gcPath))
-                        {
-                            cmsItem.Id = ItemsRepository.AddNewVersion(parentId, cmsItem, templateMapping.MappingId, gcPath);
-                        }
-                        else
-                        {
-                            cmsItem.Id = ItemsRepository.CreateMappedItem(parentId, cmsItem, templateMapping.MappingId, gcPath);
-                        }
-                        parentId = cmsItem.Id;
-                        //
-
-                        var cmsLink = ItemsRepository.GetCmsItemLink(HttpContext.Current.Request.Url.Host, cmsItem.Id);
-
-                        var idField = cmsItem.Fields.FirstOrDefault(f => f.TemplateField.FieldName == "GC Content Id");
-                        var itemResponseModel = model.FirstOrDefault(item => idField != null && item.GcItem.Id == idField.Value.ToString());
-                        if (itemResponseModel != null)
-                        {
-                            itemResponseModel.CmsLink = cmsLink;
-                        }
-
-                        var fields = templateMapping.FieldMappings;
-
-                        foreach (var field in fields)
-                        {
-                            if (field.GcField != null)
-                            {
-                                switch (field.GcField.Type)
-                                {
-                                    case "choice_radio":
-                                    case "choice_checkbox":
-                                        {
-                                            ItemsRepository.MapChoice(cmsItem, field.CmsField);
-                                        }
-                                        break;
-                                    case "files":
-                                        {
-                                            ItemsRepository.MapFile(cmsItem, field.CmsField);
-                                        }
-                                        break;
-                                    default:
-                                        {
-                                            ItemsRepository.MapText(cmsItem, field.CmsField);
-                                        }
-                                        break;
-                                }
-                            }
-                        }
-
-                        if (!string.IsNullOrEmpty(statusId))
-                        {
-                            if (idField != null)
-                            {
-                                var status = PostNewItemStatus(idField.Value.ToString(), statusId, projectId);
-                                if (itemResponseModel == null) continue;
-                                itemResponseModel.Status.Color = status.Color;
-                                itemResponseModel.Status.Name = status.Name;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var notMappedCmsItem = new CmsItem
-                        {
-                            Title = path[i].Name,
-                            Language = language
-                        };
-                        //if we are not at the selected item, somewhere in the middle
-                        if (!ItemsRepository.IfNotMappedItemExists(parentId, notMappedCmsItem))
-                        {
-                            cmsItem.Id = ItemsRepository.CreateNotMappedItem(parentId, notMappedCmsItem);
-                            parentId = cmsItem.Id;
-                        }
-                        else
-                        {
-                            parentId = ItemsRepository.GetItemId(parentId, notMappedCmsItem);
-                        }
-                    }
-                }
-            }
             return model;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="items"></param>
+        /// <param name="projectId"></param>
+        /// <param name="statusId"></param>
+        /// <param name="language"></param>
+        /// <returns></returns>
+        public List<ItemResultModel> ImportItems(string itemId, List<ImportItemModel> items, string projectId, string statusId, string language)
+        {
+            return Import(itemId, items, projectId, statusId, language);
         }
 
         /// <summary>
@@ -1038,10 +1051,10 @@ namespace GatherContent.Connector.Managers.Managers
         /// <param name="projectId"></param>
         /// <param name="gcItemIds"></param>
         /// <returns></returns>
-        public Dictionary<string, List<GcPathItem>> GetItemsMap(string projectId, IEnumerable<string> gcItemIds)
+        public Dictionary<string, List<ItemEntity>> GetItemsMap(string projectId, IEnumerable<string> gcItemIds)
         {
-            List<GcPathItem> items = new List<GcPathItem>();
-            Dictionary<string, List<GcPathItem>> paths = new Dictionary<string, List<GcPathItem>>();
+            List<ItemEntity> items = new List<ItemEntity>();
+            Dictionary<string, List<ItemEntity>> paths = new Dictionary<string, List<ItemEntity>>();
             var accounts = AccountsService.GetAccounts();
             var account = accounts.Data.FirstOrDefault();
 
@@ -1054,22 +1067,16 @@ namespace GatherContent.Connector.Managers.Managers
                     foreach (var gcItemId in gcItemIds)
                     {
                         string itemInPathId = gcItemId;
-                        GcPathItem item = null;
-                        List<GcPathItem> path = new List<GcPathItem>();
+                        ItemEntity item = null;
+                        List<ItemEntity> path = new List<ItemEntity>();
                         while (true)
                         {
-                            if (!items.Any(x => x.Id.Equals(itemInPathId))) //if we've not requested it yet
+                            if (items.All(x => x.Data.Id.ToString() != itemInPathId)) //if we've not requested it yet
                             {
                                 var gcItem = ItemsService.GetSingleItem(itemInPathId);
                                 if (gcItem != null)
                                 {
-                                    item = new GcPathItem
-                                    {
-                                        Id = itemInPathId,
-                                        Name = gcItem.Data.Name,
-                                        ParentId = gcItem.Data.ParentId
-                                    };
-
+                                    item = gcItem;
                                     items.Add(item);
                                 }
                                 else
@@ -1078,21 +1085,22 @@ namespace GatherContent.Connector.Managers.Managers
                             }
                             else
                             {
-                                item = items.First(x => x.Id == itemInPathId);
+                                item = items.First(x => x.Data.Id.ToString() == itemInPathId);
                             }
 
 
                             if (item != null)
                             {
                                 path.Add(item);
-                                if (item.ParentId != 0)
+                                if (item.Data.ParentId != 0)
                                 {
-                                    itemInPathId = item.ParentId.ToString();
+                                    itemInPathId = item.Data.ParentId.ToString();
                                     continue;
                                 }
                             }
                             break;
                         }
+                        path.Reverse();
                         paths.Add(gcItemId, path);
                     }
                     return paths;
@@ -1110,7 +1118,7 @@ namespace GatherContent.Connector.Managers.Managers
         /// <param name="statusId"></param>
         /// <param name="language"></param>
         /// <returns></returns>
-        public ImportResultModel ImportItemsWithLocation(List<LocationImportItemModel> items, string projectId, string statusId, string language)
+        public List<ItemResultModel> ImportItemsWithLocation(List<LocationImportItemModel> items, string projectId, string statusId, string language)
         {
             var importItems = new List<ImportItemModel>();
 
@@ -1129,24 +1137,15 @@ namespace GatherContent.Connector.Managers.Managers
                 }
             }
 
-            List<MappingResultModel> cmsItems = MapItems(importItems);
-            if (cmsItems == null) return null;
-            List<MappingResultModel> successfulImportedItems = GetSuccessfulImportedItems(cmsItems);
+            var result = new List<ItemResultModel>();
 
-            foreach (var successfulImportedItem in successfulImportedItems)
+            var groupByLocation = importItems.GroupBy(x => x.DefaultLocation);
+
+            foreach (var locationGroup in groupByLocation)
             {
-                //ItemsRepository.CreateItem(successfulImportedItem.DefaultLocation, new CmsItem
-                //{
-
-                //});
+                var importedItems = ImportItems(locationGroup.Key, locationGroup.ToList(), projectId, statusId, language);
+                result.AddRange(importedItems);
             }
-
-            if (!string.IsNullOrEmpty(statusId))
-            {
-                PostNewStatusesForItems(successfulImportedItems, statusId, projectId);
-            }
-
-            var result = new ImportResultModel(cmsItems);
 
             return result;
         }

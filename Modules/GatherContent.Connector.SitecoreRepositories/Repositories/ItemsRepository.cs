@@ -687,6 +687,36 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         /// <param name="parentId"></param>
         /// <param name="cmsItem"></param>
         /// <returns></returns>
+        public bool IfMappedItemExists(string parentId, CmsItem cmsItem)
+        {
+            if (parentId != null)
+            {
+                using (new SecurityDisabler())
+                {
+                    using (new LanguageSwitcher(cmsItem.Language))
+                    {
+                        var validName = ItemUtil.ProposeValidItemName(cmsItem.Title);
+                        var parent = ContextDatabase.GetItem(new ID(parentId));
+                        if (parent != null)
+                        {
+                            var items = parent.Axes.SelectItems(string.Format("./*[@@name='{0}' and @GCPath!='']", validName));
+                            if (items != null && items.Any())
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <param name="cmsItem"></param>
+        /// <returns></returns>
         public bool IfNotMappedItemExists(string parentId, CmsItem cmsItem)
         {
             if (parentId != null)

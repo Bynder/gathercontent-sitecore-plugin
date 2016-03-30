@@ -26,6 +26,8 @@ namespace GatherContent.Connector.IRepositories.Interfaces
 
         bool IfMappedItemExists(string itemId, CmsItem cmsItem, string mappingId, string gcPath);
 
+        bool IfMappedItemExists(string parentId, CmsItem cmsItem);
+
         bool IfNotMappedItemExists(string parentId, CmsItem cmsItem);
 
         string AddNewVersion(string itemId, CmsItem cmsItem, string mappingId, string gcPath);

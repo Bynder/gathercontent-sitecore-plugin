@@ -234,7 +234,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
         {
             try
             {
-                ImportResultModel result = ImportManager.ImportItemsWithLocation(items, projectId, statusId, language);
+                var result = ImportManager.ImportItemsWithLocation(items, projectId, statusId, language);
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
             catch (WebException exception)

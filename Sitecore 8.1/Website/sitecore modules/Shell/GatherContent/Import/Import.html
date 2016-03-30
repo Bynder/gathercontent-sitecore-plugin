@@ -1,13 +1,16 @@
 ﻿<link href="/sitecore modules/shell/GatherContent/css/GatherContent.css" rel="stylesheet" />
+<link href="/sitecore modules/shell/GatherContent/css/dynatree/ui.dynatree.css" rel="stylesheet" />
 <link href="/sitecore modules/shell/GatherContent/css/KoGrid.css" rel="stylesheet" />
 <link href="/sitecore modules/shell/GatherContent/Import/Import.css" rel="stylesheet" />
 <link href="/sitecore modules/shell/GatherContent/css/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-
 
 <script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/jquery_2.1.1.min.js"></script>
 <script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/knockout-3.4.0.js"></script>
 <script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/koGrid-2.1.1.js"></script>
 <script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/GatherContent.js"></script>
+<script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/jquery-ui.custom.min.js"></script>
+<script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/jquery.cookie.js"></script>
+<script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/js/jquery.dynatree.js"></script>
 <script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/Import/Import.js"></script>
 <script type="text/javascript" language="javascript" src="/sitecore modules/shell/GatherContent/css/bootstrap/js/bootstrap.min.js"></script>
 
@@ -19,12 +22,12 @@
 </script>
 
 <div data-bind="visible: getMode(1)" class="gathercontent-import">
-    
+
     <div class="filter_wrapper_import">
         <div class="title_filter">GATHER CONTENT PROJECT</div>
         <select class="custom_select" style="width: 250px" data-bind="options: projects, optionsText: 'Name', optionsValue: 'Id', value: project, event:{ change: $root.projectChanged}"></select>
     </div>
-    
+
 
     <div class="filter_wrapper">
         <div class="filter_wrapper_import">
@@ -37,13 +40,13 @@
         </div>
     </div>
 
-    <div class="import-grid" data-bind="koGrid: gridOptions"></div>  
-    
-    <div class="footer_btn"> 
-       
-            <input type="button" class="mappings-btn" style="margin-top: 0" value="Next>" data-bind="click: buttonClick.bind($data, 2)" />
-            <div data-bind="text: errorText" class="warning-message"></div>
-        
+    <div class="import-grid" data-bind="koGrid: gridOptions"></div>
+
+    <div class="footer_btn">
+
+        <input type="button" class="mappings-btn" style="margin-top: 0" value="Next>" data-bind="click: buttonClick.bind($data, 2)" />
+        <div data-bind="text: errorText" class="warning-message"></div>
+
         <!--<input type="button" value="Close" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" />-->
     </div>
     <div class="help-link">
@@ -56,10 +59,22 @@
         <h2 class="title">Confirm import selection</h2>
         <p>Please review your import selection before importing.</p>
     </div>
-    
-    
-    <div class="import-grid" data-bind="koGrid: gridConfirmOptions"></div>  
-    
+    <div>
+        Language
+        <select class="custom_select" style="width: 250px" data-bind="options: languages, optionsText: 'Name', optionsValue: 'IsoCode', value: language"></select>
+    </div>
+    <div>
+        Import destination
+        <input class="input-block" placeholder="Default location" data-bind="value: defaultLocationTitle, click: openDropTree" type="text" />
+        <div id="location-droptree" data-bind="visible: showDropTree" style="position: absolute;top: 145px;right: 20px;width: 300px;height: 400px;z-index: 1000;display: block">
+            <div style="width:300px;height:400px;">
+                <div> </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="import-confirm-grid" data-bind="koGrid: gridConfirmOptions"></div>
+
 
     <div class="footer_btn">
         <div>
@@ -93,8 +108,8 @@
         <div data-bind="if: notImportedItemsCount() > 0" class="import-padding">
             <img src="~/icon/Apps/32x32/Warning (1).png" width="20" height="20"> <span data-bind=" text: notImportedItemsCount()"></span> items were not imported. Check errors below.
         </div>
-        
-        <div class="import-result-grid" data-bind="koGrid: gridResultOptions"></div>  
+
+        <div class="import-result-grid" data-bind="koGrid: gridResultOptions"></div>
 
         <div data-bind="if: notImportedItemsCount() > 0" class="import-padding">
             <span>Template not mapped:</span> Please check template mapping.<br />

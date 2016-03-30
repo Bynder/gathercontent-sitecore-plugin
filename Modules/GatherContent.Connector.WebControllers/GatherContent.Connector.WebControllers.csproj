@@ -213,6 +213,7 @@
     <Compile Include="Models\Import\ImportListItemViewModel.cs" />
     <Compile Include="Models\Import\ImportResultViewModel.cs" />
     <Compile Include="Models\Import\ImportViewModel.cs" />
+    <Compile Include="Models\Import\LanguageViewModel.cs" />
     <Compile Include="Models\Import\ProjectViewModel.cs" />
     <Compile Include="Models\Import\StatusViewModel.cs" />
     <Compile Include="Models\Import\TemplateViewModel.cs" />

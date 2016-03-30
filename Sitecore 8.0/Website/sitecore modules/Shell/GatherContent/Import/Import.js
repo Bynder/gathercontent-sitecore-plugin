@@ -16,6 +16,13 @@
     self.notImportedItemsCount = ko.observable(),
     self.currentMode = ko.observable(MODE.ChooseItmesForImort);
 
+    self.language = ko.observable(getUrlVars()["l"]),
+    self.languages = ko.observableArray([]),
+
+    self.defaultLocationTitle = ko.observable(getUrlVars()["t"]),
+    self.defaultLocation = ko.observable(getUrlVars()["id"]),
+    self.showDropTree = ko.observable(false);
+
     self.projects = ko.observableArray([]),
     self.items = ko.observableArray(),
     self.statuses = ko.observableArray([]),
@@ -116,6 +123,8 @@
         self.statuses(response.Filters.Statuses);
 
         self.templates(response.Filters.Templates);
+
+        self.languages(response.Languages);
     }
 
     self.projectChanged = function (obj, event) {
@@ -188,9 +197,61 @@
 
     self.query.subscribe(self.filter);
 
+    self.openDropTree = function () {
+        var id = "location-droptree";
+        var locationId = self.defaultLocation();
+        if (!locationId.startsWith("{")) {
+            locationId = "{" + locationId + "}";
+        }
+
+        if (!self.showDropTree()) {
+            self.showDropTree(true);
+            
+            jQuery("#" + id).dynatree({
+                autoFocus: false,
+                imagePath: "~/icon/",
+                initAjax: {
+                    url: '/api/sitecore/DropTree/GetTopLevelNode?id=' + locationId,
+                    data: { mode: "funnyMode" }
+                },
+                onActivate: function (node) {
+                    var path = "";
+                    var keys = node.getKeyPath().split("/");
+                    keys.shift();
+
+                    for (var i = 0; i < keys.length; i++) {
+                        if (i != keys.length - 1) {
+                            path += node.tree.getNodeByKey(keys[i]).data.title + " / ";
+                        } else {
+                            path += node.tree.getNodeByKey(keys[i]).data.title;
+                        }
+                    }
+
+                    self.showDropTree(false);
+                    self.defaultLocation(node.data.key);
+                    self.defaultLocationTitle(node.data.title);
+                },
+                onLazyRead: function (node) {
+                    node.appendAjax({
+                        url: "/api/sitecore/DropTree/GetChildren?id=" + node.data.key,
+                        data: {
+                            key: node.data.key,
+                            mode: "funnyMode"
+                        }
+                    });
+                }
+            });
+        }
+        else {
+            self.showDropTree(false);
+        }
+    }
+
     //button click events
 
     self.import = function () {
+        //self.defaultLocation
+        //self.language
         var id = getUrlVars()["id"];
         var selectedItems = self.selectedItems();
         var items = [];
@@ -202,27 +263,27 @@
         var project = self.project();
         if (!self.statusPostState())
             status = "";
-        jQuery.ajax
-        ({
-            type: "POST",
-            url: '/api/sitecore/Import/ImportItems?id={' + id + '}&projectId=' + project + '&statusId=' + status + '&language=' + lang,
-            dataType: 'json',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(items),
-            success: function (response) {
-                if (response.status == 'error') {
-                    self.postErrorHandle(response.message);
-                }
-                var notImportedItemsCount = self.getNotImportedItemsCount(response);
-                self.notImportedItemsCount(notImportedItemsCount);
-                self.successImportedItemsCount(response.length - notImportedItemsCount);
-                self.resultItems(response);
-                self.buttonClick(MODE.ImportResult);
-            },
-            error: function (response) {
-                self.errorCallbackHandle(response);
-            }
-        });
+        //jQuery.ajax
+        //({
+        //    type: "POST",
+        //    url: '/api/sitecore/Import/ImportItems?id={' + id + '}&projectId=' + project + '&statusId=' + status + '&language=' + lang,
+        //    dataType: 'json',
+        //    contentType: "application/json; charset=utf-8",
+        //    data: JSON.stringify(items),
+        //    success: function (response) {
+        //        if (response.status == 'error') {
+        //            self.postErrorHandle(response.message);
+        //        }
+        //        var notImportedItemsCount = self.getNotImportedItemsCount(response);
+        //        self.notImportedItemsCount(notImportedItemsCount);
+        //        self.successImportedItemsCount(response.length - notImportedItemsCount);
+        //        self.resultItems(response);
+        //        self.buttonClick(MODE.ImportResult);
+        //    },
+        //    error: function (response) {
+        //        self.errorCallbackHandle(response);
+        //    }
+        //});
     }
 
     self.getNotImportedItemsCount = function (items) {

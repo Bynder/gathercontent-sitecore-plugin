@@ -41,6 +41,19 @@ namespace GatherContent.Connector.WebControllers.Controllers
             {
                 var items = ImportManager.GetImportDialogModel(id, projectId);
                 var importViewModel = new ImportViewModel();
+
+                var languages = Sitecore.Context.Database.GetLanguages();
+
+                foreach (var language in languages)
+                {
+                    importViewModel.Languages.Add(new LanguageViewModel
+                    {
+                        Name = language.CultureInfo.DisplayName,
+                        IsoCode = language.CultureInfo.TwoLetterISOLanguageName
+                    });
+                }
+             
+
                 if (items != null)
                 {
                     foreach (var item in items)

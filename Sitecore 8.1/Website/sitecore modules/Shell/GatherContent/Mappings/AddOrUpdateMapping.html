@@ -55,8 +55,8 @@
                         <strong>GatherContent:</strong>
                     </span>
                 </div>
-                <select class="custom_selected sitecore-template-select" data-bind="options: GcProjects, optionsText: 'Name', value: SelectedGcProject, event:{ change: $root.gcProjectChanged}"></select>
-                <select class="custom_selected sitecore-template-select" data-bind="options: GcTemplates, optionsText: 'Name', value: SelectedGcTemplate, event:{ change: $root.gcTemplateChanged}"></select>
+                <select class="custom_selected sitecore-template-select" data-bind="options: GcProjects, optionsText: 'Name', value: SelectedGcProject, event:{ change: $root.gcProjectChanged}, css: { notvalid: NotValidGcProject() == true }"></select>
+                <select class="custom_selected sitecore-template-select" data-bind="options: GcTemplates, optionsText: 'Name', value: SelectedGcTemplate, event:{ change: $root.gcTemplateChanged}, css: { notvalid: NotValidGcTemplate() == true }"></select>
 
                  <!--<span data-bind="text: ValidationMessage" class="validation-message"></span>-->
                 <input data-bind="value: DefaultLocation, visible: false, attr: { 'data-openerid': OpenerId }, click: openDropTree" type="text" />
@@ -66,7 +66,7 @@
                 <div class="clear">
 
                 </div>
-                <select class="custom_selected sitecore-template-select" data-bind="options: SitecoreTemplates, optionsText: 'SitrecoreTemplateName', value: SelectedScTemplate, event:{ change: $root.scTemplateChanged}"></select>
+                <select class="custom_selected sitecore-template-select" data-bind="options: SitecoreTemplates, optionsText: 'SitrecoreTemplateName', value: SelectedScTemplate, event:{ change: $root.scTemplateChanged}, css: { notvalid: NotValidScTemplate() == true }"></select>
             </div>
           
             <div style="clear: both;"></div>

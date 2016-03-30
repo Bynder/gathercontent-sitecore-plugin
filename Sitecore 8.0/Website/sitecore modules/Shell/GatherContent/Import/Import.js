@@ -317,6 +317,7 @@
 
     var options =
     {
+        afterSelectionChange: function () { return true; },
         showColumnMenu: false,
         showFilter: false,
         data: self.items,
@@ -327,7 +328,7 @@
         columnDefs: [
             {
                 field: 'Status.Name',
-                displayName: 'Status', cellTemplate: '<div><div class="status" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
+                displayName: 'Status', cellTemplate: '<div class="cell-padding"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
             },
             { field: 'Title', displayName: 'Item name' },
             { field: 'LastUpdatedInGC', displayName: 'Last updated in GatherContent' },
@@ -352,15 +353,15 @@
           columnDefs: [
               {
                   field: 'Status.Name',
-                  displayName: 'Status', cellTemplate: '<div><div class="status" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
+                  displayName: 'Status', cellTemplate: '<div class="cell-padding"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
               },
               { field: 'Title', displayName: 'Item name' },
               { field: 'Template.Name', displayName: 'Template name' },
               {
                   displayName: 'Specify mappings', cellTemplate: '<div data-bind="if: $parent.entity.AvailableMappings.Mappings.length > 0">' +
                       '<div data-bind="if: $parent.entity.AvailableMappings.Mappings.length == 1">' +
-                      '<span data-bind="text: $parent.entity.AvailableMappings.Mappings[0].Title"></span>' +
-                      '<select class=\"mappings\" \
+                      '<span class="cell-padding" data-bind="text: $parent.entity.AvailableMappings.Mappings[0].Title"></span>' +
+                      '<select class=\"mappings-cell\" \
                                data-bind="visible:false, options: $parent.entity.AvailableMappings.Mappings, \
                                optionsValue: \'Id\', \
                                optionsText: \'Title\',\
@@ -368,7 +369,7 @@
                          </select>' +
                       '</div>' +
                       '<div data-bind="if: $parent.entity.AvailableMappings.Mappings.length > 1">' +
-                          '<select class=\"mappings\" \
+                          '<select class=\"mappings-cell\" \
                                data-bind="options: $parent.entity.AvailableMappings.Mappings, \
                                optionsValue: \'Id\', \
                                optionsText: \'Title\',\
@@ -396,8 +397,8 @@
         columnDefs: [
             {
                 field: 'Status.Name',
-                displayName: 'Status', cellTemplate: '<div>' +
-                    '<div class="status" data-bind="style: { backgroundColor : $parent.entity.Status.Color }">' +
+                displayName: 'Status', cellTemplate: '<div class="cell-padding">' +
+                    '<div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }">' +
                     '</div>' +
                     '<span data-bind="text: $parent.entity.Status.Name">' +
                     '</span>' +

@@ -35,11 +35,36 @@ function ViewModel(data) {
     var self = this;
 
     this.NotValid = ko.observable(false);
+    this.NotValidGcProject = ko.observable(false);
+    this.NotValidGcTemplate = ko.observable(false);
+    this.NotValidScTemplate = ko.observable(false);
+
+    this.validate = function () {
+        var isValid = true;
+        if (self.GcMappingTitle() == null || self.GcMappingTitle() == "") {
+            self.NotValid(true);
+            isValid = false;
+        }
+        if (self.SelectedGcProject().Id == "0" ) {
+            self.NotValidGcProject(true);
+            isValid = false;
+        }
+        if (self.SelectedTemplateId() == "0") {
+            self.NotValidScTemplate(true);
+            isValid = false;
+        }
+        if (self.SelectedGcTemplate().Id == "0") {
+            self.NotValidGcTemplate(true);
+            isValid = false;
+        }
+
+        return isValid;
+    };
 
     //Methods
     this.saveMapping = function () {
 
-        if (self.GcMappingTitle() != null && self.GcMappingTitle() != "") {
+        if (self.validate()) {
 
             var model = new function() {
                 this.TemplateTabs = self.Tabs();
@@ -70,7 +95,7 @@ function ViewModel(data) {
 
         } else {
             //self.ValidationMessage("Mapping Title is mandatory  field");
-            self.NotValid(true);
+            //self.NotValid(true);
         }
     };
 
@@ -93,9 +118,22 @@ function ViewModel(data) {
                     data: { mode: "funnyMode" }
                 },
                 onActivate: function (node) {
-                    jQuery('[data-openerid="' + id + '"]').val(node.data.title);
+                    var path = "";
+                    var keys = node.getKeyPath().split("/");
+                    keys.shift();
+
+                    for (var i = 0; i < keys.length; i++) {
+                        if (i != keys.length - 1) {
+                            path += node.tree.getNodeByKey(keys[i]).data.title + " / ";
+                        } else {
+                            path += node.tree.getNodeByKey(keys[i]).data.title;
+                        }
+                    }
+
                     jQuery("#" + id).hide();
                     t.IsShowing(false);
+
+                    jQuery('[data-openerid="' + id + '"]').val(path);
                     mapping.DefaultLocation(node.data.key);
                     mapping.DefaultLocationText(node.data.title);        
                 },

@@ -20,6 +20,8 @@ namespace GatherContent.Connector.Managers.Managers
         #region Constants
         public const string FieldGcContentId = "{955A4DD9-6A01-458E-9791-3C99F5E076A8}";
         public const string FieldLastSyncDate = "{F9D2EA57-86A2-45CF-9C28-8D8CA72A2669}";
+        public const string FieldGcPath = "{3C8AB507-583A-47A4-9CAD-5BFB96059933}";
+        public const string FieldMappingId = "{1101A6B0-E4A7-402A-B7FD-C4F71E4B036B}";
         #endregion
 
         protected IMappingRepository MappingRepository;
@@ -94,7 +96,9 @@ namespace GatherContent.Connector.Managers.Managers
                 foreach (var field in cmsTemplate.TemplateFields)
                 {
                     if (field.FieldId != FieldGcContentId &&
-                        field.FieldId != FieldLastSyncDate)
+                        field.FieldId != FieldLastSyncDate &&
+                        field.FieldId != FieldGcPath &&
+                        field.FieldId != FieldMappingId)
                     {
                         var scField = new CmsTemplateFieldModel
                         {

@@ -180,6 +180,21 @@ namespace GatherContent.Connector.WebControllers.Controllers
                 #region Available templates
 
                 var sitecoreTemplates = new List<SitecoreTemplateViewModel>();
+
+
+                var defaultTemplate = new SitecoreTemplateViewModel
+                {
+                    SitrecoreTemplateName = "Select sitecore template *",
+                    SitrecoreTemplateId = "0",
+
+                };
+                defaultTemplate.SitecoreFields.Add(new SitecoreTemplateField
+                {
+                    SitecoreFieldId = "0",
+                    SitrecoreFieldName = "Do not map"
+                });
+
+                sitecoreTemplates.Add(defaultTemplate);
                 var availableCmsTemplates = MappingManager.GetAvailableTemplates();
                 foreach (var template in availableCmsTemplates)
                 {
@@ -212,6 +227,12 @@ namespace GatherContent.Connector.WebControllers.Controllers
                 model.Rules = GetMapRules();
 
                 var projects = MappingManager.GetAllGcProjects();
+
+                model.GcProjects.Add(new ProjectViewModel
+                {
+                    Id = "0",
+                    Name = "Select project *"
+                });
 
                 foreach (var project in projects)
                 {
@@ -257,16 +278,26 @@ namespace GatherContent.Connector.WebControllers.Controllers
             try
             {
                 var model = new List<TemplateViewModel>();
-                var templates = MappingManager.GetTemplatesByProjectId(gcProjectId);
-                foreach (var template in templates)
-                {
-                    var templateModel = new TemplateViewModel
-                    {
-                        Id = template.Id,
-                        Name = template.Name,
-                    };
 
-                    model.Add(templateModel);
+                model.Add(new TemplateViewModel
+                {            
+                    Id = "0",
+                    Name = "Select template *"
+                });
+
+                if (gcProjectId != "0")
+                {
+                    var templates = MappingManager.GetTemplatesByProjectId(gcProjectId);
+                    foreach (var template in templates)
+                    {
+                        var templateModel = new TemplateViewModel
+                        {
+                            Id = template.Id,
+                            Name = template.Name,
+                        };
+
+                        model.Add(templateModel);
+                    }
                 }
                 return Json(model, JsonRequestBehavior.AllowGet);
             }
@@ -292,27 +323,32 @@ namespace GatherContent.Connector.WebControllers.Controllers
             try
             {
                 var model = new List<TemplateTab>();
-                var tabs = MappingManager.GetFieldsByTemplateId(gcTemplateId);
 
-                foreach (var tab in tabs)
+                if (gcTemplateId != "0")
                 {
-                    var templateTab = new TemplateTab
-                    {
-                        TabName = tab.TabName
-                    };
+                    var tabs = MappingManager.GetFieldsByTemplateId(gcTemplateId);
 
-                    foreach (var templateField in tab.Fields)
+                    foreach (var tab in tabs)
                     {
-                        var field = new TemplateField
+                        var templateTab = new TemplateTab
                         {
-                            FieldId = templateField.Id,
-                            FieldName = templateField.Name,
-                            FieldType = templateField.Type,
+                            TabName = tab.TabName
                         };
-                        templateTab.Fields.Add(field);
+
+                        foreach (var templateField in tab.Fields)
+                        {
+                            var field = new TemplateField
+                            {
+                                FieldId = templateField.Id,
+                                FieldName = templateField.Name,
+                                FieldType = templateField.Type,
+                            };
+                            templateTab.Fields.Add(field);
+                        }
+                        model.Add(templateTab);
                     }
-                    model.Add(templateTab);
                 }
+
                 return Json(model, JsonRequestBehavior.AllowGet);
             }
             catch (WebException exception)

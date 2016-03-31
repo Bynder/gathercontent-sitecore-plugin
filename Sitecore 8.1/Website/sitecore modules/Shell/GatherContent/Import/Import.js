@@ -226,7 +226,7 @@
 
                     self.showDropTree(false);
                     self.defaultLocation(node.data.key);
-                    self.defaultLocationTitle(node.data.title);
+                    self.defaultLocationTitle(path);
                 },
                 onLazyRead: function (node) {
                     node.appendAjax({
@@ -389,7 +389,9 @@
                 displayName: 'Status', cellTemplate: '<div class="cell-padding"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
             },
             { field: 'Title', displayName: 'Item name' },
-            { field: 'LastUpdatedInGC', displayName: 'Last updated in GatherContent' },
+            {
+                field: 'LastUpdatedInGC', displayName: 'Last updated in GatherContent',
+            },
             { field: 'Breadcrumb', displayName: 'Path' },
             { field: 'Template.Name', displayName: 'Template name' }
         ]
@@ -465,7 +467,7 @@
             { field: 'Title', displayName: 'Item name' },
             { field: 'Message', displayName: 'Import status' },
             { field: 'GcTemplateName', displayName: 'Template name' },
-            { displayName: 'Open in Sitecore', cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null", click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
+            { displayName: 'Open in Sitecore', cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
             { displayName: 'Open in GatherContent', cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>' }
         ]
     };

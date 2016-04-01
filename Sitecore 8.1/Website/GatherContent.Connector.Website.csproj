@@ -108,6 +108,7 @@
     <Content Include="sitecore modules\Shell\GatherContent\js\GatherContent.js" />
     <Content Include="sitecore modules\Shell\GatherContent\js\jquery_2.1.1.min.js" />
     <Content Include="sitecore modules\Shell\GatherContent\js\koGrid-2.1.1.js" />
+    <Content Include="sitecore modules\Shell\GatherContent\js\moment.min.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\AddOrUpdateMapping.html" />
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\AddOrUpdateMapping.js" />
     <Content Include="sitecore modules\Shell\GatherContent\css\img\arrow.png" />

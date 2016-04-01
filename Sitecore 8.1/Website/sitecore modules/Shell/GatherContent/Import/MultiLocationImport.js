@@ -430,7 +430,7 @@
     }
 
     self.getMode = function (section) {
-        if (self.currentMode() === section) { 
+        if (self.currentMode() === section) {
             return true;
         }
         return false;
@@ -492,7 +492,10 @@
                         displayName: 'Status', cellTemplate: '<div class="cell-padding"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.color }"></div><span data-bind="text: $parent.entity.Status.name"></span></div>'
                     },
                     { field: 'Title', displayName: 'Item name' },
-                    { field: 'LastUpdatedInGC', displayName: 'Last updated in GatherContent' },
+                    {
+                        field: 'LastUpdatedInGC', displayName: 'Last updated in GatherContent',
+                        sortFn: dateSort
+                    },
                     { field: 'Breadcrumb', displayName: 'Path' },
                     { field: 'Template.name', displayName: 'Template name' }
                 ]
@@ -504,7 +507,7 @@
     var groupedOptions =
         {
             afterSelectionChange: function () { return true; },
-            selectWithCheckboxOnly:true,
+            selectWithCheckboxOnly: true,
             showColumnMenu: false,
             showFilter: false,
             canSelectRows: true,

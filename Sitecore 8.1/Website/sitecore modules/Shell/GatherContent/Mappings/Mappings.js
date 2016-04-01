@@ -119,8 +119,8 @@ function ViewModel() {
                 { field: 'GcTemplateName', width: '**', displayName: 'GatherContent template' },
                 { field: 'ScTemplateName', width: '**', displayName: 'Sitecore Template' },
                 { field: 'MappingTitle', width: '**', displayName: 'Mapping Title' },
-                { field: 'LastMappedDateTime', width: '**', displayName: 'Last mapped' },
-                { field: 'LastUpdatedDate', width: '**', displayName: 'Last updated in GatherContent' },
+                { field: 'LastMappedDateTime', width: '**', displayName: 'Last mapped', sortFn: dateSort },
+                { field: 'LastUpdatedDate', width: '**', displayName: 'Last updated in GatherContent', sortFn: dateSort },
                 { field: 'Manage', displayName: '&nbsp;', cellTemplate: '<a href="#" data-bind="click: function(){$parent.$userViewModel.editMapping($parent.entity)}">Edit</a>', width: 50, resizable: false, sortable: false, cellClass : 'edit' },
                 { field: 'Delete', displayName: '&nbsp;', cellTemplate: '<a href="#" data-bind="click: function(){$parent.$userViewModel.removeMapping($parent.entity)}">' + '<img src="~/icon/Office/32x32/delete.png" width="20" height="20"></a>', width: 50, resizable: false, sortable: false, cellClass: 'manage' }
             ]

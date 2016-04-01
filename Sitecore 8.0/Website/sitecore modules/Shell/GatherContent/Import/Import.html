@@ -65,17 +65,15 @@
     </div>
     <div>
         Import destination
-        <input class="mapping-input block" placeholder="Default location" data-bind="value: defaultLocationTitle, click: openDropTree" type="text" />
-        <div id="location-droptree" data-bind="visible: showDropTree" style="position: absolute;top: 115px;width: 300px;height: 400px;z-index: 1000;display: block">
+        <input class="input-block" placeholder="Default location" data-bind="value: defaultLocationTitle, click: openDropTree" type="text" />
+        <div id="location-droptree" data-bind="visible: showDropTree" style="position: absolute;top: 145px;right: 20px;width: 300px;height: 400px;z-index: 1000;display: block">
             <div style="width:300px;height:400px;">
                 <div> </div>
             </div>
         </div>
-        <!--<select data-bind="options: statuses, optionsText: 'Name', optionsValue: 'Id', value: statusFilter">
-        </select>-->
     </div>
 
-    <div class="import-grid" data-bind="koGrid: gridConfirmOptions"></div>
+    <div class="import-confirm-grid" data-bind="koGrid: gridConfirmOptions"></div>
 
 
     <div class="footer_btn">

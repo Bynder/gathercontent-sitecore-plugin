@@ -392,7 +392,8 @@ input[type="button"] {
 
 .kgTopPanel {
     background: #5e5e5e;
-    height: 40px !important
+    height: 40px !important;
+    position: inherit;
 }
 .kgHeaderText {
     font-family: Arial, Helvetica, sans-serif;

@@ -32,10 +32,11 @@ namespace GatherContent.Connector.Website.Commands
                     return;
                 }
                 var item = context.Items[0];
+                
                 var parameters = new NameValueCollection
                                      {
                                          { "id", item.ID.ToString() }, 
-                                         { "title", item.Name }, 
+                                         { "title", item.Paths.Path }, 
                                          { "language", item.Language.ToString() }, 
                                          { "version", item.Version.ToString() }, 
                                          { "load", StringUtil.GetString(new[] { context.Parameters["load"] }) }, 

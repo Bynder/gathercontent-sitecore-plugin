@@ -19,8 +19,8 @@
     self.language = ko.observable(getUrlVars()["l"]),
     self.languages = ko.observableArray([]),
 
-    self.defaultLocationTitle = ko.observable(getUrlVars()["t"]),
-    self.defaultLocation = ko.observable(getUrlVars()["id"]),
+    self.defaultLocationTitle = ko.observable(decodeURI(getUrlVars()["t"])),
+    self.defaultLocation = ko.observable("{"+getUrlVars()["id"]+"}"),
     self.showDropTree = ko.observable(false);
 
     self.projects = ko.observableArray([]),
@@ -200,10 +200,7 @@
     self.openDropTree = function () {
         var id = "location-droptree";
         var locationId = self.defaultLocation();
-        if (!locationId.startsWith("{")) {
-            locationId = "{" + locationId + "}";
-        }
-
+      
         if (!self.showDropTree()) {
             self.showDropTree(true);
             
@@ -229,7 +226,7 @@
 
                     self.showDropTree(false);
                     self.defaultLocation(node.data.key);
-                    self.defaultLocationTitle(node.data.title);
+                    self.defaultLocationTitle(path);
                 },
                 onLazyRead: function (node) {
                     node.appendAjax({
@@ -252,38 +249,38 @@
     self.import = function () {
         //self.defaultLocation
         //self.language
-        var id = getUrlVars()["id"];
+        var id = self.defaultLocation();
         var selectedItems = self.selectedItems();
         var items = [];
         selectedItems.forEach(function (item, i) {
             items.push({ Id: item.Id, SelectedMappingId: item.AvailableMappings.SelectedMappingId });
         });
-        var lang = getUrlVars()["l"];
+        var lang = self.language();
         var status = self.statusFilter();
         var project = self.project();
         if (!self.statusPostState())
             status = "";
-        //jQuery.ajax
-        //({
-        //    type: "POST",
-        //    url: '/api/sitecore/Import/ImportItems?id={' + id + '}&projectId=' + project + '&statusId=' + status + '&language=' + lang,
-        //    dataType: 'json',
-        //    contentType: "application/json; charset=utf-8",
-        //    data: JSON.stringify(items),
-        //    success: function (response) {
-        //        if (response.status == 'error') {
-        //            self.postErrorHandle(response.message);
-        //        }
-        //        var notImportedItemsCount = self.getNotImportedItemsCount(response);
-        //        self.notImportedItemsCount(notImportedItemsCount);
-        //        self.successImportedItemsCount(response.length - notImportedItemsCount);
-        //        self.resultItems(response);
-        //        self.buttonClick(MODE.ImportResult);
-        //    },
-        //    error: function (response) {
-        //        self.errorCallbackHandle(response);
-        //    }
-        //});
+        jQuery.ajax
+        ({
+            type: "POST",
+            url: '/api/sitecore/Import/ImportItems?id=' + id + '&projectId=' + project + '&statusId=' + status + '&language=' + lang,
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(items),
+            success: function (response) {
+                if (response.status == 'error') {
+                    self.postErrorHandle(response.message);
+                }
+                var notImportedItemsCount = self.getNotImportedItemsCount(response);
+                self.notImportedItemsCount(notImportedItemsCount);
+                self.successImportedItemsCount(response.length - notImportedItemsCount);
+                self.resultItems(response);
+                self.buttonClick(MODE.ImportResult);
+            },
+            error: function (response) {
+                self.errorCallbackHandle(response);
+            }
+        });
     }
 
     self.getNotImportedItemsCount = function (items) {
@@ -392,7 +389,14 @@
                 displayName: 'Status', cellTemplate: '<div class="cell-padding"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
             },
             { field: 'Title', displayName: 'Item name' },
-            { field: 'LastUpdatedInGC', displayName: 'Last updated in GatherContent' },
+            {
+                field: 'LastUpdatedInGC', displayName: 'Last updated in GatherContent',
+                //sortFn:function (a, b) {
+                //    var a1 = new Date(a); //Globalize.format(a, "yyyy'-'MM'-'dd HH':'mm':'ss'Z'");
+                //    var b1 = new Date(b); //Globalize.format(b, "yyyy'-'MM'-'dd HH':'mm':'ss'Z'");
+                //    return (a1 > b1);
+                //    }
+            },
             { field: 'Breadcrumb', displayName: 'Path' },
             { field: 'Template.Name', displayName: 'Template name' }
         ]

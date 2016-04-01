@@ -247,7 +247,7 @@ function ViewModel(data) {
 
     this.returnFieldName = function (item) {
         if (item.FieldName === null) {
-            return "[Empty]" + " (" + item.FieldId + ")";
+            return "[Guideline]";
         } else {
             return item.FieldName;
         }

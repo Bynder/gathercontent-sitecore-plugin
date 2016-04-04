@@ -56,12 +56,13 @@ namespace GatherContent.Connector.WebControllers.Controllers
         /// <param name="id"></param>
         /// <param name="statusId"></param>
         /// <param name="items"></param>
+        /// <param name="language"></param>
         /// <returns></returns>
-        public ActionResult UpdateItems(string id, string statusId, List<UpdateListIds> items)
+        public ActionResult UpdateItems(string id, string statusId, List<UpdateListIds> items, string language)
         {
             try
             {
-                UpdateResultModel result = UpdateManager.UpdateItems(id, items);
+                var result = UpdateManager.UpdateItems(id, items, language);
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
             catch (WebException exception)

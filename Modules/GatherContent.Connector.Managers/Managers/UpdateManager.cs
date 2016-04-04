@@ -8,8 +8,10 @@ using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.GatherContentService.Interfaces;
 using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.IRepositories.Models.Import;
+using GatherContent.Connector.IRepositories.Models.Mapping;
 using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.ImportItems;
+using GatherContent.Connector.Managers.Models.ImportItems.New;
 using GatherContent.Connector.Managers.Models.UpdateItems;
 using GatherContent.Connector.SitecoreRepositories.Repositories;
 using Sitecore.Diagnostics;
@@ -23,6 +25,8 @@ namespace GatherContent.Connector.Managers.Managers
     {
         protected IItemsRepository ItemsRepository;
 
+        protected IMappingRepository MappingRepository;
+
         protected IItemsService ItemsService;
 
         protected IMappingManager MappingManager;
@@ -35,6 +39,7 @@ namespace GatherContent.Connector.Managers.Managers
         /// 
         /// </summary>
         /// <param name="itemsRepository"></param>
+        /// <param name="mappingRepository"></param>
         /// <param name="itemsService"></param>
         /// <param name="mappingManager"></param>
         /// <param name="importManager"></param>
@@ -45,6 +50,7 @@ namespace GatherContent.Connector.Managers.Managers
         /// <param name="gcAccountSettings"></param>
         public UpdateManager(
             IItemsRepository itemsRepository,
+            IMappingRepository mappingRepository,
             IItemsService itemsService,
             IMappingManager mappingManager,
             IImportManager importManager,
@@ -56,6 +62,8 @@ namespace GatherContent.Connector.Managers.Managers
             : base(accountsService, projectsService, templateService, cacheManager)
         {
             ItemsRepository = itemsRepository;
+
+            MappingRepository = mappingRepository;
 
             ItemsService = itemsService;
 
@@ -224,30 +232,201 @@ namespace GatherContent.Connector.Managers.Managers
             return project;
         }
 
+        private object GetValue(IEnumerable<Element> fields)
+        {
+            string value = string.Join("", fields.Select(i => i.Value));
+            return value;
+        }
+
+        private List<string> GetOptions(IEnumerable<Element> fields)
+        {
+            var result = new List<string>();
+            foreach (Element field in fields)
+            {
+                if (field.Options != null)
+                    result.AddRange(field.Options.Select(x => x.Label));
+            }
+            return result;
+        }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="itemId"></param>
         /// <param name="models"></param>
+        /// <param name="language"></param>
         /// <returns></returns>
-        public UpdateResultModel UpdateItems(string itemId, List<UpdateListIds> models)
+        public List<ItemResultModel> UpdateItems(string itemId, List<UpdateListIds> models, string language)
         {
-            List<GCItem> gcItems = GetGCItemsByModels(models);
-            List<MappingResultModel> resultItems = ImportManager.MapItems(gcItems);
-            List<MappingResultModel> successfulyUpdated = resultItems.Where(i => i.IsImportSuccessful).ToList();
+            var model = new List<ItemResultModel>();
 
-            foreach (var mappingResultModel in successfulyUpdated)
+            var gcItems = new Dictionary<GCItem, string>();
+
+            foreach (var item in models)
             {
-                ItemsRepository.UpdateItem(new CmsItem
-                {
-                    
-                    
-                });
+                GCItem gcItem = ItemsService.GetSingleItem(item.GCId).Data;
+                gcItems.Add(gcItem, item.CMSId);
             }
 
-            var result = new UpdateResultModel(resultItems);
+            var templates = MappingRepository.GetMappings();
+            var templatesDictionary = new Dictionary<int, GCTemplate>();
 
-            return result;
+            foreach (var item in gcItems)
+            {
+                var gcItem = item.Key; //gc item
+                var cmsId = item.Value; // corresponding cms id
+                var itemResponseModel = new ItemResultModel
+                {
+                    IsImportSuccessful = true,
+                    ImportMessage = "Update Successful"
+                };
+
+                GCTemplate gcTemplate;
+                var templateId = gcItem.TemplateId.Value;
+                templatesDictionary.TryGetValue(templateId, out gcTemplate);
+                if (gcTemplate == null)
+                {
+                    gcTemplate = TemplatesService.GetSingleTemplate(templateId.ToString()).Data;
+                    templatesDictionary.Add(templateId, gcTemplate);
+                }
+
+                //MappingResultModel cmsItem;
+                //TryMapItem(gcItem, gcTemplate, templates, out cmsItem);
+                //result.Add(cmsItem);
+                List<Element> gcFields = gcItem.Config.SelectMany(i => i.Elements).ToList();
+
+                var templateMapping = templates.First(x => x.GcTemplate.GcTemplateId == gcItem.TemplateId.ToString());
+                if (templateMapping != null) // template found, now map fields here
+                {
+                    var files = new List<File>();
+                    if (
+                        gcItem.Config.SelectMany(config => config.Elements)
+                            .Select(element => element.Type)
+                            .Contains("files"))
+                    {
+                        foreach (var file in ItemsService.GetItemFiles(gcItem.Id.ToString()).Data)
+                        {
+                            files.Add(new File
+                            {
+                                FileName = file.FileName,
+                                Url = file.Url,
+                                FieldId = file.Field,
+                                UpdatedDate = file.Updated
+                            });
+                        }
+                    }
+
+                    bool fieldError = false;
+
+                    var groupedFields = templateMapping.FieldMappings.GroupBy(i => i.CmsField);
+
+                    foreach (var grouping in groupedFields)
+                    {
+                        CmsField cmsField = grouping.Key;
+
+                        var gcFieldIds = grouping.Select(i => i.GcField.Id);
+                        var gcFieldsToMap = grouping.Select(i => i.GcField);
+
+                        IEnumerable<Element> gcFieldsForMapping =
+                            gcFields.Where(i => gcFieldIds.Contains(i.Name)).ToList();
+
+                        var gcField = gcFieldsForMapping.FirstOrDefault();
+
+                        if (gcField != null)
+                        {
+                            var value = GetValue(gcFieldsForMapping);
+                            var options = GetOptions(gcFieldsForMapping);
+
+                            files = files.Where(x => x.FieldId == gcField.Name).ToList();
+
+                            cmsField.Files = files;
+                            cmsField.Value = value;
+                            cmsField.Options = options;
+
+                            //update GC fields' type
+                            foreach (var field in gcFieldsToMap)
+                            {
+                                field.Type = gcField.Type;
+                            }
+                        }
+                        else
+                        {
+                            //if field error, set error message
+                            itemResponseModel.ImportMessage = "Update failed: Template fields mismatch";
+                            itemResponseModel.IsImportSuccessful = false;
+                            fieldError = true;
+                            break;
+                        }
+                    }
+
+                    if (!fieldError)
+                    {
+                        var cmsContentIdField = new FieldMapping
+                        {
+                            CmsField = new CmsField
+                            {
+                                TemplateField = new CmsTemplateField {FieldName = "GC Content Id"},
+                                Value = gcItem.Id.ToString()
+                            }
+                        };
+                        templateMapping.FieldMappings.Add(cmsContentIdField);
+
+                        var cmsItem = new CmsItem
+                        {
+                            Template = templateMapping.CmsTemplate,
+                            Title = gcItem.Name,
+                            Fields = templateMapping.FieldMappings.Select(x => x.CmsField).ToList(),
+                            Language = language,
+                            Id = cmsId
+                        };
+
+                        var fields = templateMapping.FieldMappings;
+
+                        foreach (var field in fields)
+                        {
+                            if (field.GcField != null)
+                            {
+                                switch (field.GcField.Type)
+                                {
+                                    case "choice_radio":
+                                    case "choice_checkbox":
+                                    {
+                                        ItemsRepository.MapChoice(cmsItem, field.CmsField);
+                                    }
+                                        break;
+                                    case "files":
+                                    {
+                                        ItemsRepository.MapFile(cmsItem, field.CmsField);
+                                    }
+                                        break;
+                                    default:
+                                    {
+                                        ItemsRepository.MapText(cmsItem, field.CmsField);
+                                    }
+                                        break;
+                                }
+                            }
+                        }
+
+                        //ItemsRepository.UpdateItem(new CmsItem
+                        //{
+
+
+                        //});
+                    }
+
+                }
+                else
+                {
+                    //no template mapping, set error message
+                    itemResponseModel.ImportMessage = "Update failed: Template not mapped";
+                    itemResponseModel.IsImportSuccessful = false;
+                }
+                model.Add(itemResponseModel);
+
+            }
+
+            return model;
         }
 
         /// <summary>

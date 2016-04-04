@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GatherContent.Connector.Managers.Models.ImportItems.New;
 using GatherContent.Connector.Managers.Models.UpdateItems;
 
 namespace GatherContent.Connector.Managers.Interfaces
@@ -10,6 +11,6 @@ namespace GatherContent.Connector.Managers.Interfaces
     {
         SelectItemsForUpdateModel GetItemsForUpdate(string itemId);
 
-        UpdateResultModel UpdateItems(string itemId, List<UpdateListIds> models);
+        List<ItemResultModel> UpdateItems(string itemId, List<UpdateListIds> models, string language);
     }
 }

@@ -1,4 +1,5 @@
 ﻿var ImportManager = function () {
+
     var MODE = {
         ChooseItmesForImort: 1,
         CheckItemsBeforeImport: 2,
@@ -20,11 +21,12 @@
     self.languages = ko.observableArray([]),
 
     self.defaultLocationTitle = ko.observable(decodeURI(getUrlVars()["t"])),
-    self.defaultLocation = ko.observable("{"+getUrlVars()["id"]+"}"),
+    self.defaultLocation = ko.observable("{" + getUrlVars()["id"] + "}"),
     self.showDropTree = ko.observable(false);
 
     self.projects = ko.observableArray([]),
     self.items = ko.observableArray(),
+    //self.koAllItems = ko.observableArray(allItems),
     self.statuses = ko.observableArray([]),
     self.templates = ko.observableArray([]),
 
@@ -50,6 +52,10 @@
         totalServerItems: ko.observable(0),
         currentPage: ko.observable(1)
     };
+
+    self.sortInfo = ko.observable();
+    self.sortOnServer = ko.observable(false);
+
 
     self.filterConfirmOptions = {
         filterText: ko.observable(""),
@@ -78,6 +84,7 @@
     self.setPagingData = function (data, page, pageSize) {
         var items = data;
         allItems = items.slice(0);
+        //self.koAllItems(items);
         var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
         self.items(pagedData);
         self.pagingOptions.totalServerItems(data.length);
@@ -85,16 +92,18 @@
 
     this.getPagedData = function (pageSize, page) {
         var id = getUrlVars()["id"];
-        var project = self.project();
-        project = project ? project : 0;
+        var project = self.project() || 0;
         jQuery.ajax({
             url: '/api/sitecore/Import/Get?id={' + id + '}&projectId=' + project,
             dataType: 'json',
             async: true,
             success: function (response) {
-                self.setPagingData(response.Items, page, pageSize);
-                self.initVariables(response);
                 jQuery(".preloader").hide();
+                self.initVariables(response);
+                self.setPagingData(response.Items, page, pageSize);
+                document.getElementsByTagName('input')[1].focus();
+                //window.getSelection().removeAllRanges();
+
             },
             error: function (response) {
                 self.errorCallbackHandle(response);
@@ -200,10 +209,10 @@
     self.openDropTree = function () {
         var id = "location-droptree";
         var locationId = self.defaultLocation();
-      
+
         if (!self.showDropTree()) {
             self.showDropTree(true);
-            
+
             jQuery("#" + id).dynatree({
                 autoFocus: false,
                 imagePath: "~/icon/",
@@ -368,8 +377,13 @@
         self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.pagingOptions.currentPage.subscribe(function (data) {
-        self.setPagingData(allItems,  self.pagingOptions.currentPage(),self.pagingOptions.pageSize());
+        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
+    self.sortInfo.subscribe(function (data) {
+        //self.items(allItems);
+        //window.kg.sortService.Sort(self.koAllItems, self.sortInfo());
+    });
+ 
 
     self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());
 
@@ -378,11 +392,13 @@
         afterSelectionChange: function () { return true; },
         showColumnMenu: false,
         showFilter: false,
+        //allData: self.koAllItems,
         data: self.items,
         selectedItems: self.selectedItems,
         enablePaging: true,
         pagingOptions: self.pagingOptions,
-        filterOptions: self.filterOptions,       
+        filterOptions: self.filterOptions,
+        sortInfo: self.sortInfo,        
         columnDefs: [
             {
                 field: 'Status.Name',
@@ -391,11 +407,7 @@
             { field: 'Title', displayName: 'Item name' },
             {
                 field: 'LastUpdatedInGC', displayName: 'Last updated in GatherContent',
-                //sortFn:function (a, b) {
-                //    var a1 = new Date(a); //Globalize.format(a, "yyyy'-'MM'-'dd HH':'mm':'ss'Z'");
-                //    var b1 = new Date(b); //Globalize.format(b, "yyyy'-'MM'-'dd HH':'mm':'ss'Z'");
-                //    return (a1 > b1);
-                //    }
+                sortFn: dateSort
             },
             { field: 'Breadcrumb', displayName: 'Path' },
             { field: 'Template.Name', displayName: 'Template name' }
@@ -472,7 +484,7 @@
             { field: 'Title', displayName: 'Item name' },
             { field: 'Message', displayName: 'Import status' },
             { field: 'GcTemplateName', displayName: 'Template name' },
-            { displayName: 'Open in Sitecore', cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null", click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
+            { displayName: 'Open in Sitecore', cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
             { displayName: 'Open in GatherContent', cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>' }
         ]
     };

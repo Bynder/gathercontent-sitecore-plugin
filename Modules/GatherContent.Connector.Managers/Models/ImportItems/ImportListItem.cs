@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GatherContent.Connector.Entities.Entities;
+using GatherContent.Connector.Managers.Models.ImportItems.New;
 
 namespace GatherContent.Connector.Managers.Models.ImportItems
 {

@@ -186,6 +186,7 @@
     <Compile Include="Models\ImportItems\ImportItemModel.cs" />
     <Compile Include="Models\ImportItems\ImportItembyLocation.cs" />
     <Compile Include="Models\ImportItems\MappingResultModel.cs" />
+    <Compile Include="Models\ImportItems\New\AvailableMapping.cs" />
     <Compile Include="Models\ImportItems\New\FiltersModel.cs" />
     <Compile Include="Models\ImportItems\New\GcItemModel.cs" />
     <Compile Include="Models\ImportItems\New\ItemModel.cs" />

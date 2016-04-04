@@ -27,15 +27,15 @@
 
     <div class="filter_wrapper_import">
         <div class="title_filter">GATHER CONTENT PROJECT</div>
-        <select class="custom_select" style="width: 250px" data-bind="options: projects, optionsText: 'name', optionsValue: 'id', value: project, event:{ change: $root.projectChanged}"></select>
+        <select class="custom_select" style="width: 250px" data-bind="options: projects, optionsText: 'Name', optionsValue: 'Id', value: project, event:{ change: $root.projectChanged}"></select>
     </div>
 
 
     <div class="filter_wrapper">
         <div class="filter_wrapper_import">
             <div class="title_filter" style="padding-right: 135px;">FILTER</div>
-            <select class="custom_select" style="width: 250px" data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, optionsCaption: 'STATUS', event:{ change: $root.filter }"></select>
-            <select class="custom_select" style="width: 250px;" data-bind="options: templates, optionsText: 'name', optionsValue: 'id', value: templateFilter, optionsCaption: 'GATHER CONTENT TEMPLATE', event:{ change: $root.filter }"></select>
+            <select class="custom_select" style="width: 250px" data-bind="options: statuses, optionsText: 'Name', optionsValue: 'Id', value: statusFilter, optionsCaption: 'STATUS', event:{ change: $root.filter }"></select>
+            <select class="custom_select" style="width: 250px;" data-bind="options: templates, optionsText: 'Name', optionsValue: 'Id', value: templateFilter, optionsCaption: 'GATHER CONTENT TEMPLATE', event:{ change: $root.filter }"></select>
         </div>
         <div class="search_filter">
             <input placeholder="FILTER BY ITEM NAME (SEARCH)" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
@@ -62,10 +62,6 @@
     </div>
     <div class="import-grid" data-bind="koGrid: groupedGridOptions"></div>
     <div class="footer_btn">
-        <div>
-            <input type="checkbox" data-bind="checked: statusPostState" />
-            After successful import change status of item to <select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter"></select> inside your GatherContent account.
-        </div>
         <input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 1)" />
         <input type="button" value="Next>" data-bind="click: buttonClick.bind($data, 3)" />
         <div data-bind="text: errorText" class="warning-message"></div>
@@ -81,12 +77,15 @@
         <h2 class="title">Confirm import selection</h2>
         <p>Please review your import selection before importing.</p>
     </div>
-    
+    <div>
+        Language
+        <select class="custom_select" style="width: 250px" data-bind="options: languages, optionsText: 'Name', optionsValue: 'IsoCode', value: language"></select>
+    </div>
     <div class="import-grid" data-bind="koGrid: confirmGridOptions"></div>
     <div class="footer_btn">
         <div>
             <input type="checkbox" data-bind="checked: statusPostState" />
-            After successful import change status of item to <select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter"></select> inside your GatherContent account.
+            After successful import change status of item to <select data-bind="options: statuses, optionsText: 'Name', optionsValue: 'Id', value: statusFilter"></select> inside your GatherContent account.
             <!--, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender-->
         </div>
         <input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 2)" />

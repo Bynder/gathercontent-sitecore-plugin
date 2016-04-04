@@ -54,6 +54,8 @@
     };
 
     self.sortInfo = ko.observable();
+    self.sortOnServer = ko.observable(false);
+
 
     self.filterConfirmOptions = {
         filterText: ko.observable(""),
@@ -381,6 +383,7 @@
         //self.items(allItems);
         //window.kg.sortService.Sort(self.koAllItems, self.sortInfo());
     });
+ 
 
     self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());
 

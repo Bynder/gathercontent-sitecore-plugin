@@ -525,6 +525,10 @@ namespace GatherContent.Connector.Managers.Managers
                 {
                     Id = availableMappingModel.MappingId,
                     Title = availableMappingModel.MappingTitle,
+                    DefaultLocationId = availableMappingModel.DefaultLocationId,
+                    DefaultLocationTitle = availableMappingModel.DefaultLocationTitle,
+                    CmsTemplateName = availableMappingModel.CmsTemplate.TemplateName
+                    
                 }).ToList();
 
                 model.Add(new ItemModel
@@ -656,6 +660,7 @@ namespace GatherContent.Connector.Managers.Managers
 
    
 
+
         public GatherContent.Connector.Managers.Models.ImportItems.New.FiltersModel GetFilters(string projectId)
         {
             Account account = GetAccount();
@@ -704,10 +709,10 @@ namespace GatherContent.Connector.Managers.Managers
                 return new GatherContent.Connector.Managers.Models.ImportItems.New.FiltersModel
                 {
                     CurrentProject = new GcProjectModel
-                {
-                    Id = gcProject.Id.ToString(),
-                    Name = gcProject.Name
-                },
+                    {
+                        Id = gcProject.Id.ToString(),
+                        Name = gcProject.Name
+                    },
                     Projects = projects,
                     Statuses = statuses,
                     Templates = templates
@@ -719,32 +724,6 @@ namespace GatherContent.Connector.Managers.Managers
             {
                 Projects = projects
             };
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="itemId"></param>
-        /// <param name="projectId"></param>
-        /// <returns></returns>
-        public SelectItemsForImportWithLocation GetDialogModelWithLocation(string itemId, string projectId)
-        {
-            Account account = GetAccount();
-
-            List<Project> projects = GetProjects(account.Id);
-
-            Project project = GetProject(projects, projectId);
-
-            List<GCTemplate> templates = GetTemplates(project.Id);
-            List<GCStatus> statuses = GetStatuses(project.Id);
-            List<GCItem> items = GetItems(project.Id);
-            items = items.OrderBy(item => item.Status.Data.Name).ToList();
-
-            List<ImportItembyLocation> mappedItems = MapItemsByLocation(items, templates);
-
-            var result = new SelectItemsForImportWithLocation(mappedItems, project, projects, statuses, templates);
-
-            return result;
         }
 
         /// <summary>

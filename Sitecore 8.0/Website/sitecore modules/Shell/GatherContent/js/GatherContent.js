@@ -9,6 +9,18 @@
     return vars;
 }
 
+dateSort = function (a, b) {
+    var a1 = moment(a, "'DD/MM/YYYY hh:mm A").format("YYYY-MM-DD HH:mm");
+    var b1 = moment(b, "'DD/MM/YYYY hh:mm A").format("YYYY-MM-DD HH:mm");
+    if (a1 == b1) {
+        return 0;
+    }
+    if (a1 < b1) {
+        return -1;
+    }
+    return 1;
+}
+
 function initTooltip() {
     jQuery("tr td").each(function (i) {
         if (jQuery(this).outerWidth() < this.scrollWidth) {

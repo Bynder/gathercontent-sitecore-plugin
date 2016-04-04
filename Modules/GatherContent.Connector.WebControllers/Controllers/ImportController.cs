@@ -29,6 +29,69 @@ namespace GatherContent.Connector.WebControllers.Controllers
             DropTreeManager = dropTreeManager;
         }
 
+
+        #region Utilities
+
+
+        private FiltersViewModel GetFilters(string projectId)
+        {
+            var filtersViewModel = new FiltersViewModel();
+
+            var filters = ImportManager.GetFilters(projectId);
+
+            if (filters.CurrentProject != null)
+            {
+                filtersViewModel.Project = new ProjectViewModel
+                {
+                    Id = filters.CurrentProject.Id,
+                    Name = filters.CurrentProject.Name
+                };
+            }
+
+
+            filtersViewModel.Projects.Add(new ProjectViewModel
+            {
+                Id = "0",
+                Name = "Select project"
+            });
+            foreach (var project in filters.Projects)
+            {
+                filtersViewModel.Projects.Add(new ProjectViewModel
+                {
+                    Id = project.Id,
+                    Name = project.Name
+                });
+            }
+
+            foreach (var status in filters.Statuses)
+            {
+                filtersViewModel.Statuses.Add(new StatusViewModel
+                {
+                    Id = status.Id,
+                    Name = status.Name
+                });
+            }
+
+            foreach (var template in filters.Templates)
+            {
+                filtersViewModel.Templates.Add(new TemplateViewModel
+                {
+                    Id = template.Id,
+                    Name = template.Name
+                });
+            }
+
+
+
+            return filtersViewModel;
+        }
+
+
+
+        #endregion
+
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -93,56 +156,8 @@ namespace GatherContent.Connector.WebControllers.Controllers
                     }
                 }
 
-
-                #region Filters
-
-                var filters = ImportManager.GetFilters(projectId);
-
-                if (filters.CurrentProject != null)
-                {
-                    importViewModel.Filters.Project = new ProjectViewModel
-                    {
-                        Id = filters.CurrentProject.Id,
-                        Name = filters.CurrentProject.Name
-                    };
-                }
-
-
-                importViewModel.Filters.Projects.Add(new ProjectViewModel
-                      {
-                          Id = "0",
-                          Name = "Select project"
-                      });
-                foreach (var project in filters.Projects)
-                {
-                    importViewModel.Filters.Projects.Add(new ProjectViewModel
-                    {
-                        Id = project.Id,
-                        Name = project.Name
-                    });
-                }
-
-                foreach (var status in filters.Statuses)
-                {
-                    importViewModel.Filters.Statuses.Add(new StatusViewModel
-                    {
-                        Id = status.Id,
-                        Name = status.Name
-                    });
-                }
-
-                foreach (var template in filters.Templates)
-                {
-                    importViewModel.Filters.Templates.Add(new TemplateViewModel
-                    {
-                        Id = template.Id,
-                        Name = template.Name
-                    });
-                }
-
-
-                #endregion
-
+                importViewModel.Filters = GetFilters(projectId);
+                
 
                 var model = JsonConvert.SerializeObject(importViewModel);
                 return model;
@@ -160,6 +175,8 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         }
 
+  
+
         /// <summary>
         /// 
         /// </summary>
@@ -170,8 +187,68 @@ namespace GatherContent.Connector.WebControllers.Controllers
         {
             try
             {
-                SelectItemsForImportWithLocation result = ImportManager.GetDialogModelWithLocation(id, projectId);
-                var model = JsonConvert.SerializeObject(result);
+                var items = ImportManager.GetImportDialogModel(id, projectId);
+                var importViewModel = new ImportViewModel();
+
+                var languages = Sitecore.Context.Database.GetLanguages();
+
+                foreach (var language in languages)
+                {
+                    importViewModel.Languages.Add(new LanguageViewModel
+                    {
+                        Name = language.CultureInfo.DisplayName,
+                        IsoCode = language.CultureInfo.TwoLetterISOLanguageName
+                    });
+                }
+
+                if (items != null)
+                {
+                    foreach (var item in items)
+                    {
+                        var importItem = new ImportListItemViewModel
+                        {
+                            Id = item.GcItem.Id,
+                            Title = item.GcItem.Title,
+                            Template = new TemplateViewModel
+                            {
+                                Name = item.GcTemplate.Name,
+                                Id = item.GcTemplate.Id
+                            },
+                            Status = new StatusViewModel
+                            {
+                                Color = item.Status.Color,
+                                Name = item.Status.Name,
+                                Id = item.Status.Id
+                            },
+                            Breadcrumb = item.Breadcrumb,
+                            LastUpdatedInGC = item.GcItem.LastUpdatedInGc
+
+                        };
+
+
+                        foreach (var availableMapping in item.AvailableMappings.Mappings)
+                        {
+                            importItem.AvailableMappings.Mappings.Add(new AvailableMappingViewModel
+                            {
+                                Id = availableMapping.Id,
+                                Title = availableMapping.Title,
+                                OpenerId = "drop-tree" + Guid.NewGuid(),
+                                DefaultLocation = availableMapping.DefaultLocationId,
+                                DefaultLocationTitle = availableMapping.DefaultLocationTitle,
+                                ScTemplate = availableMapping.CmsTemplateName,
+                            });
+                        }
+
+                        importViewModel.Items.Add(importItem);
+
+                    }
+                }
+
+
+                importViewModel.Filters = GetFilters(projectId);
+
+
+                var model = JsonConvert.SerializeObject(importViewModel);
                 return model;
             }
             catch (WebException exception)
@@ -247,8 +324,26 @@ namespace GatherContent.Connector.WebControllers.Controllers
         {
             try
             {
+                var model = new List<ImportResultViewModel>();
                 var result = ImportManager.ImportItemsWithLocation(items, projectId, statusId, language);
-                return Json(result, JsonRequestBehavior.AllowGet);
+                foreach (var item in result)
+                {
+                    model.Add(new ImportResultViewModel
+                    {
+                        Title = item.GcItem.Title,
+                        IsImportSuccessful = item.IsImportSuccessful,
+                        Message = item.ImportMessage,
+                        CmsLink = item.CmsLink,
+                        GcLink = item.GcLink,
+                        Status = new StatusViewModel
+                        {
+                            Color = item.Status.Color,
+                            Name = item.Status.Name
+                        },
+                        GcTemplateName = item.GcTemplate.Name
+                    });
+                }
+                return Json(model, JsonRequestBehavior.AllowGet);
             }
             catch (WebException exception)
             {

@@ -10,7 +10,6 @@ namespace GatherContent.Connector.Managers.Interfaces
     /// </summary>
     public interface IImportManager : IManager
     {
-        SelectItemsForImportWithLocation GetDialogModelWithLocation(string itemId, string projectId);
 
         List<ItemResultModel> ImportItems(string itemId, List<ImportItemModel> items, string projectId, string statusId, string language);
 

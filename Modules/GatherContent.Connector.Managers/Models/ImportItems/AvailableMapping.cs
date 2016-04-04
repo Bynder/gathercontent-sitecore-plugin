@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using GatherContent.Connector.Managers.Models.ImportItems.New;
 
 namespace GatherContent.Connector.Managers.Models.ImportItems
 {
@@ -11,11 +12,5 @@ namespace GatherContent.Connector.Managers.Models.ImportItems
         }
         public string SelectedMappingId { get; set; }
         public List<AvailableMapping> Mappings { get; set; }
-    }
-
-    public class AvailableMapping
-    {
-        public string Id { get; set; }
-        public string Title { get; set; }
-    }
+    } 
 }

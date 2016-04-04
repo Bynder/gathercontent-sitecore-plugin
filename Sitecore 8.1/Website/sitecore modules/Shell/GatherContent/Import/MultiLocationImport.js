@@ -17,6 +17,9 @@
     self.notImportedItemsCount = ko.observable(),
     self.currentMode = ko.observable(MODE.ChooseItmesForImort);
 
+    self.language = ko.observable(getUrlVars()["l"]),
+    self.languages = ko.observableArray([]),
+
     self.projects = ko.observableArray([]),
         self.items = ko.observableArray([]),
         self.confirmItems = ko.observableArray([]),
@@ -84,6 +87,8 @@
     };
 
     self.setPagingData = function (data, page, pageSize) {
+        var items = data;
+        allItems = items.slice(0);
         var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
         self.items(pagedData);
         self.pagingOptions.totalServerItems(data.length);
@@ -96,9 +101,10 @@
         jQuery.ajax({
             url: '/api/sitecore/Import/GetMultiLocation?id={' + id + '}&projectId=' + project,
             dataType: 'json',
-            async: false,
+            async: true,
             success: function (response) {
-                self.setPagingData(response.Data.Items, page, pageSize);
+                self.setPagingData(response.Items, page, pageSize);
+                document.getElementsByTagName('input')[1].focus();
                 self.initVariables(response);
                 jQuery(".preloader").hide();
             },
@@ -123,14 +129,14 @@
     }
 
     self.initVariables = function (response) {
-        var items = response.Data.Items;
-        allItems = items.slice(0);
         self.projects(response.Filters.Projects);
         self.project(response.Filters.Project);
 
         self.statuses(response.Filters.Statuses);
 
         self.templates(response.Filters.Templates);
+
+        self.languages(response.Languages);
     }
 
     self.projectChanged = function (obj, event) {
@@ -184,7 +190,7 @@
             resultCollection = [];
             for (var i = 0; i < currentCollection.length; i++) {
                 var currentElement = currentCollection[i];
-                if (currentElement.Status.id === value) {
+                if (currentElement.Status.Id === value) {
                     resultCollection.push(currentElement);
                 }
             }
@@ -199,7 +205,7 @@
             resultCollection = [];
             for (var i = 0; i < currentCollection.length; i++) {
                 var currentElement = currentCollection[i];
-                if (currentElement.Template.id === value) {
+                if (currentElement.Template.Id === value) {
                     resultCollection.push(currentElement);
                 }
             }
@@ -217,7 +223,7 @@
 
         var result = [];
         ko.utils.arrayForEach(selectedItems, function (item) {
-            ko.utils.arrayForEach(item.Mappings, function (mapping) {
+            ko.utils.arrayForEach(item.AvailableMappings.Mappings, function (mapping) {
 
                 var found = false;
                 for (var i = 0; i < result.length; i++) {
@@ -229,7 +235,7 @@
                 if (!found) {
                     result.push({
                         Id: mapping.Id,
-                        TemplateName: item.Template.name,
+                        TemplateName: item.Template.Name,
                         MappingName: mapping.Title,
                         ScTemplate: mapping.ScTemplate,
                         DefaultLocation: mapping.DefaultLocation,
@@ -249,14 +255,14 @@
         var items = self.selectedItems();
         self.confirmItems.removeAll();
         ko.utils.arrayForEach(items, function (item) {
-            var templateItems = self.findByTemplateName(item.Template.name);
+            var templateItems = self.findByTemplateName(item.Template.Name);
             ko.utils.arrayForEach(templateItems, function (templateItem) {
-                ko.utils.arrayForEach(item.Mappings, function (mapping) {
+                ko.utils.arrayForEach(item.AvailableMappings.Mappings, function (mapping) {
                     if (mapping.Id == templateItem.Id) {
                         result.push({
                             ItemId: item.Id,
                             ItemTitle: item.Title,
-                            TemplateName: item.Template.name,
+                            TemplateName: item.Template.Name,
                             MappingId: mapping.Id,
                             MappingName: mapping.Title,
                             ScTemplate: mapping.ScTemplate,
@@ -293,7 +299,7 @@
             });
         });
 
-        var lang = getUrlVars()["l"];
+        var lang = self.language();
         var status = self.statusFilter();
         var project = self.project();
         if (!self.statusPostState())
@@ -309,10 +315,10 @@
                 if (response.status == 'error') {
                     self.postErrorHandle(response.message);
                 }
-                var notImportedItemsCount = self.getNotImportedItemsCount(response.Items);
+                var notImportedItemsCount = self.getNotImportedItemsCount(response);
                 self.notImportedItemsCount(notImportedItemsCount);
-                self.successImportedItemsCount(response.Items.length - notImportedItemsCount);
-                self.resultItems(response.Items);
+                self.successImportedItemsCount(response.length - notImportedItemsCount);
+                self.resultItems(response);
                 self.buttonClick(MODE.ImportResult);
             },
             error: function (response) {
@@ -488,8 +494,8 @@
                 filterOptions: self.filterOptions,
                 columnDefs: [
                     {
-                        field: 'Status.name',
-                        displayName: 'Status', cellTemplate: '<div class="cell-padding"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.color }"></div><span data-bind="text: $parent.entity.Status.name"></span></div>'
+                        field: 'Status.Name',
+                        displayName: 'Status', cellTemplate: '<div class="cell-padding"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
                     },
                     { field: 'Title', displayName: 'Item name' },
                     {
@@ -497,7 +503,7 @@
                         sortFn: dateSort
                     },
                     { field: 'Breadcrumb', displayName: 'Path' },
-                    { field: 'Template.name', displayName: 'Template name' }
+                    { field: 'Template.Name', displayName: 'Template name' }
                 ]
             };
 

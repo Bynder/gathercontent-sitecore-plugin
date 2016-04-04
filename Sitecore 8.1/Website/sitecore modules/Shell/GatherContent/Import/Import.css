@@ -425,6 +425,9 @@ button.kgPagerButton {
 button.kgPagerButton:hover {
     box-shadow: 1px 1px 4px #4A4949;
 }
+.kgViewport {
+    overflow-x: hidden;
+}
 .kgSortButtonDown {
     right: 7px;
     left: auto;

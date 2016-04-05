@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GatherContent.Connector.WebControllers.Models.Import;
 
 namespace GatherContent.Connector.WebControllers.Models.Mapping
 {
@@ -22,24 +23,5 @@ namespace GatherContent.Connector.WebControllers.Models.Mapping
         public string ScMappingId { get; set; }
         public List<FieldMappingViewModel> SelectedFields { get; set; }
         public bool IsEdit { get; set; }
-    }
-
-    public class TemplateTab
-    {
-        public TemplateTab()
-        {
-            Fields = new List<TemplateField>();
-        }
-
-        public string TabName { get; set; }
-        public List<TemplateField> Fields { get; set; }
-    }
-
-    public class TemplateField
-    {
-        public string FieldName { get; set; }
-        public string FieldId { get; set; }
-        public string SelectedScField { get; set; }
-        public string FieldType { get; set; }      
     }
 }

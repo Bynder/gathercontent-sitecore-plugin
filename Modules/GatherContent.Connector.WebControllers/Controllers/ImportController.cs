@@ -30,10 +30,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
         }
 
 
-        #region Utilities
+        #region Utilities 
 
 
-        private FiltersViewModel GetFilters(string projectId)
+
+        public FiltersViewModel GetFilters(string projectId) 
         {
             var filtersViewModel = new FiltersViewModel();
 
@@ -88,6 +89,8 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
 
 
+
+
         #endregion
 
 
@@ -105,17 +108,8 @@ namespace GatherContent.Connector.WebControllers.Controllers
                 var items = ImportManager.GetImportDialogModel(id, projectId);
                 var importViewModel = new ImportViewModel();
 
-                var languages = Sitecore.Context.Database.GetLanguages();
+                importViewModel.Languages = GetLanguages();
 
-                foreach (var language in languages)
-                {
-                    importViewModel.Languages.Add(new LanguageViewModel
-                    {
-                        Name = language.CultureInfo.DisplayName,
-                        IsoCode = language.CultureInfo.TwoLetterISOLanguageName
-                    });
-                }
-             
 
                 if (items != null)
                 {
@@ -175,7 +169,8 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         }
 
-  
+
+
 
         /// <summary>
         /// 
@@ -190,16 +185,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
                 var items = ImportManager.GetImportDialogModel(id, projectId);
                 var importViewModel = new ImportViewModel();
 
-                var languages = Sitecore.Context.Database.GetLanguages();
-
-                foreach (var language in languages)
-                {
-                    importViewModel.Languages.Add(new LanguageViewModel
-                    {
-                        Name = language.CultureInfo.DisplayName,
-                        IsoCode = language.CultureInfo.TwoLetterISOLanguageName
-                    });
-                }
+                importViewModel.Languages = GetLanguages();
 
                 if (items != null)
                 {

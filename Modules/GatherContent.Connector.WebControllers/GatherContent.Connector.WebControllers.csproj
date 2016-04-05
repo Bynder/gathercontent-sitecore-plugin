@@ -213,6 +213,7 @@
     <Compile Include="Models\Import\ImportListItemViewModel.cs" />
     <Compile Include="Models\Import\ImportResultViewModel.cs" />
     <Compile Include="Models\Import\ImportViewModel.cs" />
+    <Compile Include="Models\Import\ItemViewModel.cs" />
     <Compile Include="Models\Import\LanguageViewModel.cs" />
     <Compile Include="Models\Import\ProjectViewModel.cs" />
     <Compile Include="Models\Import\StatusViewModel.cs" />
@@ -220,11 +221,13 @@
     <Compile Include="Models\Mapping\AddMappingViewModel.cs" />
     <Compile Include="Models\Mapping\FieldMappingViewModel.cs" />
     <Compile Include="Models\Mapping\PostMappingViewModel.cs" />
-    <Compile Include="Models\Mapping\ProjectViewModel.cs" />
     <Compile Include="Models\Mapping\SitecoreTemplateViewModel.cs" />
+    <Compile Include="Models\Mapping\TemplateField.cs" />
     <Compile Include="Models\Mapping\TemplateMapViewModel.cs" />
     <Compile Include="Models\Mapping\TemplateMappingViewModel.cs" />
-    <Compile Include="Models\Mapping\TemplateViewModel.cs" />
+    <Compile Include="Models\Mapping\TemplateTab.cs" />
+    <Compile Include="Models\Update\UpdateListItemViewModel.cs" />
+    <Compile Include="Models\Update\UpdateViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

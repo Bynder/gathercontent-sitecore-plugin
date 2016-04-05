@@ -5,9 +5,10 @@ using System.Net;
 using System.Web.Mvc;
 using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.Mapping;
+using GatherContent.Connector.WebControllers.Models.Import;
 using GatherContent.Connector.WebControllers.Models.Mapping;
 using Sitecore.Diagnostics;
-using TemplateTab = GatherContent.Connector.WebControllers.Models.Mapping.TemplateTab;
+
 
 namespace GatherContent.Connector.WebControllers.Controllers
 {

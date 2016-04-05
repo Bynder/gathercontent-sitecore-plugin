@@ -406,7 +406,8 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 var cmsItem = new CmsItem
                 {
                     Id = item.ID.ToString(),
-                    Language = item.Language.ToString()
+                    Title = item.Name,
+                    Language = item.Language.ToString(),
                 };
 
                 cmsItem.Fields.Add(new CmsField

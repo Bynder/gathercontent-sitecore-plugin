@@ -202,7 +202,7 @@
     <Compile Include="Models\Mapping\GcProjectModel.cs" />
     <Compile Include="Models\Mapping\GcTemplateModel.cs" />
     <Compile Include="Models\Mapping\GcTabModel.cs" />
-    <Compile Include="Models\UpdateItems\CMSUpdateItem.cs" />
+    <Compile Include="Models\UpdateItems\New\UpdateItemModel.cs" />
     <Compile Include="Models\UpdateItems\UpdateListIds.cs" />
     <Compile Include="Managers\UpdateManager.cs" />
     <Compile Include="Models\ImportItems\FiltersModel.cs" />
@@ -211,12 +211,8 @@
     <Compile Include="Models\ImportItems\ImportResultModel.cs" />
     <Compile Include="Models\ImportItems\SelectItemsForImportModel.cs" />
     <Compile Include="Models\ImportItems\TableDataModel.cs" />
-    <Compile Include="Models\UpdateItems\FiltersModel.cs" />
-    <Compile Include="Models\UpdateItems\SelectItemsForUpdateModel.cs" />
-    <Compile Include="Models\UpdateItems\TableDataModel.cs" />
+    <Compile Include="Models\UpdateItems\UpdateFiltersModel.cs" />
     <Compile Include="Models\UpdateItems\UpdateGCItem.cs" />
-    <Compile Include="Models\UpdateItems\UpdateListItem.cs" />
-    <Compile Include="Models\UpdateItems\UpdateResultModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

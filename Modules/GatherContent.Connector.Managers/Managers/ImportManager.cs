@@ -852,9 +852,7 @@ namespace GatherContent.Connector.Managers.Managers
                                 var value = GetValue(gcFieldsForMapping);
                                 var options = GetOptions(gcFieldsForMapping);
 
-                                files = files.Where(x => x.FieldId == gcField.Name).ToList(); //TODO: check files
-
-                                cmsField.Files = files;
+                                cmsField.Files = files.Where(x => x.FieldId == gcField.Name).ToList();
                                 cmsField.Value = value;
                                 cmsField.Options = options;
 

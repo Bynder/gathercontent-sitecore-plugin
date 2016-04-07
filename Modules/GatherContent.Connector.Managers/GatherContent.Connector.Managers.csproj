@@ -203,6 +203,7 @@
     <Compile Include="Models\Mapping\GcTemplateModel.cs" />
     <Compile Include="Models\Mapping\GcTabModel.cs" />
     <Compile Include="Models\UpdateItems\New\UpdateItemModel.cs" />
+    <Compile Include="Models\UpdateItems\New\UpdateModel.cs" />
     <Compile Include="Models\UpdateItems\UpdateListIds.cs" />
     <Compile Include="Managers\UpdateManager.cs" />
     <Compile Include="Models\ImportItems\FiltersModel.cs" />

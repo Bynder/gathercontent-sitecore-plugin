@@ -10,9 +10,7 @@ namespace GatherContent.Connector.Managers.Interfaces
     /// </summary>
     public interface IUpdateManager : IManager
     {
-        List<UpdateItemModel> GetItemsForUpdate(string itemId, string languageId);
-
-        UpdateFiltersModel GetFilters(string itemId, string languageId);
+        UpdateModel GetItemsForUpdate(string itemId, string languageId);
 
         List<ItemResultModel> UpdateItems(string itemId, List<UpdateListIds> models, string language);
     }

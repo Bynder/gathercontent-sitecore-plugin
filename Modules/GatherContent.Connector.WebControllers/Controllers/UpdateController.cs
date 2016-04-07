@@ -33,12 +33,9 @@ namespace GatherContent.Connector.WebControllers.Controllers
         #region Utilities
 
 
-
-        public FiltersViewModel GetFilters(string itemId, string languageId) 
+        private FiltersViewModel GetFilters(UpdateFiltersModel filters)
         {
             var filtersViewModel = new FiltersViewModel();
-
-            var filters = UpdateManager.GetFilters(itemId, languageId);
 
             foreach (var project in filters.Projects)
             {
@@ -72,7 +69,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
         }
 
 
-
+ 
 
         #endregion
 
@@ -86,10 +83,10 @@ namespace GatherContent.Connector.WebControllers.Controllers
             try
             {
                 var language = Sitecore.Context.Language;
-                var items = UpdateManager.GetItemsForUpdate(id, language.CultureInfo.TwoLetterISOLanguageName);
+                var updateModel = UpdateManager.GetItemsForUpdate(id, language.CultureInfo.TwoLetterISOLanguageName);
                 var importViewModel = new UpdateViewModel {Languages = GetLanguages()};
 
-                foreach (var updateItemModel in items)
+                foreach (var updateItemModel in updateModel.Items)
                 {
                     importViewModel.Items.Add(new UpdateListItemViewModel
                     {
@@ -125,7 +122,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
                     });
                 }
 
-                importViewModel.Filters = GetFilters(id, language.CultureInfo.TwoLetterISOLanguageName);
+                importViewModel.Filters = GetFilters(updateModel.Filters);
 
                 var model = JsonConvert.SerializeObject(importViewModel);
                 return model;
@@ -141,6 +138,9 @@ namespace GatherContent.Connector.WebControllers.Controllers
                 return exception.Message;
             }
         }
+
+
+
 
         /// <summary>
         /// 

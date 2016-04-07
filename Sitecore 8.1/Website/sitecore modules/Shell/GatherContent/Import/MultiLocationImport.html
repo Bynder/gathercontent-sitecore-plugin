@@ -48,8 +48,6 @@
 
         <input type="button" class="mappings-btn" style="margin-top: 0" value="Next>" data-bind="click: buttonClick.bind($data, 2)" />
         <div data-bind="text: errorText" class="warning-message"></div>
-
-        <!--<input type="button" value="Close" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" />-->
     </div>
     <div class="help-link">
         <a href="mailto:support@gathercontent.com">Need help?</a>
@@ -62,9 +60,9 @@
     </div>
     <div class="import-grid" data-bind="koGrid: groupedGridOptions"></div>
     <div class="footer_btn">
-        <input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 1)" />
+        <div data-bind="text: errorText" style="color: red"></div>
+        <!--<input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 1)" />-->
         <input type="button" value="Next>" data-bind="click: buttonClick.bind($data, 3)" />
-        <div data-bind="text: errorText" class="warning-message"></div>
     </div>
     <div class="help-link">
         <a href="mailto:support@gathercontent.com">Need help?</a>
@@ -81,16 +79,15 @@
         Language
         <select class="custom_select" style="width: 250px" data-bind="options: languages, optionsText: 'Name', optionsValue: 'IsoCode', value: language"></select>
     </div>
-    <div class="import-grid" data-bind="koGrid: confirmGridOptions"></div>
+    <div class="import-confirm-grid" data-bind="koGrid: confirmGridOptions"></div>
     <div class="footer_btn">
         <div>
             <input type="checkbox" data-bind="checked: statusPostState" />
             After successful import change status of item to <select data-bind="options: statuses, optionsText: 'Name', optionsValue: 'Id', value: statusFilter"></select> inside your GatherContent account.
-            <!--, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender-->
+          
         </div>
-        <input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 2)" />
+        <!--<input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 2)" />-->
         <input type="button" value="Import>" data-bind="click: buttonClick.bind($data, 4)" />
-        <!--<input type="button" class="closeButton" value="Close" data-bind="click: buttonClick.bind($data, 5)" />-->
     </div>
     <div class="help-link">
         <a href="mailto:support@gathercontent.com">Need help?</a>

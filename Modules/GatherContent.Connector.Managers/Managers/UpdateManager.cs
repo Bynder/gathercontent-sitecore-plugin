@@ -77,16 +77,20 @@ namespace GatherContent.Connector.Managers.Managers
 
         #region Utilities
 
-
         /// <summary>
         /// 
         /// </summary>
         /// <param name="cmsItems"></param>
         /// <returns></returns>
-        private List<UpdateItemModel> MapUpdateItems(IEnumerable<CmsItem> cmsItems)
+        private UpdateModel MapUpdateItems(IEnumerable<CmsItem> cmsItems)
         {
+            var model = new UpdateModel();
             var projectsDictionary = new Dictionary<int, Project>();
             var templatesDictionary = new Dictionary<int, GCTemplate>();
+
+            var statuses = new List<GcStatusModel>();
+            var templates = new List<GcTemplateModel>();
+            var projects = new List<GcProjectModel>();
 
 
             var items = new List<UpdateItemModel>();
@@ -117,9 +121,30 @@ namespace GatherContent.Connector.Managers.Managers
                     {
                         var gcItem = entity.Data;
                         var project = GetProject(projectsDictionary, gcItem.ProjectId);
+                        if (project != null)
+                        {
+                            if (projects.All(i => i.Id != project.Id.ToString()))
+                            {
+                                projects.Add(new GcProjectModel
+                                {
+                                    Id = project.Id.ToString(),
+                                    Name = project.Name
+                                });
+                            }
+                        }
                         if (gcItem.TemplateId.HasValue)
                         {
                             var template = GetTemplate(templatesDictionary, gcItem.TemplateId.Value);
+
+                            if (templates.All(i => i.Id != template.Id.ToString()))
+                            {
+                                templates.Add(new GcTemplateModel
+                                {
+                                    Id = template.Id.ToString(),
+                                    Name = template.Name,
+                                });
+                            }
+
 
                             string gcLink = null;
                             if (!string.IsNullOrEmpty(GcAccountSettings.GatherContentUrl))
@@ -153,33 +178,43 @@ namespace GatherContent.Connector.Managers.Managers
 
                             var status = gcItem.Status.Data;
 
+                            if (statuses.All(i => i.Id != status.Id))
+                            {
+                                statuses.Add(new GcStatusModel
+                                {
+                                    Id = status.Id,
+                                    Name = status.Name,
+                                    Color = status.Color
+                                });
+                            }
+
                             var listItem = new UpdateItemModel
-                              {
-                                  CmsId = cmsItem.Id,
-                                  Title = cmsItem.Title,
-                                  CmsLink = cmsLink,
-                                  GcLink = gcLink,
-                                  LastUpdatedInCms = lastUpdate.ToString(dateFormat),
-                                  Project = new GcProjectModel { Name = project.Name },
-                                  CmsTemplate = new CmsTemplateModel { Name = cmsTemplateName },
-                                  GcTemplate = new GcTemplateModel
-                                  {
-                                      Id = template.Id.ToString(),
-                                      Name = template.Name
-                                  },
-                                  Status = new GcStatusModel
-                                  {
-                                      Id = status.Id,
-                                      Name = status.Name,
-                                      Color = status.Color
-                                  },
-                                  GcItem = new GcItemModel
-                                  {
-                                      Id = gcItem.Id.ToString(),
-                                      Title = gcItem.Name,
-                                      LastUpdatedInGc = gcItem.Updated.Date.ToString(dateFormat),
-                                  }
-                              };
+                            {
+                                CmsId = cmsItem.Id,
+                                Title = cmsItem.Title,
+                                CmsLink = cmsLink,
+                                GcLink = gcLink,
+                                LastUpdatedInCms = lastUpdate.ToString(dateFormat),
+                                Project = new GcProjectModel { Name = project.Name },
+                                CmsTemplate = new CmsTemplateModel { Name = cmsTemplateName },
+                                GcTemplate = new GcTemplateModel
+                                {
+                                    Id = template.Id.ToString(),
+                                    Name = template.Name
+                                },
+                                Status = new GcStatusModel
+                                {
+                                    Id = status.Id,
+                                    Name = status.Name,
+                                    Color = status.Color
+                                },
+                                GcItem = new GcItemModel
+                                {
+                                    Id = gcItem.Id.ToString(),
+                                    Title = gcItem.Name,
+                                    LastUpdatedInGc = gcItem.Updated.Date.ToString(dateFormat),
+                                }
+                            };
 
                             items.Add(listItem);
 
@@ -190,9 +225,17 @@ namespace GatherContent.Connector.Managers.Managers
 
             items = items.OrderBy(item => item.Status.Name).ToList();
 
+            model.Items = items;
+            model.Filters = new UpdateFiltersModel
+            {
+                Projects = projects,
+                Statuses = statuses,
+                Templates = templates
+            };
 
-            return items;
+            return model;
         }
+       
 
         /// <summary>
         /// 
@@ -262,110 +305,14 @@ namespace GatherContent.Connector.Managers.Managers
         /// <param name="itemId"></param>
         /// <param name="languageId"></param>
         /// <returns></returns>
-        public List<UpdateItemModel> GetItemsForUpdate(string itemId, string languageId)
+        public UpdateModel GetItemsForUpdate(string itemId, string languageId)
         {
             var cmsItems = ItemsRepository.GetItems(itemId, languageId).ToList();
             var model = MapUpdateItems(cmsItems);
             return model;
         }
 
-        public UpdateFiltersModel GetFilters(string itemId, string languageId)  //TODO move to GetItemsForUpdate?
-        {
-            var templatesDictionary = new Dictionary<int, GCTemplate>();
 
-
-            var cmsItems = ItemsRepository.GetItems(itemId, languageId).ToList();
-
-            var statuses = new List<GcStatusModel>();
-            var templates = new List<GcTemplateModel>();
-            var projects = new List<GcProjectModel>();
-
-
-            foreach (var cmsItem in cmsItems)
-            {
-                var idField = cmsItem.Fields.FirstOrDefault(f => f.TemplateField.FieldName == "GC Content Id");
-                if (idField != null && !string.IsNullOrEmpty(idField.Value.ToString()))
-                {
-                    ItemEntity entity = null;
-                    try
-                    {
-                        entity = ItemsService.GetSingleItem(idField.Value.ToString());
-                    }
-                    catch (WebException exception)
-                    {
-                        Log.Error(
-                            "GatherContent message. Api Server error has happened during getting Item with id = " +
-                            idField.Value.ToString(), exception);
-                        using (var response = exception.Response)
-                        {
-                            var httpResponse = (HttpWebResponse)response;
-                            if (httpResponse.StatusCode == HttpStatusCode.Unauthorized)
-                            {
-                                throw;
-                            }
-                        }
-                    }
-
-                    if (entity != null)
-                    {
-                        var gcItem = entity.Data;
-                        var project = ProjectsService.GetSingleProject(gcItem.ProjectId.ToString());
-
-                        if (project != null && project.Data != null)
-                        {
-                            var gcProject = project.Data;
-
-                            if (projects.All(i => i.Id != gcProject.Id.ToString()))
-                            {
-                                projects.Add(new GcProjectModel
-                                {
-                                    Id = gcProject.Id.ToString(),
-                                    Name = gcProject.Name
-                                });
-                            }   
-
-                        }
-
-                        if (gcItem.TemplateId != null)
-                        {
-                            var gcTemplate = GetTemplate(templatesDictionary, gcItem.TemplateId.Value);
-
-
-                            if (templates.All(i => i.Id != gcTemplate.Id.ToString()))
-                            {
-                                templates.Add(new GcTemplateModel
-                                {
-                                    Id = gcTemplate.Id.ToString(),
-                                    Name = gcTemplate.Name,
-                                });
-                            }
-                        }
-
-                        var gcStatuse = gcItem.Status.Data;
-
-                        if (statuses.All(i => i.Id != gcStatuse.Id))
-                        {
-                            statuses.Add(new GcStatusModel
-                            {
-                                Id = gcStatuse.Id,
-                                Name = gcStatuse.Name,
-                                Color = gcStatuse.Color
-                            });
-                        }
-
-                    }
-                }
-            }
-
-
-            return new UpdateFiltersModel
-            {
-                Projects = projects,
-                Statuses = statuses,
-                Templates = templates
-            };
-
-        }
 
 
         /// <summary>
@@ -571,23 +518,5 @@ namespace GatherContent.Connector.Managers.Managers
             return model;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="models"></param>
-        /// <returns></returns>
-        private List<GCItem> GetGCItemsByModels(List<UpdateListIds> models)
-        {
-            var result = new List<GCItem>();
-
-            foreach (var item in models)
-            {
-                GCItem gcItem = ItemsService.GetSingleItem(item.GCId).Data;
-                var gcItemWithCmsId = new UpdateGCItem(gcItem, item.CMSId);
-                result.Add(gcItemWithCmsId);
-            }
-
-            return result;
-        }
     }
 }

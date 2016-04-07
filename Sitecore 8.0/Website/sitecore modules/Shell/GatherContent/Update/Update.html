@@ -18,7 +18,7 @@
     });
 </script>
 
-<div data-bind="if: getMode(1)" class="gathercontent-import">
+<div data-bind="visible: getMode(1)" class="gathercontent-import">
 
     <div class="filter_wrapper">
         <div class="filter_wrapper_import">
@@ -48,7 +48,7 @@
 
 <div data-bind="if: getMode(2)">
     <div>
-        <h2 class="title">Confirm update selection (<span data-bind="text: getCheckedCount"></span> items)</h2>
+        <h2 class="title">Confirm update selection</h2>
         <p>You're about to overwrite Sitecore content with new content from GatherContent. Please review your selection before updating your content.</p>
     </div>
     
@@ -89,11 +89,11 @@
     <img src="~/icon/Apps/32x32/Right.png" width="20" height="20">
     <span data-bind="text: successImportedItemsCount()"></span> items were updated successfully.
 
-    <div data-bind="if: items().length > 0">
+    <div data-bind="if: resultItems().length > 0">
         <div data-bind="if: notUpdaredItemsCount() > 0" class="import-padding">
             <img src="~/icon/Apps/32x32/Warning (1).png" width="20" height="20"> <span data-bind="text: notUpdaredItemsCount()"></span> items were not updated. Check errors below.
         </div>
-      
+
         <div class="update-result-grid" data-bind="koGrid: gridResultOptions"></div>
 
         <div data-bind="if: notUpdaredItemsCount() > 0" class="import-padding">

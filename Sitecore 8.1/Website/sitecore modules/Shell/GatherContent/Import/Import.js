@@ -402,15 +402,23 @@
         columnDefs: [
             {
                 field: 'Status.Name',
-                displayName: 'Status', cellTemplate: '<div class="cell-padding"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
+                width: '**',
+                displayName: 'Status',
+                cellTemplate: '<div class="kgCellText"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
             },
-            { field: 'Title', displayName: 'Item name' },
             {
-                field: 'LastUpdatedInGC', displayName: 'Last updated in GatherContent',
+                field: 'Title',
+                width: '**',
+                displayName: 'Item name'
+            },
+            {
+                field: 'LastUpdatedInGC',
+                width: '**',
+                displayName: 'Last updated in GatherContent',
                 sortFn: dateSort
             },
-            { field: 'Breadcrumb', displayName: 'Path' },
-            { field: 'Template.Name', displayName: 'Template name' }
+            { field: 'Breadcrumb', width: '**', displayName: 'Path' },
+            { field: 'Template.Name', width:200, displayName: 'Template name' }
         ]
     };
 
@@ -430,7 +438,7 @@
           columnDefs: [
               {
                   field: 'Status.Name',
-                  displayName: 'Status', cellTemplate: '<div class="cell-padding"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
+                  displayName: 'Status', cellTemplate: '<div class="kgCellText"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
               },
               { field: 'Title', displayName: 'Item name' },
               { field: 'Template.Name', displayName: 'Template name' },
@@ -474,7 +482,7 @@
         columnDefs: [
             {
                 field: 'Status.Name',
-                displayName: 'Status', cellTemplate: '<div class="cell-padding">' +
+                displayName: 'Status', cellTemplate: '<div class="kgCellText">' +
                     '<div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }">' +
                     '</div>' +
                     '<span data-bind="text: $parent.entity.Status.Name">' +
@@ -482,10 +490,28 @@
                     '</div>'
             },
             { field: 'Title', displayName: 'Item name' },
-            { field: 'Message', displayName: 'Import status' },
-            { field: 'GcTemplateName', displayName: 'Template name' },
-            { displayName: 'Open in Sitecore', cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
-            { displayName: 'Open in GatherContent', cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>' }
+            {
+                field: 'Message',
+                displayName: 'Import status',
+                cellTemplate: '<div class="kgCellText" data-bind="style: { color: $parent.$userViewModel.getImportResultMessageColor($parent.entity) }, text: $parent.entity.Message"></div>'
+            },
+            {
+                field: 'GcTemplateName',
+                displayName: 'Template name',
+                cellTemplate: '<div class="kgCellText" data-bind="style: { color: $parent.$userViewModel.getImportResultTemplateColor($parent.entity) }, text: $parent.entity.GcTemplateName"></div>'
+            },
+            {
+                displayName: 'Open in Sitecore',
+                cellClass: 'cell-padding',
+                sortable: false,
+                cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>'
+            },
+            {
+                displayName: 'Open in GatherContent',
+                cellClass: 'cell-padding',
+                sortable: false,
+                cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>'
+            }
         ]
     };
 

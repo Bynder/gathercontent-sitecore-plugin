@@ -493,17 +493,25 @@
                 pagingOptions: self.pagingOptions,
                 filterOptions: self.filterOptions,
                 columnDefs: [
+                   {
+                       field: 'Status.Name',
+                       width: '**',
+                       displayName: 'Status',
+                       cellTemplate: '<div class="kgCellText"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
+                   },
                     {
-                        field: 'Status.Name',
-                        displayName: 'Status', cellTemplate: '<div class="cell-padding"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
+                        field: 'Title',
+                        width: '**',
+                        displayName: 'Item name'
                     },
-                    { field: 'Title', displayName: 'Item name' },
                     {
-                        field: 'LastUpdatedInGC', displayName: 'Last updated in GatherContent',
+                        field: 'LastUpdatedInGC',
+                        width: '**',
+                        displayName: 'Last updated in GatherContent',
                         sortFn: dateSort
                     },
-                    { field: 'Breadcrumb', displayName: 'Path' },
-                    { field: 'Template.Name', displayName: 'Template name' }
+                    { field: 'Breadcrumb', width: '**', displayName: 'Path' },
+                    { field: 'Template.Name', width: 200, displayName: 'Template name' }
                 ]
             };
 
@@ -524,14 +532,14 @@
             filterOptions: self.groupedGridFilterOptions,
             groups: ["TemplateName"],
             columnDefs: [
-                { field: 'TemplateName', displayName: 'Template Name' },
-                { field: 'MappingName', displayName: 'Mapping Name' },
-                { field: 'ScTemplate', displayName: 'Sitecore Template' },
+                { field: 'TemplateName', width: '**', displayName: 'Template Name' },
+                { field: 'MappingName', width: '**', displayName: 'Mapping Name' },
+                { field: 'ScTemplate', width: '**', displayName: 'Sitecore Template' },
                 {
-                    field: 'DefaultLocationTitle', displayName: 'Default Location',
+                    field: 'DefaultLocationTitle', width: 320, displayName: 'Default Location',
                     cellTemplate: '<div><input data-bind="value: $parent.entity.DefaultLocationTitle, attr: {\'data-openerid\': $parent.entity.OpenerId }, click: function(){$parent.$userViewModel.openDropTree($parent.entity)}" type="text" />' +
                            '<input data-bind="value: $parent.entity.DefaultLocation, visible: false" type="text" />' +
-                           '<div data-bind="attr: { id: $parent.entity.OpenerId }" style="position: absolute; left: 180px; top: 0; width: 300px; height: 400px; z-index: 1000;">' +
+                           '<div data-bind="attr: { id: $parent.entity.OpenerId }" style="position: absolute; left: 0; top: 30px; width: 300px; height: 400px; z-index: 1000;">' +
                               '<div style="width:300px;height:400px;">' +
                                   '<div data-bind="css: { \'class\': $parent.entity.OpenerId }"> </div>' +
                               '</div>' +
@@ -575,20 +583,38 @@
        pagingOptions: self.pagingResultOptions,
        filterOptions: self.filterResultOptions,
        columnDefs: [
-           {
-               field: 'Status.Name',
-               displayName: 'Status', cellTemplate: '<div class="cell-padding">' +
-                   '<div class="status-color"  data-bind="style: { backgroundColor : $parent.entity.Status.Color }">' +
-                   '</div>' +
-                   '<span data-bind="text: $parent.entity.Status.Name">' +
-                   '</span>' +
-                   '</div>'
-           },
-           { field: 'Title', displayName: 'Item name' },
-           { field: 'Message', displayName: 'Import status' },
-           { field: 'GCTemplate', displayName: 'Template name' },
-           { displayName: 'Open in Sitecore', cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
-           { displayName: 'Open in GatherContent', cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>' }
+            {
+                field: 'Status.Name',
+                displayName: 'Status', cellTemplate: '<div class="kgCellText">' +
+                    '<div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }">' +
+                    '</div>' +
+                    '<span data-bind="text: $parent.entity.Status.Name">' +
+                    '</span>' +
+                    '</div>'
+            },
+            { field: 'Title', displayName: 'Item name' },
+            {
+                field: 'Message',
+                displayName: 'Import status',
+                cellTemplate: '<div class="kgCellText" data-bind="style: { color: $parent.$userViewModel.getImportResultMessageColor($parent.entity) }, text: $parent.entity.Message"></div>'
+            },
+            {
+                field: 'GcTemplateName',
+                displayName: 'Template name',
+                cellTemplate: '<div class="kgCellText" data-bind="style: { color: $parent.$userViewModel.getImportResultTemplateColor($parent.entity) }, text: $parent.entity.GcTemplateName"></div>'
+            },
+            {
+                displayName: 'Open in Sitecore',
+                cellClass: 'cell-padding',
+                sortable: false,
+                cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>'
+            },
+            {
+                displayName: 'Open in GatherContent',
+                cellClass: 'cell-padding',
+                sortable: false,
+                cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>'
+            }
        ]
    };
 

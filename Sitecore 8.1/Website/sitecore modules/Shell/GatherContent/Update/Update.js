@@ -115,9 +115,9 @@
     }
 
     self.initVariables = function (response) {
-        var items = self.setupWatcher(response.Items);
-        self.items(items);
-        allItems = items.slice(0);
+        //var items = self.setupWatcher(response.Items);
+        self.items(response.Items);
+        allItems = response.Items.slice(0);
 
         self.statuses(response.Filters.Statuses);
         self.projects(response.Filters.Projects);
@@ -156,7 +156,7 @@
             resultCollection = [];
             for (var i = 0; i < currentCollection.length; i++) {
                 var currentElement = currentCollection[i];
-                if (currentElement.Title.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
+                if (currentElement.GcItem.Name.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
                     resultCollection.push(currentElement);
                 }
             }
@@ -378,13 +378,13 @@
         
     }
 
-    self.setupWatcher = function (items) {
-        for (var i = 0; i < items.length; i++) {
-            items[i].Checked = ko.observable(false);
-        }
+    //self.setupWatcher = function (items) {
+    //    for (var i = 0; i < items.length; i++) {
+    //        items[i].Checked = ko.observable(false);
+    //    }
 
-        return items;
-    }
+    //    return items;
+    //}
 
     self.getImportResultTemplateColor = function (item) {
         if (!item.IsImportSuccessful)
@@ -434,24 +434,24 @@
             filterOptions: self.filterOptions,            
             columnDefs: [
                 {
-                    field: 'Status.Name',
-                    displayName: 'Status', cellTemplate: '<div class="cell-padding"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
+                    field: 'Status.Name',  width: '**',
+                    displayName: 'Status', cellTemplate: '<div class="kgCellText"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
                 },
-                { field: 'ScTitle', displayName: 'Sitecore Title' },
-                { field: 'GcItem.Name', displayName: 'GatherContent Item Name' },
-                { field: 'GcProject.Name', displayName: 'GatherContent Project' },
+                { field: 'ScTitle', width: '**', displayName: 'Sitecore Title' },
+                { field: 'GcItem.Name', width: '**', displayName: 'GatherContent Item Name' },
+                { field: 'GcProject.Name', width: '**', displayName: 'GatherContent Project' },
                 {
-                    field: 'LastUpdatedInGc', displayName: 'Last updated in GatherContent',
+                    field: 'LastUpdatedInGc', width: '**', displayName: 'Last updated in GatherContent',
                     sortFn: dateSort
                 },
                 {
-                    field: 'LastUpdatedInSitecore', displayName: 'Last updated in Sitecore',
+                    field: 'LastUpdatedInSitecore', width: '**', displayName: 'Last updated in Sitecore',
                     sortFn: dateSort
                 },
-                { field: 'GcTemplate.Name', displayName: 'GatherContent Template' },
-                { field: 'ScTemplateName', displayName: 'Sitecore Template' },
-                { displayName: 'Open in Sitecore', cellTemplate: '<a class="cell-padding" data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
-                { displayName: 'Open in GatherContent', cellTemplate: '<a class="cell-padding" data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>' }
+                { field: 'GcTemplate.Name', width: '**', displayName: 'GatherContent Template' },
+                { field: 'ScTemplateName', width: '**', displayName: 'Sitecore Template' },
+                { displayName: 'Open in Sitecore', cellClass: 'cell-padding', sortable: false, cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
+                { displayName: 'Open in GatherContent', cellClass: 'cell-padding', sortable: false, cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>' }
             ]
         };
 
@@ -468,25 +468,25 @@
               pagingOptions: self.pagingConfirmOptions,
               filterOptions: self.filterConfirmOptions,
               columnDefs: [
-                   {
-                       field: 'Status.Name',
-                       displayName: 'Status', cellTemplate: '<div class="cell-padding"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
-                   },
-                   { field: 'ScTitle', displayName: 'Sitecore Title' },
-                   { field: 'GcItem.Name', displayName: 'GatherContent Item Name' },
-                   { field: 'GcProject.Name', displayName: 'GatherContent Project' },
-                   {
-                       field: 'LastUpdatedInGc', displayName: 'Last updated in GatherContent',
-                       sortFn: dateSort
-                   },
-                   {
-                       field: 'LastUpdatedInSitecore', displayName: 'Last updated in Sitecore',
-                       sortFn: dateSort
-                   },
-                   { field: 'GcTemplate.Name', displayName: 'GatherContent Template' },
-                   { field: 'ScTemplateName', displayName: 'Sitecore Template' },
-                   { displayName: 'Open in Sitecore', cellTemplate: '<a class="cell-padding" data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
-                   { displayName: 'Open in GatherContent', cellTemplate: '<a class="cell-padding" data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>' }
+                {
+                    field: 'Status.Name', width: '**',
+                    displayName: 'Status', cellTemplate: '<div class="kgCellText"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
+                },
+                { field: 'ScTitle', width: '**', displayName: 'Sitecore Title' },
+                { field: 'GcItem.Name', width: '**', displayName: 'GatherContent Item Name' },
+                { field: 'GcProject.Name', width: '**', displayName: 'GatherContent Project' },
+                {
+                    field: 'LastUpdatedInGc', width: '**', displayName: 'Last updated in GatherContent',
+                    sortFn: dateSort
+                },
+                {
+                    field: 'LastUpdatedInSitecore', width: '**', displayName: 'Last updated in Sitecore',
+                    sortFn: dateSort
+                },
+                { field: 'GcTemplate.Name', width: '**', displayName: 'GatherContent Template' },
+                { field: 'ScTemplateName', width: '**', displayName: 'Sitecore Template' },
+                { displayName: 'Open in Sitecore', cellClass: 'cell-padding', sortable: false, cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
+                { displayName: 'Open in GatherContent', cellClass: 'cell-padding', sortable: false, cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>' }
               ]
           };
 
@@ -506,7 +506,7 @@
         columnDefs: [
             {
                 field: 'Status.Name',
-                displayName: 'Status', cellTemplate: '<div class="cell-padding">' +
+                displayName: 'Status', cellTemplate: '<div class="kgCellText">' +
                     '<div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }">' +
                     '</div>' +
                     '<span data-bind="text: $parent.entity.Status.Name">' +
@@ -514,10 +514,28 @@
                     '</div>'
             },
             { field: 'Title', displayName: 'Item name' },
-            { field: 'Message', displayName: 'Import status' },
-            { field: 'GcTemplateName', displayName: 'Template name' },
-            { displayName: 'Open in Sitecore', cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
-            { displayName: 'Open in GatherContent', cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>' }
+            {
+                field: 'Message',
+                displayName: 'Import status',
+                cellTemplate: '<div class="kgCellText" data-bind="style: { color: $parent.$userViewModel.getImportResultMessageColor($parent.entity) }, text: $parent.entity.Message"></div>'
+            },
+            {
+                field: 'GcTemplateName',
+                displayName: 'Template name',
+                cellTemplate: '<div class="kgCellText" data-bind="style: { color: $parent.$userViewModel.getImportResultTemplateColor($parent.entity) }, text: $parent.entity.GcTemplateName"></div>'
+            },
+            {
+                displayName: 'Open in Sitecore',
+                cellClass: 'cell-padding',
+                sortable: false,
+                cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>'
+            },
+            {
+                displayName: 'Open in GatherContent',
+                cellClass: 'cell-padding',
+                sortable: false,
+                cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>'
+            }
         ]
     };
 

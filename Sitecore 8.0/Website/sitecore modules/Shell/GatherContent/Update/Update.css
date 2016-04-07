@@ -343,6 +343,7 @@ input[type="button"]:hover {
     background: #5e5e5e;
     height: 40px !important;
     position: inherit;
+    width: 1558px!important;
 }
 .kgHeaderText {
     font-family: Arial, Helvetica, sans-serif;
@@ -376,6 +377,8 @@ button.kgPagerButton:hover {
 }
 .kgViewport {
     overflow-x: hidden;
+    outline: none;
+    width: 1558px!important;
 }
 .kgSortButtonDown {
     right: 7px;
@@ -412,6 +415,9 @@ button.kgPagerButton:hover {
 .kgHeaderCell:last-child {
     border-right:0;
 }
+.kgCell:last-child {
+     border-right:none;
+}
 .kgCell {
     box-sizing: border-box;
     overflow: visible;
@@ -419,14 +425,12 @@ button.kgPagerButton:hover {
 .kgCell:first-child {
     border-left: 1px solid rgb(212, 212, 212);
 }
-.kgViewport {
-    outline: none;
-}
 .gridStyle {
     border: 0;
 }
 .kgRow {
     border-bottom: 1px solid rgb(212, 212, 212);
+    width: 1558px!important;
 }
 .kgCellText {
    line-height: 19px;
@@ -473,6 +477,16 @@ button.kgPagerButton:hover {
 .cell-padding {
     padding: 5px;
 }
+    .cell-padding a {
+        text-decoration: none;
+        cursor: pointer;
+        font-weight: 700;
+        color: #00B6FF;
+    }
+     .cell-padding a:hover {
+        text-decoration: none;
+        cursor: pointer;
+    }
 .mappings-cell {
     margin: 5px;
 }

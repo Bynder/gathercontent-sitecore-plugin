@@ -16,7 +16,7 @@ namespace GatherContent.Connector.Managers.Models.UpdateItems.New
         public string CmsLink { get; set; }
         public string GcLink { get; set; }
 
-        public UpdateFiltersModel Filters { get; set; }
 
     }
+
 }

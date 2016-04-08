@@ -71,14 +71,15 @@
 </div>
 
 <div data-bind="if: getMode(3)">
-    <div>
+    <div class="title_wrap">
         <h2 class="title">Confirm import selection</h2>
         <p>Please review your import selection before importing.</p>
     </div>
-    <div>
+    <div class="language">
         Language
         <select class="custom_select" style="width: 250px" data-bind="options: languages, optionsText: 'Name', optionsValue: 'IsoCode', value: language"></select>
     </div>
+    <div class="location"></div>
     <div class="import-confirm-grid" data-bind="koGrid: confirmGridOptions"></div>
     <div class="footer_btn">
         <div>

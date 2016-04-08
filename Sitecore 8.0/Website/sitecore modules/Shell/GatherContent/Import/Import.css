@@ -525,3 +525,41 @@ button.kgPagerButton:hover {
 .input-block {
     width: 100%
 }
+
+
+/*fix import */
+
+.language{
+    float: right;
+}
+.title_wrap{
+    float: left;
+}
+.location:before{
+    content: "";
+    display: block;
+    clear: both;
+
+}
+.kgViewport{
+    border-bottom: 1px solid rgb(212,212,212);
+     border-left: 1px solid rgb(212,212,212);
+
+ border-right: 1px solid rgb(212,212,212);
+
+}
+.import-grid{
+    border: none;
+}
+.import-confirm-grid{
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+}
+.kgFooterPanel{
+    margin-top: 20px;
+}
+.location .input-block{
+    height: 30px;
+    margin-bottom: 10px;
+}

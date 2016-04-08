@@ -974,7 +974,7 @@ namespace GatherContent.Connector.Managers.Managers
                                     if (ItemsRepository.IfMappedItemExists(parentId, currentCmsItem))
                                     {
                                         //cmsItem.Id = ItemsRepository.CreateNotMappedItem(parentId, notMappedCmsItem);
-                                        parentId = cmsItem.Id;
+                                        //parentId = cmsItem.Id;
                                         alreadyMappedItemInPath = true;
                                     }
                                     else if (ItemsRepository.IfNotMappedItemExists(parentId, currentCmsItem))

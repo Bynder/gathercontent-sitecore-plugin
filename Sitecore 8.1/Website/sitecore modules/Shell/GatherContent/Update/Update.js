@@ -85,8 +85,9 @@
 
     this.getPagedData = function (pageSize, page) {
         var id = getUrlVars()["id"];
+        var db = getUrlVars()["db"];
         jQuery.ajax({
-            url: '/api/sitecore/Update/Get?id={' + id + '}',
+            url: '/api/sitecore/Update/Get?id={' + id + '}' + '&db=' + db,
             dataType: 'json',
             async: true,
             success: function (response) {

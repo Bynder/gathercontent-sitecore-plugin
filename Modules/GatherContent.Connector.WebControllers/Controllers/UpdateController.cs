@@ -78,13 +78,13 @@ namespace GatherContent.Connector.WebControllers.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public string Get(string id)
+        public string Get(string id, string db)
         {
             try
             {
                 var language = Sitecore.Context.Language;
                 var updateModel = UpdateManager.GetItemsForUpdate(id, language.CultureInfo.TwoLetterISOLanguageName);
-                var importViewModel = new UpdateViewModel {Languages = GetLanguages()};
+                var importViewModel = new UpdateViewModel {Languages = GetLanguages(db)};
 
                 foreach (var updateItemModel in updateModel.Items)
                 {

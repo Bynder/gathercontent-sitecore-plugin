@@ -39,6 +39,7 @@ namespace GatherContent.Connector.Website.Commands
                                          { "title", item.Paths.Path }, 
                                          { "language", item.Language.ToString() }, 
                                          { "version", item.Version.ToString() }, 
+                                         { "database", item.Database.Name }, 
                                          { "load", StringUtil.GetString(new[] { context.Parameters["load"] }) }, 
                                      };
 
@@ -58,9 +59,10 @@ namespace GatherContent.Connector.Website.Commands
             var id = args.Parameters["id"].Replace("{", "").Replace("}", "");
             var language = Language.Parse(args.Parameters["language"]);
             var version = args.Parameters["version"];
+            var db = args.Parameters["database"];
             var title = args.Parameters["title"];
             var uri = "/sitecore modules/shell/gathercontent/import/import.html";
-            var path = string.Format("{0}?id={1}&l={2}&v={3}&t={4}", uri, id, language, version, title);
+            var path = string.Format("{0}?id={1}&l={2}&v={3}&t={4}&db={5}", uri, id, language, version, title, db);
 
             var options = new ModalDialogOptions(path)
             {

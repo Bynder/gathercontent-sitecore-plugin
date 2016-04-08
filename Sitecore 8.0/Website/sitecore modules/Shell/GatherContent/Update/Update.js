@@ -85,8 +85,9 @@
 
     this.getPagedData = function (pageSize, page) {
         var id = getUrlVars()["id"];
+        var db = getUrlVars()["db"];
         jQuery.ajax({
-            url: '/api/sitecore/Update/Get?id={' + id + '}',
+            url: '/api/sitecore/Update/Get?id={' + id + '}' + '&db=' + db,
             dataType: 'json',
             async: true,
             success: function (response) {
@@ -435,7 +436,7 @@
             columnDefs: [
                 {
                     field: 'Status.Name',  width: '**',
-                    displayName: 'Status', cellTemplate: '<div class="cell-padding"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
+                    displayName: 'Status', cellTemplate: '<div class="kgCellText"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
                 },
                 { field: 'ScTitle', width: '**', displayName: 'Sitecore Title' },
                 { field: 'GcItem.Name', width: '**', displayName: 'GatherContent Item Name' },
@@ -470,7 +471,7 @@
               columnDefs: [
                 {
                     field: 'Status.Name', width: '**',
-                    displayName: 'Status', cellTemplate: '<div class="cell-padding"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
+                    displayName: 'Status', cellTemplate: '<div class="kgCellText"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
                 },
                 { field: 'ScTitle', width: '**', displayName: 'Sitecore Title' },
                 { field: 'GcItem.Name', width: '**', displayName: 'GatherContent Item Name' },
@@ -506,7 +507,7 @@
         columnDefs: [
             {
                 field: 'Status.Name',
-                displayName: 'Status', cellTemplate: '<div class="cell-padding">' +
+                displayName: 'Status', cellTemplate: '<div class="kgCellText">' +
                     '<div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }">' +
                     '</div>' +
                     '<span data-bind="text: $parent.entity.Status.Name">' +

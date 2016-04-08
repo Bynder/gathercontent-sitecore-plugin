@@ -101,14 +101,14 @@ namespace GatherContent.Connector.WebControllers.Controllers
         /// <param name="id"></param>
         /// <param name="projectId"></param>
         /// <returns></returns>
-        public string Get(string id, string projectId)
+        public string Get(string id, string projectId, string db)
         {
             try
             {
                 var items = ImportManager.GetImportDialogModel(id, projectId);
                 var importViewModel = new ImportViewModel();
 
-                importViewModel.Languages = GetLanguages();
+                importViewModel.Languages = GetLanguages(db);
 
 
                 if (items != null)
@@ -178,14 +178,14 @@ namespace GatherContent.Connector.WebControllers.Controllers
         /// <param name="id"></param>
         /// <param name="projectId"></param>
         /// <returns></returns>
-        public string GetMultiLocation(string id, string projectId)
+        public string GetMultiLocation(string id, string projectId,string db)
         {
             try
             {
                 var items = ImportManager.GetImportDialogModel(id, projectId);
                 var importViewModel = new ImportViewModel();
 
-                importViewModel.Languages = GetLanguages();
+                importViewModel.Languages = GetLanguages(db);
 
                 if (items != null)
                 {

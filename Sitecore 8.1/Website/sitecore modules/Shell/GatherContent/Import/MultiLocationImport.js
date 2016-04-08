@@ -96,10 +96,11 @@
 
     this.getPagedData = function (pageSize, page) {
         var id = getUrlVars()["id"];
+        var db = getUrlVars()["db"];
         var project = self.project();
         project = project ? project : 0;
         jQuery.ajax({
-            url: '/api/sitecore/Import/GetMultiLocation?id={' + id + '}&projectId=' + project,
+            url: '/api/sitecore/Import/GetMultiLocation?id={' + id + '}&projectId=' + project + '&db=' + db,
             dataType: 'json',
             async: true,
             success: function (response) {

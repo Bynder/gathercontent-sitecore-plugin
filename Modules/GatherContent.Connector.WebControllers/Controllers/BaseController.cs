@@ -17,10 +17,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         }
 
-        public List<LanguageViewModel> GetLanguages() 
+        public List<LanguageViewModel> GetLanguages(string databse) 
         {
             var model = new List<LanguageViewModel>();
-            var languages = Sitecore.Context.Database.GetLanguages();
+            var database = Sitecore.Configuration.Factory.GetDatabase(databse);
+            var languages = database.GetLanguages();
 
             foreach (var language in languages)
             {

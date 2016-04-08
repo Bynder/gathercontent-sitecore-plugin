@@ -92,9 +92,10 @@
 
     this.getPagedData = function (pageSize, page) {
         var id = getUrlVars()["id"];
+        var db = getUrlVars()["db"];
         var project = self.project() || 0;
         jQuery.ajax({
-            url: '/api/sitecore/Import/Get?id={' + id + '}&projectId=' + project,
+            url: '/api/sitecore/Import/Get?id={' + id + '}&projectId=' + project + '&db=' + db,
             dataType: 'json',
             async: true,
             success: function (response) {
@@ -404,7 +405,7 @@
                 field: 'Status.Name',
                 width: '**',
                 displayName: 'Status',
-                cellTemplate: '<div class="cell-padding"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
+                cellTemplate: '<div class="kgCellText"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
             },
             {
                 field: 'Title',
@@ -438,7 +439,7 @@
           columnDefs: [
               {
                   field: 'Status.Name',
-                  displayName: 'Status', cellTemplate: '<div class="cell-padding"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
+                  displayName: 'Status', cellTemplate: '<div class="kgCellText"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
               },
               { field: 'Title', displayName: 'Item name' },
               { field: 'Template.Name', displayName: 'Template name' },
@@ -482,7 +483,7 @@
         columnDefs: [
             {
                 field: 'Status.Name',
-                displayName: 'Status', cellTemplate: '<div class="cell-padding">' +
+                displayName: 'Status', cellTemplate: '<div class="kgCellText">' +
                     '<div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }">' +
                     '</div>' +
                     '<span data-bind="text: $parent.entity.Status.Name">' +

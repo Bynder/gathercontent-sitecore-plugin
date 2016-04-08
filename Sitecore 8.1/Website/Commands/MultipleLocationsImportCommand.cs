@@ -37,6 +37,7 @@ namespace GatherContent.Connector.Website.Commands
                                          { "id", item.ID.ToString() }, 
                                          { "language", item.Language.ToString() }, 
                                          { "version", item.Version.ToString() }, 
+                                         { "database", item.Database.Name }, 
                                          { "load", StringUtil.GetString(new[] { context.Parameters["load"] }) }, 
                                      };
 
@@ -54,10 +55,11 @@ namespace GatherContent.Connector.Website.Commands
             Assert.ArgumentNotNull(args, "args");
 
             var id = args.Parameters["id"].Replace("{", "").Replace("}", "");
+            var db = args.Parameters["database"];
             var language = Language.Parse(args.Parameters["language"]);
             var version = args.Parameters["version"];
             var uri = "/sitecore modules/shell/gathercontent/import/MultiLocationImport.html";
-            var path = string.Format("{0}?id={1}&l={2}&v={3}", uri, id, language, version);
+            var path = string.Format("{0}?id={1}&l={2}&v={3}&db={4}", uri, id, language, version, db);
 
             var options = new ModalDialogOptions(path)
             {

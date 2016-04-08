@@ -235,7 +235,7 @@ namespace GatherContent.Connector.Managers.Managers
 
             return model;
         }
-       
+
 
         /// <summary>
         /// 
@@ -387,6 +387,10 @@ namespace GatherContent.Connector.Managers.Managers
                 var templateMapping = templates.First(x => x.GcTemplate.GcTemplateId == gcItem.TemplateId.ToString());
                 if (templateMapping != null) // template found, now map fields here
                 {
+                    var gcContentIdField = templateMapping.FieldMappings.FirstOrDefault(fieldMapping => fieldMapping.CmsField.TemplateField.FieldName == "GC Content Id");
+                    if (gcContentIdField!=null) templateMapping.FieldMappings.Remove(gcContentIdField);
+
+
                     var files = new List<File>();
                     if (
                         gcItem.Config.SelectMany(config => config.Elements)

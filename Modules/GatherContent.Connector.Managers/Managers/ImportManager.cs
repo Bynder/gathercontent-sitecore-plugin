@@ -896,7 +896,7 @@ namespace GatherContent.Connector.Managers.Managers
 
                             var parentId = itemId;
 
-                            //bool alreadyMappedItemInPath = false;
+                            bool alreadyMappedItemInPath = false;
                             //for each mapping which is fact GC Item => Sitecore/Umbraco item - get GC Path and run through its each item
                             for (int i = 0; i < path.Value.Count; i++)
                             {
@@ -975,22 +975,22 @@ namespace GatherContent.Connector.Managers.Managers
                                     {
                                         //cmsItem.Id = ItemsRepository.CreateNotMappedItem(parentId, notMappedCmsItem);
                                         //parentId = cmsItem.Id;
+                                        alreadyMappedItemInPath = true;
                                         parentId = ItemsRepository.GetItemId(parentId, currentCmsItem);
-                                        //alreadyMappedItemInPath = true;
                                     }
                                     else if (ItemsRepository.IfNotMappedItemExists(parentId, currentCmsItem))
                                     {
-                                        //if (alreadyMappedItemInPath)
-                                        //{
+                                        if (alreadyMappedItemInPath)
+                                        {
                                             parentId = ItemsRepository.GetItemId(parentId, currentCmsItem);
-                                        //}
+                                        }
                                     }
                                     else
                                     {
-                                        //if (alreadyMappedItemInPath)
-                                        //{
+                                        if (alreadyMappedItemInPath)
+                                        {
                                             parentId = ItemsRepository.CreateNotMappedItem(parentId, currentCmsItem);
-                                        //}
+                                        }
                                     }
                                 }
                             }

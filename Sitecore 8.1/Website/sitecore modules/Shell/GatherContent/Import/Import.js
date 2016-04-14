@@ -84,9 +84,50 @@
     self.setPagingData = function (data, page, pageSize) {
         var items = data;
         allItems = items.slice(0);
-        //self.koAllItems(items);
+        
+        if (self.sortInfo()) {
+            //window.kg.sortService.Sort(data, self.sortInfo()); - does not work with plain arrays. sorting extracted from that func.
+            var col = self.sortInfo().column, direction = self.sortInfo().direction, sortFn, item;
+            if (window.kg.sortService.colSortFnCache[col.field]) {
+                sortFn = window.kg.sortService.colSortFnCache[col.field];
+            } else if (col.sortingAlgorithm != undefined) {
+                sortFn = col.sortingAlgorithm;
+                window.kg.sortService.colSortFnCache[col.field] = col.sortingAlgorithm;
+            } else {
+                item = data[0];
+                if (!item) {
+                    return;
+                }
+                sortFn = kg.sortService.guessSortFn(item[col.field]);
+                if (sortFn) {
+                    window.kg.sortService.colSortFnCache[col.field] = sortFn;
+                } else {
+                    sortFn = window.kg.sortService.sortAlpha;
+                }
+            }
+            data.sort(function(itemA, itemB) {
+                var propA = window.kg.utils.evalProperty(itemA, col.field);
+                var propB = window.kg.utils.evalProperty(itemB, col.field);
+                if (!propB && !propA) {
+                    return 0;
+                } else if (!propA) {
+                    return 1;
+                } else if (!propB) {
+                    return -1;
+                }
+                if (direction === "asc") {
+                    return sortFn(propA, propB);
+                } else {
+                    return 0 - sortFn(propA, propB);
+                }
+            });
+        }
+        
+
         var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
+
         self.items(pagedData);
+        
         self.pagingOptions.totalServerItems(data.length);
     };
 
@@ -381,8 +422,7 @@
         self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.sortInfo.subscribe(function (data) {
-        //self.items(allItems);
-        //window.kg.sortService.Sort(self.koAllItems, self.sortInfo());
+        self.pagingOptions.currentPage(1); // reset page after sort
     });
  
 
@@ -399,7 +439,7 @@
         enablePaging: true,
         pagingOptions: self.pagingOptions,
         filterOptions: self.filterOptions,
-        sortInfo: self.sortInfo,        
+        sortInfo: self.sortInfo,
         columnDefs: [
             {
                 field: 'Status.Name',
@@ -517,6 +557,5 @@
     };
 
     this.gridResultOptions = resultOptions;
-
 }
 

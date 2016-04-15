@@ -14,7 +14,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             {
                 return new GCAccountSettings
                 {
-                    ApiUrl = accountSettingItem["API Url"],
+                    ApiUrl = "https://api.gathercontent.com/", //hardcoded value requested by client 
                     Username = accountSettingItem["Account Owner Email Address"],
                     ApiKey = accountSettingItem["API Key"],
                     TemplateFolderId = accountSettingItem["Templates Root Folder"],

@@ -101,10 +101,12 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
                     if (mappingModel.IsMapped)
                     {
-                        var lastMappedDate = DateTime.ParseExact(mapping.LastMappedDateTime, "dd/MM/yyyy hh:mm tt",
-                            CultureInfo.InvariantCulture);
-                        var lastUpdateDate = DateTime.ParseExact(mapping.LastUpdatedDate, "dd/MM/yyyy hh:mm tt",
-                           CultureInfo.InvariantCulture);
+                        DateTime lastMappedDate;
+                        DateTime.TryParseExact(mapping.LastMappedDateTime, "dd/MM/yyyy hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out lastMappedDate);
+                        
+                        DateTime lastUpdateDate;
+                        DateTime.TryParseExact(mapping.LastUpdatedDate, "dd/MM/yyyy hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out lastUpdateDate);
+                        
                         mappingModel.IsHighlightingDate = lastMappedDate < lastUpdateDate;
                     }
 

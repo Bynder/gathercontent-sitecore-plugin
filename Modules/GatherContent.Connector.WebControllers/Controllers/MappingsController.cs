@@ -437,6 +437,23 @@ namespace GatherContent.Connector.WebControllers.Controllers
                 return Json(new { status = "error", message = e.Message }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        /// <summary>
+        /// used for 'test connection' button
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Try()
+        {
+            try
+            {
+                var data = MappingManager.GetAllGcProjects();
+                return Content("OK");
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(204, ex.Message);
+            }
+        }
     }
 }
 

@@ -16,7 +16,7 @@
     self.successImportedItemsCount = ko.observable(),
     self.notImportedItemsCount = ko.observable(),
     self.currentMode = ko.observable(MODE.ChooseItmesForImort);
-
+    self.sortInfo = ko.observable();
     self.language = ko.observable(getUrlVars()["l"]),
     self.languages = ko.observableArray([]),
 
@@ -625,6 +625,7 @@
        enablePaging: true,
        pagingOptions: self.pagingResultOptions,
        filterOptions: self.filterResultOptions,
+       sortInfo: self.sortInfo,
        columnDefs: [
             {
                 field: 'Status.Name',

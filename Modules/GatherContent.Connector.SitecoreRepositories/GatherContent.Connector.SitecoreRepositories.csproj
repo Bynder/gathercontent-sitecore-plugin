@@ -128,6 +128,7 @@
     <Compile Include="Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\Constants.cs" />
     <Compile Include="Repositories\DropTreeRepository.cs" />
+    <Compile Include="Repositories\SimpleMediaRepository.cs" />
     <Compile Include="Repositories\ItemsRepository.cs" />
     <Compile Include="Repositories\MappingRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

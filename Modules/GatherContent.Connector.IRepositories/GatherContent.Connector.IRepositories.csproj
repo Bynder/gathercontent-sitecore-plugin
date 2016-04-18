@@ -98,6 +98,7 @@
   <ItemGroup>
     <Compile Include="Interfaces\IAccountsRepository.cs" />
     <Compile Include="Interfaces\IDropTreeRepository.cs" />
+    <Compile Include="Interfaces\IMediaRepository.cs" />
     <Compile Include="Interfaces\IItemsRepository.cs" />
     <Compile Include="Interfaces\IMappingRepository.cs" />
     <Compile Include="Interfaces\IRepository.cs" />

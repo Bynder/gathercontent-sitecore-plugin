@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GatherContent.Connector.IRepositories.Models.Import;
 
 namespace GatherContent.Connector.IRepositories.Interfaces
@@ -15,8 +16,6 @@ namespace GatherContent.Connector.IRepositories.Interfaces
         string CreateMappedItem(string parentId, CmsItem cmsItem, string mappingId, string gcPath);
 
         string CreateNotMappedItem(string parentId, CmsItem cmsItem);
-
-        void UpdateItem(CmsItem cmsItem);
 
         void MapText(CmsItem item, CmsField field);
 

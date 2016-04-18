@@ -26,17 +26,19 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         private const string MAPPING_ID = "MappingId";
 
         protected IAccountsRepository AccountsRepository;
+        private readonly IMediaRepository<Item> _mediaRepository;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="accountsRepository"></param>
-        public ItemsRepository(IAccountsRepository accountsRepository) : base()
+        /// <param name="mediaRepository"></param>
+        public ItemsRepository(IAccountsRepository accountsRepository, IMediaRepository<Item> mediaRepository) : base()
         {
             AccountsRepository = accountsRepository;
+            _mediaRepository = mediaRepository;
         }
 
-        
         #region Utilities
 
 
@@ -75,6 +77,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         /// <param name="updatedItem"></param>
         /// <param name="fieldId"></param>
         /// <param name="path"></param>
+        [Obsolete]
         private void SetDatasourcePath(Item updatedItem, string fieldId, string path)
         {
             var scField = updatedItem.Fields[new ID(fieldId)];
@@ -87,141 +90,14 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="cmsItem"></param>
-        /// <param name="createdItem"></param>
-        private void SetupFields(CmsItem cmsItem, Item createdItem)
-        {
-            foreach (var cmsField in cmsItem.Fields)
-            {
-                var path = GetMediaItemPath(cmsItem.Title, createdItem, cmsField);
-                switch (cmsField.TemplateField.FieldType)
-                {
-                    case "Single-Line Text":
-                    case "Multi-Line Text":
-                    case "Rich Text":
-                        {
-                            var value = StringUtil.RemoveTags(cmsField.Value.ToString()).Trim();
-                            createdItem[cmsField.TemplateField.FieldName] = value;
-                        }
-                        break;
-
-                    case "Image":
-                        {
-                            if (cmsField.TemplateField != null)
-                            {
-                                var filesValue = (FieldValueFiles)cmsField.Value;
-                                var file = filesValue.Files.FirstOrDefault();
-                                if (file != null)
-                                {
-                                    var media = UploadFile(path, file);
-                                    var value = "<image mediaid=\"" + media.ID + "\" />";
-
-                                    createdItem[cmsField.TemplateField.FieldName] = value;
-                                }
-                            }
-                        }
-                        break;
-                    case "File":
-                        {
-                            if (cmsField.TemplateField != null)
-                            {
-                                var filesValue = (FieldValueFiles)cmsField.Value;
-                                var file = filesValue.Files.FirstOrDefault();
-                                if (file != null)
-                                {
-                                    var media = UploadFile(path, file);
-
-                                    var mediaUrl = MediaManager.GetMediaUrl(media,
-                                        new MediaUrlOptions { UseItemPath = false, AbsolutePath = false });
-                                    var value = "<file mediaid=\"" + media.ID + "\" src=\"" + mediaUrl + "\" />";
-
-                                    createdItem[cmsField.TemplateField.FieldName] = value;
-                                }
-                            }
-                        }
-                        break;
-
-                    case "Droptree":
-                        {
-                            if (cmsField.TemplateField != null)
-                            {
-                                if (cmsField.Value.GetType() == typeof(FieldValueFiles))
-                                {
-                                    var filesValue = (FieldValueFiles)cmsField.Value;
-                                    var file = filesValue.Files.FirstOrDefault();
-                                    if (file != null)
-                                    {
-                                        var media = UploadFile(path, file);
-                                        createdItem[cmsField.TemplateField.FieldName] = media.ID.ToString();
-                                    }
-                                }
-                                else if (cmsField.Value.GetType() == typeof(FieldValueOptions))
-                                {
-                                    var value = string.Empty;
-                                    var optionsValue = (FieldValueOptions)cmsField.Value;
-                                    var option = optionsValue.Options.FirstOrDefault();
-                                    if (option != null)
-                                    {
-                                        var children = GetDatasource(createdItem,
-                                            cmsField.TemplateField.FieldName, option); //option = GC option.Label
-                                        if (children != null) value = children.ID.ToString();
-                                        if (!string.IsNullOrEmpty(value))
-                                            createdItem[cmsField.TemplateField.FieldName] = value;
-                                    }
-                                }
-                            }
-                        }
-                        break;
-                    case "Checklist":
-                    case "Multilist":
-                    case "Multilist with Search":
-                    case "Treelist":
-                    case "TreelistEx":
-                        {
-                            if (cmsField.Value.GetType() == typeof(FieldValueFiles))
-                            {
-                                var value = string.Empty;
-                                var filesValue = (FieldValueFiles)cmsField.Value;
-                                foreach (var file in filesValue.Files)
-                                {
-                                    if (file != null)
-                                    {
-                                        var media = UploadFile(path, file);
-                                        if (media != null) value += media.ID.ToString() + "|";
-                                    }
-                                }
-                                value = value.TrimEnd('|');
-                                if (!string.IsNullOrEmpty(value))
-                                    createdItem[cmsField.TemplateField.FieldName] = value;
-                            }
-                            else if (cmsField.Value.GetType() == typeof(FieldValueOptions))
-                            {
-                                var value = string.Empty;
-                                var optionsValue = (FieldValueOptions)cmsField.Value;
-                                foreach (var option in optionsValue.Options)
-                                {
-                                    var children = GetDatasource(createdItem, cmsField.TemplateField.FieldName, option);
-                                    //option = GC option.Label
-                                    if (children != null) value += children.ID.ToString() + "|";
-                                }
-                                value = value.TrimEnd('|');
-                                if (!string.IsNullOrEmpty(value)) createdItem[cmsField.TemplateField.FieldName] = value;
-                            }
-                        }
-                        break;
-                }
-            }
-        }
-
+        
         /// <summary>
         /// 
         /// </summary>
         /// <param name="path"></param>
         /// <param name="file"></param>
         /// <returns></returns>
+        [Obsolete]
         private Item UploadFile(string path, File file)
         {
             var uri = file.Url.StartsWith("http") ? file.Url : "https://gathercontent.s3.amazonaws.com/" + file.Url;
@@ -256,6 +132,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         /// <param name="extension"></param>
         /// <param name="mediaStream"></param>
         /// <returns></returns>
+        [Obsolete]
         private Item CreateMedia(string rootPath, File mediaFile, string extension, Stream mediaStream)
         {
             using (new SecurityDisabler())
@@ -526,19 +403,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return null;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="item"></param>
-        public void UpdateItem(CmsItem item)
-        {
-            var scItem = GetItem(item.Id);
-            var validName = ItemUtil.ProposeValidItemName(item.Title);
-            scItem.Editing.BeginEdit();
-            scItem.Name = validName;
-            scItem.Editing.EndEdit();
-            SetupFields(item, scItem);
-        }
+
 
         /// <summary>
         /// 
@@ -589,8 +454,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                         {
                             if (file != null)
                             {
-                                var media = UploadFile(path, file);
-                                if (media != null) value += media.ID + "|";
+                                // var media = UploadFile(path, file);
+                                Item media = _mediaRepository.UploadFile(path, file);
+                                if (media != null)
+                                {
+                                    value += media.ID + "|";
+                                }
                             }
                         }
                         value = value.TrimEnd('|');
@@ -636,7 +505,8 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                         var file = cmsField.Files.FirstOrDefault();
                         if (file != null)
                         {
-                            var media = UploadFile(path, file);
+                            // var media = UploadFile(path, file);
+                            Item media = _mediaRepository.UploadFile(path, file);
 
                             var mediaUrl = MediaManager.GetMediaUrl(media, new MediaUrlOptions {UseItemPath = false, AbsolutePath = false});
                             var value = string.Format("<file mediaid=\"{0}\" src=\"{1}\" />", media.ID, mediaUrl);

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.Net;
+using System.Web;
 using Sitecore;
 using Sitecore.Data;
 using Sitecore.Diagnostics;
@@ -54,10 +56,22 @@ namespace GatherContent.Connector.Website7.Commands
                 return;
             }
 
+            //don't want to add a bunch of references and IoC-related code here, lets test whole controller :-/
+            string testUrl = HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority + "/api/sitecore/mappings/try";
+            HttpWebRequest webrequest = WebRequest.Create(testUrl) as HttpWebRequest;
+            HttpWebResponse response = webrequest.GetResponse() as HttpWebResponse;
+            bool success = response.StatusCode == HttpStatusCode.OK;
+
+            var uri = "/sitecore modules/shell/gathercontent/testconnection/testconnection.html";
+
+            var path = string.Format("{0}?success={1}", uri, success);
+
+            //Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(options), "Shell");
+
             //var testConnectionManager = new TestConnectionManager();
             //var uri = "/sitecore modules/shell/gathercontent/testconnection/testconnection.html";
             //var path = string.Format("{0}?success={1}", uri, testConnectionManager.TestConnection());
-            //Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(path, "250", "100", "Test Connection", false), "Shell");
+            Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(path, "250", "100", "Test Connection", false), "Shell");
         }
     }
 }

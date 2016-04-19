@@ -19,7 +19,14 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
     {
         public Item UploadFile(string targetPath, File fileInfo)
         {
-            var uri = fileInfo.Url.StartsWith("http") ? fileInfo.Url : "https://gathercontent.s3.amazonaws.com/" + fileInfo.Url;
+            string uri = fileInfo.Url.StartsWith("http") ? fileInfo.Url : "https://gathercontent.s3.amazonaws.com/" + fileInfo.Url;
+
+            string extension = string.Empty;
+            if (fileInfo.FileName.Contains("."))
+            {
+                extension = fileInfo.FileName.Substring(fileInfo.FileName.LastIndexOf('.') + 1);
+            }
+
             var request = (HttpWebRequest)WebRequest.Create(uri);
             var resp = (HttpWebResponse)request.GetResponse();
             var stream = resp.GetResponseStream();
@@ -34,7 +41,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
                 if (memoryStream.Length > 0)
                 {
-                    var media = CreateMedia(targetPath, fileInfo, "jpg", memoryStream);
+                    var media = CreateMedia(targetPath, fileInfo, extension, memoryStream);
                     return media;
                 }
 
@@ -63,7 +70,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return path;
         }
 
-        private Item CreateMedia(string rootPath, File mediaFile, string extension, Stream mediaStream)
+        protected virtual Item CreateMedia(string rootPath, File mediaFile, string extension, Stream mediaStream)
         {
             using (new SecurityDisabler())
             {
@@ -88,7 +95,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     FileBased = false,
                     IncludeExtensionInItemName = false,
                     KeepExisting = true,
-                    Versioned = true,
+                    Versioned = false,
                     Destination = String.Concat(rootPath, "/", validItemName)
                 };
 
@@ -97,7 +104,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-        private void SetDatasourcePath(Item updatedItem, string fieldId, string path)
+        protected void SetDatasourcePath(Item updatedItem, string fieldId, string path)
         {
             var scField = updatedItem.Fields[new ID(fieldId)];
             var scItem = GetItem(scField.ID.ToString());

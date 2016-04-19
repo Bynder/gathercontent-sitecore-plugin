@@ -37,6 +37,7 @@
         public const string ProjectFolderTemplateName = "GC Projects Folder";
         public const string MappingFolderTemplateName = "GC Mapping Folder";
         public const string GCLinkItemTemplateName = "GC Linked Item";
+        public const string GCNotMappedItemTemplateName = "Not Mapped Item";
 
 
         #endregion

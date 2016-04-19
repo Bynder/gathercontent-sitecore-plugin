@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Net;
 using GatherContent.Connector.IRepositories.Models.Import;
 using Sitecore;
 using System.Linq;
@@ -11,7 +9,6 @@ using Sitecore.Resources.Media;
 using Sitecore.SecurityModel;
 using System.Collections.Generic;
 using GatherContent.Connector.IRepositories.Interfaces;
-using File = GatherContent.Connector.IRepositories.Models.Import.File;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
@@ -71,131 +68,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return dataSourcePath;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="updatedItem"></param>
-        /// <param name="fieldId"></param>
-        /// <param name="path"></param>
-        [Obsolete]
-        private void SetDatasourcePath(Item updatedItem, string fieldId, string path)
-        {
-            var scField = updatedItem.Fields[new ID(fieldId)];
-            var scItem = GetItem(scField.ID.ToString());
-            using (new SecurityDisabler())
-            {
-                scItem.Editing.BeginEdit();
-                scItem["Source"] = path;
-                scItem.Editing.EndEdit();
-            }
-        }
-
         
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        [Obsolete]
-        private Item UploadFile(string path, File file)
-        {
-            var uri = file.Url.StartsWith("http") ? file.Url : "https://gathercontent.s3.amazonaws.com/" + file.Url;
-            var request = (HttpWebRequest)WebRequest.Create(uri);
-            var resp = (HttpWebResponse)request.GetResponse();
-            var stream = resp.GetResponseStream();
-
-            using (var memoryStream = new MemoryStream())
-            {
-                memoryStream.Seek(0, SeekOrigin.Begin);
-                if (stream != null)
-                {
-                    stream.CopyTo(memoryStream);
-                }
-
-                if (memoryStream.Length > 0)
-                {
-                    var media = CreateMedia(path, file, "jpg", memoryStream);
-                    return media;
-                }
-
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="rootPath"></param>
-        /// <param name="mediaFile"></param>
-        /// <param name="extension"></param>
-        /// <param name="mediaStream"></param>
-        /// <returns></returns>
-        [Obsolete]
-        private Item CreateMedia(string rootPath, File mediaFile, string extension, Stream mediaStream)
-        {
-            using (new SecurityDisabler())
-            {
-                var validItemName = ItemUtil.ProposeValidItemName(mediaFile.FileName);
-
-                var filesFolder = GetItemByPath(rootPath);
-                if (filesFolder != null)
-                {
-                    var files = filesFolder.Children;
-                    var item = files.FirstOrDefault(f => f.Name == validItemName &&
-                                                         DateUtil.IsoDateToDateTime(f.Fields["__Created"].Value) >=
-                                                         mediaFile.UpdatedDate);
-                    if (item != null)
-                    {
-                        return item;
-                    }
-                }
-
-                var mediaOptions = new MediaCreatorOptions
-                {
-                    Database = ContextDatabase,
-                    FileBased = false,
-                    IncludeExtensionInItemName = false,
-                    KeepExisting = true,
-                    Versioned = true,
-                    Destination = String.Concat(rootPath, "/", validItemName)
-                };
-
-                var previewImgItem = MediaManager.Creator.CreateFromStream(mediaStream, validItemName + "." + extension, mediaOptions);
-                return previewImgItem;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="itemTitle"></param>
-        /// <param name="createdItem"></param>
-        /// <param name="cmsField"></param>
-        /// <returns></returns>
-        private string GetMediaItemPath(string itemTitle, Item createdItem, CmsField cmsField)
-        {
-            var dataSourcePath = GetDatasourcePath(createdItem,
-                cmsField.TemplateField.FieldId);
-            string path;
-            if (string.IsNullOrEmpty(dataSourcePath))
-            {
-                path = string.IsNullOrEmpty(cmsField.TemplateField.FieldName)
-                    ? string.Format("/sitecore/media library/GatherContent/{0}/",
-                        itemTitle)
-                    : string.Format("/sitecore/media library/GatherContent/{0}/{1}/",
-                        itemTitle,
-                        cmsField.TemplateField.FieldName);
-                SetDatasourcePath(createdItem, cmsField.TemplateField.FieldId, path);
-            }
-            else
-            {
-                path = dataSourcePath;
-            }
-            return path;
-        }
-
         /// <summary>
         /// 
         /// </summary>
@@ -232,14 +105,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
             return false;
         }
-
-
+        
 
         #endregion
 
-
-
-
+        
         /// <summary>
         /// 
         /// </summary>
@@ -440,7 +310,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         public void MapChoice(CmsItem item, CmsField cmsField)
         {
             Item createdItem = GetItem(item.Id, Sitecore.Data.Managers.LanguageManager.GetLanguage(item.Language));
-            var path = GetMediaItemPath(item.Title, createdItem, cmsField);
+            var path = _mediaRepository.ResolveMediaPath(item, createdItem, cmsField);
 
             using (new SecurityDisabler())
             {
@@ -494,7 +364,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         public void MapFile(CmsItem item, CmsField cmsField)
         {
             Item createdItem = GetItem(item.Id, Sitecore.Data.Managers.LanguageManager.GetLanguage(item.Language));
-            var path = GetMediaItemPath(item.Title, createdItem, cmsField);
+            var path = _mediaRepository.ResolveMediaPath(item, createdItem, cmsField);
 
             using (new SecurityDisabler())
             {

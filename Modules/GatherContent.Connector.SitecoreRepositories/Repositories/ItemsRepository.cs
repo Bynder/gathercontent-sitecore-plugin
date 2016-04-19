@@ -89,8 +89,8 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         {
             if (templateItem != null)
             {
-                var gcLinkTemplate = templateItem.BaseTemplates.Any(bt => bt.Name == Constants.GCLinkItemTemplateName);
-                var baseTemplates = templateItem.InnerItem[FieldIDs.BaseTemplate];
+                bool gcLinkTemplate = templateItem.BaseTemplates.Any(bt => bt.Name == Constants.GCLinkItemTemplateName);
+                string baseTemplates = templateItem.InnerItem[FieldIDs.BaseTemplate];
 
                 if (!gcLinkTemplate)
                 {
@@ -522,7 +522,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                                         newVersion.Fields[MAPPING_ID].Value = mappingId;
                                         newVersion.Fields[GC_PATH].Value = gcPath;
 
-                                        newVersion.Editing.BeginEdit();
+                                        newVersion.Editing.EndEdit();
                                     }
                                     return newVersion.ID.ToString();
                                 }

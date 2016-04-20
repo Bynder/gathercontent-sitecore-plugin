@@ -31,8 +31,10 @@ namespace GatherContent.Connector.Website7.Commands
                 var parameters = new NameValueCollection
                                      {
                                          { "id", item.ID.ToString() }, 
+                                         { "title", item.Paths.Path }, 
                                          { "language", item.Language.ToString() }, 
                                          { "version", item.Version.ToString() }, 
+                                         { "database", item.Database.Name }, 
                                          { "load", StringUtil.GetString(new[] { context.Parameters["load"] }) }, 
                                      };
 
@@ -52,8 +54,10 @@ namespace GatherContent.Connector.Website7.Commands
             var id = args.Parameters["id"].Replace("{", "").Replace("}", "");
             var language = Language.Parse(args.Parameters["language"]);
             var version = args.Parameters["version"];
+            var db = args.Parameters["database"];
+            var title = args.Parameters["title"];
             var uri = "/sitecore modules/shell/gathercontent/import/import.html";
-            var path = string.Format("{0}?id={1}&l={2}&v={3}", uri, id, language, version);
+            var path = string.Format("{0}?id={1}&l={2}&v={3}&t={4}&db={5}", uri, id, language, version, title, db);
 
             Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(path, "1200", "700", "Import Content from GatherContent", false), "Shell");
         }

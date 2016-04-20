@@ -115,6 +115,7 @@
     <Compile Include="Commands\AddTemplateCommand.cs" />
     <Compile Include="Commands\ImportCommand.cs" />
     <Compile Include="Commands\MappingsCommand.cs" />
+    <Compile Include="Commands\MultipleLocationsImportCommand.cs" />
     <Compile Include="Commands\TestConnectionCommand.cs" />
     <Compile Include="Commands\UpdateCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

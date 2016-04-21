@@ -68,7 +68,9 @@
     <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="sitecore modules\Shell\GatherContent\css\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="sitecore modules\Shell\GatherContent\css\img\Thumbs.db" />
-    <Content Include="App_Config\Include\GatherContent.Connector.config" />
+    <Content Include="App_Config\Include\GatherContent.Connector.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

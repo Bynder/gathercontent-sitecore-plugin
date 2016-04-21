@@ -3,7 +3,7 @@
     <metadata>
       <PackageName>GatherContent Connector</PackageName>
       <Author>brimit</Author>
-      <Version>1.06</Version>
+      <Version>1.07</Version>
       <Revision />
       <License />
       <Comment />
@@ -92,16 +92,9 @@
       <Entries>
         <x-item>/App_Config/Include/GatherContent.Connector.config</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/css/bootstrap-theme.css</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/css/bootstrap-theme.css.map</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/css/bootstrap-theme.min.css</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/css/bootstrap.css</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/css/bootstrap.css.map</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/css/bootstrap.min.css</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/fonts/glyphicons-halflings-regular.eot</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/fonts/glyphicons-halflings-regular.svg</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/fonts/glyphicons-halflings-regular.ttf</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/fonts/glyphicons-halflings-regular.woff</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/fonts/glyphicons-halflings-regular.woff2</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/js/bootstrap.js</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/js/bootstrap.min.js</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/js/npm.js</x-item>
@@ -136,6 +129,10 @@
         <x-item>/sitecore modules/Shell/GatherContent/Update/Update.js</x-item>
         <x-item>/bin/GatherContent.Connector.Managers.dll</x-item>
         <x-item>/bin/GatherContent.Connector.SitecoreRepositories.dll</x-item>
+        <x-item>/App_Config/repositories.config</x-item>
+        <x-item>/bin/Castle.Core.dll</x-item>
+        <x-item>/bin/Castle.Windsor.dll</x-item>
+        <x-item>/bin/WebActivatorEx.dll</x-item>
       </Entries>
       <Converter>
         <FileToEntryConverter>

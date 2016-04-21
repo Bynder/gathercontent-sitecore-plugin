@@ -235,7 +235,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App_Config\repositories.config">
+    <None Include="App_Config\GatherContent.Connector.Repositories.config">
       <SubType>Component</SubType>
     </None>
     <None Include="packages.config" />

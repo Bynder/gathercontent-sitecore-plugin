@@ -23,7 +23,7 @@ namespace GatherContent.Connector.Managers.IoC
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             //repositories (from config file)
-            container.Install(Configuration.FromXmlFile("App_Config\\repositories.config"));
+            container.Install(Configuration.FromXmlFile("App_Config\\GatherContent.Connector.Repositories.config"));
 
             //managers
             container.Register(Classes.FromThisAssembly()

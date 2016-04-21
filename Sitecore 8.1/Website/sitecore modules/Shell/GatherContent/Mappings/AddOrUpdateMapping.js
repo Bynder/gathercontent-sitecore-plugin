@@ -99,6 +99,17 @@ function ViewModel(data) {
         }
     };
 
+    this.closeDropTree = function (model, e) {
+
+        if (e.target.tagName === "INPUT") {
+            return;
+        }
+
+        var id = this.OpenerId();
+        jQuery("#" + id).hide();
+        this.IsShowing(false);
+    };
+
     this.openDropTree = function () {
         var id = this.OpenerId();
         var locationId = this.DefaultLocation();
@@ -137,6 +148,7 @@ function ViewModel(data) {
                     mapping.DefaultLocation(node.data.key);
                     mapping.DefaultLocationText(node.data.title);        
                 },
+                onBlur: function(node) { console.log("blur"); },
                 onLazyRead: function (node) {
                     node.appendAjax({
                         url: "/api/sitecore/DropTree/GetChildren?id=" + node.data.key,

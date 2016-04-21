@@ -3,7 +3,7 @@
     <metadata>
       <PackageName>GatherContent Connector</PackageName>
       <Author>brimit</Author>
-      <Version>1.07</Version>
+      <Version>1.09</Version>
       <Revision />
       <License />
       <Comment />
@@ -90,49 +90,62 @@
     </xitems>
     <xfiles>
       <Entries>
+        <x-item>/App_Config/GatherContent.Connector.Repositories.config</x-item>
         <x-item>/App_Config/Include/GatherContent.Connector.config</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/css/bootstrap-theme.css</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/css/bootstrap-theme.min.css</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/css/bootstrap.css</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/css/bootstrap.min.css</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/js/bootstrap.js</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/js/bootstrap.min.js</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/js/npm.js</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/css/img/arrow.png</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/css/img/arrow_select.png</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/img/arrow_select.png</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/img/bkt_left.png</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/img/bkt_right.png</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/js/jquery_2.1.1.min.js</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/js/knockout-3.4.0.js</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/img/slide_arrow.png</x-item>
+        <x-item>/bin/Castle.Core.dll</x-item>
+        <x-item>/bin/Castle.Windsor.dll</x-item>
         <x-item>/bin/GatherContent.Connector.Entities.dll</x-item>
         <x-item>/bin/GatherContent.Connector.GatherContentService.dll</x-item>
         <x-item>/bin/GatherContent.Connector.IRepositories.dll</x-item>
+        <x-item>/bin/GatherContent.Connector.Managers.dll</x-item>
+        <x-item>/bin/GatherContent.Connector.SitecoreRepositories.dll</x-item>
         <x-item>/bin/GatherContent.Connector.WebControllers.dll</x-item>
         <x-item>/bin/GatherContent.Connector.Website.dll</x-item>
+        <x-item>/bin/WebActivatorEx.dll</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/AddTemplate/AddTemplate.html</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/AddTemplate/AddTemplate.js</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/css/bootstrap.min.css</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/css/bootstrap-theme.min.css</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/js/bootstrap.min.js</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/js/npm.js</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/css/dynatree/icons.gif</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/css/dynatree/icons-rtl.gif</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/css/dynatree/loading.gif</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/css/dynatree/ui.dynatree.css</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/css/dynatree/vline.gif</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/css/dynatree/vline-rtl.gif</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/css/GatherContent.css</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/css/img/arrow.png</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/css/img/arrow_select.png</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/css/KoGrid.css</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/img/arrow_select.png</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/img/bkt_left.png</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/img/bkt_right.png</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/img/slide_arrow.png</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Import/Import.css</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Import/Import.html</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Import/Import.js</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/js/GatherContent.js</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/js/jquery.cookie.js</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/js/jquery.dynatree.js</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/js/jquery_2.1.1.min.js</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/js/jquery-ui.custom.min.js</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/js/knockout-3.4.0.js</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/js/koGrid-2.1.1.js</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Mappings/AddOrUpdateMapping.html</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Mappings/AddOrUpdateMapping.js</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/Mappings/Mappings.css</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Mappings/Mappings.html</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Mappings/Mappings.js</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/TestConnection/testconnection.html</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/TestConnection/testconnection.js</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/Update/img/arrow_select.png</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/Update/img/bkt_left.png</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/Update/img/bkt_right.png</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Update/Update.css</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Update/Update.html</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Update/Update.js</x-item>
-        <x-item>/bin/GatherContent.Connector.Managers.dll</x-item>
-        <x-item>/bin/GatherContent.Connector.SitecoreRepositories.dll</x-item>
-        <x-item>/App_Config/repositories.config</x-item>
-        <x-item>/bin/Castle.Core.dll</x-item>
-        <x-item>/bin/Castle.Windsor.dll</x-item>
-        <x-item>/bin/WebActivatorEx.dll</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/js/moment.min.js</x-item>
       </Entries>
       <Converter>
         <FileToEntryConverter>

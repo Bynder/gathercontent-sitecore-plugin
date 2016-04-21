@@ -38,11 +38,11 @@
     <!-- ko if: IsError -->
     <h1 data-bind="text: ErrorText"></h1>
     <!-- /ko -->
-    <div data-bind="ifnot: IsError" style="height: 80%;">
+    <div data-bind="ifnot: IsError, click: closeDropTree" style="height: 80%;">
         <p class="fields-mapping-padding">
             Choose the fields you wish to map from GatherContent into Sitecore. Only map the fields you need to import.
         </p>
-        <input type="text" data-bind="value: GcMappingTitle, css: { notvalid: NotValid() == true }" class="mapping-input block" placeholder="Mapping name *"/>
+        <input type="text" data-bind="value: GcMappingTitle, css: { notvalid: NotValid() == true }" class="mapping-input block" placeholder="Mapping name *" />
 
         <input class="mapping-input block" placeholder="Default location" data-bind="value: DefaultLocationTitle, attr: { 'data-openerid': OpenerId }, click: openDropTree" type="text" />
 
@@ -58,7 +58,7 @@
                 <select class="custom_selected sitecore-template-select" data-bind="options: GcProjects, optionsText: 'Name', value: SelectedGcProject, event:{ change: $root.gcProjectChanged}, css: { notvalid: NotValidGcProject() == true }"></select>
                 <select class="custom_selected sitecore-template-select" data-bind="options: GcTemplates, optionsText: 'Name', value: SelectedGcTemplate, event:{ change: $root.gcTemplateChanged}, css: { notvalid: NotValidGcTemplate() == true }"></select>
 
-                 <!--<span data-bind="text: ValidationMessage" class="validation-message"></span>-->
+                <!--<span data-bind="text: ValidationMessage" class="validation-message"></span>-->
                 <input data-bind="value: DefaultLocation, visible: false, attr: { 'data-openerid': OpenerId }, click: openDropTree" type="text" />
             </div>
             <div style="float: right;" class="mapping_heading">
@@ -68,7 +68,7 @@
                 </div>
                 <select class="custom_selected sitecore-template-select" data-bind="options: SitecoreTemplates, optionsText: 'SitrecoreTemplateName', value: SelectedScTemplate, event:{ change: $root.scTemplateChanged}, css: { notvalid: NotValidScTemplate() == true }"></select>
             </div>
-          
+
             <div style="clear: both;"></div>
             <div data-bind="foreach: { data: Tabs, as: 'tab' } " class="tabs_mapping">
                 <div data-bind="text: tab.TabName" class="title_mapping open"></div>

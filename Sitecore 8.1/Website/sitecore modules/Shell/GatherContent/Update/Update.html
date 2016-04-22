@@ -19,7 +19,7 @@
 </script>
 
 <div data-bind="visible: getMode(1)" class="gathercontent-import">
-
+    <div>
     <div class="filter_wrapper">
         <div class="filter_wrapper_import">
             <div class="title_filter">FILTER</div>
@@ -44,9 +44,11 @@
     <div class="help-link">
         <a href="mailto:support@gathercontent.com">Need help?</a>
     </div>
+    </div>
 </div>
 
-<div data-bind="if: getMode(2)">
+<div data-bind="if: getMode(2)" class="gathercontent-import">
+<div>
     <div class="title_wrap">
         <h2 class="title">Confirm update selection</h2>
         <p>You're about to overwrite Sitecore content with new content from GatherContent. Please review your selection before updating your content.</p>
@@ -73,7 +75,7 @@
     <div class="help-link">
         <a href="mailto:support@gathercontent.com">Need help?</a>
     </div>
-
+</div>
 </div>
 
 <div data-bind="if: getMode(3)">
@@ -85,7 +87,8 @@
     <!--<input type="button" value="Next" data-bind="click: buttonClick.bind($data, 4)" />-->
 </div>
 
-<div data-bind="if: getMode(4)">
+<div data-bind="if: getMode(4)"  class="gathercontent-import">
+    <div>
     <h2 class="title">Update complete: Results.</h2>
     <img src="~/icon/Apps/32x32/Right.png" width="20" height="20">
     <span data-bind="text: successImportedItemsCount()"></span> items were updated successfully.
@@ -108,6 +111,7 @@
     
     <div class="help-link">
         <a href="mailto:support@gathercontent.com">Need help?</a>
+    </div>
     </div>
 </div>
 

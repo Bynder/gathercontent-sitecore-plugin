@@ -16,6 +16,9 @@
     self.notUpdaredItemsCount = ko.observable(),
 
     self.currentMode = ko.observable(MODE.ChooseItmesForImort);
+    self.sortInfo = ko.observable();
+    self.language = ko.observable(getUrlVars()["l"]),
+    self.languages = ko.observableArray([]),
 
     self.items = ko.observableArray([]),
     self.statuses = ko.observableArray([]),
@@ -30,28 +33,112 @@
 
     self.query = ko.observable(''),
 
-    self.init = function () {
-        var callbackFunction = function (response) {
-            self.initVariables(response);
-        }
-        self.initRequestHandler(callbackFunction);
-    },
 
-     self.initRequestHandler = function (callbackFunction) {
-         var id = getUrlVars()["id"];
-         
-         jQuery.getJSON('/api/sitecore/Update/Get?id={' + id + '}').success(function (response) {
-             callbackFunction(response);
-             jQuery(".preloader").hide();
-             jQuery(".tooltip").remove();
-             initTooltip();
-             resizeTableHead();
-         }).error(function(response) {
-             self.errorCallbackHandle(response);
-         });
-         resizeTableHead();
-         document_resize();
-     }
+    self.selectedItems = ko.observableArray([]);
+    self.resultItems = ko.observableArray([]);
+
+    self.filterOptions = {
+        filterText: ko.observable(""),
+        useExternalFilter: false
+    };
+
+    self.pagingOptions = {
+        pageSizes: ko.observableArray([15, 20, 30]),
+        pageSize: ko.observable(10),
+        totalServerItems: ko.observable(0),
+        currentPage: ko.observable(1)
+    };
+
+
+    self.filterConfirmOptions = {
+        filterText: ko.observable(""),
+        useExternalFilter: true
+    };
+
+    self.pagingConfirmOptions = {
+        pageSizes: ko.observableArray([15, 20, 30]),
+        pageSize: ko.observable(10),
+        totalServerItems: ko.observable(0),
+        currentPage: ko.observable(1)
+    };
+
+    self.filterResultOptions = {
+        filterText: ko.observable(""),
+        useExternalFilter: true
+    };
+
+    self.pagingResultOptions = {
+        pageSizes: ko.observableArray([15, 20, 30]),
+        pageSize: ko.observable(10),
+        totalServerItems: ko.observable(0),
+        currentPage: ko.observable(1)
+    };
+
+
+    self.setPagingData = function (data, page, pageSize) {
+        var items = data;
+        allItems = items.slice(0);
+        if (self.sortInfo()) {
+            //window.kg.sortService.Sort(data, self.sortInfo()); - does not work with plain arrays. sorting extracted from that func.
+            var col = self.sortInfo().column, direction = self.sortInfo().direction, sortFn, item;
+            if (window.kg.sortService.colSortFnCache[col.field]) {
+                sortFn = window.kg.sortService.colSortFnCache[col.field];
+            } else if (col.sortingAlgorithm != undefined) {
+                sortFn = col.sortingAlgorithm;
+                window.kg.sortService.colSortFnCache[col.field] = col.sortingAlgorithm;
+            } else {
+                item = data[0];
+                if (!item) {
+                    return;
+                }
+                sortFn = kg.sortService.guessSortFn(item[col.field]);
+                if (sortFn) {
+                    window.kg.sortService.colSortFnCache[col.field] = sortFn;
+                } else {
+                    sortFn = window.kg.sortService.sortAlpha;
+                }
+            }
+            data.sort(function (itemA, itemB) {
+                var propA = window.kg.utils.evalProperty(itemA, col.field);
+                var propB = window.kg.utils.evalProperty(itemB, col.field);
+                if (!propB && !propA) {
+                    return 0;
+                } else if (!propA) {
+                    return 1;
+                } else if (!propB) {
+                    return -1;
+                }
+                if (direction === "asc") {
+                    return sortFn(propA, propB);
+                } else {
+                    return 0 - sortFn(propA, propB);
+                }
+            });
+        }
+        var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
+        self.items(pagedData);
+        self.pagingOptions.totalServerItems(data.length);
+    };
+
+    this.getPagedData = function (pageSize, page) {
+        var id = getUrlVars()["id"];
+        var db = getUrlVars()["db"];
+        jQuery.ajax({
+            url: '/api/sitecore/Update/Get?id={' + id + '}' + '&db=' + db,
+            dataType: 'json',
+            async: true,
+            success: function (response) {
+                jQuery(".preloader").hide();
+                self.initVariables(response);
+                self.setPagingData(response.Items, page, pageSize);
+                document.getElementsByTagName('input')[1].focus();              
+            },
+            error: function (response) {
+                self.errorCallbackHandle(response);
+            }
+        });
+    };
+
 
     self.errorCallbackHandle = function (response) {
         jQuery(".preloader").hide();
@@ -66,15 +153,17 @@
     }
 
     self.initVariables = function (response) {
-        var items = self.setupWatcher(response.Data.Items);
-        self.items(items);
-        allItems = items.slice(0);
-        
+        //var items = self.setupWatcher(response.Items);
+        self.items(response.Items);
+        allItems = response.Items.slice(0);
+
         self.statuses(response.Filters.Statuses);
         self.projects(response.Filters.Projects);
         self.templates(response.Filters.Templates);
+
+        self.languages(response.Languages);
     }
-    
+
     self.setupDefaultValuesToFilters = function () {
         self.query('');
         self.statusFilter();
@@ -105,7 +194,7 @@
             resultCollection = [];
             for (var i = 0; i < currentCollection.length; i++) {
                 var currentElement = currentCollection[i];
-                if (currentElement.Title.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
+                if (currentElement.GcItem.Name.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
                     resultCollection.push(currentElement);
                 }
             }
@@ -121,7 +210,7 @@
             resultCollection = [];
             for (var i = 0; i < currentCollection.length; i++) {
                 var currentElement = currentCollection[i];
-                if (currentElement.ProjectName === value) {
+                if (currentElement.GcProject.Name === value) {
                     resultCollection.push(currentElement);
                 }
             }
@@ -136,7 +225,7 @@
             resultCollection = [];
             for (var i = 0; i < currentCollection.length; i++) {
                 var currentElement = currentCollection[i];
-                if (currentElement.Status.id === value) {
+                if (currentElement.Status.Id === value) {
                     resultCollection.push(currentElement);
                 }
             }
@@ -151,7 +240,7 @@
             resultCollection = [];
             for (var i = 0; i < currentCollection.length; i++) {
                 var currentElement = currentCollection[i];
-                if (currentElement.Template.id === value) {
+                if (currentElement.GcTemplate.Id === value) {
                     resultCollection.push(currentElement);
                 }
             }
@@ -214,16 +303,14 @@
     }
 
 
-    self.openCmsLink = function (data, e) {
-        var link = data.CmsLink;
+    self.openCmsLink = function (item) {
+        var link = item.CmsLink;
         window.open(link);
-        e.stopImmediatePropagation();
     }
 
-    self.openGcLink = function (data, e) {
-        var link = data.GcLink;
+    self.openGcLink = function (item) {
+        var link = item.GcLink;
         window.open(link);
-        e.stopImmediatePropagation();
     }
 
     self.query.subscribe(self.filter);
@@ -240,13 +327,14 @@
     }
 
     self.import = function () {
+        var lang = self.language();
         var id = getUrlVars()["id"];
-        var items = self.items();
-        var itemids = [];
-        items.forEach(function (item, i) {
-            itemids.push({
-                GCId: item.GCId,
-                CMSId: item.CMSId
+        var selectedItems = self.selectedItems();
+        var items = [];
+        selectedItems.forEach(function (item, i) {
+            items.push({
+                GCId: item.GcItem.Id,
+                CMSId: item.Id
             });
         });
         var status = self.statusFilter();
@@ -255,20 +343,20 @@
         jQuery.ajax
         ({
             type: "POST",
-            url: '/api/sitecore/Update/UpdateItems?id={' + id + '}&statusId=' + status,
+            url: '/api/sitecore/Update/UpdateItems?id={' + id + '}&statusId=' + status + '&language='+ lang,
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(itemids),
+            data: JSON.stringify(items),
             success: function (response) {
                 if (response.status == 'error') {
                     self.postErrorHandle(response.message);
                 }
-                var notUpdatedCount = self.getNotUpdatedItemsCount(response.Items);
-                self.successImportedItemsCount(response.Items.length - notUpdatedCount);
+                var notUpdatedCount = self.getNotUpdatedItemsCount(response);
+                self.successImportedItemsCount(response.length - notUpdatedCount);
                 self.notUpdaredItemsCount(notUpdatedCount);
-                self.items(response.Items);
+                self.resultItems(response);
                 self.buttonClick(MODE.ImportResult);
-                resizeTableHead();
+                
             },
             error: function (response) {
                 self.errorCallbackHandle(response);
@@ -296,7 +384,7 @@
 
     self.buttonClick = function (newMode) {
         if (newMode === MODE.CheckItemsBeforeImport) {
-            if (self.getCheckedCount() == 0) {
+            if (self.selectedItems().length == 0) {
                 self.errorText('Please select at least one item');
             } else {
                 self.currentMode(newMode);
@@ -318,15 +406,6 @@
         } else {
             self.currentMode(newMode);
         }
-        jQuery("thead th.cell_resize").each(function(){
-            jQuery(this).find("div").css("width",jQuery(this).width());
-        });
-        jQuery("thead th div").each(function() {
-            if (jQuery(this).height() > 18) {
-                jQuery(this).css("padding-top", 0);
-                jQuery(this).css("margin-top", 7);
-            }
-        });
     }
 
     self.getMode = function (section) {
@@ -334,16 +413,16 @@
             return true;
         }
         return false;
-        resizeTableHead();
+        
     }
 
-    self.setupWatcher = function (items) {
-        for (var i = 0; i < items.length; i++) {
-            items[i].Checked = ko.observable(false);
-        }
+    //self.setupWatcher = function (items) {
+    //    for (var i = 0; i < items.length; i++) {
+    //        items[i].Checked = ko.observable(false);
+    //    }
 
-        return items;
-    }
+    //    return items;
+    //}
 
     self.getImportResultTemplateColor = function (item) {
         if (!item.IsImportSuccessful)
@@ -361,13 +440,147 @@
         return 'dateWarnings';
     }
 
-    self.init();
+  
+    self.filterOptions.filterText.subscribe(function (data) {
+        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+    });
+    self.pagingOptions.pageSizes.subscribe(function (data) {
+        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+    });
+    self.pagingOptions.pageSize.subscribe(function (data) {
+        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+    });
+    self.pagingOptions.totalServerItems.subscribe(function (data) {
+        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+    });
+    self.pagingOptions.currentPage.subscribe(function (data) {
+        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+    });
+    self.sortInfo.subscribe(function (data) {
+        self.pagingOptions.currentPage(1); // reset page after sort
+    });
+    self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());
+
+
+    var options =
+        {
+            afterSelectionChange: function () { return true; },
+            showColumnMenu: false,
+            showFilter: false,
+            data: self.items,
+            selectedItems: self.selectedItems,
+            enablePaging: true,
+            pagingOptions: self.pagingOptions,
+            filterOptions: self.filterOptions,
+            sortInfo: self.sortInfo,
+            columnDefs: [
+                {
+                    field: 'Status.Name',  width: '**',
+                    displayName: 'Status', cellTemplate: '<div class="kgCellText"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
+                },
+                { field: 'ScTitle', width: '**', displayName: 'Sitecore Title' },
+                { field: 'GcItem.Name', width: '**', displayName: 'GatherContent Item Name' },
+                { field: 'GcProject.Name', width: '**', displayName: 'GatherContent Project' },
+                {
+                    field: 'LastUpdatedInGc', width: '**', displayName: 'Last updated in GatherContent',
+                    sortFn: dateSort
+                },
+                {
+                    field: 'LastUpdatedInSitecore', width: '**', displayName: 'Last updated in Sitecore',
+                    sortFn: dateSort
+                },
+                { field: 'GcTemplate.Name', width: '**', displayName: 'GatherContent Template' },
+                { field: 'ScTemplateName', width: '**', displayName: 'Sitecore Template' },
+                { displayName: 'Open in Sitecore', width:70,cellClass: 'cell-padding', sortable: false, cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
+                { displayName: 'Open in GatherContent',width:70, cellClass: 'cell-padding', sortable: false, cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>' }
+            ]
+        };
+
+
+    this.gridOptions = options;
+
+    var confirmOptions =
+          {
+              canSelectRows: false,
+              showColumnMenu: false,
+              showFilter: false,
+              data: self.selectedItems,
+              enablePaging: true,
+              pagingOptions: self.pagingConfirmOptions,
+              filterOptions: self.filterConfirmOptions,
+              columnDefs: [
+                {
+                    field: 'Status.Name', width: '**',
+                    displayName: 'Status', cellTemplate: '<div class="kgCellText"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
+                },
+                { field: 'ScTitle', width: '**', displayName: 'Sitecore Title' },
+                { field: 'GcItem.Name', width: '**', displayName: 'GatherContent Item Name' },
+                { field: 'GcProject.Name', width: '**', displayName: 'GatherContent Project' },
+                {
+                    field: 'LastUpdatedInGc', width: '**', displayName: 'Last updated in GatherContent',
+                    sortFn: dateSort
+                },
+                {
+                    field: 'LastUpdatedInSitecore', width: '**', displayName: 'Last updated in Sitecore',
+                    sortFn: dateSort
+                },
+                { field: 'GcTemplate.Name', width: '**', displayName: 'GatherContent Template' },
+                { field: 'ScTemplateName', width: '**', displayName: 'Sitecore Template' },
+                { displayName: 'Open in Sitecore', cellClass: 'cell-padding', sortable: false, cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
+                { displayName: 'Open in GatherContent', cellClass: 'cell-padding', sortable: false, cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>' }
+              ]
+          };
+
+    this.gridConfirmOptions = confirmOptions;
+
+
+    var resultOptions =
+    {
+        displaySelectionCheckbox: false,
+        canSelectRows: false,
+        showColumnMenu: false,
+        showFilter: false,
+        data: self.resultItems,
+        enablePaging: true,
+        pagingOptions: self.pagingResultOptions,
+        filterOptions: self.filterResultOptions,
+        sortInfo: self.sortInfo,
+        columnDefs: [
+            {
+                field: 'Status.Name',
+                displayName: 'Status', cellTemplate: '<div class="kgCellText">' +
+                    '<div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }">' +
+                    '</div>' +
+                    '<span data-bind="text: $parent.entity.Status.Name">' +
+                    '</span>' +
+                    '</div>'
+            },
+            { field: 'Title', displayName: 'Item name' },
+            {
+                field: 'Message',
+                displayName: 'Import status',
+                cellTemplate: '<div class="kgCellText" data-bind="style: { color: $parent.$userViewModel.getImportResultMessageColor($parent.entity) }, text: $parent.entity.Message"></div>'
+            },
+            {
+                field: 'GcTemplateName',
+                displayName: 'Template name',
+                cellTemplate: '<div class="kgCellText" data-bind="style: { color: $parent.$userViewModel.getImportResultTemplateColor($parent.entity) }, text: $parent.entity.GcTemplateName"></div>'
+            },
+            {
+                displayName: 'Open in Sitecore',
+                cellClass: 'cell-padding',
+                sortable: false,
+                cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>'
+            },
+            {
+                displayName: 'Open in GatherContent',
+                cellClass: 'cell-padding',
+                sortable: false,
+                cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>'
+            }
+        ]
+    };
+
+    this.gridResultOptions = resultOptions;
+
 }
-jQuery(window).resize(function() {
-    resizeTableHead();
-});
-
-jQuery(function () {
-    resizeTableHead();
-
-});

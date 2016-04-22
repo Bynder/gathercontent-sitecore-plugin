@@ -59,12 +59,14 @@ body {
     .footer_btn p {
         margin-bottom: 0;
     }
-
+.kgPagerControl input::-webkit-inner-spin-button { -webkit-appearance: none;}
+.kgPagerControl input::-webkit-outer-spin-button { -webkit-appearance: none;}
+.kgPagerControl input[type=number] {-moz-appearance: textfield;}
 .help-link {
     position: absolute;
     right: 0;
     bottom: 20px;
-    padding: 20px 20px 0;
+    padding: 32px 20px 0;
 }
 
 table {
@@ -232,7 +234,7 @@ table {
     border: 1px solid #808080;
     box-sizing: border-box;
     height: 30px;
-    color: #808080;
+    color: #333333;
     padding-right: 24px;
     overflow: hidden;
     cursor: pointer;
@@ -240,6 +242,9 @@ table {
 
 .mapping_tabs_wrapper .tabs_mapping .row_mapping_tab input, .tabs_mapping .row_mapping_tab .custom_selected {
     margin-bottom: 15px;
+    width: 40%;
+    width: -webkit-calc(50% - 50px);
+    width: -moz-calc(50% - 50px);
     width: calc(50% - 50px);
     margin-bottom: 15px;
     border: 1px solid #808080;
@@ -353,6 +358,26 @@ table {
     margin: 20px auto 0;
     max-height: 580px;
     overflow-y: auto;
+}
+.tabs_mapping::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+.tabs_mapping::-webkit-scrollbar:vertical {
+    width: 11px;
+}
+
+.tabs_mapping::-webkit-scrollbar:horizontal {
+    height: 11px;
+}
+.tabs_mapping::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white; /* should match background, can't be transparent */
+    background-color: rgba(0, 0, 0, .5);
+}
+
+.tabs_mapping::-webkit-scrollbar-track {
+    background-color: #fff;
+    border-radius: 8px;
 }
 /*add template*/
 .template_list {
@@ -509,6 +534,9 @@ table {
     }
 
 .gathercontent-dialog table {
+    max-width: 99%;
+    max-width: -webkit-calc(100% - 1px);
+    max-width: -moz-calc(100% - 1px);
     max-width: calc(100% - 1px);
 }
 

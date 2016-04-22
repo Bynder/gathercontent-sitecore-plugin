@@ -1,12 +1,15 @@
 ﻿.closeButton {
     float: left;
 }
-
-body {
+body{
     height: 100%;
 }
-
 .gathercontent-import {
+}
+.gathercontent-import>div{
+    padding-bottom: 70px;
+    position: relative;
+    min-height: 100%;
 }
 
 .filter_wrapper_import {
@@ -14,7 +17,7 @@ body {
     height: 30px;
     line-height: 30px;
     font-weight: 700;
-    font-size: 8pt;
+    font-size: 0.9em;
 }
 
 p {
@@ -22,7 +25,7 @@ p {
 }
 
 h2.title {
-    font-size: 8pt;
+    font-size: 1.5em;
     font-weight: 700;
     margin-top: 0;
 }
@@ -31,28 +34,25 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     padding: 10px 20px;
     overflow-x: hidden;
-    font-size: 8pt;
 }
 
 .footer_btn {
     position: absolute;
     left: 0;
     bottom: 0;
-    padding: 0 20px 20px;
+    padding: 0 20px 20px 5px;
     width: 100%;
 }
-
-.footer_btn input[type="checkbox"] {
+.footer_btn input[type="checkbox"]{
     display: block;
     float: left;
     margin-right: 5px;
 }
-
 .gathercontent-import {
 }
 
 .filter_wrapper {
-    margin: 20px 0;
+    padding: 20px 0;
 }
 
 .filter_wrapper_import > * {
@@ -60,7 +60,7 @@ body {
 }
 
 .filter_wrapper_import .title_filter {
-    min-width: 175px;
+    min-width: 70px;
 }
 
 .search_filter {
@@ -96,7 +96,7 @@ body {
     -webkit-appearance: none;
     background-image: url('/sitecore modules/shell/gathercontent/img/arrow_select.png');
     background-repeat: no-repeat;
-    background-position: 95% 50%;
+    background-position:95% 50%;
     -webkit-background-size: 95%;
     background-size: 8px;
     -moz-appearance: none;
@@ -149,7 +149,7 @@ body {
     position: fixed;
     width: 100%;
     height: 100%;
-    background-image: url("/sitecore/shell/themes/standard/images/sitecore-loader24.gif");
+    background-image: url("/sitecore/shell/themes/standard/images/sc-spinner16.gif");
     background-repeat: no-repeat;
     background-position: center center;
     background-color: #fff;
@@ -159,7 +159,7 @@ table {
     border-collapse: collapse;
     border-spacing: 0;
     width: 100%;
-    font-size: 8pt;
+    font-size: 0.9em;
 }
 
 table tbody tr:nth-child(even) {
@@ -177,7 +177,7 @@ table tbody tr:hover {
 table tbody tr td {
     color: #808080;
     cursor: default;
-    padding:4px 5px ;
+    padding: 5px;
     border: 1px solid #ccc;
     border-top: none;
     overflow: hidden;
@@ -185,7 +185,9 @@ table tbody tr td {
     white-space: nowrap;
     max-width: 160px;
 }
-
+table tbody tr td input[type="checkbox"]{
+    margin-top: 0;
+}
 table tbody tr td:last-child {
     white-space: nowrap;
     border-right: none;
@@ -222,9 +224,7 @@ table tbody tr td span:first-child {
     height: 10px;
     margin-right: 4px;
 }
-table tbody tr td input[type="checkbox"]{
-    margin-top: 0;
-}
+
 table tbody tr td a {
     text-decoration: none;
     cursor: pointer;
@@ -234,8 +234,8 @@ table tbody tr td a {
 
 .table_import_wrapper {
     position: relative;
-    padding-top: 41px;
-    background: #ededed url("/sitecore/shell/themes/standard/images/Content Editor/SectionBackground.png") repeat-x;
+    padding-top: 45px;
+    background: #5e5e5e;
 }
 
 .table_import_scroll {
@@ -249,38 +249,33 @@ table tbody tr td a {
 table thead th div {
     position: absolute;
     background: transparent;
-    color: #000;
+    color: #fff;
+    margin: 12px 0 9px;
     padding-top: 3px;
     top: 0;
+    line-height: 16px;
+    border-left: 1px solid #fff;
     min-height: 18px;
     word-wrap: break-word;
     width: inherit;
     text-align: center;
-    line-height: 16px;
-    border-left: 1px solid #000;
-    font-weight: 300;
-    margin-top: 10px;
 }
 
 
-table thead th.checkbox_table + th div, table thead th.checkbox_table div, table thead th:first-child div {
+table thead th.checkbox_table+th div,table thead th.checkbox_table div,table thead th:first-child div{
     border-left: none;
 }
-
 table thead th.checkbox_table div {
     margin-top: 6px;
 }
-
-table thead th.checkbox_table {
+table thead th.checkbox_table{
     margin: 0;
     width: 25px;
 }
-
-table thead th.status {
+table thead th.status{
     margin: 0;
     width: 155px;
 }
-
 table thead th {
     height: 0;
     line-height: 0;
@@ -293,7 +288,7 @@ table thead th {
 
 
 table thead th > input {
-    width: 18px;
+    width:18px;
     height: 0;
     height: 0px;
     visibility: hidden;
@@ -310,20 +305,19 @@ table thead th > input {
 }
 
 input[type="button"] {
+    border: none;
+    margin-top: 20px;
+    padding: 10px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-radius: 3px;
+    cursor: pointer;
+    background-color: #e4e3e3;
+}
 
-    width: auto !important;
-    min-width: 75px;
-    margin: 2px;
-    white-space: nowrap;
-    font: 8pt tahoma;
-    padding: 1px 6px;
-    letter-spacing: normal;
-    word-spacing: normal;
-    text-transform: none;
-    text-indent: 0px;
-    text-shadow: none;
-    display: inline-block;
-    border: 2px outset buttonface;
+input[type="button"]:hover {
+    background-color:#f0eeee;
 }
 
 .tooltip {
@@ -342,9 +336,244 @@ input[type="button"] {
     background-color: #222;
     padding: 2px 7px;
 }
-
 .warning-message {
     color: red;
     display: inline;
     padding-left: 10px;
+}
+
+/*top*/
+
+.kgTopPanel {
+    background: #5e5e5e;
+    height: 40px !important;
+    position: inherit;
+    /*width: 1558px!important;*/
+}
+.kgHeaderText {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12.8px;
+    margin: 11px 0;
+    padding-right: 30px;
+    padding: 1px 5px;
+    border-left: 1px solid #fff;
+    color: #fff;
+}
+.kgTopPanel .kgHeaderCell:first-child .kgHeaderText {
+    border-left: 0;
+}
+
+.kgHeaderCell {
+    border: 0;
+}
+
+
+button.kgPagerButton {
+    border-radius: 0;
+    border: none;
+    text-transform: uppercase;
+    font-weight: 700;
+    box-shadow: inset 1px 1px 2px #BBB;
+    cursor: pointer;
+    outline: none;
+}
+button.kgPagerButton:hover {
+    box-shadow: 1px 1px 4px #4A4949;
+}
+.kgViewport {
+    overflow-x: hidden;
+    outline: none;
+    /*width: 1558px!important;*/
+}
+.kgSortButtonDown {
+    right: 7px;
+    left: auto;
+    top: 48%;
+    border-color: rgb(255, 255, 255) transparent;
+    border-width: 7px 7px 0px;
+}
+.kgSortButtonUp {
+    right: 7px;
+    left: auto;
+    top: 44%;
+    border-color:   rgb(255, 255, 255) transparent;
+    border-width: 0 7px 7px 7px;
+}
+.kgTotalSelectContainer {
+    margin-top: 10px;
+}
+.kglabel {
+    margin-top: 6px !important;
+}
+.kgPagerContainer select {
+    width: 50px !important;
+    -webkit-appearance: none;
+    background-image: url('/sitecore modules/shell/gathercontent/img/arrow_select.png');
+    background-repeat: no-repeat;
+    background-position: 95% 50%;
+    -webkit-background-size: 95%;
+    background-size: 8px;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none !important;
+    display: block;
+    box-sizing: border-box;
+    overflow: hidden;
+    border: 1px solid #808080;
+    background-color: #fff;
+    height: 30px;
+    color: #808080;
+    vertical-align: middle;
+    font-weight: 500;
+    padding-left: 5px;
+}
+.kgPagerCurrent {
+    background-color: transparent;
+    text-align: center;
+    outline: none;
+    width: 50px !important;
+    margin-top: 1px;
+    padding: 0px 4px 0 4px !important;
+    border: 0
+}
+.kgHeaderCell:last-child {
+    border-right:0;
+}
+.kgCell:last-child {
+     border-right:none;
+}
+.kgCell {
+    box-sizing: border-box;
+    overflow: visible;
+}
+.kgCell:first-child {
+    border-left: 1px solid rgb(212, 212, 212);
+}
+.gridStyle {
+    border: 0;
+}
+.kgRow {
+    border-bottom: 1px solid rgb(212, 212, 212);
+    /*width: 1558px!important;*/
+}
+.kgCellText {
+   line-height: 19px;
+}
+
+/*footer*/
+.kgFooterPanel {
+    background-color: transparent;
+}
+
+/*end footer*/
+
+
+.kgPagerButton[disabled] {
+    opacity: 0.5;
+    cursor: default;
+}
+.kgPagerButton[disabled]:hover {
+    box-shadow: inset 1px 1px 2px #BBB;
+}
+.input-block {
+    width: 100%
+}
+
+
+.update-grid {
+    border: 1px solid rgb(212,212,212);
+    width: 100%;
+    height: 75%;
+}
+
+.update-result-grid {
+    border: 1px solid rgb(212,212,212);
+    width: 100%;
+    height: 73%;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+}
+
+.update-confirm-grid {
+    border: 1px solid rgb(212,212,212);
+    width: 100%;
+    height: 80%;
+}
+
+.cell-padding {
+    padding: 5px;
+}
+    .cell-padding a {
+        text-decoration: none;
+        cursor: pointer;
+        font-weight: 700;
+        color: #00B6FF;
+    }
+     .cell-padding a:hover {
+        text-decoration: none;
+        cursor: pointer;
+    }
+.mappings-cell {
+    margin: 5px;
+}
+
+.status-color {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+}
+
+.language{
+    text-transform: uppercase;
+    font-weight: 700;
+    float: right;
+}
+.language select{
+    font-weight: 500;
+}
+.title_wrap{
+    float: left;
+}
+.location:before{
+    content: "";
+    display: block;
+    clear: both;
+
+}
+.kgViewport{
+    /*border-bottom: 1px solid rgb(212,212,212);*/
+     /*border-left: 1px solid rgb(212,212,212);*/
+
+ /*border-right: 1px solid rgb(212,212,212);*/
+
+}
+.update-grid{
+    border: none;
+}
+.update-confirm-grid{
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+}
+.kgFooterPanel{
+    margin-top: 20px;
+}
+.location .input-block{
+    height: 30px;
+    margin-bottom: 10px;
+}
+.kgFooterPanel {
+    padding: 0;
+    border-top: 1px solid rgb(212,212,212);
+    position: relative;
+}
+.kgFooterPanel:after{
+    content: "";
+    display: block;
+    clear: both;
+}
+.kgFooterTotalItems,.kgFooterSelectedItems{
+    display: inline-block;
 }

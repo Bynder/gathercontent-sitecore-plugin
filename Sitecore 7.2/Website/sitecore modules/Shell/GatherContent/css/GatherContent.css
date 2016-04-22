@@ -24,8 +24,7 @@
 
 body {
     margin: 0;
-    /*font-family: Arial, Helvetica, sans-serif;*/
-    font-family: tahoma;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 0.8em;
 }
 
@@ -37,7 +36,7 @@ body {
     position: fixed;
     width: 100%;
     height: 100%;
-    background-image: url("/sitecore/shell/themes/standard/images/sitecore-loader24.gif");
+    background-image: url("/sitecore/shell/themes/standard/images/sc-spinner32.gif");
     background-repeat: no-repeat;
     background-position: center center;
     background-color: #fff;
@@ -54,17 +53,20 @@ body {
     position: absolute;
     left: 0;
     bottom: 20px;
-    padding: 10px 100px 0 20px;
+    padding: 10px 20px 0;
 }
-.footer_btn p{
-    margin-bottom: 0;
 
-}
+    .footer_btn p {
+        margin-bottom: 0;
+    }
+.kgPagerControl input::-webkit-inner-spin-button { -webkit-appearance: none;}
+.kgPagerControl input::-webkit-outer-spin-button { -webkit-appearance: none;}
+.kgPagerControl input[type=number] {-moz-appearance: textfield;}
 .help-link {
     position: absolute;
     right: 0;
     bottom: 20px;
-    padding: 20px 20px 0;
+    padding: 32px 20px 0;
 }
 
 table {
@@ -72,7 +74,6 @@ table {
     border-spacing: 0;
     width: 100%;
     max-width: 100%;
-
 }
 /*.gathercontent-dialog table thead tr{*/
 /*color: white;*/
@@ -110,32 +111,33 @@ table {
 }
 
 .gathercontent-dialog table tbody tr {
-    height: 22px;
+    height: 30px;
 }
 
     .gathercontent-dialog table tbody tr td {
         color: #808080;
         cursor: default;
-        padding:2px 5px;
+        padding: 5px;
         border: 1px solid #ccc;
         border-top: none;
-        border-right: none;
-        font-size: 8pt;
+        font-size: 0.8em;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         max-width: 120px;
     }
-        .gathercontent-dialog table tbody tr td:first-child{
+
+        .gathercontent-dialog table tbody tr td:first-child {
             border-left: none;
         }
+
         .gathercontent-dialog table tbody tr td:last-child {
             white-space: nowrap;
             text-decoration: underline;
         }
 
         .gathercontent-dialog table tbody tr td:nth-child(1), .gathercontent-dialog table tbody tr td:nth-child(2) {
-            font-size:8pt;
+            font-size: 0.8em;
         }
 
         .gathercontent-dialog table tbody tr td a {
@@ -144,14 +146,11 @@ table {
             font-weight: 700;
             color: #00B6FF;
         }
-/*.gathercontent-dialog table tbody tr:first-child td{*/
-    /*border-top: 1px solid #c9c9c9;*/
-/*}*/
+
 .gathercontent-dialog .table_mappings_wrapper {
     position: relative;
-    padding-top: 41px;
-    background: #ededed url("/sitecore/shell/themes/standard/images/Content Editor/SectionBackground.png") repeat-x;
-
+    padding-top: 45px;
+    background: #5e5e5e;
 }
 
 .gathercontent-dialog .table_mappings_scroll {
@@ -160,24 +159,22 @@ table {
     overflow-x: hidden;
     background: #fff;
     border-left: 1px solid #ccc;
-    border-top: 1px solid #ccc;
-    border-right: 1px solid #ccc;
 }
 
 .gathercontent-dialog table thead th div {
     position: absolute;
     background: transparent;
-    color: #000;
+    color: #fff;
+    margin: 12px 0 9px;
     padding-top: 3px;
     top: 0;
+    line-height: normal;
+    border-left: 1px solid #fff;
     min-height: 18px;
     word-wrap: break-word;
     width: inherit;
     text-align: center;
     line-height: 16px;
-    border-left: 1px solid #000;
-    font-weight: 300;
-    margin-top: 10px;
 }
 
 .gathercontent-dialog table thead th:first-child div {
@@ -192,42 +189,30 @@ table {
     color: transparent;
     border: none;
     padding: 0 8px 0 0;
-    font-size: 8pt;
+    font-size: 0.8em;
     text-indent: 5px;
     overflow: hidden;
 }
 
 .gathercontent-dialog .mappings-btn {
-    /*border: none;*/
-    /*margin-top: 20px;*/
-    /*padding: 10px;*/
-    /*font-size: 0.9em;*/
-    /*text-transform: uppercase;*/
-    /*font-weight: 700;*/
-    /*border-radius: 3px;*/
-    /*cursor: pointer;*/
-    /*background-color: #e4e3e3;*/
-    height: auto;
-    width: auto !important;
-    min-width: 75px;
-    margin: 2px;
-    white-space: nowrap;
-    font: 8pt tahoma;
-    padding: 1px 6px;
-    letter-spacing: normal;
-    word-spacing: normal;
-    text-transform: none;
-    text-indent: 0px;
-    text-shadow: none;
-    display: inline-block;
-    border: 2px outset buttonface;
+    border: none;
+    margin-top: 20px;
+    padding: 10px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-radius: 3px;
+    cursor: pointer;
+    background-color: #e4e3e3;
 }
-.text-center{
+
+.text-center {
     text-align: center;
 }
-.mappings-btn:hover,.mappings-btn:focus,.mappings-btn:active  {
-    border: 2px outset buttonface;
-    box-shadow: none;
+
+.mappings-btn:hover {
+    background-color: #f0eeee;
+    ;
 }
 
 .mappings-btn:focus {
@@ -238,13 +223,18 @@ table {
     margin: 60px 25%;
 }
 
+.mapping-input {
+    width: 200px;
+    height: 30px;
+    padding-left: 5px;
+}
+
 .custom_selected {
-    border: 1px solid #808080;
     background: #fff;
     border: 1px solid #808080;
     box-sizing: border-box;
     height: 30px;
-    color: #808080;
+    color: #333333;
     padding-right: 24px;
     overflow: hidden;
     cursor: pointer;
@@ -252,6 +242,9 @@ table {
 
 .mapping_tabs_wrapper .tabs_mapping .row_mapping_tab input, .tabs_mapping .row_mapping_tab .custom_selected {
     margin-bottom: 15px;
+    width: 40%;
+    width: -webkit-calc(50% - 50px);
+    width: -moz-calc(50% - 50px);
     width: calc(50% - 50px);
     margin-bottom: 15px;
     border: 1px solid #808080;
@@ -366,6 +359,26 @@ table {
     max-height: 580px;
     overflow-y: auto;
 }
+.tabs_mapping::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+.tabs_mapping::-webkit-scrollbar:vertical {
+    width: 11px;
+}
+
+.tabs_mapping::-webkit-scrollbar:horizontal {
+    height: 11px;
+}
+.tabs_mapping::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white; /* should match background, can't be transparent */
+    background-color: rgba(0, 0, 0, .5);
+}
+
+.tabs_mapping::-webkit-scrollbar-track {
+    background-color: #fff;
+    border-radius: 8px;
+}
 /*add template*/
 .template_list {
     padding-left: 0px;
@@ -375,10 +388,12 @@ table {
     overflow-y: hidden;
     margin-top: -20px;
 }
-.template_list>li:first-child{
-    margin-top: 20px;
-}
-.carousel{
+
+    .template_list > li:first-child {
+        margin-top: 20px;
+    }
+
+.carousel {
     padding-top: 20px;
     padding-bottom: 20px;
     position: relative;
@@ -386,35 +401,38 @@ table {
     height: 280px;
     overflow-y: hidden;
 }
-.carousel .btn_next,.carousel .btn_prev{
-    position: absolute;
-    left: 0;
-    height: 20px;
-    width: 50%;
-    background-color: #E4E4E4;
-    background-image: url('../img/slide_arrow.png');
-    background-repeat: no-repeat;
-    background-position: center center;
-    border: 1px solid #fff;
-    background-size: 17px;
-    box-sizing: border-box;
-    outline: none;
-}
-.carousel .btn_next:hover,.carousel .btn_prev:hover{
-    background-color: #EFEFEF;
-}
 
-.carousel .btn_prev{
-    top: 0;
-    transform: rotate(180deg);
-    border-right:none ;
-}
-.carousel .btn_next{
-    bottom: 0;
-    border-bottom: none;
-    border-left: none;
+    .carousel .btn_next, .carousel .btn_prev {
+        position: absolute;
+        left: 0;
+        height: 20px;
+        width: 50%;
+        background-color: #E4E4E4;
+        background-image: url('../img/slide_arrow.png');
+        background-repeat: no-repeat;
+        background-position: center center;
+        border: 1px solid #fff;
+        background-size: 17px;
+        box-sizing: border-box;
+        outline: none;
+    }
 
-}
+        .carousel .btn_next:hover, .carousel .btn_prev:hover {
+            background-color: #EFEFEF;
+        }
+
+    .carousel .btn_prev {
+        top: 0;
+        transform: rotate(180deg);
+        border-right: none;
+    }
+
+    .carousel .btn_next {
+        bottom: 0;
+        border-bottom: none;
+        border-left: none;
+    }
+
 .template_list_title:after {
     content: "";
     display: block;
@@ -440,10 +458,12 @@ table {
         .template_list_title h2:first-child {
             border-right: 1px solid #fff;
         }
-.add_template h2{
+
+.add_template h2 {
     margin-bottom: 0;
     padding-bottom: 0;
 }
+
 .template_list:after {
     content: "";
     display: block;
@@ -514,6 +534,9 @@ table {
     }
 
 .gathercontent-dialog table {
+    max-width: 99%;
+    max-width: -webkit-calc(100% - 1px);
+    max-width: -moz-calc(100% - 1px);
     max-width: calc(100% - 1px);
 }
 
@@ -527,9 +550,19 @@ table {
 }
 
 .fields-mapping-padding {
-    padding: 0 ;
+    padding: 0;
 }
 
 .import-padding {
     padding: 15px 0;
+}
+
+.validation-message {
+    color: red;
+}
+
+.gridStyle {
+    border: 1px solid rgb(212,212,212);
+    width: 100%; 
+    height: 80%
 }

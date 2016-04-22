@@ -24,7 +24,7 @@
 </script>
 
 <div data-bind="visible: getMode(1)" class="gathercontent-import">
-
+<div>
     <div class="filter_wrapper_import">
         <div class="title_filter">GATHER CONTENT PROJECT</div>
         <select class="custom_select" style="width: 250px" data-bind="options: projects, optionsText: 'Name', optionsValue: 'Id', value: project, event:{ change: $root.projectChanged}"></select>
@@ -56,42 +56,44 @@
         <a href="mailto:support@gathercontent.com">Need help?</a>
     </div>
 </div>
+</div>
 
-<div data-bind="if: getMode(2)">
-    <div class="title_wrap">
-        <h2 class="title">Confirm import selection</h2>
-        <p>Please review your import selection before importing.</p>
-    </div>
-    <div class="language">
-        Language
-        <select class="custom_select" style="width: 250px" data-bind="options: languages, optionsText: 'Name', optionsValue: 'IsoCode', value: language"></select>
-    </div>
-    <div class="location">
-        Import destination
-        <input class="input-block" placeholder="Default location" data-bind="value: defaultLocationTitle, click: openDropTree" type="text" />
-        <div id="location-droptree" data-bind="visible: showDropTree" style="position: absolute;top: 145px;right: 20px;width: 300px;height: 400px;z-index: 1000;display: block">
-            <div style="width:300px;height:400px;">
-                <div> </div>
+<div data-bind="if: getMode(2)" class="gathercontent-import2">
+    <div>
+        <div class="title_wrap">
+            <h2 class="title">Confirm import selection</h2>
+            <p>Please review your import selection before importing.</p>
+        </div>
+        <div class="language">
+            Language
+            <select class="custom_select" style="width: 250px" data-bind="options: languages, optionsText: 'Name', optionsValue: 'IsoCode', value: language"></select>
+        </div>
+        <div class="location">
+            <div class="title_path">destination</div>
+            <input class="input-block" placeholder="Default location" data-bind="value: defaultLocationTitle, click: openDropTree" type="text" />
+            <div id="location-droptree" data-bind="visible: showDropTree" style="position: absolute;top: 145px;right: 20px;width: 300px;height: 400px;z-index: 1000;display: block">
+                <div style="width:300px;height:400px;">
+                    <div> </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="import-confirm-grid" data-bind="koGrid: gridConfirmOptions"></div>
+        <div class="import-confirm-grid import-confirm-grid2" data-bind="koGrid: gridConfirmOptions"></div>
 
 
-    <div class="footer_btn">
-        <div>
-            <input type="checkbox" data-bind="checked: statusPostState" />
-            After successful import change status of item to <select data-bind="options: statuses, optionsText: 'Name', optionsValue: 'Id', value: statusFilter"></select> inside your GatherContent account.
+        <div class="footer_btn">
+            <div>
+                <input type="checkbox" data-bind="checked: statusPostState" />
+                After successful import change status of item to <select data-bind="options: statuses, optionsText: 'Name', optionsValue: 'Id', value: statusFilter"></select> inside your GatherContent account.
+            </div>
+            <input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 1)" />
+            <input type="button" value="Import>" data-bind="click: buttonClick.bind($data, 3)" />
+            <!--<input type="button" class="closeButton" value="Close" data-bind="click: buttonClick.bind($data, 5)" />-->
         </div>
-        <input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 1)" />
-        <input type="button" value="Import>" data-bind="click: buttonClick.bind($data, 3)" />
-        <!--<input type="button" class="closeButton" value="Close" data-bind="click: buttonClick.bind($data, 5)" />-->
+        <div class="help-link">
+            <a href="mailto:support@gathercontent.com">Need help?</a>
+        </div>
     </div>
-    <div class="help-link">
-        <a href="mailto:support@gathercontent.com">Need help?</a>
-    </div>
-
 </div>
 
 <div data-bind="if: getMode(3)">
@@ -103,7 +105,8 @@
     <!--<input type="button" value="Next" data-bind="click: buttonClick.bind($data, 4)" />-->
 </div>
 
-<div data-bind="if: getMode(4)">
+<div data-bind="if: getMode(4)" class="gathercontent-import">
+<div>
     <h2 class="title">Import complete: Results.</h2>
     <img src="~/icon/Apps/32x32/Right.png" width="20" height="20">
     <span data-bind="text: successImportedItemsCount()"></span> items were imported successfully.
@@ -126,8 +129,10 @@
         <a href="mailto:support@gathercontent.com">Need help?</a>
     </div>
 </div>
+</div>
 
-<div data-bind="if: getMode(6)">
+<div data-bind="if: getMode(6)" class="gathercontent-import">
+<div>
     <h2 class="title"><span data-bind="text: errorText"></span></h2>
     <div class="footer_btn">
         <input type="button" class="closeButton" data-bind="click: buttonClick.bind($data, 5)" value="Close" />
@@ -135,6 +140,7 @@
     <div class="help-link">
         <a href="mailto:support@gathercontent.com">Need help?</a>
     </div>
+</div>
 </div>
 
 <div class="preloader"></div>

@@ -392,10 +392,7 @@ namespace GatherContent.Connector.Managers.Managers
 
 
                     var files = new List<File>();
-                    if (
-                        gcItem.Config.SelectMany(config => config.Elements)
-                            .Select(element => element.Type)
-                            .Contains("files"))
+                    if (gcItem.Config.SelectMany(config => config.Elements).Any(element => element.Type == "files"))
                     {
                         foreach (var file in ItemsService.GetItemFiles(gcItem.Id.ToString()).Data)
                         {
@@ -409,46 +406,7 @@ namespace GatherContent.Connector.Managers.Managers
                         }
                     }
 
-                    bool fieldError = false;
-
-                    var groupedFields = templateMapping.FieldMappings.GroupBy(i => i.CmsField);
-
-                    foreach (var grouping in groupedFields)
-                    {
-                        CmsField cmsField = grouping.Key;
-
-                        var gcFieldIds = grouping.Select(i => i.GcField.Id);
-                        var gcFieldsToMap = grouping.Select(i => i.GcField);
-
-                        IEnumerable<Element> gcFieldsForMapping =
-                            gcFields.Where(i => gcFieldIds.Contains(i.Name)).ToList();
-
-                        var gcField = gcFieldsForMapping.FirstOrDefault();
-
-                        if (gcField != null)
-                        {
-                            var value = GetValue(gcFieldsForMapping);
-                            var options = GetOptions(gcFieldsForMapping);
-
-                            cmsField.Files = files.Where(x => x.FieldId == gcField.Name).ToList();
-                            cmsField.Value = value;
-                            cmsField.Options = options;
-
-                            //update GC fields' type
-                            foreach (var field in gcFieldsToMap)
-                            {
-                                field.Type = gcField.Type;
-                            }
-                        }
-                        else
-                        {
-                            //if field error, set error message
-                            itemResponseModel.ImportMessage = "Update failed: Template fields mismatch";
-                            itemResponseModel.IsImportSuccessful = false;
-                            fieldError = true;
-                            break;
-                        }
-                    }
+                    bool fieldError = CheckFieldError(templateMapping, gcFields, files, itemResponseModel);
 
                     if (!fieldError)
                     {
@@ -498,12 +456,6 @@ namespace GatherContent.Connector.Managers.Managers
                                 }
                             }
                         }
-
-                        //ItemsRepository.UpdateItem(new CmsItem
-                        //{
-
-
-                        //});
                     }
 
                 }
@@ -520,5 +472,49 @@ namespace GatherContent.Connector.Managers.Managers
             return model;
         }
 
+        private bool CheckFieldError(TemplateMapping templateMapping, List<Element> gcFields, List<File> files, ItemResultModel itemResponseModel)
+        {
+            bool fieldError = false;
+
+            var groupedFields = templateMapping.FieldMappings.GroupBy(i => i.CmsField);
+
+            foreach (var grouping in groupedFields)
+            {
+                CmsField cmsField = grouping.Key;
+
+                var gcFieldIds = grouping.Select(i => i.GcField.Id);
+                var gcFieldsToMap = grouping.Select(i => i.GcField);
+
+                IEnumerable<Element> gcFieldsForMapping =
+                    gcFields.Where(i => gcFieldIds.Contains(i.Name)).ToList();
+
+                var gcField = gcFieldsForMapping.FirstOrDefault();
+
+                if (gcField != null)
+                {
+                    var value = GetValue(gcFieldsForMapping);
+                    var options = GetOptions(gcFieldsForMapping);
+
+                    cmsField.Files = files.Where(x => x.FieldId == gcField.Name).ToList();
+                    cmsField.Value = value;
+                    cmsField.Options = options;
+
+                    //update GC fields' type
+                    foreach (var field in gcFieldsToMap)
+                    {
+                        field.Type = gcField.Type;
+                    }
+                }
+                else
+                {
+                    //if field error, set error message
+                    itemResponseModel.ImportMessage = "Update failed: Template fields mismatch";
+                    itemResponseModel.IsImportSuccessful = false;
+                    fieldError = true;
+                    break;
+                }
+            }
+            return fieldError;
+        }
     }
 }

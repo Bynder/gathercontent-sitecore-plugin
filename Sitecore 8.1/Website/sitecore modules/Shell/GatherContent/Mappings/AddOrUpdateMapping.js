@@ -148,7 +148,6 @@ function ViewModel(data) {
                     mapping.DefaultLocation(node.data.key);
                     mapping.DefaultLocationText(node.data.title);        
                 },
-                onBlur: function(node) { console.log("blur"); },
                 onLazyRead: function (node) {
                     node.appendAjax({
                         url: "/api/sitecore/DropTree/GetChildren?id=" + node.data.key,

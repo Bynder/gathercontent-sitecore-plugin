@@ -9,6 +9,7 @@ using Sitecore.Resources.Media;
 using Sitecore.SecurityModel;
 using System.Collections.Generic;
 using GatherContent.Connector.IRepositories.Interfaces;
+using Sitecore.Diagnostics;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
@@ -223,8 +224,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                                 }
                                 return createdItem.ID.ToString();
                             }
-                            catch (Exception)
+                            catch (Exception ex)
                             {
+                                Log.Error("cannot create mapped item.", ex, this);
                                 throw new Exception(string.Format("Your template({0}) is not inherited from the GC Linked Item.", createdItem.TemplateName));
                             }
                         }
@@ -526,8 +528,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                                     }
                                     return newVersion.ID.ToString();
                                 }
-                                catch (Exception)
+                                catch (Exception ex)
                                 {
+                                    Log.Error("cannot update mapped item.", ex, this);
                                     throw new Exception(string.Format("Your template({0}) is not inherited from the GC Linked Item.", newVersion.TemplateName));
                                 }
                             }

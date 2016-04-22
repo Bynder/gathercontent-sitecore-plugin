@@ -48,7 +48,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         private IEnumerable<Item> GetTemplates(string id)
         {
             var item = GetItem(id);
-            return item != null ? item.Axes.GetDescendants().Where(t => t.TemplateName == "Template").ToList() : null;
+            return item != null ? item.Axes.GetDescendants().Where(t => t.TemplateName == "Template").ToList() : Enumerable.Empty<Item>();
         }
 
         private IEnumerable<Item> GetTemplateMappings(string gcProjectId, string gcTemplateId)
@@ -503,14 +503,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
                 var fields = GetFields(template);
                 cmsTemplate.TemplateFields.AddRange(
-                    from f in fields
-                    where !f.Name.StartsWith("__")
-                    select new CmsTemplateField
+                    fields.Where(f => !f.Name.StartsWith("__")).Select(f => new CmsTemplateField
                     {
                         FieldName = f.Name,
                         FieldId = f.ID.ToString(),
                         FieldType = f.Type
-                    });
+                    }));
 
                 model.Add(cmsTemplate);
             }

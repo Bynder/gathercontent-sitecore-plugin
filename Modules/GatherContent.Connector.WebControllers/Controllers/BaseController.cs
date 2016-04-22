@@ -28,7 +28,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
                 model.Add(new LanguageViewModel
                 {
                     Name = language.CultureInfo.DisplayName,
-                    IsoCode = language.CultureInfo.TwoLetterISOLanguageName
+                    IsoCode = language.CultureInfo.Name
                 });
             }
             return model;

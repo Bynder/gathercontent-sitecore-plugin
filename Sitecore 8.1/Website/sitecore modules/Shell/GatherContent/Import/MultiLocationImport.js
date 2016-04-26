@@ -147,6 +147,7 @@
                 document.getElementsByTagName('input')[1].focus();
                 self.initVariables(response);
                 jQuery(".preloader").hide();
+                jQuery(window).trigger('resize');
             },
             error: function (response) {
                 self.errorCallbackHandle(response);
@@ -183,6 +184,7 @@
         if (event.originalEvent) {
             jQuery(".preloader").show();
             self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());
+
         }
     },
 
@@ -360,6 +362,7 @@
                 self.successImportedItemsCount(response.length - notImportedItemsCount);
                 self.resultItems(response);
                 self.buttonClick(MODE.ImportResult);
+
             },
             error: function (response) {
                 self.errorCallbackHandle(response);
@@ -410,6 +413,7 @@
                 onActivate: function (node) {
                     jQuery('[data-openerid="' + id + '"]').val(node.data.title);
                     jQuery("#" + id).hide();
+
                     item.IsShowing = false;
                     item.DefaultLocation = node.data.key;
                     item.DefaultLocationTitle = node.data.title;
@@ -440,6 +444,8 @@
             } else {
                 self.currentMode(newMode);
                 self.ChooseDefaultLocation();
+                self.errorText('');
+                jQuery(".kgAggregate").trigger("click")
             }
         }
         else if (newMode === MODE.Confirm) {
@@ -469,6 +475,7 @@
         } else if (newMode === MODE.ChooseItmesForImort) {
             self.statusFilter = ko.observable();
             self.currentMode(newMode);
+
         } else {
             self.currentMode(newMode);
         }
@@ -580,9 +587,9 @@
                 { field: 'ScTemplate', width: '**', displayName: 'Sitecore Template' },
                 {
                     field: 'DefaultLocationTitle', width: 320, displayName: 'Default Location',
-                    cellTemplate: '<div><input data-bind="value: $parent.entity.DefaultLocationTitle, attr: {\'data-openerid\': $parent.entity.OpenerId }, click: function(){$parent.$userViewModel.openDropTree($parent.entity)}" type="text" />' +
+                    cellTemplate: '<div class="tree_wrap"><input data-bind="value: $parent.entity.DefaultLocationTitle, attr: {\'data-openerid\': $parent.entity.OpenerId }, click: function(){$parent.$userViewModel.openDropTree($parent.entity)}" type="text" />' +
                            '<input data-bind="value: $parent.entity.DefaultLocation, visible: false" type="text" />' +
-                           '<div data-bind="attr: { id: $parent.entity.OpenerId }" style="position: absolute; left: 0; top: 30px; width: 300px; height: 400px; z-index: 1000;">' +
+                           '<div class="tree_init" data-bind="attr: { id: $parent.entity.OpenerId }" style="position: absolute; left: 0; top: 30px; width: 300px; height: 400px; z-index: 1000;">' +
                               '<div style="width:300px;height:400px;">' +
                                   '<div data-bind="css: { \'class\': $parent.entity.OpenerId }"> </div>' +
                               '</div>' +

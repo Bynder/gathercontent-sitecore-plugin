@@ -144,6 +144,7 @@
                 self.initVariables(response);
                 self.setPagingData(response.Items, page, pageSize);
                 document.getElementsByTagName('input')[1].focus();
+                jQuery(window).trigger('resize');
                 //window.getSelection().removeAllRanges();
 
             },
@@ -301,8 +302,10 @@
         //self.defaultLocation
         //self.language
         var id = self.defaultLocation();
+
         var selectedItems = self.selectedItems();
         var items = [];
+
         selectedItems.forEach(function (item, i) {
             items.push({ Id: item.Id, SelectedMappingId: item.AvailableMappings.SelectedMappingId });
         });
@@ -327,6 +330,7 @@
                 self.successImportedItemsCount(response.length - notImportedItemsCount);
                 self.resultItems(response);
                 self.buttonClick(MODE.ImportResult);
+                jQuery(window).trigger('resize');
             },
             error: function (response) {
                 self.errorCallbackHandle(response);
@@ -355,6 +359,7 @@
                 self.errorText('Please select at least one item');
             } else {
                 self.currentMode(newMode);
+                self.errorText('');
             }
         } else if (newMode === MODE.Import) {
             self.currentMode(newMode);
@@ -557,5 +562,33 @@
     };
 
     this.gridResultOptions = resultOptions;
+    var changeInit={};
+    jQuery( "body" ).on("change",".mappings-cell",function(el) {
+
+        if(jQuery(".import-confirm-grid2").length){
+
+            if(jQuery(".col2:contains("+jQuery(el.target).parents(".col3").siblings(".col2").text()+")").length>1){
+                if(!changeInit[jQuery(el.target).parents(".col3").siblings(".col2").text()]) {
+                    var init = confirm('Set the mapping for all '+jQuery(el.target).parents(".col3").siblings(".col2").text()+' items?');
+                    if (init) {
+
+                        jQuery(".col2:contains(" + jQuery(el.target).parents(".col3")
+                                .siblings(".col2").text() + ")").siblings(".col3")
+                            .find("option[value='" + jQuery(el.target).find("option:selected").val() + "']").prop("selected", true);
+
+                        var selectedItems=self.selectedItems();
+                            selectedItems.forEach(function (item, i) {
+                                item.AvailableMappings.SelectedMappingId=jQuery(el.target).find("option:selected").val()
+                            });
+
+                    }
+                    else{
+                        changeInit[jQuery(el.target).parents(".col3").siblings(".col2").text()]=true;
+                    }
+                }
+            }
+        }
+
+    });
 }
 

@@ -28,6 +28,13 @@ function initTooltip() {
         }
     });
 }
+function treeInit(){
+    jQuery(document).on("click",function(el){
+            if (jQuery(el.target).closest(".tree_wrap").length)return;
+            if (jQuery(el.target).closest(".dynatree-expander").length)return;
+            jQuery(".tree_init").hide();
+    })
+}
 function resizeTableHead() {
     jQuery("thead th.cell_resize").each(function() {
         jQuery(this).find("div").css("width", jQuery(this).width());
@@ -70,6 +77,9 @@ function document_resize() {
 }
 
 jQuery(function () {
+    treeInit();
+
+    jQuery(document).on("click",".dynatree-title",function(el){el.preventDefault();})
     jQuery(window).resize(function() {
         jQuery(".table_import_scroll").css("max-height", jQuery("body").height() - 250);
     });

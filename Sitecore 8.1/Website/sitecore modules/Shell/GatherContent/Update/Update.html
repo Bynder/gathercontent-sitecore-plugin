@@ -67,7 +67,7 @@
             <input type="checkbox" data-bind="checked: statusPostState" />
             After successful import change status of item to [<select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender"></select>] inside your GatherContent account
         </div>-->
-        <input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 1)" />
+        <input type="button" value="<Back" class="backBtn" data-bind="click: buttonClick.bind($data, 1)" />
         <input type="button" value="Update>" data-bind="click: buttonClick.bind($data, 3)" />
         <!--<input type="button" class="closeButton" value="Close" data-bind="click: buttonClick.bind($data, 5)" />-->
     </div>
@@ -97,9 +97,11 @@
         <div data-bind="if: notUpdaredItemsCount() > 0" class="import-padding">
             <img src="~/icon/Apps/32x32/Warning (1).png" width="20" height="20"> <span data-bind="text: notUpdaredItemsCount()"></span> items were not updated. Check errors below.
         </div>
-
+        <div data-bind="css:{
+    'info_footer' :  notUpdaredItemsCount() > 0
+ }">
         <div class="update-result-grid" data-bind="koGrid: gridResultOptions"></div>
-
+</div>
         <div data-bind="if: notUpdaredItemsCount() > 0" class="import-padding">
             Template not mapped: Please check template mapping.<br />
             Template fields mismatch:  This could be because the template in GatherContent has changed and the changed template has not been updated on Sitecore.

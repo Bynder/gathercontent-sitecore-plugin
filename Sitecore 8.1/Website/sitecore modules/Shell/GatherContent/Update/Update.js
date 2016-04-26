@@ -8,8 +8,9 @@
         Error: 6
     };
 
-    var allItems = [];
+    this.allItems = [];
     var self = this;
+    this.allItemsSelected=[];
 
     self.errorText = ko.observable(),
     self.successImportedItemsCount = ko.observable(),
@@ -77,7 +78,7 @@
 
     self.setPagingData = function (data, page, pageSize) {
         var items = data;
-        allItems = items.slice(0);
+        self.allItems = items.slice(0);
         if (self.sortInfo()) {
             //window.kg.sortService.Sort(data, self.sortInfo()); - does not work with plain arrays. sorting extracted from that func.
             var col = self.sortInfo().column, direction = self.sortInfo().direction, sortFn, item;
@@ -131,7 +132,8 @@
                 jQuery(".preloader").hide();
                 self.initVariables(response);
                 self.setPagingData(response.Items, page, pageSize);
-                document.getElementsByTagName('input')[1].focus();              
+                document.getElementsByTagName('input')[1].focus();
+                jQuery(window).trigger('resize');
             },
             error: function (response) {
                 self.errorCallbackHandle(response);
@@ -155,7 +157,7 @@
     self.initVariables = function (response) {
         //var items = self.setupWatcher(response.Items);
         self.items(response.Items);
-        allItems = response.Items.slice(0);
+        self.allItems = response.Items.slice(0);
 
         self.statuses(response.Filters.Statuses);
         self.projects(response.Filters.Projects);
@@ -174,7 +176,7 @@
     self.filter = function () {
         self.items.removeAll();
 
-        var currentCollection = allItems.slice(0);
+        var currentCollection = self.allItems.slice(0);
         currentCollection = self.search(currentCollection);
         currentCollection = self.filterByStatus(currentCollection);
         currentCollection = self.filterByTemplate(currentCollection);
@@ -318,12 +320,14 @@
     //button click events
     self.switchToCheckItemsBeforeImport = function () {
         var result = [];
+
         ko.utils.arrayForEach(self.items(), function (item) {
             if (item.Checked && item.Checked() === true)
                 result.push(item);
         });
 
-        self.items(result);
+        self.allItemsSelected=self.selectedItems();
+        self.selectedItems(result);
     }
 
     self.import = function () {
@@ -356,7 +360,7 @@
                 self.notUpdaredItemsCount(notUpdatedCount);
                 self.resultItems(response);
                 self.buttonClick(MODE.ImportResult);
-                
+                jQuery(window).trigger('resize');
             },
             error: function (response) {
                 self.errorCallbackHandle(response);
@@ -379,7 +383,8 @@
     }
 
     self.backButtonClick = function () {
-        self.items(allItems.slice(0));
+        self.selectedItems(self.allItemsSelected);
+        self.items(self.allItems);
     }
 
     self.buttonClick = function (newMode) {
@@ -389,7 +394,7 @@
             } else {
                 self.currentMode(newMode);
                 resizeTableHead();
-                self.switchToCheckItemsBeforeImport();
+                //self.switchToCheckItemsBeforeImport();
             }
         } else if (newMode === MODE.Import) {
             self.currentMode(newMode);
@@ -400,9 +405,10 @@
             self.currentMode(newMode);
             self.close();
         } else if (newMode === MODE.ChooseItmesForImort) {
+
             self.statusFilter = ko.observable();
             self.currentMode(newMode);
-            self.backButtonClick();
+            //self.backButtonClick();
         } else {
             self.currentMode(newMode);
         }
@@ -442,19 +448,19 @@
 
   
     self.filterOptions.filterText.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.pagingOptions.pageSizes.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.pagingOptions.pageSize.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.pagingOptions.totalServerItems.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.pagingOptions.currentPage.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.sortInfo.subscribe(function (data) {
         self.pagingOptions.currentPage(1); // reset page after sort
@@ -493,14 +499,14 @@
                 { field: 'ScTemplateName', width: '**', displayName: 'Sitecore Template' },
                 { displayName: 'Open in Sitecore', width:70,cellClass: 'cell-padding', sortable: false, cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
                 { displayName: 'Open in GatherContent',width:70, cellClass: 'cell-padding', sortable: false, cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>' }
-            ]
+            ],
         };
-
 
     this.gridOptions = options;
 
     var confirmOptions =
           {
+
               canSelectRows: false,
               showColumnMenu: false,
               showFilter: false,

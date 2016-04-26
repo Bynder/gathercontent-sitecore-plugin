@@ -1,9 +1,8 @@
 ﻿
-
 function ViewModel() {
     var self = this;
 
-    var allItems = [];
+    this.allItems = [];
 
     this.mappings = ko.observableArray();
     this.errorText = ko.observable();
@@ -62,7 +61,11 @@ function ViewModel() {
 
         var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
         self.mappings(pagedData);
+
+
         self.pagingOptions.totalServerItems(data.length);
+
+
     };
 
     this.getPagedData = function (pageSize, page) {
@@ -72,7 +75,7 @@ function ViewModel() {
             async: false,
             success: function (loadData) {
                 if (loadData.status != "error") {
-                    allItems = loadData.slice(0);
+                    self.allItems = loadData.slice(0);
                     self.setPagingData(loadData, page, pageSize);
                     jQuery(".preloader").hide();
                 } else {
@@ -88,16 +91,18 @@ function ViewModel() {
 
     this.removeMapping = function (item) {
         var scMappingId = item.ScMappingId;
-
         var confirmDelete = confirm('Are you sure you want to delete this1?');
         if (confirmDelete) {
             jQuery.ajax({
                 type: 'DELETE',
                 url: '/api/sitecore/mappings/Delete?scMappingId=' + scMappingId,
-                success: function () {
+                success: function (data) {
                     self.mappings.remove(function (mapping) {
                         return mapping.ScMappingId == scMappingId;
                     });
+
+                    self.allItems= self.mappings();
+                    self.setPagingData(self.allItems);
                     self.isError(false);
                 },
                 error: function (data) {
@@ -122,23 +127,25 @@ function ViewModel() {
             null, "center:yes;help:no;resizable:yes;scroll:yes;status:no;dialogMinHeight:600;dialogMinWidth:700;dialogWidth:700;dialogHeight:800;header: Manage Field Mappings");
     }
 
+
     self.filterOptions.filterText.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.pagingOptions.pageSizes.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.pagingOptions.pageSize.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.pagingOptions.totalServerItems.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.pagingOptions.currentPage.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.sortInfo.subscribe(function (data) {
         self.pagingOptions.currentPage(1); // reset page after sort
+
     });
     self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());
 

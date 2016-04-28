@@ -249,6 +249,16 @@
 
     self.query.subscribe(self.filter);
 
+    this.closeDropTree = function (model, e) {
+        if (e.target.tagName === "INPUT") {
+            return;
+        }
+
+        var id = "location-droptree";
+        jQuery("#" + id).hide();
+        this.IsShowing(false);
+    };
+
     self.openDropTree = function () {
         var id = "location-droptree";
         var locationId = self.defaultLocation();

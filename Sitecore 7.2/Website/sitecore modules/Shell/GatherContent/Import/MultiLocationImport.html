@@ -23,36 +23,36 @@
 </script>
 
 
-<div data-bind="visible: getMode(1)" class="gathercontent-import">
-<div>
-    <div class="filter_wrapper_import">
-        <div class="title_filter">GATHER CONTENT PROJECT</div>
-        <select class="custom_select" style="width: 250px" data-bind="options: projects, optionsText: 'Name', optionsValue: 'Id', value: project, event:{ change: $root.projectChanged}"></select>
-    </div>
-
-
-    <div class="filter_wrapper">
+<div data-bind="visible: getMode(1), click: closeDropTree" class="gathercontent-import">
+    <div>
         <div class="filter_wrapper_import">
-            <div class="title_filter" style="padding-right: 135px;">FILTER</div>
-            <select class="custom_select" style="width: 250px" data-bind="options: statuses, optionsText: 'Name', optionsValue: 'Id', value: statusFilter, optionsCaption: 'STATUS', event:{ change: $root.filter }"></select>
-            <select class="custom_select" style="width: 250px;" data-bind="options: templates, optionsText: 'Name', optionsValue: 'Id', value: templateFilter, optionsCaption: 'GATHER CONTENT TEMPLATE', event:{ change: $root.filter }"></select>
+            <div class="title_filter">GATHER CONTENT PROJECT</div>
+            <select class="custom_select" style="width: 250px" data-bind="options: projects, optionsText: 'Name', optionsValue: 'Id', value: project, event:{ change: $root.projectChanged}"></select>
         </div>
-        <div class="search_filter">
-            <input placeholder="FILTER BY ITEM NAME (SEARCH)" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
+
+
+        <div class="filter_wrapper">
+            <div class="filter_wrapper_import">
+                <div class="title_filter" style="padding-right: 135px;">FILTER</div>
+                <select class="custom_select" style="width: 250px" data-bind="options: statuses, optionsText: 'Name', optionsValue: 'Id', value: statusFilter, optionsCaption: 'STATUS', event:{ change: $root.filter }"></select>
+                <select class="custom_select" style="width: 250px;" data-bind="options: templates, optionsText: 'Name', optionsValue: 'Id', value: templateFilter, optionsCaption: 'GATHER CONTENT TEMPLATE', event:{ change: $root.filter }"></select>
+            </div>
+            <div class="search_filter">
+                <input placeholder="FILTER BY ITEM NAME (SEARCH)" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="import-grid multimport-confirm-grid " data-bind="koGrid: gridOptions"></div>
+
+        <div class="footer_btn">
+
+            <input type="button" class="mappings-btn" style="margin-top: 0" value="Next>" data-bind="click: buttonClick.bind($data, 2)" />
+            <div data-bind="text: errorText" class="warning-message"></div>
+        </div>
+        <div class="help-link">
+            <a href="mailto:support@gathercontent.com">Need help?</a>
         </div>
     </div>
-
-    <div class="import-grid import-confirm-grid " data-bind="koGrid: gridOptions"></div>
-
-    <div class="footer_btn">
-
-        <input type="button" class="mappings-btn" style="margin-top: 0" value="Next>" data-bind="click: buttonClick.bind($data, 2)" />
-        <div data-bind="text: errorText" class="warning-message"></div>
-    </div>
-    <div class="help-link">
-        <a href="mailto:support@gathercontent.com">Need help?</a>
-    </div>
-</div>
 </div>
 
 <div data-bind="if: getMode(2)" class="gathercontent-import">
@@ -60,11 +60,12 @@
     <div>
         <p>Please review your import selection before importing.</p>
     </div>
-    <div class="import-grid multimport-confirm-grid" data-bind="koGrid: groupedGridOptions"></div>
+    <div class="import-grid multimport-confirm-grid multimport-confirm-grid2" data-bind="koGrid: groupedGridOptions"></div>
     <div class="footer_btn">
-        <div data-bind="text: errorText" style="color: red"></div>
-        <!--<input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 1)" />-->
+
+        <input type="button" value="<Back" class="backBtn" data-bind="click: buttonClick.bind($data, 1)" />
         <input type="button" value="Next>" data-bind="click: buttonClick.bind($data, 3)" />
+        <div data-bind="text: errorText"  class="warning-message"></div>
     </div>
     <div class="help-link">
         <a href="mailto:support@gathercontent.com">Need help?</a>
@@ -90,8 +91,9 @@
             After successful import change status of item to <select data-bind="options: statuses, optionsText: 'Name', optionsValue: 'Id', value: statusFilter"></select> inside your GatherContent account.
           
         </div>
-        <!--<input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 2)" />-->
+        <input type="button" value="<Back" class="backBtn" data-bind="click: buttonClick.bind($data, 2)" />
         <input type="button" value="Import>" data-bind="click: buttonClick.bind($data, 4)" />
+        <div data-bind="text: errorText" style="color: red"></div>
     </div>
     <div class="help-link">
         <a href="mailto:support@gathercontent.com">Need help?</a>
@@ -117,9 +119,11 @@
         <div data-bind="if: notImportedItemsCount() > 0" class="import-padding">
             <img src="~/icon/Apps/32x32/Warning (1).png" width="20" height="20"> <span data-bind=" text: notImportedItemsCount()"></span> items were not imported. Check errors below.
         </div>
-        
-        <div class="import-result-grid" data-bind="koGrid: gridResultOptions"></div>          
-
+        <div data-bind="css:{
+    'info_footer' :  notImportedItemsCount() > 0
+ }">
+        <div class="import-result-grid multiimport-result-grid" data-bind="koGrid: gridResultOptions"></div>
+</div>
         <div data-bind="if: notImportedItemsCount() > 0" class="import-padding">
             <span>Template not mapped:</span> Please check template mapping.<br />
             <span>Template fields mismatch:</span> This could be because the template in GatherContent has changed and the changed template has not been updated on Sitecore.
@@ -127,6 +131,7 @@
     </div>
     <div class="footer_btn">
         <input type="button" class="closeButton" data-bind="click: buttonClick.bind($data, 6)" value="Close" />
+
     </div>
     <div class="help-link">
         <a href="mailto:support@gathercontent.com">Need help?</a>

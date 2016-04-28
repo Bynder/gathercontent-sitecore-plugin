@@ -302,6 +302,7 @@ table {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    position: relative;
 }
 
     .mapping_tabs_wrapper .tabs_mapping .title_mapping:after {
@@ -310,7 +311,8 @@ table {
         height: 15px;
         margin-right: 10px;
         margin-top: 10px;
-        float: right;
+        position: absolute;
+        right: 0;
         background-image: url("/sitecore/shell/themes/standard/Images/accordion_down.png");
     }
 

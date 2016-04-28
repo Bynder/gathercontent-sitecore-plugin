@@ -9,6 +9,18 @@
     return vars;
 }
 
+dateSort = function (a, b) {
+    var a1 = moment(a, "'DD/MM/YYYY hh:mm A").format("YYYY-MM-DD HH:mm");
+    var b1 = moment(b, "'DD/MM/YYYY hh:mm A").format("YYYY-MM-DD HH:mm");
+    if (a1 == b1) {
+        return 0;
+    }
+    if (a1 < b1) {
+        return -1;
+    }
+    return 1;
+}
+
 function initTooltip() {
     jQuery("tr td").each(function (i) {
         if (jQuery(this).outerWidth() < this.scrollWidth) {
@@ -16,16 +28,23 @@ function initTooltip() {
         }
     });
 }
-function resizeTableHead(){
-    jQuery("thead th.cell_resize").each(function(){
-        jQuery(this).find("div").css("width",jQuery(this).width())
+function treeInit(){
+    jQuery(document).on("click",function(el){
+            if (jQuery(el.target).closest(".tree_wrap").length)return;
+            if (jQuery(el.target).closest(".dynatree-expander").length)return;
+            jQuery(".tree_init").hide();
     })
-    jQuery("thead th div").each(function(){
-        if( jQuery(this).height()>18){
-            jQuery(this).css("padding-top",0);
-            jQuery(this).css("margin-top",7)
+}
+function resizeTableHead() {
+    jQuery("thead th.cell_resize").each(function() {
+        jQuery(this).find("div").css("width", jQuery(this).width());
+    });
+    jQuery("thead th div").each(function() {
+        if (jQuery(this).height() > 18) {
+            jQuery(this).css("padding-top", 0);
+            jQuery(this).css("margin-top", 7);
         }
-    })
+    });
 }
 
 function simple_tooltip(target_items, name, i) {
@@ -48,25 +67,23 @@ function document_resize() {
                 simple_tooltip(this, "tooltip", i);
             }
         });
-        jQuery("thead th div").each(function(){
-            if( jQuery(this).height()>18){
-                jQuery(this).css("padding-top",0);
-                jQuery(this).css("margin-top",7)
+        jQuery("thead th div").each(function() {
+            if (jQuery(this).height() > 18) {
+                jQuery(this).css("padding-top", 0);
+                jQuery(this).css("margin-top", 7);
             }
-            else{
-                jQuery(this).css("padding-top",3);
-                jQuery(this).css("margin-top",10)
-            }
-        })
+        });
     });
 }
 
 jQuery(function () {
-    document_resize();
-    jQuery(window).resize(function(){
-        jQuery(".table_import_scroll").css("max-height",jQuery("body").height()-250)
-})
-        jQuery(".table_import_scroll").css("max-height",jQuery("body").height()-250)
+    treeInit();
+
+    jQuery(document).on("click",".dynatree-title",function(el){el.preventDefault();})
+    jQuery(window).resize(function() {
+        jQuery(".table_import_scroll").css("max-height", jQuery("body").height() - 250);
+    });
+    jQuery(".table_import_scroll").css("max-height", jQuery("body").height() - 250);
 });
 
 

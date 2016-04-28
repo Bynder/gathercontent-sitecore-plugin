@@ -100,7 +100,6 @@ function ViewModel(data) {
     };
 
     this.closeDropTree = function (model, e) {
-
         if (e.target.tagName === "INPUT") {
             return;
         }
@@ -215,6 +214,7 @@ function ViewModel(data) {
                             }
                         }
                         self.Tabs(data);
+                        tabSlideFirst();
                     } else {
                         self.ErrorText("Error:" + " " + data.message);
                         self.IsError(true);
@@ -313,13 +313,14 @@ function ViewModel(data) {
 
 
 
-
-
-function tabInitSlide() {
+function tabSlideFirst() {
     jQuery(".content_mapping").slideUp(0);
     jQuery(".title_mapping").removeClass("open");
     jQuery(jQuery(".title_mapping")[0]).addClass("open");
     jQuery(jQuery(".content_mapping")[0]).slideDown(0);
+}
+function tabInitSlide() {
+
     jQuery("body").on("click", ".title_mapping", function () {
         if (jQuery(this).hasClass("open")) {
             jQuery(this).next(".content_mapping").slideUp(200);

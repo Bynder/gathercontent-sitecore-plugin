@@ -58,7 +58,7 @@
 </div>
 </div>
 
-<div data-bind="if: getMode(2)" class="gathercontent-import2">
+<div data-bind="if: getMode(2), click: closeDropTree" class="gathercontent-import2">
     <div>
         <div class="title_wrap">
             <h2 class="title">Confirm import selection</h2>
@@ -82,11 +82,11 @@
 
 
         <div class="footer_btn">
-            <div>
+            <div style="margin-bottom: 15px;">
                 <input type="checkbox" data-bind="checked: statusPostState" />
                 After successful import change status of item to <select data-bind="options: statuses, optionsText: 'Name', optionsValue: 'Id', value: statusFilter"></select> inside your GatherContent account.
             </div>
-            <input type="button" value="<Back" data-bind="click: buttonClick.bind($data, 1)" />
+            <input type="button" value="<Back" class="backBtn" data-bind="click: buttonClick.bind($data, 1)" />
             <input type="button" value="Import>" data-bind="click: buttonClick.bind($data, 3)" />
             <!--<input type="button" class="closeButton" value="Close" data-bind="click: buttonClick.bind($data, 5)" />-->
         </div>
@@ -114,10 +114,13 @@
         <div data-bind="if: notImportedItemsCount() > 0" class="import-padding">
             <img src="~/icon/Apps/32x32/Warning (1).png" width="20" height="20"> <span data-bind=" text: notImportedItemsCount()"></span> items were not imported. Check errors below.
         </div>
-
+        <div data-bind="css:{
+    'info_footer' :  notImportedItemsCount() > 0
+ }">
         <div class="import-result-grid" data-bind="koGrid: gridResultOptions"></div>
+        </div>
 
-        <div data-bind="if: notImportedItemsCount() > 0" class="import-padding">
+        <div data-bind="if: notImportedItemsCount() > 0" class="import-padding" STYLE="padding-left: 5px;">
             <span>Template not mapped:</span> Please check template mapping.<br />
             <span>Template fields mismatch:</span> This could be because the template in GatherContent has changed and the changed template has not been updated on Sitecore.
         </div>

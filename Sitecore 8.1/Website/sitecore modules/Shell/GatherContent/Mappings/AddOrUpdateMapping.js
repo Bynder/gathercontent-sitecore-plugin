@@ -100,7 +100,6 @@ function ViewModel(data) {
     };
 
     this.closeDropTree = function (model, e) {
-
         if (e.target.tagName === "INPUT") {
             return;
         }

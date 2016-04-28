@@ -99,9 +99,9 @@
     <Content Include="sitecore modules\Shell\GatherContent\Import\Import.css" />
     <Content Include="sitecore modules\Shell\GatherContent\Import\Import.html" />
     <Content Include="sitecore modules\Shell\GatherContent\Import\Import.js" />
+    <Content Include="sitecore modules\Shell\GatherContent\Import\MultiLocationImport.html" />
+    <Content Include="sitecore modules\Shell\GatherContent\Import\MultiLocationImport.js" />
     <Content Include="sitecore modules\Shell\GatherContent\js\GatherContent.js" />
-    <Content Include="sitecore modules\Shell\GatherContent\js\jquery_2.1.1.min.js" />
-    <Content Include="sitecore modules\Shell\GatherContent\js\knockout-3.4.0.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\AddOrUpdateMapping.html" />
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\AddOrUpdateMapping.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Mappings\Mappings.html" />

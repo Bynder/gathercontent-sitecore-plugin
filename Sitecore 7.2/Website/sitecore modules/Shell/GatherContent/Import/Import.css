@@ -331,7 +331,6 @@ table thead th {
 
 input[type="button"] {
     border: none;
-    margin-top: 20px;
     padding: 10px;
     font-size: 0.9em;
     text-transform: uppercase;
@@ -379,20 +378,35 @@ input[type="button"] {
 .import-grid {
     border: 1px solid rgb(212,212,212);
     width: 100%;
-    height: 75%;
+    height: 500px;
 }
 
 .import-result-grid {
     border: 1px solid rgb(212,212,212);
     width: 100%;
-    height: 85%;
+    height: 510px;
     border-left: none;
     border-right: none;
     border-bottom: none;
 }
-
+.info_footer .import-result-grid{
+    height: 440px;
+}
+.multiimport-result-grid{
+    height: 500px;
+}
+.info_footer .multiimport-result-grid{
+    height: 65%;
+}
+.tree_init{
+    max-height: 250px;
+    display: none;
+}
 .multimport-confirm-grid{
-    height: 95%;
+    height: 500px;
+}
+.multimport-confirm-grid2{
+    height: 570px;
 }
 .import-confirm-grid {
     border: 1px solid rgb(212,212,212);
@@ -400,10 +414,10 @@ input[type="button"] {
     height: 80%;
 }
 .import-confirm-grid2{
-    height: 65%;
+    height: 465px;
 }
 .import-confirm-grid3{
-    height: 80%;
+    height: 75%;
 }
 .cell-padding {
     padding: 5px;

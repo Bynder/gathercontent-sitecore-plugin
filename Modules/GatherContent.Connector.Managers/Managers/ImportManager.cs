@@ -537,7 +537,7 @@ namespace GatherContent.Connector.Managers.Managers
                     {
                         Id = mappedItem.Id.ToString(),
                         Title = mappedItem.Name,
-                        LastUpdatedInGc = mappedItem.Updated.Date.ToString(dateFormat)
+                        LastUpdatedInGc = TimeZoneInfo.ConvertTime(mappedItem.Updated.Date, TimeZoneInfo.Utc, TimeZoneInfo.Local).ToString(dateFormat)
                     },
                     GcTemplate = new GcTemplateModel
                     {

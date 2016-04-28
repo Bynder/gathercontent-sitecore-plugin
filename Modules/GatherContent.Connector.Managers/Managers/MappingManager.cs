@@ -31,7 +31,6 @@ namespace GatherContent.Connector.Managers.Managers
         protected ITemplatesService TemplateService;
 
         protected GCAccountSettings AccountSettings;
-
         /// <summary>
         /// 
         /// </summary>

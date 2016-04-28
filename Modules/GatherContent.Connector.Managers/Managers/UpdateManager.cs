@@ -212,7 +212,7 @@ namespace GatherContent.Connector.Managers.Managers
                                 {
                                     Id = gcItem.Id.ToString(),
                                     Title = gcItem.Name,
-                                    LastUpdatedInGc = gcItem.Updated.Date.ToString(dateFormat),
+                                    LastUpdatedInGc = TimeZoneInfo.ConvertTimeFromUtc(gcItem.Updated.Date, TimeZoneInfo.Local).ToString(dateFormat),
                                 }
                             };
 

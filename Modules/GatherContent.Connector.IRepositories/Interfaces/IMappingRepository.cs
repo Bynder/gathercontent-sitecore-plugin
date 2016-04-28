@@ -9,8 +9,7 @@ namespace GatherContent.Connector.IRepositories.Interfaces
         List<TemplateMapping> GetMappingsByGcProjectId(string projectId);
         List<TemplateMapping> GetMappingsByGcTemplateId(string gcTemplateId); 
         TemplateMapping GetMappingById(string id);
-
-
+        TemplateMapping GetMappingByItemId(string itemId, string language);
         List<CmsTemplate> GetAvailableCmsTemplates();
 
 

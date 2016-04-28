@@ -3,7 +3,7 @@
     <metadata>
       <PackageName>GatherContent Connector</PackageName>
       <Author>brimit</Author>
-      <Version>1.09</Version>
+      <Version>1.10</Version>
       <Revision />
       <License />
       <Comment />
@@ -118,13 +118,21 @@
         <x-item>/sitecore modules/Shell/GatherContent/css/img/arrow.png</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/css/img/arrow_select.png</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/css/KoGrid.css</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/Experience Editor/GatherContentImport.js</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/Experience Editor/GatherContentMLImport.js</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/img/arrow_select.png</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/img/bkt_left.png</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/img/bkt_right.png</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/img/slide_arrow.png</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/Import/img/</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/Import/img/arrow_select.png</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/Import/img/bkt_left.png</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/Import/img/bkt_right.png</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Import/Import.css</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Import/Import.html</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Import/Import.js</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/Import/MultiLocationImport.html</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/Import/MultiLocationImport.js</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/js/GatherContent.js</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/js/jquery.cookie.js</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/js/jquery.dynatree.js</x-item>
@@ -132,6 +140,7 @@
         <x-item>/sitecore modules/Shell/GatherContent/js/jquery-ui.custom.min.js</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/js/knockout-3.4.0.js</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/js/koGrid-2.1.1.js</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/js/moment.min.js</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Mappings/AddOrUpdateMapping.html</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Mappings/AddOrUpdateMapping.js</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Mappings/Mappings.css</x-item>
@@ -145,7 +154,6 @@
         <x-item>/sitecore modules/Shell/GatherContent/Update/Update.css</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Update/Update.html</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Update/Update.js</x-item>
-        <x-item>/sitecore modules/Shell/GatherContent/js/moment.min.js</x-item>
       </Entries>
       <Converter>
         <FileToEntryConverter>

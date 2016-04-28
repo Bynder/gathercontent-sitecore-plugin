@@ -384,7 +384,9 @@ namespace GatherContent.Connector.Managers.Managers
                 //result.Add(cmsItem);
                 List<Element> gcFields = gcItem.Config.SelectMany(i => i.Elements).ToList();
 
-                var templateMapping = templates.First(x => x.GcTemplate.GcTemplateId == gcItem.TemplateId.ToString());
+                //var templateMapping = templates.First(x => x.GcTemplate.GcTemplateId == gcItem.TemplateId.ToString());
+
+                var templateMapping = MappingRepository.GetMappingByItemId(cmsId, language);
                 if (templateMapping != null) // template found, now map fields here
                 {
                     var gcContentIdField = templateMapping.FieldMappings.FirstOrDefault(fieldMapping => fieldMapping.CmsField.TemplateField.FieldName == "GC Content Id");

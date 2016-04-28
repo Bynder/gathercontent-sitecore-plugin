@@ -291,7 +291,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         private Item CreateTemplateMapping(TemplateMapping templateMapping)
         {
             var scProject = CreateOrGetProject(templateMapping.GcProjectId, templateMapping.GcProjectName);
-            
+
             if (scProject != null)
             {
                 var mappingsFolder = GetMappingFolder(scProject);
@@ -404,6 +404,27 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return model;
         }
 
+        public TemplateMapping GetMappingByItemId(string itemId, string language)
+        {
+            TemplateMapping templateMapping = null;
+
+            var item = GetItem(itemId, Sitecore.Data.Managers.LanguageManager.GetLanguage(language));
+
+            if (item != null)
+            {
+                var mappingId = item["MappingId"];
+
+                var mappingItem = GetItem(mappingId);
+
+                if (mappingItem != null)
+                {
+                    templateMapping = ConvertSitecoreTemplateToModel(mappingItem);
+                }
+            }
+
+            return templateMapping;
+        }
+
         public List<TemplateMapping> GetMappingsByGcProjectId(string projectId)
         {
             var projectFolder = GetProject(projectId);
@@ -456,7 +477,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     {
                         DeleteItem(field);
                     }
-                }         
+                }
 
                 foreach (var templateField in templateMapping.FieldMappings)
                 {

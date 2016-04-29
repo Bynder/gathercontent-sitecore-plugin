@@ -33,6 +33,7 @@ function treeInit(){
             if (jQuery(el.target).closest(".tree_wrap").length)return;
             if (jQuery(el.target).closest(".dynatree-expander").length)return;
             jQuery(".tree_init").hide();
+        return true;
     })
 }
 function resizeTableHead() {

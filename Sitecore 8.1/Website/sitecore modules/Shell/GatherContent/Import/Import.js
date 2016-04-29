@@ -16,7 +16,7 @@
     self.successImportedItemsCount = ko.observable(),
     self.notImportedItemsCount = ko.observable(),
     self.currentMode = ko.observable(MODE.ChooseItmesForImort);
-
+    self.sortInfo = ko.observable();
     self.language = ko.observable(getUrlVars()["l"]),
     self.languages = ko.observableArray([]),
 
@@ -445,7 +445,7 @@
 
     var options =
     {
-        afterSelectionChange: function () { return true; },
+        //afterSelectionChange: function () { return true; },
         showColumnMenu: false,
         showFilter: false,
         //allData: self.koAllItems,

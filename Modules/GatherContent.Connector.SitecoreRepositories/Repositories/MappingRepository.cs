@@ -134,7 +134,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             if (Double.TryParse(templateMapping["Last Updated in GC"], out d))
             {
                 var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
-                gcUpdateDate = posixTime.AddMilliseconds(d * 1000).ToString(dateFormat);
+                gcUpdateDate = TimeZoneInfo.ConvertTimeFromUtc(posixTime.AddMilliseconds(d * 1000), TimeZoneInfo.Local).ToString(dateFormat);
             }
 
             var scTemplate = GetItem(templateMapping["Sitecore Template"]);

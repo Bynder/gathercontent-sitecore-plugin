@@ -334,13 +334,13 @@ namespace GatherContent.Connector.Managers.Managers
                 gcItems.Add(gcItem, item.CMSId);
             }
 
-            var templates = MappingRepository.GetMappings();
+            //var templates = MappingRepository.GetMappings();
             var templatesDictionary = new Dictionary<int, GCTemplate>();
 
             foreach (var item in gcItems)
             {
-                var gcItem = item.Key; //gc item
-                var cmsId = item.Value; // corresponding cms id
+                GCItem gcItem = item.Key; //gc item
+                string cmsId = item.Value; // corresponding cms id
                 var itemResponseModel = new ItemResultModel
                 {
                     IsImportSuccessful = true,
@@ -363,7 +363,7 @@ namespace GatherContent.Connector.Managers.Managers
                 };
 
                 GCTemplate gcTemplate;
-                var templateId = gcItem.TemplateId.Value;
+                int templateId = gcItem.TemplateId.Value;
                 templatesDictionary.TryGetValue(templateId, out gcTemplate);
                 if (gcTemplate == null)
                 {
@@ -376,7 +376,7 @@ namespace GatherContent.Connector.Managers.Managers
                     Id = gcTemplate.Id.ToString(),
                     Name = gcTemplate.Name
                 };
-                var cmsLink = ItemsRepository.GetCmsItemLink(HttpContext.Current.Request.Url.Host, cmsId);
+                string cmsLink = ItemsRepository.GetCmsItemLink(HttpContext.Current.Request.Url.Host, cmsId);
                 itemResponseModel.CmsLink = cmsLink;
 
                 //MappingResultModel cmsItem;

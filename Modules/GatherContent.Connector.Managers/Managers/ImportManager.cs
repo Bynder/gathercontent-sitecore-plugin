@@ -652,6 +652,9 @@ namespace GatherContent.Connector.Managers.Managers
                 List<GCItem> items = GetItems(project.Data.Id);
                 items = items.OrderBy(item => item.Status.Data.Name).ToList();
                 model = MapImportItems(items, templates);
+                
+                // do not show items without mappings
+                model = model.Where(item => item.AvailableMappings.Mappings.Any()).ToList();
                 return model;
             }
 
@@ -665,8 +668,8 @@ namespace GatherContent.Connector.Managers.Managers
         {
             Account account = GetAccount();
 
-            List<Project> gcProjects = GetProjects(account.Id);
-
+            List<Project> gcProjects = GetProjectsWithData(account.Id);
+            
             var projects = new List<GcProjectModel>();
             foreach (var gcProject in gcProjects)
             {
@@ -1035,7 +1038,7 @@ namespace GatherContent.Connector.Managers.Managers
         /// <param name="projectId"></param>
         /// <param name="gcItemIds"></param>
         /// <returns></returns>
-        public Dictionary<string, List<ItemEntity>> GetItemsMap(string projectId, IEnumerable<string> gcItemIds)
+        private Dictionary<string, List<ItemEntity>> GetItemsMap(string projectId, IEnumerable<string> gcItemIds)
         {
             List<ItemEntity> items = new List<ItemEntity>();
             Dictionary<string, List<ItemEntity>> paths = new Dictionary<string, List<ItemEntity>>();
@@ -1173,6 +1176,35 @@ namespace GatherContent.Connector.Managers.Managers
             }
 
             return result;
+        }
+
+        protected List<Project> GetProjectsWithData(int accountId)
+        {
+            string cacheKey = "ProjectsWithData_" + accountId;
+            List<Project> activeProjects = HttpContext.Current.Cache[cacheKey] as List<Project>;
+
+            if (activeProjects == null)
+            {
+                var projects = ProjectsService.GetProjects(accountId);
+                activeProjects = projects.Data.Where(p => p.Active).ToList();
+
+                activeProjects = activeProjects.Where(p =>
+                        {
+                            List<GCTemplate> templates = GetTemplates(p.Id);
+
+                            List<GCItem> items = GetItems(p.Id);
+                            var mappedItems = MapImportItems(items, templates);
+
+                            mappedItems = mappedItems.Where(item => item.AvailableMappings.Mappings.Any()).ToList();
+
+                            return mappedItems.Any();
+                        }
+                    ).ToList();
+
+                HttpContext.Current.Cache.Insert(cacheKey, activeProjects, null, DateTime.Now.AddMinutes(15), TimeSpan.Zero);
+            }
+
+            return activeProjects;
         }
     }
 }

@@ -3,7 +3,7 @@
     <metadata>
       <PackageName>GatherContent Connector</PackageName>
       <Author>brimit</Author>
-      <Version>1.10</Version>
+      <Version>1.12</Version>
       <Revision />
       <License />
       <Comment />
@@ -28,6 +28,10 @@
         <x-item>/core/sitecore/content/Applications/Content Editor/Ribbons/Ribbons/Default/GatherContent/{8A491A42-EEBB-493D-9E54-D947B7332139}/invariant/0</x-item>
         <x-item>/core/sitecore/content/Applications/Content Editor/Ribbons/Strips/GatherContent/{B24EAFA1-C6EC-4028-9CCE-B547C294FC2F}/invariant/0</x-item>
         <x-item>/core/sitecore/content/Applications/Content Editor/Ribbons/Strips/GatherContent/Manage/{5EA717A9-D920-4C39-897C-815A78A8B5A2}/invariant/0</x-item>
+        <x-item>/core/sitecore/content/Applications/WebEdit/Ribbons/WebEdit/GatherContent/{D040F8BF-5528-4C80-8679-06427F4AD4B0}/invariant/0</x-item>
+        <x-item>/core/sitecore/content/Applications/WebEdit/Ribbons/WebEdit/GatherContent/GatherContent Manage/{122F575E-0C42-49C1-A00B-10A84E269AED}/invariant/0</x-item>
+        <x-item>/core/sitecore/content/Applications/WebEdit/Ribbons/WebEdit/GatherContent/GatherContent Manage/Import/{120DEAB5-DB6C-440F-A921-2640257CCE53}/invariant/0</x-item>
+        <x-item>/core/sitecore/content/Applications/WebEdit/Ribbons/WebEdit/GatherContent/GatherContent Manage/ML Import/{1C51FC06-ED38-48BA-BEA5-FBA3E608FFE6}/invariant/0</x-item>
         <x-item>/master/sitecore/system/Modules/GatherContent/{B99D89BD-56AB-4F41-BB02-121D116E5145}/invariant/0</x-item>
         <x-item>/master/sitecore/templates/GatherContent/{6E9920D6-B60E-4518-822E-4D57CD426148}/invariant/0</x-item>
         <x-item>/master/sitecore/templates/GatherContent/Commands/{24C25CA2-E462-4FAE-B0FB-9C8D2E614CEB}/invariant/0</x-item>
@@ -68,10 +72,6 @@
         <x-item>/master/sitecore/templates/GatherContent/GC Template Mapping/Data/Map Only Specified Fields/{9F967609-3522-42AB-8C69-D35FDE183A26}/invariant/0</x-item>
         <x-item>/master/sitecore/templates/GatherContent/GC Template Mapping/Data/Sitecore Template/{317F365B-A80B-4E96-BDBB-80CE16525E3E}/invariant/0</x-item>
         <x-item>/master/sitecore/templates/GatherContent/GC Template Mapping/Data/Template mapping title/{DECBCB4C-4748-4EC1-A1B8-1776DE7079C6}/invariant/0</x-item>
-        <x-item>/core/sitecore/content/Applications/WebEdit/Ribbons/WebEdit/GatherContent/{D040F8BF-5528-4C80-8679-06427F4AD4B0}/invariant/0</x-item>
-        <x-item>/core/sitecore/content/Applications/WebEdit/Ribbons/WebEdit/GatherContent/GatherContent Manage/{122F575E-0C42-49C1-A00B-10A84E269AED}/invariant/0</x-item>
-        <x-item>/core/sitecore/content/Applications/WebEdit/Ribbons/WebEdit/GatherContent/GatherContent Manage/Import/{120DEAB5-DB6C-440F-A921-2640257CCE53}/invariant/0</x-item>
-        <x-item>/core/sitecore/content/Applications/WebEdit/Ribbons/WebEdit/GatherContent/GatherContent Manage/ML Import/{1C51FC06-ED38-48BA-BEA5-FBA3E608FFE6}/invariant/0</x-item>
       </Entries>
       <SkipVersions>False</SkipVersions>
       <Converter>

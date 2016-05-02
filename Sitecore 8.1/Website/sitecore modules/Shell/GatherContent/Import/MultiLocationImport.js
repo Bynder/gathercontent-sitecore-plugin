@@ -17,7 +17,7 @@
     self.notImportedItemsCount = ko.observable(),
     self.currentMode = ko.observable(MODE.ChooseItmesForImort);
     self.sortInfo = ko.observable();
-    self.language = ko.observable(getUrlVars()["l"]),
+    self.language = ko.observable(decodeURI(getUrlVars()["l"])),
     self.languages = ko.observableArray([]),
 
     self.projects = ko.observableArray([]),
@@ -143,10 +143,12 @@
             dataType: 'json',
             async: true,
             success: function (response) {
+                jQuery(".preloader").hide();
+                self.initVariables(response);
                 self.setPagingData(response.Items, page, pageSize);
                 document.getElementsByTagName('input')[1].focus();
-                self.initVariables(response);
-                jQuery(".preloader").hide();
+
+
                 jQuery(window).trigger('resize');
             },
             error: function (response) {
@@ -261,6 +263,7 @@
 
     //button click events
     self.ChooseDefaultLocation = function () {
+
         var selectedItems = self.selectedItems();
 
         var result = [];
@@ -288,10 +291,11 @@
 
             });
         });
+
         self.groupedItems(result);
 
-    }
 
+    };
     self.switchToCheckItemsBeforeImport = function () {
         var result = [];
         var items = self.selectedItems();
@@ -547,6 +551,8 @@
     var options =
             {
                 afterSelectionChange: function () { return true; },
+                disableTextSelection: false,
+
                 showColumnMenu: false,
                 showFilter: false,
                 data: self.items,
@@ -576,15 +582,16 @@
                     { field: 'Breadcrumb', width: '**', displayName: 'Path' },
                     { field: 'Template.Name', width: 200, displayName: 'Template name' }
                 ]
+
             };
 
 
     this.gridOptions = options;
-
+   // var tplCheckbox = '<div><input type="checkbox" data-bind="attr: { \'class\': \'kgInput colt\' + $index()}, checked: $parent.entity[$data.field]" /></div>';
     var groupedOptions =
         {
             afterSelectionChange: function () { return true; },
-            selectWithCheckboxOnly: true,
+            //selectWithCheckboxOnly: true,
             showColumnMenu: false,
             showFilter: false,
             canSelectRows: true,
@@ -594,12 +601,14 @@
             pagingOptions: self.groupedGridPagingOptions,
             filterOptions: self.groupedGridFilterOptions,
             groups: ["TemplateName"],
+
             columnDefs: [
+               // { field: '...', displayName: '...', cellTemplate: tplCheckbox },
                 { field: 'TemplateName', width: '**', displayName: 'Template Name' },
                 { field: 'MappingName', width: '**', displayName: 'Mapping Name' },
                 { field: 'ScTemplate', width: '**', displayName: 'Sitecore Template' },
                 {
-                    field: 'DefaultLocationTitle', width: 320, displayName: 'Default Location',
+                    field: 'DefaultLocationTitle', width: "**", displayName: 'Default Location',
                     cellTemplate: '<div class="tree_wrap"><input data-bind="value: $parent.entity.DefaultLocationTitle, attr: {\'data-openerid\': $parent.entity.OpenerId }, click: function(){$parent.$userViewModel.openDropTree($parent.entity)}" type="text" />' +
                            '<input data-bind="value: $parent.entity.DefaultLocation, visible: false" type="text" />' +
                            '<div class="tree_init" data-bind="attr: { id: $parent.entity.OpenerId }" style="position: absolute; left: 0; top: 30px; width: 300px; height: 400px; z-index: 1000;">' +

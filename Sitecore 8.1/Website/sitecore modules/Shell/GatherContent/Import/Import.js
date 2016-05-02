@@ -396,7 +396,6 @@
         for (var i = 0; i < items.length; i++) {
             items[i].Checked = ko.observable(false);
         }
-
         return items;
     }
 

@@ -664,3 +664,13 @@ input[type=checkbox].kgSelectionCheckbox, input[type=radio].kgSelectionCheckbox{
 .kgFooterTotalItems,.kgFooterSelectedItems{
     display: inline-block;
 }
+.kgCanvas{
+    width: 100%!important;
+}
+.kgRow{
+    min-width: 100%!important;
+}
+.kgCanvas>div{
+    width: 100%;
+    height: 100%;
+}

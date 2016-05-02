@@ -11,7 +11,6 @@
 
     var allItems = [];
     var self = this;
-
     self.errorText = ko.observable(),
     self.successImportedItemsCount = ko.observable(),
     self.notImportedItemsCount = ko.observable(),
@@ -146,10 +145,10 @@
                 jQuery(".preloader").hide();
                 self.initVariables(response);
                 self.setPagingData(response.Items, page, pageSize);
-                document.getElementsByTagName('input')[1].focus();
+                //document.getElementsByTagName('input')[1].focus();
 
 
-                jQuery(window).trigger('resize');
+                jQuery(document).trigger('resize');
             },
             error: function (response) {
                 self.errorCallbackHandle(response);
@@ -265,7 +264,6 @@
     self.ChooseDefaultLocation = function () {
 
         var selectedItems = self.selectedItems();
-
         var result = [];
         ko.utils.arrayForEach(selectedItems, function (item) {
             ko.utils.arrayForEach(item.AvailableMappings.Mappings, function (mapping) {
@@ -293,6 +291,7 @@
         });
 
         self.groupedItems(result);
+        jQuery(document).trigger('resize');
 
 
     };
@@ -321,6 +320,7 @@
         });
 
         self.confirmItems(result);
+        jQuery(document).trigger('resize');
     }
 
     self.findByTemplateName = function (data) {
@@ -478,6 +478,7 @@
                 if (!emptyLocationError) {
                     self.currentMode(newMode);
                     self.switchToCheckItemsBeforeImport();
+                    jQuery(document).trigger('resize');
                 } else {
                     self.errorText('Please select default location');
                 }
@@ -486,15 +487,19 @@
         else if (newMode === MODE.Import) {
             self.currentMode(newMode);
             self.import();
+            jQuery(document).trigger('resize');
         } else if (newMode === MODE.Close) {
             self.currentMode(newMode);
             self.close();
+            jQuery(document).trigger('resize');
         } else if (newMode === MODE.ChooseItmesForImort) {
             self.statusFilter = ko.observable();
             self.currentMode(newMode);
+            jQuery(document).trigger('resize');
 
         } else {
             self.currentMode(newMode);
+            jQuery(document).trigger('resize');
         }
 
     }
@@ -505,7 +510,13 @@
         }
         return false;
     }
+    self.setupWatcher = function (items) {
+        for (var i = 0; i < items.length; i++) {
+            items[i].Checked = ko.observable(false);
+        }
 
+        return items;
+    }
 
     self.getImportResultTemplateColor = function (item) {
         if (!item.IsImportSuccessful)
@@ -550,11 +561,11 @@
 
     var options =
             {
-                afterSelectionChange: function () { return true; },
-                disableTextSelection: false,
-
+                displaySelectionCheckbox: true,
+                //isMultiSelect: false,
                 showColumnMenu: false,
                 showFilter: false,
+                //canSelectRows: true,
                 data: self.items,
                 selectedItems: self.selectedItems,
                 enablePaging: true,
@@ -581,7 +592,8 @@
                     },
                     { field: 'Breadcrumb', width: '**', displayName: 'Path' },
                     { field: 'Template.Name', width: 200, displayName: 'Template name' }
-                ]
+                ],
+                afterSelectionChange: function () { return true; }
 
             };
 
@@ -590,7 +602,7 @@
    // var tplCheckbox = '<div><input type="checkbox" data-bind="attr: { \'class\': \'kgInput colt\' + $index()}, checked: $parent.entity[$data.field]" /></div>';
     var groupedOptions =
         {
-            afterSelectionChange: function () { return true; },
+
             //selectWithCheckboxOnly: true,
             showColumnMenu: false,
             showFilter: false,
@@ -608,7 +620,7 @@
                 { field: 'MappingName', width: '**', displayName: 'Mapping Name' },
                 { field: 'ScTemplate', width: '**', displayName: 'Sitecore Template' },
                 {
-                    field: 'DefaultLocationTitle', width: "**", displayName: 'Default Location',
+                    field: 'DefaultLocationTitle', width: "350", displayName: 'Default Location',
                     cellTemplate: '<div class="tree_wrap"><input data-bind="value: $parent.entity.DefaultLocationTitle, attr: {\'data-openerid\': $parent.entity.OpenerId }, click: function(){$parent.$userViewModel.openDropTree($parent.entity)}" type="text" />' +
                            '<input data-bind="value: $parent.entity.DefaultLocation, visible: false" type="text" />' +
                            '<div class="tree_init" data-bind="attr: { id: $parent.entity.OpenerId }" style="position: absolute; left: 0; top: 30px; width: 300px; height: 400px; z-index: 1000;">' +
@@ -617,9 +629,8 @@
                               '</div>' +
                            '</div></div>'
                 }
-            ]
+            ],afterSelectionChange: function () { return true; }
         };
-
     this.groupedGridOptions = groupedOptions;
 
 

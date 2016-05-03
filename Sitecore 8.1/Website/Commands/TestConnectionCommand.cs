@@ -69,6 +69,9 @@ namespace GatherContent.Connector.Website.Commands
 
             var path = string.Format("{0}?success={1}", uri, success);
 
+#if SC72
+            Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(path, "250", "100", "Test Connection", false), "Shell");
+#else
             var options = new ModalDialogOptions(path)
             {
                 Width = "250",
@@ -80,6 +83,7 @@ namespace GatherContent.Connector.Website.Commands
             };
 
             Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(options), "Shell");
+#endif
         }
     }
 }

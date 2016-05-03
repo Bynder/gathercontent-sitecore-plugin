@@ -93,7 +93,9 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml">
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IAccountsRepository.cs" />
@@ -121,6 +123,7 @@
     <ProjectReference Include="..\GatherContent.Connector.Entities\GatherContent.Connector.Entities.csproj">
       <Project>{a40787e3-7df6-41b9-90c0-41704aea2be3}</Project>
       <Name>GatherContent.Connector.Entities</Name>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

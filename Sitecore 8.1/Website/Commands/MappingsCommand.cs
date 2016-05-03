@@ -56,6 +56,9 @@ namespace GatherContent.Connector.Website.Commands
             var uri = "/sitecore modules/shell/gathercontent/mappings/mappings.html";
             var path = string.Format("{0}?id={1}&l={2}&v={3}", uri, id, language, version);
 
+#if SC72
+            Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(path, "1280", "500", "Manage template mappings", false), "Shell");
+#else
             var options = new ModalDialogOptions(path)
             {
                 Width = "1280",
@@ -68,6 +71,9 @@ namespace GatherContent.Connector.Website.Commands
             };
 
             Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(options), "Shell");
+#endif
+
+
         }
     }
 }

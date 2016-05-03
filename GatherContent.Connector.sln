@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{2E80067B-A8EF-4EF2-BB43-B48E3EA15D9F}"
 	ProjectSection(SolutionItems) = preProject
@@ -21,8 +21,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.SitecoreRepositories", "Modules\GatherContent.Connector.SitecoreRepositories\GatherContent.Connector.SitecoreRepositories.csproj", "{4DED3819-E7A3-4726-8F71-A0F417A8019A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.Website", "Sitecore 8.1\Website\GatherContent.Connector.Website.csproj", "{0B99B2EC-225D-4373-A383-DD762684EDE4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.Website7", "Sitecore 7.2\Website\GatherContent.Connector.Website7.csproj", "{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.WebControllers", "Modules\GatherContent.Connector.WebControllers\GatherContent.Connector.WebControllers.csproj", "{59E5F602-4A8D-484C-8009-C6B01DAD10CD}"
 EndProject
@@ -139,22 +137,6 @@ Global
 		{0B99B2EC-225D-4373-A383-DD762684EDE4}.Release 8.1|Any CPU.Build.0 = Release 8.1|Any CPU
 		{0B99B2EC-225D-4373-A383-DD762684EDE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B99B2EC-225D-4373-A383-DD762684EDE4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Debug 7|Any CPU.ActiveCfg = Debug 7|Any CPU
-		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Debug 7|Any CPU.Build.0 = Debug 7|Any CPU
-		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Debug 8.0|Any CPU.ActiveCfg = Debug 8.0|Any CPU
-		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Debug 8.0|Any CPU.Build.0 = Debug 8.0|Any CPU
-		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Debug 8.1|Any CPU.ActiveCfg = Debug 8.1|Any CPU
-		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Debug 8.1|Any CPU.Build.0 = Debug 8.1|Any CPU
-		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Release 7|Any CPU.ActiveCfg = Release 7|Any CPU
-		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Release 7|Any CPU.Build.0 = Release 7|Any CPU
-		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Release 8.0|Any CPU.ActiveCfg = Release 8.0|Any CPU
-		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Release 8.0|Any CPU.Build.0 = Release 8.0|Any CPU
-		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Release 8.1|Any CPU.ActiveCfg = Release 8.1|Any CPU
-		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Release 8.1|Any CPU.Build.0 = Release 8.1|Any CPU
-		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DE5BA81E-FD09-44FD-9FCC-6F0DDAD59DEF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{59E5F602-4A8D-484C-8009-C6B01DAD10CD}.Debug 7|Any CPU.ActiveCfg = Debug 7|Any CPU
 		{59E5F602-4A8D-484C-8009-C6B01DAD10CD}.Debug 7|Any CPU.Build.0 = Debug 7|Any CPU
 		{59E5F602-4A8D-484C-8009-C6B01DAD10CD}.Debug 8.0|Any CPU.ActiveCfg = Debug 8.0|Any CPU

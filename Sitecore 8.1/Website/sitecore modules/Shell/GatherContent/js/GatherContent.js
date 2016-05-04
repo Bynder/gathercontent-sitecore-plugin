@@ -32,7 +32,11 @@ function treeInit(){
     jQuery(document).on("click",function(el){
             if (jQuery(el.target).closest(".tree_wrap").length)return;
             if (jQuery(el.target).closest(".dynatree-expander").length)return;
+            if (jQuery(el.target).closest("#location-droptree").length)return;
+            if (jQuery(el.target).closest(".input-block").length)return;
             jQuery(".tree_init").hide();
+            jQuery("#location-droptree").hide();
+
         return true;
     })
 }
@@ -78,7 +82,7 @@ function document_resize() {
 }
 
 jQuery(function () {
-    treeInit();
+   treeInit();
 
     jQuery(document).on("click",".dynatree-title",function(el){el.preventDefault();})
     jQuery(window).resize(function() {

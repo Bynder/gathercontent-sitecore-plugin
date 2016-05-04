@@ -434,6 +434,14 @@
                     item.IsShowing = false;
                     item.DefaultLocation = node.data.key;
                     item.DefaultLocationTitle = node.data.title;
+
+                    var parent = node.parent;
+                    var path = "/" + node.data.title;
+                    while (parent.data.title != null) {
+                        path = "/" + parent.data.title + path;
+                        parent = parent.parent;
+                    }
+                    item.DefaultLocationTitle = path;
                 },
                 onLazyRead: function (node) {
                     node.appendAjax({
@@ -449,7 +457,7 @@
         else {
             //TODO use Knockout
             jQuery("#" + id).hide();
-            item.IsShowing = false;
+            //item.IsShowing = false;
         }
     }
 
@@ -479,6 +487,7 @@
                     self.currentMode(newMode);
                     self.switchToCheckItemsBeforeImport();
                     jQuery(document).trigger('resize');
+                    self.errorText('');
                 } else {
                     self.errorText('Please select default location');
                 }
@@ -607,6 +616,7 @@
             showColumnMenu: false,
             showFilter: false,
             canSelectRows: true,
+            selectWithCheckboxOnly: true,
             data: self.groupedItems,
             selectedItems: self.selectedGroupItems,
             enablePaging: true,
@@ -620,11 +630,11 @@
                 { field: 'MappingName', width: '**', displayName: 'Mapping Name' },
                 { field: 'ScTemplate', width: '**', displayName: 'Sitecore Template' },
                 {
-                    field: 'DefaultLocationTitle', width: "350", displayName: 'Default Location',
+                    field: 'DefaultLocationTitle', width: "450", displayName: 'Default Location',
                     cellTemplate: '<div class="tree_wrap"><input data-bind="value: $parent.entity.DefaultLocationTitle, attr: {\'data-openerid\': $parent.entity.OpenerId }, click: function(){$parent.$userViewModel.openDropTree($parent.entity)}" type="text" />' +
                            '<input data-bind="value: $parent.entity.DefaultLocation, visible: false" type="text" />' +
-                           '<div class="tree_init" data-bind="attr: { id: $parent.entity.OpenerId }" style="position: absolute; left: 0; top: 30px; width: 300px; height: 400px; z-index: 1000;">' +
-                              '<div style="width:300px;height:400px;">' +
+                           '<div class="tree_init" data-bind="attr: { id: $parent.entity.OpenerId }" style="position: absolute; left: 0; top: 30px; width: 450px; height: 400px; z-index: 1000;">' +
+                              '<div style="width:450px;height:400px;">' +
                                   '<div data-bind="css: { \'class\': $parent.entity.OpenerId }"> </div>' +
                               '</div>' +
                            '</div></div>'
@@ -648,7 +658,7 @@
             { field: 'ItemTitle', displayName: 'Title' },
             { field: 'MappingName', displayName: 'Mapping Name' },
             { field: 'ScTemplate', displayName: 'Sitecore Template' },
-            { field: 'DefaultLocationTitle', displayName: 'Default Location' }
+            { field: 'DefaultLocationTitle', displayName: 'Location' }
         ]
     };
 

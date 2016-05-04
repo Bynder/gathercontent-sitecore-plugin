@@ -201,18 +201,32 @@ button.kgPagerButton:hover {
 
 /*end footer*/
 
-.gathercontent-dialog .mappings-btn {
-    border-radius: 0;
+/*.gathercontent-dialog .mappings-btn {*/
+    /*border-radius: 0;*/
+    /*border: none;*/
+    /*margin-top: 20px;*/
+    /*padding: 10px;*/
+    /*font-size: 0.9em;*/
+    /*text-transform: uppercase;*/
+    /*font-weight: 700;*/
+    /*box-shadow: inset 1px 1px 2px #BBB;*/
+/*}*/
+/*.mappings-btn:hover {*/
+    /*box-shadow: 1px 1px 4px #4A4949;*/
+/*}*/
+input[type="button"] {
     border: none;
-    margin-top: 20px;
     padding: 10px;
     font-size: 0.9em;
     text-transform: uppercase;
     font-weight: 700;
-    box-shadow: inset 1px 1px 2px #BBB;
+    border-radius: 3px;
+    cursor: pointer;
+    background-color: #e4e3e3;
 }
-.mappings-btn:hover {
-    box-shadow: 1px 1px 4px #4A4949;
+
+input[type="button"]:hover {
+    background-color:#f0eeee;
 }
 .kgPagerButton[disabled] {
     opacity: 0.5;
@@ -220,4 +234,10 @@ button.kgPagerButton:hover {
 }
 .kgPagerButton[disabled]:hover {
     box-shadow: inset 1px 1px 2px #BBB;
+}
+.koGrid{
+    background-color: transparent;
+}
+.kgViewport{
+    background-color: rgb(253, 253, 253);
 }

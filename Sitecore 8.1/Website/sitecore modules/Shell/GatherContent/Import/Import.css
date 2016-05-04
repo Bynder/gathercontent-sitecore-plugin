@@ -378,7 +378,7 @@ input[type="button"] {
 .import-grid {
     border: 1px solid rgb(212,212,212);
     width: 100%;
-    height: 500px;
+    height: 515px;
 }
 
 .import-result-grid {
@@ -403,10 +403,10 @@ input[type="button"] {
     display: none;
 }
 .multimport-confirm-grid{
-    height: 500px;
+    height: 510px;
 }
 .multimport-confirm-grid2{
-    height: 570px;
+    height: 580px;
 }
 .import-confirm-grid {
     border: 1px solid rgb(212,212,212);
@@ -417,9 +417,10 @@ input[type="button"] {
     height: 465px;
 }
 .import-confirm-grid3{
-    height: 75%;
+    height: 78%;
 }
 .cell-padding {
+    display: inline-block;
     padding: 5px;
 }
     .cell-padding a {
@@ -650,6 +651,7 @@ input[type=checkbox].kgSelectionCheckbox, input[type=radio].kgSelectionCheckbox{
 .location .input-block{
     height: 30px;
     margin-bottom: 10px;
+    padding-left: 10px;
 }
 .kgFooterPanel {
     padding: 0;
@@ -673,4 +675,29 @@ input[type=checkbox].kgSelectionCheckbox, input[type=radio].kgSelectionCheckbox{
 .kgCanvas>div{
     width: 100%;
     height: 100%;
+}
+.koGrid{
+    background-color: transparent;
+}
+.kgViewport{
+    background-color: rgb(253, 253, 253);
+    padding-bottom: 20px;
+}
+.kgFooterPanel{
+    margin-top: 0;
+}
+#location-droptree{
+    top: 100%!important;
+    left:129px;
+    margin-top: -10px;
+    min-width: 500px;
+}
+.tree_wrap input{
+    width: 100%;
+}
+.import-confirm-grid .kgRow.selected.odd {
+    background-color: rgb(253, 253, 253);
+}
+.import-confirm-grid .kgRow.selected.even {
+    background-color: rgb(243, 243, 243);
 }

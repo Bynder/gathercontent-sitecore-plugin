@@ -106,6 +106,8 @@
     <Content Include="sitecore modules\Shell\GatherContent\css\dynatree\vline-rtl.gif" />
     <Content Include="sitecore modules\Shell\GatherContent\css\dynatree\vline.gif" />
     <Content Include="sitecore modules\Shell\GatherContent\css\KoGrid.css" />
+    <Content Include="sitecore modules\Shell\GatherContent\Experience Editor\8.0\GatherContentImport.js" />
+    <Content Include="sitecore modules\Shell\GatherContent\Experience Editor\8.0\GatherContentMLImport.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Experience Editor\GatherContentImport.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Experience Editor\GatherContentMLImport.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Import\img\arrow_select.png" />

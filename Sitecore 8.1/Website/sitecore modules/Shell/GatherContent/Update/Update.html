@@ -63,10 +63,10 @@
     <div class="update-confirm-grid" data-bind="koGrid: gridConfirmOptions"></div>
 
     <div class="footer_btn">
-        <div>
-            <input type="checkbox" data-bind="checked: statusPostState" />
-            After successful import change status of item to [<select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender"></select>] inside your GatherContent account
-        </div>
+<!--        <div>-->
+<!--            <input type="checkbox" data-bind="checked: statusPostState" />-->
+<!--            After successful import change status of item to [<select data-bind="options: statuses, optionsText: 'Name', optionsValue: 'Id', value: statusFilter, optionsAfterRender: $root.afterStatusesSelectRender"></select>] inside your GatherContent account-->
+<!--        </div>-->
         <input type="button" value="<Back" class="backBtn" data-bind="click: buttonClick.bind($data, 1)" />
         <input type="button" value="Update>" data-bind="click: buttonClick.bind($data, 3)" />
         <!--<input type="button" class="closeButton" value="Close" data-bind="click: buttonClick.bind($data, 5)" />-->

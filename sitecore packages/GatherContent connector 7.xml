@@ -3,7 +3,7 @@
     <metadata>
       <PackageName>GatherContent Connector</PackageName>
       <Author>brimit</Author>
-      <Version>1.10</Version>
+      <Version>1.13</Version>
       <Revision />
       <License />
       <Comment />
@@ -68,10 +68,6 @@
         <x-item>/master/sitecore/templates/GatherContent/GC Template Mapping/Data/Map Only Specified Fields/{9F967609-3522-42AB-8C69-D35FDE183A26}/invariant/0</x-item>
         <x-item>/master/sitecore/templates/GatherContent/GC Template Mapping/Data/Sitecore Template/{317F365B-A80B-4E96-BDBB-80CE16525E3E}/invariant/0</x-item>
         <x-item>/master/sitecore/templates/GatherContent/GC Template Mapping/Data/Template mapping title/{DECBCB4C-4748-4EC1-A1B8-1776DE7079C6}/invariant/0</x-item>
-		<x-item>/core/sitecore/content/Applications/WebEdit/Ribbons/WebEdit/GatherContent/{D040F8BF-5528-4C80-8679-06427F4AD4B0}/invariant/0</x-item>
-        <x-item>/core/sitecore/content/Applications/WebEdit/Ribbons/WebEdit/GatherContent/GatherContent Manage/{122F575E-0C42-49C1-A00B-10A84E269AED}/invariant/0</x-item>
-        <x-item>/core/sitecore/content/Applications/WebEdit/Ribbons/WebEdit/GatherContent/GatherContent Manage/Import/{120DEAB5-DB6C-440F-A921-2640257CCE53}/invariant/0</x-item>
-        <x-item>/core/sitecore/content/Applications/WebEdit/Ribbons/WebEdit/GatherContent/GatherContent Manage/ML Import/{1C51FC06-ED38-48BA-BEA5-FBA3E608FFE6}/invariant/0</x-item>
       </Entries>
       <SkipVersions>False</SkipVersions>
       <Converter>
@@ -94,6 +90,7 @@
     </xitems>
     <xfiles>
       <Entries>
+        <x-item>/App_Config/GatherContent.Connector.Repositories.config</x-item>
         <x-item>/App_Config/Include/GatherContent.Connector.config</x-item>
         <x-item>/bin/Castle.Core.dll</x-item>
         <x-item>/bin/Castle.Windsor.dll</x-item>
@@ -103,6 +100,7 @@
         <x-item>/bin/GatherContent.Connector.Managers.dll</x-item>
         <x-item>/bin/GatherContent.Connector.SitecoreRepositories.dll</x-item>
         <x-item>/bin/GatherContent.Connector.WebControllers.dll</x-item>
+        <x-item>/bin/GatherContent.Connector.Website.dll</x-item>
         <x-item>/bin/WebActivatorEx.dll</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/AddTemplate/AddTemplate.html</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/AddTemplate/AddTemplate.js</x-item>
@@ -154,7 +152,6 @@
         <x-item>/sitecore modules/Shell/GatherContent/Update/Update.css</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Update/Update.html</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Update/Update.js</x-item>
-        <x-item>/bin/GatherContent.Connector.Website7.dll</x-item>
       </Entries>
       <Converter>
         <FileToEntryConverter>

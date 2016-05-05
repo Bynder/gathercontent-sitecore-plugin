@@ -321,7 +321,7 @@ namespace GatherContent.Connector.Managers.Managers
         /// <param name="language"></param>
         /// <param name="statusId"></param>
         /// <returns></returns>
-        public List<ItemResultModel> UpdateItems(string itemId, List<UpdateListIds> models, string language, string statusId)
+        public List<ItemResultModel> UpdateItems(string itemId, List<UpdateListIds> models, string language)
         {
             var model = new List<ItemResultModel>();
 
@@ -456,11 +456,6 @@ namespace GatherContent.Connector.Managers.Managers
                                         break;
                                 }
                             }
-                        }
-
-                        if (!string.IsNullOrEmpty(statusId))
-                        {
-                            PostNewItemStatus(gcItem.Id.ToString(), statusId);
                         }
                     }
 

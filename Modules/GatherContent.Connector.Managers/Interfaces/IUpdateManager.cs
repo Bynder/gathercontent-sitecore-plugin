@@ -12,6 +12,6 @@ namespace GatherContent.Connector.Managers.Interfaces
     {
         UpdateModel GetItemsForUpdate(string itemId, string languageId);
 
-        List<ItemResultModel> UpdateItems(string itemId, List<UpdateListIds> models, string language, string statusId);
+        List<ItemResultModel> UpdateItems(string itemId, List<UpdateListIds> models, string language);
     }
 }

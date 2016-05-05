@@ -155,7 +155,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
             try
             {
                 var model = new List<ImportResultViewModel>();
-                var result = UpdateManager.UpdateItems(id, items, language, statusId);
+                var result = UpdateManager.UpdateItems(id, items, language);
                 foreach (var item in result)
                 {
                     model.Add(new ImportResultViewModel

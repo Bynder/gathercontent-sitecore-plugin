@@ -103,8 +103,8 @@
         <div class="update-result-grid" data-bind="koGrid: gridResultOptions"></div>
 </div>
         <div data-bind="if: notUpdaredItemsCount() > 0" class="import-padding">
-            Template not mapped: Please check template mapping.<br />
-            Template fields mismatch:  This could be because the template in GatherContent has changed and the changed template has not been updated on Sitecore.
+           <span class="red"> Template not mapped:</span> Please check template mapping.<br />
+            <span class="red">Template fields mismatch: </span> This could be because the template in GatherContent has changed and the changed template has not been updated on Sitecore.
         </div>
     </div>
     <div class="footer_btn">

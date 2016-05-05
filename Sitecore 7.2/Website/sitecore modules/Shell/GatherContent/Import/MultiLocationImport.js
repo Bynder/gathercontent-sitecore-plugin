@@ -11,13 +11,12 @@
 
     var allItems = [];
     var self = this;
-
     self.errorText = ko.observable(),
     self.successImportedItemsCount = ko.observable(),
     self.notImportedItemsCount = ko.observable(),
     self.currentMode = ko.observable(MODE.ChooseItmesForImort);
     self.sortInfo = ko.observable();
-    self.language = ko.observable(getUrlVars()["l"]),
+    self.language = ko.observable(decodeURI(getUrlVars()["l"])),
     self.languages = ko.observableArray([]),
 
     self.projects = ko.observableArray([]),
@@ -143,11 +142,13 @@
             dataType: 'json',
             async: true,
             success: function (response) {
-                self.setPagingData(response.Items, page, pageSize);
-                document.getElementsByTagName('input')[1].focus();
-                self.initVariables(response);
                 jQuery(".preloader").hide();
-                jQuery(window).trigger('resize');
+                self.initVariables(response);
+                self.setPagingData(response.Items, page, pageSize);
+                //document.getElementsByTagName('input')[1].focus();
+
+
+                jQuery(document).trigger('resize');
             },
             error: function (response) {
                 self.errorCallbackHandle(response);
@@ -261,8 +262,8 @@
 
     //button click events
     self.ChooseDefaultLocation = function () {
-        var selectedItems = self.selectedItems();
 
+        var selectedItems = self.selectedItems();
         var result = [];
         ko.utils.arrayForEach(selectedItems, function (item) {
             ko.utils.arrayForEach(item.AvailableMappings.Mappings, function (mapping) {
@@ -288,10 +289,12 @@
 
             });
         });
+
         self.groupedItems(result);
+        jQuery(document).trigger('resize');
 
-    }
 
+    };
     self.switchToCheckItemsBeforeImport = function () {
         var result = [];
         var items = self.selectedItems();
@@ -317,6 +320,7 @@
         });
 
         self.confirmItems(result);
+        jQuery(document).trigger('resize');
     }
 
     self.findByTemplateName = function (data) {
@@ -430,6 +434,14 @@
                     item.IsShowing = false;
                     item.DefaultLocation = node.data.key;
                     item.DefaultLocationTitle = node.data.title;
+
+                    var parent = node.parent;
+                    var path = "/" + node.data.title;
+                    while (parent.data.title != null) {
+                        path = "/" + parent.data.title + path;
+                        parent = parent.parent;
+                    }
+                    item.DefaultLocationTitle = path;
                 },
                 onLazyRead: function (node) {
                     node.appendAjax({
@@ -445,7 +457,7 @@
         else {
             //TODO use Knockout
             jQuery("#" + id).hide();
-            item.IsShowing = false;
+            //item.IsShowing = false;
         }
     }
 
@@ -474,6 +486,8 @@
                 if (!emptyLocationError) {
                     self.currentMode(newMode);
                     self.switchToCheckItemsBeforeImport();
+                    jQuery(document).trigger('resize');
+                    self.errorText('');
                 } else {
                     self.errorText('Please select default location');
                 }
@@ -482,15 +496,19 @@
         else if (newMode === MODE.Import) {
             self.currentMode(newMode);
             self.import();
+            jQuery(document).trigger('resize');
         } else if (newMode === MODE.Close) {
             self.currentMode(newMode);
             self.close();
+            jQuery(document).trigger('resize');
         } else if (newMode === MODE.ChooseItmesForImort) {
             self.statusFilter = ko.observable();
             self.currentMode(newMode);
+            jQuery(document).trigger('resize');
 
         } else {
             self.currentMode(newMode);
+            jQuery(document).trigger('resize');
         }
 
     }
@@ -501,7 +519,13 @@
         }
         return false;
     }
+    self.setupWatcher = function (items) {
+        for (var i = 0; i < items.length; i++) {
+            items[i].Checked = ko.observable(false);
+        }
 
+        return items;
+    }
 
     self.getImportResultTemplateColor = function (item) {
         if (!item.IsImportSuccessful)
@@ -546,9 +570,11 @@
 
     var options =
             {
-                afterSelectionChange: function () { return true; },
+                displaySelectionCheckbox: true,
+                //isMultiSelect: false,
                 showColumnMenu: false,
                 showFilter: false,
+                //canSelectRows: true,
                 data: self.items,
                 selectedItems: self.selectedItems,
                 enablePaging: true,
@@ -575,42 +601,46 @@
                     },
                     { field: 'Breadcrumb', width: '**', displayName: 'Path' },
                     { field: 'Template.Name', width: 200, displayName: 'Template name' }
-                ]
+                ],
+                afterSelectionChange: function () { return true; }
+
             };
 
 
     this.gridOptions = options;
-
+   // var tplCheckbox = '<div><input type="checkbox" data-bind="attr: { \'class\': \'kgInput colt\' + $index()}, checked: $parent.entity[$data.field]" /></div>';
     var groupedOptions =
         {
-            afterSelectionChange: function () { return true; },
-            selectWithCheckboxOnly: true,
+
+            //selectWithCheckboxOnly: true,
             showColumnMenu: false,
             showFilter: false,
             canSelectRows: true,
+            selectWithCheckboxOnly: true,
             data: self.groupedItems,
             selectedItems: self.selectedGroupItems,
             enablePaging: true,
             pagingOptions: self.groupedGridPagingOptions,
             filterOptions: self.groupedGridFilterOptions,
             groups: ["TemplateName"],
+
             columnDefs: [
+               // { field: '...', displayName: '...', cellTemplate: tplCheckbox },
                 { field: 'TemplateName', width: '**', displayName: 'Template Name' },
                 { field: 'MappingName', width: '**', displayName: 'Mapping Name' },
                 { field: 'ScTemplate', width: '**', displayName: 'Sitecore Template' },
                 {
-                    field: 'DefaultLocationTitle', width: 320, displayName: 'Default Location',
+                    field: 'DefaultLocationTitle', width: "450", displayName: 'Default Location',
                     cellTemplate: '<div class="tree_wrap"><input data-bind="value: $parent.entity.DefaultLocationTitle, attr: {\'data-openerid\': $parent.entity.OpenerId }, click: function(){$parent.$userViewModel.openDropTree($parent.entity)}" type="text" />' +
                            '<input data-bind="value: $parent.entity.DefaultLocation, visible: false" type="text" />' +
-                           '<div class="tree_init" data-bind="attr: { id: $parent.entity.OpenerId }" style="position: absolute; left: 0; top: 30px; width: 300px; height: 400px; z-index: 1000;">' +
-                              '<div style="width:300px;height:400px;">' +
+                           '<div class="tree_init" data-bind="attr: { id: $parent.entity.OpenerId }" style="position: absolute; left: 0; top: 30px; width: 450px; height: 400px; z-index: 1000;">' +
+                              '<div style="width:450px;height:400px;">' +
                                   '<div data-bind="css: { \'class\': $parent.entity.OpenerId }"> </div>' +
                               '</div>' +
                            '</div></div>'
                 }
-            ]
+            ],afterSelectionChange: function () { return true; }
         };
-
     this.groupedGridOptions = groupedOptions;
 
 
@@ -628,7 +658,7 @@
             { field: 'ItemTitle', displayName: 'Title' },
             { field: 'MappingName', displayName: 'Mapping Name' },
             { field: 'ScTemplate', displayName: 'Sitecore Template' },
-            { field: 'DefaultLocationTitle', displayName: 'Default Location' }
+            { field: 'DefaultLocationTitle', displayName: 'Location' }
         ]
     };
 

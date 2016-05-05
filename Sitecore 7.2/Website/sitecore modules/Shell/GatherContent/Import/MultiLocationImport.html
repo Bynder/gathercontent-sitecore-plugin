@@ -23,7 +23,7 @@
 </script>
 
 
-<div data-bind="visible: getMode(1), click: closeDropTree" class="gathercontent-import">
+<div data-bind="visible: getMode(1)" class="gathercontent-import">
     <div>
         <div class="filter_wrapper_import">
             <div class="title_filter">GATHER CONTENT PROJECT</div>
@@ -86,7 +86,7 @@
     <div class="location"></div>
     <div class="import-confirm-grid import-confirm-grid3" data-bind="koGrid: confirmGridOptions"></div>
     <div class="footer_btn">
-        <div>
+        <div style="padding-bottom: 15px">
             <input type="checkbox" data-bind="checked: statusPostState" />
             After successful import change status of item to <select data-bind="options: statuses, optionsText: 'Name', optionsValue: 'Id', value: statusFilter"></select> inside your GatherContent account.
           

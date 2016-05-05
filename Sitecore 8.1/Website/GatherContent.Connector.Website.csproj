@@ -192,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\PublishProfiles\acc.pubxml" />
+    <None Include="Properties\PublishProfiles\Local Sitecore 7.pubxml" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>

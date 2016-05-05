@@ -313,16 +313,15 @@ namespace GatherContent.Connector.Managers.Managers
         }
 
 
-
-
         /// <summary>
         /// 
         /// </summary>
         /// <param name="itemId"></param>
         /// <param name="models"></param>
         /// <param name="language"></param>
+        /// <param name="statusId"></param>
         /// <returns></returns>
-        public List<ItemResultModel> UpdateItems(string itemId, List<UpdateListIds> models, string language)
+        public List<ItemResultModel> UpdateItems(string itemId, List<UpdateListIds> models, string language, string statusId)
         {
             var model = new List<ItemResultModel>();
 
@@ -458,6 +457,11 @@ namespace GatherContent.Connector.Managers.Managers
                                 }
                             }
                         }
+
+                        if (!string.IsNullOrEmpty(statusId))
+                        {
+                            PostNewItemStatus(gcItem.Id.ToString(), statusId);
+                        }
                     }
 
                 }
@@ -517,6 +521,11 @@ namespace GatherContent.Connector.Managers.Managers
                 }
             }
             return fieldError;
+        }
+
+        private void PostNewItemStatus(string gcItemId, string statusId)
+        {
+            ItemsService.ChooseStatusForItem(gcItemId, statusId);
         }
     }
 }

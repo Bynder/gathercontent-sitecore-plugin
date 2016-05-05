@@ -184,7 +184,8 @@ namespace GatherContent.Connector.Managers.Managers
                                 {
                                     Id = status.Id,
                                     Name = status.Name,
-                                    Color = status.Color
+                                    Color = status.Color,
+                                    ProjectId = gcItem.ProjectId.ToString()
                                 });
                             }
 

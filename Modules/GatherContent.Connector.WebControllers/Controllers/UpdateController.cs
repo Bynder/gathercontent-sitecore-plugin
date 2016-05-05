@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using GatherContent.Connector.Managers.Interfaces;
@@ -48,10 +49,16 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
             foreach (var status in filters.Statuses)
             {
+                var project = filters.Projects.FirstOrDefault(i => i.Id == status.ProjectId);
+                var statusName = status.Name;
+                if (project != null)
+                {
+                    statusName = statusName + " (" + project.Name + ")";
+                }
                 filtersViewModel.Statuses.Add(new StatusViewModel
                 {
                     Id = status.Id,
-                    Name = status.Name
+                    Name = statusName
                 });
             }
 

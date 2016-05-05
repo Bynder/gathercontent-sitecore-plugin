@@ -168,7 +168,7 @@ body .filter_wrapper_import .custom_select{
     position: fixed;
     width: 100%;
     height: 100%;
-    background-image: url("/sitecore/shell/themes/standard/images/sc-spinner16.gif");
+    background-image: url("/sitecore/shell/themes/standard/images/sitecore-loader24.gif");
     background-repeat: no-repeat;
     background-position: center center;
     background-color: #fff;

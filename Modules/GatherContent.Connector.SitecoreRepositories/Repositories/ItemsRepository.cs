@@ -283,7 +283,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         /// <param name="cmsField"></param>
         public void ResolveAttachmentMapping(CmsItem item, CmsField cmsField)
         {
-            var type = cmsField.TemplateField.FieldType;
             switch (cmsField.TemplateField.FieldType)
             {
                 case "Droptree":
@@ -300,8 +299,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     break;
             }
         }
-
-
 
 
         
@@ -325,7 +322,17 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 {
                     createdItem.Editing.BeginEdit();
 
-                    var value = StringUtil.RemoveTags(cmsField.Value.ToString()).Trim();
+                    string value;
+                    switch (cmsField.TemplateField.FieldType)
+                    {
+                        case "Rich Text":
+                            value = cmsField.Value.ToString();
+                            break;
+                        default:
+                            value = StringUtil.RemoveTags(cmsField.Value.ToString()).Trim();
+                            break;
+                    }
+
                     createdItem[cmsField.TemplateField.FieldName] = value;
 
                     createdItem.Editing.EndEdit();

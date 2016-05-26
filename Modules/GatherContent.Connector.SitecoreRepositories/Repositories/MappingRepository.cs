@@ -206,6 +206,10 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         private FieldMapping ConvertSitecoreFieldToModel(Item fieldMapping)
         {
             var field = GetItem(fieldMapping["Sitecore Field"]);
+            if (field == null)
+            {
+                return null;
+            }
             var result = new FieldMapping
             {
                 CmsField = new CmsField

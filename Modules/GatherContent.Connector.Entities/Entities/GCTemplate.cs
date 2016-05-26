@@ -28,7 +28,7 @@ namespace GatherContent.Connector.Entities.Entities
         public List<Config> Config { get; set; }
 
         [JsonProperty(PropertyName = "used_at")]
-        public DateTime UsedAt { get; set; }
+        public DateTime? UsedAt { get; set; }
 
         [JsonProperty(PropertyName = "created_at")]
         public int Created { get; set; }

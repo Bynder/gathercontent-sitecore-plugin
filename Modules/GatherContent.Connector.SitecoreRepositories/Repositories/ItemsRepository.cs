@@ -31,7 +31,8 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         /// </summary>
         /// <param name="accountsRepository"></param>
         /// <param name="mediaRepository"></param>
-        public ItemsRepository(IAccountsRepository accountsRepository, IMediaRepository<Item> mediaRepository) : base()
+        public ItemsRepository(IAccountsRepository accountsRepository, IMediaRepository<Item> mediaRepository)
+            : base()
         {
             AccountsRepository = accountsRepository;
             _mediaRepository = mediaRepository;
@@ -69,7 +70,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return dataSourcePath;
         }
 
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -106,11 +107,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
             return false;
         }
-        
+
 
         #endregion
 
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -275,7 +276,35 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="cmsField"></param>
+        public void ResolveAttachmentMapping(CmsItem item, CmsField cmsField)
+        {
+            var type = cmsField.TemplateField.FieldType;
+            switch (cmsField.TemplateField.FieldType)
+            {
+                case "Droptree":
+                    MapDropTree(item, cmsField);
+                    break;
+                case "Image":
+                    MapImage(item, cmsField);
+                    break;
+                case "File":
+                    MapFile(item, cmsField);
+                    break;
+                default:
+                    MapChoice(item, cmsField);
+                    break;
+            }
+        }
 
+
+
+
+        
 
         /// <summary>
         /// 
@@ -380,11 +409,63 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                             // var media = UploadFile(path, file);
                             Item media = _mediaRepository.UploadFile(path, file);
 
-                            var mediaUrl = MediaManager.GetMediaUrl(media, new MediaUrlOptions {UseItemPath = false, AbsolutePath = false});
+                            var mediaUrl = MediaManager.GetMediaUrl(media, new MediaUrlOptions { UseItemPath = false, AbsolutePath = false });
                             var value = string.Format("<file mediaid=\"{0}\" src=\"{1}\" />", media.ID, mediaUrl);
 
                             createdItem.Editing.BeginEdit();
                             createdItem[cmsField.TemplateField.FieldName] = value;
+                            createdItem.Editing.EndEdit();
+                        }
+                    }
+                }
+            }
+        }
+
+        public void MapImage(CmsItem item, CmsField cmsField)
+        {
+            Item createdItem = GetItem(item.Id, Sitecore.Data.Managers.LanguageManager.GetLanguage(item.Language));
+            var path = _mediaRepository.ResolveMediaPath(item, createdItem, cmsField);
+
+            using (new SecurityDisabler())
+            {
+                using (new LanguageSwitcher(item.Language))
+                {
+                    if (cmsField.TemplateField != null)
+                    {
+                        var file = cmsField.Files.FirstOrDefault();
+                        if (file != null)
+                        {
+                            Item media = _mediaRepository.UploadFile(path, file);
+
+                            var value = string.Format("<image mediaid=\"{0}\"  />", media.ID);
+
+                            createdItem.Editing.BeginEdit();
+                            createdItem[cmsField.TemplateField.FieldName] = value;
+                            createdItem.Editing.EndEdit();
+                        }
+                    }
+                }
+            }
+        }
+
+        public void MapDropTree(CmsItem item, CmsField cmsField)
+        {
+            Item createdItem = GetItem(item.Id, Sitecore.Data.Managers.LanguageManager.GetLanguage(item.Language));
+            var path = _mediaRepository.ResolveMediaPath(item, createdItem, cmsField);
+
+            using (new SecurityDisabler())
+            {
+                using (new LanguageSwitcher(item.Language))
+                {
+                    if (cmsField.TemplateField != null)
+                    {
+                        var file = cmsField.Files.FirstOrDefault();
+                        if (file != null)
+                        {
+                            Item media = _mediaRepository.UploadFile(path, file);
+
+                            createdItem.Editing.BeginEdit();
+                            createdItem[cmsField.TemplateField.FieldName] = media.ID.ToString();
                             createdItem.Editing.EndEdit();
                         }
                     }

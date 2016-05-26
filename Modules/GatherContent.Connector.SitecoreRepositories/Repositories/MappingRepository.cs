@@ -214,7 +214,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     {
                         FieldId = fieldMapping["Sitecore Field"],
                         FieldName = field.Name,
-                        FieldType = "todo"
+                        FieldType = field["Type"]
                     }
                 },
                 GcField = new GcField

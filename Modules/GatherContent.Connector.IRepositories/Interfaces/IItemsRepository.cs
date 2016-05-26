@@ -17,11 +17,17 @@ namespace GatherContent.Connector.IRepositories.Interfaces
 
         string CreateNotMappedItem(string parentId, CmsItem cmsItem);
 
+        void ResolveAttachmentMapping(CmsItem item, CmsField field);
+
         void MapText(CmsItem item, CmsField field);
 
         void MapChoice(CmsItem item, CmsField field);
 
         void MapFile(CmsItem item, CmsField field);
+
+        void MapImage(CmsItem item, CmsField field);
+
+        void MapDropTree(CmsItem item, CmsField field);
 
         bool IfMappedItemExists(string itemId, CmsItem cmsItem, string mappingId, string gcPath);
 

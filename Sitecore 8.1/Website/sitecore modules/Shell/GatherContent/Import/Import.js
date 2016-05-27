@@ -17,6 +17,7 @@
     self.notImportedItemsCount = ko.observable(),
     self.currentMode = ko.observable(MODE.ChooseItmesForImort);
     self.sortInfo = ko.observable();
+    self.selectAllState = ko.observable();
     self.language = ko.observable(getUrlVars()["l"]),
     self.languages = ko.observableArray([]),
 
@@ -54,6 +55,7 @@
     };
 
     self.sortInfo = ko.observable();
+    self.selectAllState = ko.observable();
     self.sortOnServer = ko.observable(false);
 
 
@@ -439,6 +441,14 @@
         self.pagingOptions.currentPage(1); // reset page after sort
     });
 
+    self.selectAllState.subscribe(function (data) {
+        self.selectedItems(allItemsSelected);
+        self.items().length = 0;
+        jQuery.each(allItemsSelected, function (i, item) {
+            item.__kg_selected__ = true;
+            self.items().push(item);
+        });
+    });
 
     self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());
 
@@ -454,6 +464,7 @@
         pagingOptions: self.pagingOptions,
         filterOptions: self.filterOptions,
         sortInfo: self.sortInfo,
+        selectAllState: self.selectAllState,
         columnDefs: [
             {
                 field: 'Status.Name',
@@ -575,7 +586,7 @@
 
     jQuery("body").on("change", ".kgSelectionHeader", function (el) {
         if (jQuery(el.target).prop("checked")) {
-            self.selectedItems(allItemsSelected)
+            self.selectedItems(allItemsSelected);
         }
         else {
 
@@ -596,7 +607,7 @@
 
                         var selectedItems = self.selectedItems();
                         selectedItems.forEach(function (item, i) {
-                            item.AvailableMappings.SelectedMappingId = jQuery(el.target).find("option:selected").val()
+                            item.AvailableMappings.SelectedMappingId = jQuery(el.target).find("option:selected").val();
                         });
 
                     }

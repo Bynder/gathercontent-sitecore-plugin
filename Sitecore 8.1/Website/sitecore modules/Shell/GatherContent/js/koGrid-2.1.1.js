@@ -1432,13 +1432,21 @@
             });
             self.pageForward = function() {
                 var page = self.config.pagingOptions.currentPage();
-                self.allSelected(false);
+                if (self.allSelected()) {
+                    self.allSelected(true);
+                } else {
+                    self.allSelected(false);
+                }
                 self.config.pagingOptions.currentPage(Math.min(page + 1, self.maxPages()));
 
             };
             self.pageBackward = function() {
                 var page = self.config.pagingOptions.currentPage();
-                self.allSelected(false);
+                if (self.allSelected()) {
+                    self.allSelected(true);
+                } else {
+                    self.allSelected(false);
+                }
                 self.config.pagingOptions.currentPage(Math.max(page - 1, 1));
             };
             self.pageToFirst = function() {

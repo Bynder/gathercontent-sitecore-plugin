@@ -21,9 +21,7 @@
 }
 
 /*end top*/
-/*.kgViewport {*/
-    /*overflow: hidden;*/
-/*}*/
+
 .hide {
     display: none;
 }
@@ -199,21 +197,6 @@ button.kgPagerButton:hover {
     background-color: transparent;
 }
 
-/*end footer*/
-
-/*.gathercontent-dialog .mappings-btn {*/
-    /*border-radius: 0;*/
-    /*border: none;*/
-    /*margin-top: 20px;*/
-    /*padding: 10px;*/
-    /*font-size: 0.9em;*/
-    /*text-transform: uppercase;*/
-    /*font-weight: 700;*/
-    /*box-shadow: inset 1px 1px 2px #BBB;*/
-/*}*/
-/*.mappings-btn:hover {*/
-    /*box-shadow: 1px 1px 4px #4A4949;*/
-/*}*/
 input[type="button"] {
     border: none;
     padding: 10px;

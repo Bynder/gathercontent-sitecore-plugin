@@ -4,13 +4,17 @@
 
 body {
     height: 100%;
+
 }
 
 .gathercontent-import {
 }
-
+.filter_wrapper .filter_wrapper_import{
+    display:block;
+    float: left;
+}
 .filter_wrapper_import {
-    display: inline-block;
+    display:inline-block;
     height: 30px;
     line-height: 30px;
     font-weight: 700;
@@ -30,14 +34,14 @@ h2.title {
 body {
     font-family: Arial, Helvetica, sans-serif;
     padding: 10px 20px;
-    overflow-x: hidden;
+    overflow: auto;
 }
 
 .footer_btn {
     position: absolute;
     left: 0;
     bottom: 0;
-    padding: 0 20px 20px;
+    padding: 0 20px 20px 5px;
     width: 100%;
 }
 
@@ -48,12 +52,26 @@ body {
     }
 
 .gathercontent-import {
-}
 
+}
+.gathercontent-import>div{
+    padding-bottom: 70px;
+    position: relative;
+  min-height: 100%;
+}
+.gathercontent-import2>div{
+    padding-bottom:110px;
+    position: relative;
+    min-height: 100%;
+}
 .filter_wrapper {
     margin: 20px 0;
 }
-
+.filter_wrapper:after{
+    content: "";
+    display: block;
+    clear: both;
+}
 .filter_wrapper_import > * {
     float: left;
 }
@@ -61,11 +79,13 @@ body {
 .filter_wrapper_import .title_filter {
     min-width: 70px;
 }
-
+body .filter_wrapper_import .custom_select{
+    margin-bottom: 20px;
+}
 .search_filter {
     float: right;
-}
 
+}
     .search_filter input {
         height: 30px;
         padding-left: 10px;
@@ -148,7 +168,7 @@ body {
     position: fixed;
     width: 100%;
     height: 100%;
-    background-image: url("/sitecore/shell/themes/standard/images/sc-spinner16.gif");
+    background-image: url("../icons/sc-spinner32.gif");
     background-repeat: no-repeat;
     background-position: center center;
     background-color: #fff;
@@ -311,7 +331,6 @@ table thead th {
 
 input[type="button"] {
     border: none;
-    margin-top: 20px;
     padding: 10px;
     font-size: 0.9em;
     text-transform: uppercase;
@@ -359,25 +378,49 @@ input[type="button"] {
 .import-grid {
     border: 1px solid rgb(212,212,212);
     width: 100%;
-    height: 70%;
+    height: 515px;
 }
 
 .import-result-grid {
     border: 1px solid rgb(212,212,212);
     width: 100%;
-    height: 65%;
+    height: 505px;
     border-left: none;
     border-right: none;
     border-bottom: none;
 }
-
+.info_footer .import-result-grid{
+    height: 440px;
+}
+.multiimport-result-grid{
+    height: 500px;
+}
+.info_footer .multiimport-result-grid{
+    height: 65%;
+}
+.tree_init{
+    max-height: 250px;
+    display: none;
+}
+.multimport-confirm-grid{
+    height: 510px;
+}
+.multimport-confirm-grid2{
+    height: 580px;
+}
 .import-confirm-grid {
     border: 1px solid rgb(212,212,212);
     width: 100%;
-    height: 60%;
+    height: 80%;
 }
-
+.import-confirm-grid2{
+    height: 465px;
+}
+.import-confirm-grid3{
+    height: 78%;
+}
 .cell-padding {
+    display: inline-block;
     padding: 5px;
 }
     .cell-padding a {
@@ -391,9 +434,25 @@ input[type="button"] {
         cursor: pointer;
     }
 .mappings-cell {
-    margin: 5px;
-}
+    margin: 0;
+    width: 100%;
+    height: 100%;
 
+}
+.location .title_path{
+    width: 11%;
+    text-transform: uppercase;
+    padding-right: 20px;
+    box-sizing: border-box;
+    min-width: 70px;
+    float: left;
+    line-height: 30px;
+    font-weight: 700;
+    font-size: 0.9em;
+}
+.location .input-block{
+    width: 89%;
+}
 .status-color {
     display: inline-block;
     width: 10px;
@@ -406,7 +465,7 @@ input[type="button"] {
 .kgTopPanel {
     background: #5e5e5e;
     height: 40px !important;
-    width: 1158px !important;
+    /*width: 1158px;*/
     position: inherit;
 }
 .kgHeaderText {
@@ -441,7 +500,7 @@ button.kgPagerButton:hover {
 }
 .kgViewport {
     overflow-x: hidden;
-    width: 1158px !important;
+    /*width: 1158px !important;*/
     outline: none;
 }
 .kgSortButtonDown {
@@ -459,13 +518,35 @@ button.kgPagerButton:hover {
     border-width: 0 7px 7px 7px;
 }
 .kgTotalSelectContainer {
-    margin-top: 14px;
+    margin-top: 10px;
 }
 .kglabel {
-    margin-top: 6px !important;
+    /*margin-top: 6px !important;*/
+}
+input[type=checkbox].kgSelectionCheckbox, input[type=radio].kgSelectionCheckbox{
+    margin-top: 0;
 }
 .kgPagerContainer select {
     width: 50px !important;
+    -webkit-appearance: none;
+    background-image: url('/sitecore modules/shell/gathercontent/img/arrow_select.png');
+    background-repeat: no-repeat;
+    background-position: 95% 50%;
+    -webkit-background-size: 95%;
+    background-size: 8px;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none !important;
+    display: block;
+    box-sizing: border-box;
+    overflow: hidden;
+    border: 1px solid #808080;
+    background-color: #fff;
+    height: 30px;
+    color: #808080;
+    vertical-align: middle;
+    font-weight: 500;
+    padding-left: 5px;
 }
 .kgPagerCurrent {
     background-color: transparent;
@@ -473,7 +554,7 @@ button.kgPagerButton:hover {
     outline: none;
     width: 50px !important;
     margin-top: 1px;
-    padding: 0px 4px 0 14px !important;
+    padding: 0px 4px 0 4px !important;
     border: 0
 }
 .kgHeaderCell:last-child {
@@ -494,7 +575,9 @@ button.kgPagerButton:hover {
 }
 .kgRow {
     border-bottom: 1px solid rgb(212, 212, 212);
-    width: 1158px!important;
+    border-right: 1px solid rgb(212, 212, 212);
+
+    /*width: 1158px!important;*/
 }
 .kgCellText {
    line-height: 19px;
@@ -533,7 +616,12 @@ button.kgPagerButton:hover {
 /*fix import */
 
 .language{
+    text-transform: uppercase;
+    font-weight: 700;
     float: right;
+}
+.language .custom_select{
+    font-weight: 500;
 }
 .title_wrap{
     float: left;
@@ -545,11 +633,9 @@ button.kgPagerButton:hover {
 
 }
 .kgViewport{
-    border-bottom: 1px solid rgb(212,212,212);
-     border-left: 1px solid rgb(212,212,212);
-
- border-right: 1px solid rgb(212,212,212);
-
+    /*border-bottom: 1px solid rgb(212,212,212);*/
+     /*border-left: 1px solid rgb(212,212,212);*/
+    /*border-right: 1px solid rgb(212,212,212);*/
 }
 .import-grid{
     border: none;
@@ -565,7 +651,53 @@ button.kgPagerButton:hover {
 .location .input-block{
     height: 30px;
     margin-bottom: 10px;
+    padding-left: 10px;
 }
 .kgFooterPanel {
-    border-top: 0;
+    padding: 0;
+    border-top: 1px solid rgb(212,212,212);
+    position: relative;
+}
+.kgFooterPanel:after{
+    content: "";
+    display: block;
+    clear: both;
+}
+.kgFooterTotalItems,.kgFooterSelectedItems{
+    display: inline-block;
+}
+.kgCanvas{
+    width: 100%!important;
+}
+.kgRow{
+    min-width: 100%!important;
+}
+.kgCanvas>div{
+    width: 100%;
+    height: 100%;
+}
+.koGrid{
+    background-color: transparent;
+}
+.kgViewport{
+    background-color: rgb(253, 253, 253);
+    padding-bottom: 20px;
+}
+.kgFooterPanel{
+    margin-top: 0;
+}
+#location-droptree{
+    top: 100%!important;
+    left:129px;
+    margin-top: -10px;
+    min-width: 500px;
+}
+.tree_wrap input{
+    width: 100%;
+}
+.import-confirm-grid .kgRow.selected.odd {
+    background-color: rgb(253, 253, 253);
+}
+.import-confirm-grid .kgRow.selected.even {
+    background-color: rgb(243, 243, 243);
 }

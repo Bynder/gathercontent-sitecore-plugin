@@ -8,15 +8,17 @@
         Error: 6
     };
 
-    var allItems = [];
+    this.allItems = [];
+    var allItemsSelected = [];
     var self = this;
+    this.allItemsSelected = [];
 
     self.errorText = ko.observable(),
     self.successImportedItemsCount = ko.observable(),
     self.notUpdaredItemsCount = ko.observable(),
 
     self.currentMode = ko.observable(MODE.ChooseItmesForImort);
-
+    self.sortInfo = ko.observable();
     self.language = ko.observable(getUrlVars()["l"]),
     self.languages = ko.observableArray([]),
 
@@ -77,7 +79,45 @@
 
     self.setPagingData = function (data, page, pageSize) {
         var items = data;
-        allItems = items.slice(0);
+        self.allItems = items.slice(0);
+        allItemsSelected = items;
+        if (self.sortInfo()) {
+            //window.kg.sortService.Sort(data, self.sortInfo()); - does not work with plain arrays. sorting extracted from that func.
+            var col = self.sortInfo().column, direction = self.sortInfo().direction, sortFn, item;
+            if (window.kg.sortService.colSortFnCache[col.field]) {
+                sortFn = window.kg.sortService.colSortFnCache[col.field];
+            } else if (col.sortingAlgorithm != undefined) {
+                sortFn = col.sortingAlgorithm;
+                window.kg.sortService.colSortFnCache[col.field] = col.sortingAlgorithm;
+            } else {
+                item = data[0];
+                if (!item) {
+                    return;
+                }
+                sortFn = kg.sortService.guessSortFn(item[col.field]);
+                if (sortFn) {
+                    window.kg.sortService.colSortFnCache[col.field] = sortFn;
+                } else {
+                    sortFn = window.kg.sortService.sortAlpha;
+                }
+            }
+            data.sort(function (itemA, itemB) {
+                var propA = window.kg.utils.evalProperty(itemA, col.field);
+                var propB = window.kg.utils.evalProperty(itemB, col.field);
+                if (!propB && !propA) {
+                    return 0;
+                } else if (!propA) {
+                    return 1;
+                } else if (!propB) {
+                    return -1;
+                }
+                if (direction === "asc") {
+                    return sortFn(propA, propB);
+                } else {
+                    return 0 - sortFn(propA, propB);
+                }
+            });
+        }
         var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
         self.items(pagedData);
         self.pagingOptions.totalServerItems(data.length);
@@ -94,7 +134,8 @@
                 jQuery(".preloader").hide();
                 self.initVariables(response);
                 self.setPagingData(response.Items, page, pageSize);
-                document.getElementsByTagName('input')[1].focus();              
+                document.getElementsByTagName('input')[1].focus();
+                jQuery(window).trigger('resize');
             },
             error: function (response) {
                 self.errorCallbackHandle(response);
@@ -118,7 +159,7 @@
     self.initVariables = function (response) {
         //var items = self.setupWatcher(response.Items);
         self.items(response.Items);
-        allItems = response.Items.slice(0);
+        self.allItems = response.Items.slice(0);
 
         self.statuses(response.Filters.Statuses);
         self.projects(response.Filters.Projects);
@@ -137,7 +178,7 @@
     self.filter = function () {
         self.items.removeAll();
 
-        var currentCollection = allItems.slice(0);
+        var currentCollection = self.allItems.slice(0);
         currentCollection = self.search(currentCollection);
         currentCollection = self.filterByStatus(currentCollection);
         currentCollection = self.filterByTemplate(currentCollection);
@@ -281,12 +322,14 @@
     //button click events
     self.switchToCheckItemsBeforeImport = function () {
         var result = [];
+
         ko.utils.arrayForEach(self.items(), function (item) {
             if (item.Checked && item.Checked() === true)
                 result.push(item);
         });
 
-        self.items(result);
+        self.allItemsSelected = self.selectedItems();
+        self.selectedItems(result);
     }
 
     self.import = function () {
@@ -306,7 +349,7 @@
         jQuery.ajax
         ({
             type: "POST",
-            url: '/api/sitecore/Update/UpdateItems?id={' + id + '}&statusId=' + status + '&language='+ lang,
+            url: '/api/sitecore/Update/UpdateItems?id={' + id + '}&statusId=' + status + '&language=' + lang,
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(items),
@@ -319,7 +362,7 @@
                 self.notUpdaredItemsCount(notUpdatedCount);
                 self.resultItems(response);
                 self.buttonClick(MODE.ImportResult);
-                
+                jQuery(window).trigger('resize');
             },
             error: function (response) {
                 self.errorCallbackHandle(response);
@@ -342,7 +385,8 @@
     }
 
     self.backButtonClick = function () {
-        self.items(allItems.slice(0));
+        self.selectedItems(self.allItemsSelected);
+        self.items(self.allItems);
     }
 
     self.buttonClick = function (newMode) {
@@ -352,7 +396,7 @@
             } else {
                 self.currentMode(newMode);
                 resizeTableHead();
-                self.switchToCheckItemsBeforeImport();
+                //self.switchToCheckItemsBeforeImport();
             }
         } else if (newMode === MODE.Import) {
             self.currentMode(newMode);
@@ -363,9 +407,10 @@
             self.currentMode(newMode);
             self.close();
         } else if (newMode === MODE.ChooseItmesForImort) {
+
             self.statusFilter = ko.observable();
             self.currentMode(newMode);
-            self.backButtonClick();
+            //self.backButtonClick();
         } else {
             self.currentMode(newMode);
         }
@@ -376,7 +421,7 @@
             return true;
         }
         return false;
-        
+
     }
 
     //self.setupWatcher = function (items) {
@@ -403,23 +448,25 @@
         return 'dateWarnings';
     }
 
-  
+
     self.filterOptions.filterText.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.pagingOptions.pageSizes.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.pagingOptions.pageSize.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.pagingOptions.totalServerItems.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.pagingOptions.currentPage.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
-
+    self.sortInfo.subscribe(function (data) {
+        self.pagingOptions.currentPage(1); // reset page after sort
+    });
     self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());
 
 
@@ -432,10 +479,11 @@
             selectedItems: self.selectedItems,
             enablePaging: true,
             pagingOptions: self.pagingOptions,
-            filterOptions: self.filterOptions,            
+            filterOptions: self.filterOptions,
+            sortInfo: self.sortInfo,
             columnDefs: [
                 {
-                    field: 'Status.Name',  width: '**',
+                    field: 'Status.Name', width: '**',
                     displayName: 'Status', cellTemplate: '<div class="kgCellText"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
                 },
                 { field: 'ScTitle', width: '**', displayName: 'Sitecore Title' },
@@ -451,16 +499,16 @@
                 },
                 { field: 'GcTemplate.Name', width: '**', displayName: 'GatherContent Template' },
                 { field: 'ScTemplateName', width: '**', displayName: 'Sitecore Template' },
-                { displayName: 'Open in Sitecore', cellClass: 'cell-padding', sortable: false, cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
-                { displayName: 'Open in GatherContent', cellClass: 'cell-padding', sortable: false, cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>' }
-            ]
+                { displayName: 'Open in Sitecore', width: 70, cellClass: 'cell-padding', sortable: false, cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
+                { displayName: 'Open in GatherContent', width: 70, cellClass: 'cell-padding', sortable: false, cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>' }
+            ],
         };
-
 
     this.gridOptions = options;
 
     var confirmOptions =
           {
+
               canSelectRows: false,
               showColumnMenu: false,
               showFilter: false,
@@ -504,6 +552,7 @@
         enablePaging: true,
         pagingOptions: self.pagingResultOptions,
         filterOptions: self.filterResultOptions,
+        sortInfo: self.sortInfo,
         columnDefs: [
             {
                 field: 'Status.Name',
@@ -541,5 +590,12 @@
     };
 
     this.gridResultOptions = resultOptions;
+    jQuery("body").on("change", ".kgSelectionHeader", function (el) {
+        if (jQuery(el.target).prop("checked")) {
+            self.selectedItems(allItemsSelected)
+        }
+        else {
 
+        }
+    });
 }

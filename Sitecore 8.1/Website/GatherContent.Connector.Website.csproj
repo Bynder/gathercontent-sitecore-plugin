@@ -110,6 +110,11 @@
     <Content Include="sitecore modules\Shell\GatherContent\Experience Editor\8.0\GatherContentMLImport.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Experience Editor\GatherContentImport.js" />
     <Content Include="sitecore modules\Shell\GatherContent\Experience Editor\GatherContentMLImport.js" />
+    <Content Include="sitecore modules\Shell\GatherContent\icons\delete.png" />
+    <Content Include="sitecore modules\Shell\GatherContent\icons\Right.png" />
+    <Content Include="sitecore modules\Shell\GatherContent\icons\sc-spinner32.gif" />
+    <Content Include="sitecore modules\Shell\GatherContent\icons\Warning %281%29.png" />
+    <Content Include="sitecore modules\Shell\GatherContent\img\slide_arrow.png" />
     <Content Include="sitecore modules\Shell\GatherContent\Import\img\arrow_select.png" />
     <Content Include="sitecore modules\Shell\GatherContent\Import\img\bkt_left.png" />
     <Content Include="sitecore modules\Shell\GatherContent\Import\img\bkt_right.png" />

@@ -9,8 +9,9 @@
     };
 
     this.allItems = [];
+    var allItemsSelected = [];
     var self = this;
-    this.allItemsSelected=[];
+    this.allItemsSelected = [];
 
     self.errorText = ko.observable(),
     self.successImportedItemsCount = ko.observable(),
@@ -79,6 +80,7 @@
     self.setPagingData = function (data, page, pageSize) {
         var items = data;
         self.allItems = items.slice(0);
+        allItemsSelected = items;
         if (self.sortInfo()) {
             //window.kg.sortService.Sort(data, self.sortInfo()); - does not work with plain arrays. sorting extracted from that func.
             var col = self.sortInfo().column, direction = self.sortInfo().direction, sortFn, item;
@@ -326,7 +328,7 @@
                 result.push(item);
         });
 
-        self.allItemsSelected=self.selectedItems();
+        self.allItemsSelected = self.selectedItems();
         self.selectedItems(result);
     }
 
@@ -347,7 +349,7 @@
         jQuery.ajax
         ({
             type: "POST",
-            url: '/api/sitecore/Update/UpdateItems?id={' + id + '}&statusId=' + status + '&language='+ lang,
+            url: '/api/sitecore/Update/UpdateItems?id={' + id + '}&statusId=' + status + '&language=' + lang,
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(items),
@@ -419,7 +421,7 @@
             return true;
         }
         return false;
-        
+
     }
 
     //self.setupWatcher = function (items) {
@@ -446,7 +448,7 @@
         return 'dateWarnings';
     }
 
-  
+
     self.filterOptions.filterText.subscribe(function (data) {
         self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
@@ -481,7 +483,7 @@
             sortInfo: self.sortInfo,
             columnDefs: [
                 {
-                    field: 'Status.Name',  width: '**',
+                    field: 'Status.Name', width: '**',
                     displayName: 'Status', cellTemplate: '<div class="kgCellText"><div class="status-color" data-bind="style: { backgroundColor : $parent.entity.Status.Color }"></div><span data-bind="text: $parent.entity.Status.Name"></span></div>'
                 },
                 { field: 'ScTitle', width: '**', displayName: 'Sitecore Title' },
@@ -497,8 +499,8 @@
                 },
                 { field: 'GcTemplate.Name', width: '**', displayName: 'GatherContent Template' },
                 { field: 'ScTemplateName', width: '**', displayName: 'Sitecore Template' },
-                { displayName: 'Open in Sitecore', width:70,cellClass: 'cell-padding', sortable: false, cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
-                { displayName: 'Open in GatherContent',width:70, cellClass: 'cell-padding', sortable: false, cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>' }
+                { displayName: 'Open in Sitecore', width: 70, cellClass: 'cell-padding', sortable: false, cellTemplate: '<a data-bind="if: $parent.entity.CmsLink!=null, click: function(){$parent.$userViewModel.openCmsLink($parent.entity)}">Open</a>' },
+                { displayName: 'Open in GatherContent', width: 70, cellClass: 'cell-padding', sortable: false, cellTemplate: '<a data-bind="click: function(){$parent.$userViewModel.openGcLink($parent.entity)}">Open</a>' }
             ],
         };
 
@@ -588,5 +590,12 @@
     };
 
     this.gridResultOptions = resultOptions;
+    jQuery("body").on("change", ".kgSelectionHeader", function (el) {
+        if (jQuery(el.target).prop("checked")) {
+            self.selectedItems(allItemsSelected)
+        }
+        else {
 
+        }
+    });
 }

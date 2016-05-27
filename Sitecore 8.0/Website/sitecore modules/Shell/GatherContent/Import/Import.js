@@ -9,14 +9,14 @@
         Error: 6
     };
 
-    var allItems = [];
+    var allItems = [], allItemsSelected = [];
     var self = this;
 
     self.errorText = ko.observable(),
     self.successImportedItemsCount = ko.observable(),
     self.notImportedItemsCount = ko.observable(),
     self.currentMode = ko.observable(MODE.ChooseItmesForImort);
-
+    self.sortInfo = ko.observable();
     self.language = ko.observable(getUrlVars()["l"]),
     self.languages = ko.observableArray([]),
 
@@ -84,9 +84,50 @@
     self.setPagingData = function (data, page, pageSize) {
         var items = data;
         allItems = items.slice(0);
-        //self.koAllItems(items);
+        allItemsSelected = items;
+        if (self.sortInfo()) {
+            //window.kg.sortService.Sort(data, self.sortInfo()); - does not work with plain arrays. sorting extracted from that func.
+            var col = self.sortInfo().column, direction = self.sortInfo().direction, sortFn, item;
+            if (window.kg.sortService.colSortFnCache[col.field]) {
+                sortFn = window.kg.sortService.colSortFnCache[col.field];
+            } else if (col.sortingAlgorithm != undefined) {
+                sortFn = col.sortingAlgorithm;
+                window.kg.sortService.colSortFnCache[col.field] = col.sortingAlgorithm;
+            } else {
+                item = data[0];
+                if (!item) {
+                    return;
+                }
+                sortFn = kg.sortService.guessSortFn(item[col.field]);
+                if (sortFn) {
+                    window.kg.sortService.colSortFnCache[col.field] = sortFn;
+                } else {
+                    sortFn = window.kg.sortService.sortAlpha;
+                }
+            }
+            data.sort(function (itemA, itemB) {
+                var propA = window.kg.utils.evalProperty(itemA, col.field);
+                var propB = window.kg.utils.evalProperty(itemB, col.field);
+                if (!propB && !propA) {
+                    return 0;
+                } else if (!propA) {
+                    return 1;
+                } else if (!propB) {
+                    return -1;
+                }
+                if (direction === "asc") {
+                    return sortFn(propA, propB);
+                } else {
+                    return 0 - sortFn(propA, propB);
+                }
+            });
+        }
+
+
         var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
+
         self.items(pagedData);
+
         self.pagingOptions.totalServerItems(data.length);
     };
 
@@ -103,6 +144,7 @@
                 self.initVariables(response);
                 self.setPagingData(response.Items, page, pageSize);
                 document.getElementsByTagName('input')[1].focus();
+                jQuery(window).trigger('resize');
                 //window.getSelection().removeAllRanges();
 
             },
@@ -207,6 +249,16 @@
 
     self.query.subscribe(self.filter);
 
+    this.closeDropTree = function (model, e) {
+        if (e.target.tagName === "INPUT") {
+            return;
+        }
+
+        var id = "location-droptree";
+        jQuery("#" + id).hide();
+        this.IsShowing(false);
+    };
+
     self.openDropTree = function () {
         var id = "location-droptree";
         var locationId = self.defaultLocation();
@@ -260,8 +312,10 @@
         //self.defaultLocation
         //self.language
         var id = self.defaultLocation();
+
         var selectedItems = self.selectedItems();
         var items = [];
+
         selectedItems.forEach(function (item, i) {
             items.push({ Id: item.Id, SelectedMappingId: item.AvailableMappings.SelectedMappingId });
         });
@@ -286,6 +340,7 @@
                 self.successImportedItemsCount(response.length - notImportedItemsCount);
                 self.resultItems(response);
                 self.buttonClick(MODE.ImportResult);
+                jQuery(window).trigger('resize');
             },
             error: function (response) {
                 self.errorCallbackHandle(response);
@@ -314,6 +369,7 @@
                 self.errorText('Please select at least one item');
             } else {
                 self.currentMode(newMode);
+                self.errorText('');
             }
         } else if (newMode === MODE.Import) {
             self.currentMode(newMode);
@@ -340,7 +396,6 @@
         for (var i = 0; i < items.length; i++) {
             items[i].Checked = ko.observable(false);
         }
-
         return items;
     }
 
@@ -381,16 +436,15 @@
         self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
     });
     self.sortInfo.subscribe(function (data) {
-        //self.items(allItems);
-        //window.kg.sortService.Sort(self.koAllItems, self.sortInfo());
+        self.pagingOptions.currentPage(1); // reset page after sort
     });
- 
+
 
     self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());
 
     var options =
     {
-        afterSelectionChange: function () { return true; },
+        //afterSelectionChange: function () { return true; },
         showColumnMenu: false,
         showFilter: false,
         //allData: self.koAllItems,
@@ -399,7 +453,7 @@
         enablePaging: true,
         pagingOptions: self.pagingOptions,
         filterOptions: self.filterOptions,
-        sortInfo: self.sortInfo,        
+        sortInfo: self.sortInfo,
         columnDefs: [
             {
                 field: 'Status.Name',
@@ -419,7 +473,7 @@
                 sortFn: dateSort
             },
             { field: 'Breadcrumb', width: '**', displayName: 'Path' },
-            { field: 'Template.Name', width:200, displayName: 'Template name' }
+            { field: 'Template.Name', width: 200, displayName: 'Template name' }
         ]
     };
 
@@ -517,6 +571,42 @@
     };
 
     this.gridResultOptions = resultOptions;
+    var changeInit = {};
 
+    jQuery("body").on("change", ".kgSelectionHeader", function (el) {
+        if (jQuery(el.target).prop("checked")) {
+            self.selectedItems(allItemsSelected)
+        }
+        else {
+
+        }
+    });
+    jQuery("body").on("change", ".mappings-cell", function (el) {
+
+        if (jQuery(".import-confirm-grid2").length) {
+
+            if (jQuery(".col2:contains(" + jQuery(el.target).parents(".col3").siblings(".col2").text() + ")").length > 1) {
+                if (!changeInit[jQuery(el.target).parents(".col3").siblings(".col2").text()]) {
+                    var init = confirm('Set the mapping for all ' + jQuery(el.target).parents(".col3").siblings(".col2").text() + ' items?');
+                    if (init) {
+
+                        jQuery(".col2:contains(" + jQuery(el.target).parents(".col3")
+                                .siblings(".col2").text() + ")").siblings(".col3")
+                            .find("option[value='" + jQuery(el.target).find("option:selected").val() + "']").prop("selected", true);
+
+                        var selectedItems = self.selectedItems();
+                        selectedItems.forEach(function (item, i) {
+                            item.AvailableMappings.SelectedMappingId = jQuery(el.target).find("option:selected").val()
+                        });
+
+                    }
+                    else {
+                        changeInit[jQuery(el.target).parents(".col3").siblings(".col2").text()] = true;
+                    }
+                }
+            }
+        }
+
+    });
 }
 

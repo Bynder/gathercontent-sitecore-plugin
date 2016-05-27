@@ -9,7 +9,7 @@
         Error: 7
     };
 
-    var allItems = [];
+    var allItems = [], allItemsSelected = [];
     var self = this;
     self.errorText = ko.observable(),
     self.successImportedItemsCount = ko.observable(),
@@ -88,6 +88,7 @@
     self.setPagingData = function (data, page, pageSize) {
         var items = data;
         allItems = items.slice(0);
+        allItemsSelected = items;
 
         if (self.sortInfo()) {
             //window.kg.sortService.Sort(data, self.sortInfo()); - does not work with plain arrays. sorting extracted from that func.
@@ -608,7 +609,7 @@
 
 
     this.gridOptions = options;
-   // var tplCheckbox = '<div><input type="checkbox" data-bind="attr: { \'class\': \'kgInput colt\' + $index()}, checked: $parent.entity[$data.field]" /></div>';
+    // var tplCheckbox = '<div><input type="checkbox" data-bind="attr: { \'class\': \'kgInput colt\' + $index()}, checked: $parent.entity[$data.field]" /></div>';
     var groupedOptions =
         {
 
@@ -639,7 +640,7 @@
                               '</div>' +
                            '</div></div>'
                 }
-            ],afterSelectionChange: function () { return true; }
+            ], afterSelectionChange: function () { return true; }
         };
     this.groupedGridOptions = groupedOptions;
 
@@ -713,6 +714,13 @@
    };
 
     this.gridResultOptions = resultOptions;
+    jQuery("body").on("change", ".kgSelectionHeader", function (el) {
+        if (jQuery(el.target).prop("checked")) {
+            self.selectedItems(allItemsSelected)
+        }
+        else {
 
+        }
+    });
 }
 

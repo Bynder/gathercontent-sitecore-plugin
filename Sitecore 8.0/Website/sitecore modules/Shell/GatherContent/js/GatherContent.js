@@ -28,11 +28,23 @@ function initTooltip() {
         }
     });
 }
+function treeInit() {
+    jQuery(document).on("click", function (el) {
+        if (jQuery(el.target).closest(".tree_wrap").length) return;
+        if (jQuery(el.target).closest(".dynatree-expander").length) return;
+        if (jQuery(el.target).closest("#location-droptree").length) return;
+        if (jQuery(el.target).closest(".input-block").length) return;
+        jQuery(".tree_init").hide();
+        jQuery("#location-droptree").hide();
+
+        return true;
+    })
+}
 function resizeTableHead() {
-    jQuery("thead th.cell_resize").each(function() {
+    jQuery("thead th.cell_resize").each(function () {
         jQuery(this).find("div").css("width", jQuery(this).width());
     });
-    jQuery("thead th div").each(function() {
+    jQuery("thead th div").each(function () {
         if (jQuery(this).height() > 18) {
             jQuery(this).css("padding-top", 0);
             jQuery(this).css("margin-top", 7);
@@ -60,7 +72,7 @@ function document_resize() {
                 simple_tooltip(this, "tooltip", i);
             }
         });
-        jQuery("thead th div").each(function() {
+        jQuery("thead th div").each(function () {
             if (jQuery(this).height() > 18) {
                 jQuery(this).css("padding-top", 0);
                 jQuery(this).css("margin-top", 7);
@@ -70,7 +82,10 @@ function document_resize() {
 }
 
 jQuery(function () {
-    jQuery(window).resize(function() {
+    treeInit();
+
+    jQuery(document).on("click", ".dynatree-title", function (el) { el.preventDefault(); })
+    jQuery(window).resize(function () {
         jQuery(".table_import_scroll").css("max-height", jQuery("body").height() - 250);
     });
     jQuery(".table_import_scroll").css("max-height", jQuery("body").height() - 250);

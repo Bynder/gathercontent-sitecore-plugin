@@ -15,7 +15,7 @@ function Init() {
     jQuery.ajax({
         url: url,
         dataType: 'json',
-        async: false,       
+        async: false,
         success: function (data) {
             resultData = data;
             resultData.IsError = false;
@@ -45,7 +45,7 @@ function ViewModel(data) {
             self.NotValid(true);
             isValid = false;
         }
-        if (self.SelectedGcProject().Id == "0" ) {
+        if (self.SelectedGcProject().Id == "0") {
             self.NotValidGcProject(true);
             isValid = false;
         }
@@ -66,7 +66,7 @@ function ViewModel(data) {
 
         if (self.validate()) {
 
-            var model = new function() {
+            var model = new function () {
                 this.TemplateTabs = self.Tabs();
                 this.IsEdit = self.IsEdit();
                 this.SelectedTemplateId = self.SelectedTemplateId();
@@ -81,7 +81,7 @@ function ViewModel(data) {
                 type: 'post',
                 data: JSON.stringify(model),
                 contentType: 'application/json',
-                success: function(data) {
+                success: function (data) {
                     if (data.status != "error") {
                         window.opener.location.reload(true);
                         window.top.dialogClose();
@@ -97,6 +97,16 @@ function ViewModel(data) {
             //self.ValidationMessage("Mapping Title is mandatory  field");
             //self.NotValid(true);
         }
+    };
+
+    this.closeDropTree = function (model, e) {
+        if (e.target.tagName === "INPUT") {
+            return;
+        }
+
+        var id = this.OpenerId();
+        jQuery("#" + id).hide();
+        this.IsShowing(false);
     };
 
     this.openDropTree = function () {
@@ -135,7 +145,7 @@ function ViewModel(data) {
 
                     jQuery('[data-openerid="' + id + '"]').val(path);
                     mapping.DefaultLocation(node.data.key);
-                    mapping.DefaultLocationText(node.data.title);        
+                    mapping.DefaultLocationText(node.data.title);
                 },
                 onLazyRead: function (node) {
                     node.appendAjax({
@@ -175,7 +185,7 @@ function ViewModel(data) {
                         } else {
                             self.SelectedGcTemplate(data[0]);
                         }
-                        
+
                         self.gcTemplateChanged();
                     } else {
                         self.ErrorText("Error:" + " " + data.message);
@@ -204,6 +214,7 @@ function ViewModel(data) {
                             }
                         }
                         self.Tabs(data);
+                        tabSlideFirst();
                     } else {
                         self.ErrorText("Error:" + " " + data.message);
                         self.IsError(true);
@@ -293,22 +304,23 @@ function ViewModel(data) {
         this.SelectedTemplateId(this.SitecoreTemplates()[0].SitrecoreTemplateId);
     }
     this.SelectedGcTemplate = ko.observable();
-    this.SelectedScTemplate = ko.observable(self.find("SitrecoreTemplateId", data.SitecoreTemplates, data.AddMappingModel.SelectedTemplateId));  
+    this.SelectedScTemplate = ko.observable(self.find("SitrecoreTemplateId", data.SitecoreTemplates, data.AddMappingModel.SelectedTemplateId));
 
     self.gcProjectChanged();
 
-    
+
 };
 
 
 
-
-
-function tabInitSlide() {
+function tabSlideFirst() {
     jQuery(".content_mapping").slideUp(0);
     jQuery(".title_mapping").removeClass("open");
     jQuery(jQuery(".title_mapping")[0]).addClass("open");
     jQuery(jQuery(".content_mapping")[0]).slideDown(0);
+}
+function tabInitSlide() {
+
     jQuery("body").on("click", ".title_mapping", function () {
         if (jQuery(this).hasClass("open")) {
             jQuery(this).next(".content_mapping").slideUp(200);

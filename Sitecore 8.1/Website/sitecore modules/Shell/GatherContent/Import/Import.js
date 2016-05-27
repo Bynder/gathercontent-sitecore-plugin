@@ -9,7 +9,7 @@
         Error: 6
     };
 
-    var allItems = [];
+    var allItems = [], allItemsSelected = [];
     var self = this;
 
     self.errorText = ko.observable(),
@@ -84,7 +84,7 @@
     self.setPagingData = function (data, page, pageSize) {
         var items = data;
         allItems = items.slice(0);
-        
+        allItemsSelected = items;
         if (self.sortInfo()) {
             //window.kg.sortService.Sort(data, self.sortInfo()); - does not work with plain arrays. sorting extracted from that func.
             var col = self.sortInfo().column, direction = self.sortInfo().direction, sortFn, item;
@@ -105,7 +105,7 @@
                     sortFn = window.kg.sortService.sortAlpha;
                 }
             }
-            data.sort(function(itemA, itemB) {
+            data.sort(function (itemA, itemB) {
                 var propA = window.kg.utils.evalProperty(itemA, col.field);
                 var propB = window.kg.utils.evalProperty(itemB, col.field);
                 if (!propB && !propA) {
@@ -122,12 +122,12 @@
                 }
             });
         }
-        
+
 
         var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
 
         self.items(pagedData);
-        
+
         self.pagingOptions.totalServerItems(data.length);
     };
 
@@ -438,7 +438,7 @@
     self.sortInfo.subscribe(function (data) {
         self.pagingOptions.currentPage(1); // reset page after sort
     });
- 
+
 
     self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());
 
@@ -473,7 +473,7 @@
                 sortFn: dateSort
             },
             { field: 'Breadcrumb', width: '**', displayName: 'Path' },
-            { field: 'Template.Name', width:200, displayName: 'Template name' }
+            { field: 'Template.Name', width: 200, displayName: 'Template name' }
         ]
     };
 
@@ -571,28 +571,37 @@
     };
 
     this.gridResultOptions = resultOptions;
-    var changeInit={};
-    jQuery( "body" ).on("change",".mappings-cell",function(el) {
+    var changeInit = {};
 
-        if(jQuery(".import-confirm-grid2").length){
+    jQuery("body").on("change", ".kgSelectionHeader", function (el) {
+        if (jQuery(el.target).prop("checked")) {
+            self.selectedItems(allItemsSelected)
+        }
+        else {
 
-            if(jQuery(".col2:contains("+jQuery(el.target).parents(".col3").siblings(".col2").text()+")").length>1){
-                if(!changeInit[jQuery(el.target).parents(".col3").siblings(".col2").text()]) {
-                    var init = confirm('Set the mapping for all '+jQuery(el.target).parents(".col3").siblings(".col2").text()+' items?');
+        }
+    });
+    jQuery("body").on("change", ".mappings-cell", function (el) {
+
+        if (jQuery(".import-confirm-grid2").length) {
+
+            if (jQuery(".col2:contains(" + jQuery(el.target).parents(".col3").siblings(".col2").text() + ")").length > 1) {
+                if (!changeInit[jQuery(el.target).parents(".col3").siblings(".col2").text()]) {
+                    var init = confirm('Set the mapping for all ' + jQuery(el.target).parents(".col3").siblings(".col2").text() + ' items?');
                     if (init) {
 
                         jQuery(".col2:contains(" + jQuery(el.target).parents(".col3")
                                 .siblings(".col2").text() + ")").siblings(".col3")
                             .find("option[value='" + jQuery(el.target).find("option:selected").val() + "']").prop("selected", true);
 
-                        var selectedItems=self.selectedItems();
-                            selectedItems.forEach(function (item, i) {
-                                item.AvailableMappings.SelectedMappingId=jQuery(el.target).find("option:selected").val()
-                            });
+                        var selectedItems = self.selectedItems();
+                        selectedItems.forEach(function (item, i) {
+                            item.AvailableMappings.SelectedMappingId = jQuery(el.target).find("option:selected").val()
+                        });
 
                     }
-                    else{
-                        changeInit[jQuery(el.target).parents(".col3").siblings(".col2").text()]=true;
+                    else {
+                        changeInit[jQuery(el.target).parents(".col3").siblings(".col2").text()] = true;
                     }
                 }
             }

@@ -9,6 +9,7 @@
     };
 
     this.allItems = [];
+    var allItemsSelected=[];
     var self = this;
     this.allItemsSelected=[];
 
@@ -79,6 +80,7 @@
     self.setPagingData = function (data, page, pageSize) {
         var items = data;
         self.allItems = items.slice(0);
+        allItemsSelected=items;
         if (self.sortInfo()) {
             //window.kg.sortService.Sort(data, self.sortInfo()); - does not work with plain arrays. sorting extracted from that func.
             var col = self.sortInfo().column, direction = self.sortInfo().direction, sortFn, item;
@@ -588,5 +590,12 @@
     };
 
     this.gridResultOptions = resultOptions;
+    jQuery( "body" ).on("change",".kgSelectionHeader",function(el) {
+        if(jQuery(el.target).prop("checked")){
+            self.selectedItems(allItemsSelected)
+        }
+        else{
 
+        }
+    });
 }

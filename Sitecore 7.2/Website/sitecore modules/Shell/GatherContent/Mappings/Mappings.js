@@ -91,7 +91,7 @@ function ViewModel() {
 
     this.removeMapping = function (item) {
         var scMappingId = item.ScMappingId;
-        var confirmDelete = confirm('Are you sure you want to delete this1?');
+        var confirmDelete = confirm('Are you sure you want to delete this?');
         if (confirmDelete) {
             jQuery.ajax({
                 type: 'DELETE',
@@ -170,7 +170,7 @@ function ViewModel() {
                 { field: 'LastMappedDateTime', width: '**', displayName: 'Last mapped', sortFn: dateSort },
                 { field: 'LastUpdatedDate', width: '**', displayName: 'Last updated in GatherContent', sortFn: dateSort },
                 { field: 'Manage', displayName: '&nbsp;', cellTemplate: '<a href="#" data-bind="click: function(){$parent.$userViewModel.editMapping($parent.entity)}">Edit</a>', width: 50, resizable: false, sortable: false, cellClass : 'edit' },
-                { field: 'Delete', displayName: '&nbsp;', cellTemplate: '<a href="#" data-bind="click: function(){$parent.$userViewModel.removeMapping($parent.entity)}">' + '<img src="~/icon/Office/32x32/delete.png" width="20" height="20"></a>', width: 50, resizable: false, sortable: false, cellClass: 'manage' }
+                { field: 'Delete', displayName: '&nbsp;', cellTemplate: '<a href="#" data-bind="click: function(){$parent.$userViewModel.removeMapping($parent.entity)}">' + '<img src="../icons/delete.png" width="20" height="20"></a>', width: 50, resizable: false, sortable: false, cellClass: 'manage' }
             ]
         };
 

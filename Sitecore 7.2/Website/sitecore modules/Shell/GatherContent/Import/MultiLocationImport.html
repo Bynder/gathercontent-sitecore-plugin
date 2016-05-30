@@ -106,18 +106,18 @@
     <div class="preloader_import text-center">
         <h2 class="title">Import in progress</h2>
         <p>Please do not close your browser. Depending on the number of Items you have selected the import can take some time.</p>
-        <img src="/sitecore/shell/themes/standard/images/sc-spinner16.gif" alt="">
+        <img src="../icons/sc-spinner32.gif" alt="">
     </div>
 </div>
 
 <div data-bind="if: getMode(5)" class="gathercontent-import">
     <div>
     <h2 class="title">Import complete: Results.</h2>
-    <img src="~/icon/Apps/32x32/Right.png" width="20" height="20">
+    <img src="../icons/Right.png" width="20" height="20">
     <span data-bind="text: successImportedItemsCount()"></span> items were imported successfully.
     <div data-bind="if: items().length > 0">
         <div data-bind="if: notImportedItemsCount() > 0" class="import-padding">
-            <img src="~/icon/Apps/32x32/Warning (1).png" width="20" height="20"> <span data-bind=" text: notImportedItemsCount()"></span> items were not imported. Check errors below.
+            <img src="../icons/Warning (1).png" width="20" height="20"> <span data-bind=" text: notImportedItemsCount()"></span> items were not imported. Check errors below.
         </div>
         <div data-bind="css:{
     'info_footer' :  notImportedItemsCount() > 0

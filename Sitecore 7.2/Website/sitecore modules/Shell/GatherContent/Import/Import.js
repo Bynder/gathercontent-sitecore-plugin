@@ -9,7 +9,7 @@
         Error: 6
     };
 
-    var allItems = [];
+    var allItems= [], allItemsSelected = [];
     var self = this;
 
     self.errorText = ko.observable(),
@@ -84,7 +84,7 @@
     self.setPagingData = function (data, page, pageSize) {
         var items = data;
         allItems = items.slice(0);
-        
+        allItemsSelected=items;
         if (self.sortInfo()) {
             //window.kg.sortService.Sort(data, self.sortInfo()); - does not work with plain arrays. sorting extracted from that func.
             var col = self.sortInfo().column, direction = self.sortInfo().direction, sortFn, item;
@@ -572,6 +572,15 @@
 
     this.gridResultOptions = resultOptions;
     var changeInit={};
+
+    jQuery( "body" ).on("change",".kgSelectionHeader",function(el) {
+        if(jQuery(el.target).prop("checked")){
+            self.selectedItems(allItemsSelected)
+        }
+        else{
+          
+        }
+    });
     jQuery( "body" ).on("change",".mappings-cell",function(el) {
 
         if(jQuery(".import-confirm-grid2").length){

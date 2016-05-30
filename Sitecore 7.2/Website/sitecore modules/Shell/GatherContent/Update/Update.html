@@ -63,10 +63,10 @@
     <div class="update-confirm-grid" data-bind="koGrid: gridConfirmOptions"></div>
 
     <div class="footer_btn">
-        <!--<div>
-            <input type="checkbox" data-bind="checked: statusPostState" />
-            After successful import change status of item to [<select data-bind="options: statuses, optionsText: 'name', optionsValue: 'id', value: statusFilter, style: { color: $root.getSelectedStatusColor() }, optionsAfterRender: $root.afterStatusesSelectRender"></select>] inside your GatherContent account
-        </div>-->
+<!--        <div>-->
+<!--            <input type="checkbox" data-bind="checked: statusPostState" />-->
+<!--            After successful import change status of item to [<select data-bind="options: statuses, optionsText: 'Name', optionsValue: 'Id', value: statusFilter, optionsAfterRender: $root.afterStatusesSelectRender"></select>] inside your GatherContent account-->
+<!--        </div>-->
         <input type="button" value="<Back" class="backBtn" data-bind="click: buttonClick.bind($data, 1)" />
         <input type="button" value="Update>" data-bind="click: buttonClick.bind($data, 3)" />
         <!--<input type="button" class="closeButton" value="Close" data-bind="click: buttonClick.bind($data, 5)" />-->
@@ -82,7 +82,7 @@
     <div class="preloader_import text-center">
         <h2 class="title">Update in progress</h2>
         <p>Please do not close your browser. Depending on the number of items, this can take some time.</p>
-        <img src="/sitecore/shell/themes/standard/images/sc-spinner16.gif" alt="">
+        <img src="../icons/sc-spinner32.gif" alt="">
     </div>
     <!--<input type="button" value="Next" data-bind="click: buttonClick.bind($data, 4)" />-->
 </div>
@@ -90,12 +90,12 @@
 <div data-bind="if: getMode(4)"  class="gathercontent-import">
     <div>
     <h2 class="title">Update complete: Results.</h2>
-    <img src="~/icon/Apps/32x32/Right.png" width="20" height="20">
+    <img src="../icons/Right.png" width="20" height="20">
     <span data-bind="text: successImportedItemsCount()"></span> items were updated successfully.
 
     <div data-bind="if: resultItems().length > 0">
         <div data-bind="if: notUpdaredItemsCount() > 0" class="import-padding">
-            <img src="~/icon/Apps/32x32/Warning (1).png" width="20" height="20"> <span data-bind="text: notUpdaredItemsCount()"></span> items were not updated. Check errors below.
+            <img src="../icons/Warning (1).png" width="20" height="20"> <span data-bind="text: notUpdaredItemsCount()"></span> items were not updated. Check errors below.
         </div>
         <div data-bind="css:{
     'info_footer' :  notUpdaredItemsCount() > 0

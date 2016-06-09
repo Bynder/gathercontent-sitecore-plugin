@@ -17,7 +17,6 @@
     self.notImportedItemsCount = ko.observable(),
     self.currentMode = ko.observable(MODE.ChooseItmesForImort);
     self.sortInfo = ko.observable();
-    self.selectAllState = ko.observable();
     self.language = ko.observable(getUrlVars()["l"]),
     self.languages = ko.observableArray([]),
 
@@ -27,7 +26,6 @@
 
     self.projects = ko.observableArray([]),
     self.items = ko.observableArray(),
-    //self.koAllItems = ko.observableArray(allItems),
     self.statuses = ko.observableArray([]),
     self.templates = ko.observableArray([]),
 
@@ -47,28 +45,13 @@
         useExternalFilter: false
     };
 
-    self.pagingOptions = {
-        pageSizes: ko.observableArray([15, 20, 30]),
-        pageSize: ko.observable(10),
-        totalServerItems: ko.observable(0),
-        currentPage: ko.observable(1)
-    };
-
     self.sortInfo = ko.observable();
-    self.selectAllState = ko.observable();
     self.sortOnServer = ko.observable(false);
 
 
     self.filterConfirmOptions = {
         filterText: ko.observable(""),
         useExternalFilter: true
-    };
-
-    self.pagingConfirmOptions = {
-        pageSizes: ko.observableArray([15, 20, 30]),
-        pageSize: ko.observable(10),
-        totalServerItems: ko.observable(0),
-        currentPage: ko.observable(1)
     };
 
     self.filterResultOptions = {
@@ -83,7 +66,7 @@
         currentPage: ko.observable(1)
     };
 
-    self.setPagingData = function (data, page, pageSize) {
+    self.setPagingData = function (data) {
         var items = data;
         allItems = items.slice(0);
         allItemsSelected = items;
@@ -125,15 +108,12 @@
             });
         }
 
+        self.items(data);
 
-        var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
-
-        self.items(pagedData);
-
-        self.pagingOptions.totalServerItems(data.length);
+        //self.pagingOptions.totalServerItems(data.length);
     };
 
-    this.getPagedData = function (pageSize, page) {
+    this.getPagedData = function () {
         var id = getUrlVars()["id"];
         var db = getUrlVars()["db"];
         var project = self.project() || 0;
@@ -144,7 +124,7 @@
             success: function (response) {
                 jQuery(".preloader").hide();
                 self.initVariables(response);
-                self.setPagingData(response.Items, page, pageSize);
+                self.setPagingData(response.Items);
                 document.getElementsByTagName('input')[1].focus();
                 jQuery(window).trigger('resize');
                 //window.getSelection().removeAllRanges();
@@ -184,7 +164,7 @@
     self.projectChanged = function (obj, event) {
         if (event.originalEvent) {
             jQuery(".preloader").show();
-            self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());
+            self.getPagedData();
         }
     },
 
@@ -308,11 +288,8 @@
         }
     }
 
-    //button click events
 
     self.import = function () {
-        //self.defaultLocation
-        //self.language
         var id = self.defaultLocation();
 
         var selectedItems = self.selectedItems();
@@ -423,48 +400,21 @@
     }
 
     self.filterOptions.filterText.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
-    });
-    self.pagingOptions.pageSizes.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
-    });
-    self.pagingOptions.pageSize.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
-    });
-    self.pagingOptions.totalServerItems.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
-    });
-    self.pagingOptions.currentPage.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
-    });
-    self.sortInfo.subscribe(function (data) {
-        self.pagingOptions.currentPage(1); // reset page after sort
+        self.setPagingData(allItems);
     });
 
-    self.selectAllState.subscribe(function (data) {
-        self.selectedItems(allItemsSelected);
-        self.items().length = 0;
-        jQuery.each(allItemsSelected, function (i, item) {
-            item.__kg_selected__ = true;
-            self.items().push(item);
-        });
-    });
 
-    self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());
+    self.getPagedData();
 
     var options =
     {
-        //afterSelectionChange: function () { return true; },
         showColumnMenu: false,
         showFilter: false,
-        //allData: self.koAllItems,
         data: self.items,
         selectedItems: self.selectedItems,
-        enablePaging: true,
-        pagingOptions: self.pagingOptions,
+        enablePaging: false,
         filterOptions: self.filterOptions,
         sortInfo: self.sortInfo,
-        selectAllState: self.selectAllState,
         columnDefs: [
             {
                 field: 'Status.Name',
@@ -498,8 +448,7 @@
           showColumnMenu: false,
           showFilter: false,
           data: self.selectedItems,
-          enablePaging: true,
-          pagingOptions: self.pagingConfirmOptions,
+          enablePaging: false,
           filterOptions: self.filterConfirmOptions,
           columnDefs: [
               {
@@ -514,9 +463,10 @@
                       '<span class="cell-padding" data-bind="text: $parent.entity.AvailableMappings.Mappings[0].Title"></span>' +
                       '<select class=\"mappings-cell\" \
                                data-bind="visible:false, options: $parent.entity.AvailableMappings.Mappings, \
+							   selectedOptions: $parent.entity.AvailableMappings.Mappings[0].Id, \
                                optionsValue: \'Id\', \
                                optionsText: \'Title\',\
-                               value: $parent.entity.AvailableMappings.SelectedMappingId"> \
+							   value: $parent.entity.AvailableMappings.SelectedMappingId"> \
                          </select>' +
                       '</div>' +
                       '<div data-bind="if: $parent.entity.AvailableMappings.Mappings.length > 1">' +
@@ -582,42 +532,6 @@
     };
 
     this.gridResultOptions = resultOptions;
-    var changeInit = {};
 
-    jQuery("body").on("change", ".kgSelectionHeader", function (el) {
-        if (jQuery(el.target).prop("checked")) {
-            self.selectedItems(allItemsSelected);
-        }
-        else {
-
-        }
-    });
-    jQuery("body").on("change", ".mappings-cell", function (el) {
-
-        if (jQuery(".import-confirm-grid2").length) {
-
-            if (jQuery(".col2:contains(" + jQuery(el.target).parents(".col3").siblings(".col2").text() + ")").length > 1) {
-                if (!changeInit[jQuery(el.target).parents(".col3").siblings(".col2").text()]) {
-                    var init = confirm('Set the mapping for all ' + jQuery(el.target).parents(".col3").siblings(".col2").text() + ' items?');
-                    if (init) {
-
-                        jQuery(".col2:contains(" + jQuery(el.target).parents(".col3")
-                                .siblings(".col2").text() + ")").siblings(".col3")
-                            .find("option[value='" + jQuery(el.target).find("option:selected").val() + "']").prop("selected", true);
-
-                        var selectedItems = self.selectedItems();
-                        selectedItems.forEach(function (item, i) {
-                            item.AvailableMappings.SelectedMappingId = jQuery(el.target).find("option:selected").val();
-                        });
-
-                    }
-                    else {
-                        changeInit[jQuery(el.target).parents(".col3").siblings(".col2").text()] = true;
-                    }
-                }
-            }
-        }
-
-    });
 }
 

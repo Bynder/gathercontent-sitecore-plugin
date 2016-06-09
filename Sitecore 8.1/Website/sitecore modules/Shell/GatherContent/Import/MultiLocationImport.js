@@ -42,19 +42,6 @@
         useExternalFilter: false
     };
 
-    self.pagingOptions = {
-        pageSizes: ko.observableArray([15, 20, 30]),
-        pageSize: ko.observable(10),
-        totalServerItems: ko.observable(0),
-        currentPage: ko.observable(1)
-    };
-
-    self.groupedGridPagingOptions = {
-        pageSizes: ko.observableArray([15, 20, 30]),
-        pageSize: ko.observable(10),
-        totalServerItems: ko.observable(0),
-        currentPage: ko.observable(1)
-    };
 
     self.groupedGridFilterOptions = {
         filterText: ko.observable(""),
@@ -66,12 +53,6 @@
         useExternalFilter: false
     };
 
-    self.confirmedPagingOptions = {
-        pageSizes: ko.observableArray([15, 20, 30]),
-        pageSize: ko.observable(10),
-        totalServerItems: ko.observable(0),
-        currentPage: ko.observable(1)
-    };
 
     self.filterResultOptions = {
         filterText: ko.observable(""),
@@ -85,7 +66,7 @@
         currentPage: ko.observable(1)
     };
 
-    self.setPagingData = function (data, page, pageSize) {
+    self.setPagingData = function (data) {
         var items = data;
         allItems = items.slice(0);
         allItemsSelected = items;
@@ -128,12 +109,11 @@
             });
         }
 
-        var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
-        self.items(pagedData);
-        self.pagingOptions.totalServerItems(data.length);
+        self.items(data);
+        //self.pagingOptions.totalServerItems(data.length);
     };
 
-    this.getPagedData = function (pageSize, page) {
+    this.getPagedData = function () {
         var id = getUrlVars()["id"];
         var db = getUrlVars()["db"];
         var project = self.project();
@@ -145,7 +125,7 @@
             success: function (response) {
                 jQuery(".preloader").hide();
                 self.initVariables(response);
-                self.setPagingData(response.Items, page, pageSize);
+                self.setPagingData(response.Items);
                 //document.getElementsByTagName('input')[1].focus();
 
 
@@ -185,7 +165,7 @@
     self.projectChanged = function (obj, event) {
         if (event.originalEvent) {
             jQuery(".preloader").show();
-            self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());
+            self.getPagedData();
 
         }
     },
@@ -550,36 +530,19 @@
     }
 
     self.filterOptions.filterText.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+        self.setPagingData(allItems);
     });
-    self.pagingOptions.pageSizes.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
-    });
-    self.pagingOptions.pageSize.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
-    });
-    self.pagingOptions.totalServerItems.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
-    });
-    self.pagingOptions.currentPage.subscribe(function (data) {
-        self.setPagingData(allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
-    });
-    self.sortInfo.subscribe(function (data) {
-        self.pagingOptions.currentPage(1); // reset page after sort
-    });
-    self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());
+
+    self.getPagedData();
 
     var options =
             {
                 displaySelectionCheckbox: true,
-                //isMultiSelect: false,
                 showColumnMenu: false,
                 showFilter: false,
-                //canSelectRows: true,
                 data: self.items,
                 selectedItems: self.selectedItems,
-                enablePaging: true,
-                pagingOptions: self.pagingOptions,
+                enablePaging: false,
                 filterOptions: self.filterOptions,
                 sortInfo: self.sortInfo,
                 columnDefs: [
@@ -609,19 +572,16 @@
 
 
     this.gridOptions = options;
-    // var tplCheckbox = '<div><input type="checkbox" data-bind="attr: { \'class\': \'kgInput colt\' + $index()}, checked: $parent.entity[$data.field]" /></div>';
+    
     var groupedOptions =
         {
-
-            //selectWithCheckboxOnly: true,
             showColumnMenu: false,
             showFilter: false,
             canSelectRows: true,
             selectWithCheckboxOnly: true,
             data: self.groupedItems,
             selectedItems: self.selectedGroupItems,
-            enablePaging: true,
-            pagingOptions: self.groupedGridPagingOptions,
+            enablePaging: false,
             filterOptions: self.groupedGridFilterOptions,
             groups: ["TemplateName"],
 
@@ -652,8 +612,7 @@
         showColumnMenu: false,
         showFilter: false,
         data: self.confirmItems,
-        enablePaging: true,
-        pagingOptions: self.confirmedPagingOptions,
+        enablePaging: false,
         filterOptions: self.confirmedFilterOptions,
         columnDefs: [
             { field: 'ItemTitle', displayName: 'Title' },
@@ -714,13 +673,6 @@
    };
 
     this.gridResultOptions = resultOptions;
-    jQuery("body").on("change", ".kgSelectionHeader", function (el) {
-        if (jQuery(el.target).prop("checked")) {
-            self.selectedItems(allItemsSelected)
-        }
-        else {
 
-        }
-    });
 }
 

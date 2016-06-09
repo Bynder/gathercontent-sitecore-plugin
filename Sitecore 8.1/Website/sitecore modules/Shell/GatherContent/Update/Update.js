@@ -44,25 +44,11 @@
         useExternalFilter: false
     };
 
-    self.pagingOptions = {
-        pageSizes: ko.observableArray([15, 20, 30]),
-        pageSize: ko.observable(10),
-        totalServerItems: ko.observable(0),
-        currentPage: ko.observable(1)
-    };
-
-
     self.filterConfirmOptions = {
         filterText: ko.observable(""),
         useExternalFilter: true
     };
 
-    self.pagingConfirmOptions = {
-        pageSizes: ko.observableArray([15, 20, 30]),
-        pageSize: ko.observable(10),
-        totalServerItems: ko.observable(0),
-        currentPage: ko.observable(1)
-    };
 
     self.filterResultOptions = {
         filterText: ko.observable(""),
@@ -77,7 +63,7 @@
     };
 
 
-    self.setPagingData = function (data, page, pageSize) {
+    self.setPagingData = function (data) {
         var items = data;
         self.allItems = items.slice(0);
         allItemsSelected = items;
@@ -118,12 +104,12 @@
                 }
             });
         }
-        var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
-        self.items(pagedData);
-        self.pagingOptions.totalServerItems(data.length);
+        //var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
+        self.items(data);
+        //self.pagingOptions.totalServerItems(data.length);
     };
 
-    this.getPagedData = function (pageSize, page) {
+    this.getPagedData = function () {
         var id = getUrlVars()["id"];
         var db = getUrlVars()["db"];
         jQuery.ajax({
@@ -133,7 +119,7 @@
             success: function (response) {
                 jQuery(".preloader").hide();
                 self.initVariables(response);
-                self.setPagingData(response.Items, page, pageSize);
+                self.setPagingData(response.Items);
                 document.getElementsByTagName('input')[1].focus();
                 jQuery(window).trigger('resize');
             },
@@ -450,24 +436,10 @@
 
 
     self.filterOptions.filterText.subscribe(function (data) {
-        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
+        self.setPagingData(self.allItems);
     });
-    self.pagingOptions.pageSizes.subscribe(function (data) {
-        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
-    });
-    self.pagingOptions.pageSize.subscribe(function (data) {
-        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
-    });
-    self.pagingOptions.totalServerItems.subscribe(function (data) {
-        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
-    });
-    self.pagingOptions.currentPage.subscribe(function (data) {
-        self.setPagingData(self.allItems, self.pagingOptions.currentPage(), self.pagingOptions.pageSize());
-    });
-    self.sortInfo.subscribe(function (data) {
-        self.pagingOptions.currentPage(1); // reset page after sort
-    });
-    self.getPagedData(self.pagingOptions.pageSize(), self.pagingOptions.currentPage());
+
+    self.getPagedData();
 
 
     var options =
@@ -477,8 +449,7 @@
             showFilter: false,
             data: self.items,
             selectedItems: self.selectedItems,
-            enablePaging: true,
-            pagingOptions: self.pagingOptions,
+            enablePaging: false,
             filterOptions: self.filterOptions,
             sortInfo: self.sortInfo,
             columnDefs: [
@@ -513,8 +484,7 @@
               showColumnMenu: false,
               showFilter: false,
               data: self.selectedItems,
-              enablePaging: true,
-              pagingOptions: self.pagingConfirmOptions,
+              enablePaging: false,
               filterOptions: self.filterConfirmOptions,
               columnDefs: [
                 {
@@ -550,7 +520,6 @@
         showFilter: false,
         data: self.resultItems,
         enablePaging: true,
-        pagingOptions: self.pagingResultOptions,
         filterOptions: self.filterResultOptions,
         sortInfo: self.sortInfo,
         columnDefs: [
@@ -590,12 +559,5 @@
     };
 
     this.gridResultOptions = resultOptions;
-    jQuery("body").on("change", ".kgSelectionHeader", function (el) {
-        if (jQuery(el.target).prop("checked")) {
-            self.selectedItems(allItemsSelected)
-        }
-        else {
 
-        }
-    });
 }

@@ -59,12 +59,6 @@
         useExternalFilter: true
     };
 
-    self.pagingResultOptions = {
-        pageSizes: ko.observableArray([15, 20, 30]),
-        pageSize: ko.observable(10),
-        totalServerItems: ko.observable(0),
-        currentPage: ko.observable(1)
-    };
 
     self.setPagingData = function (data) {
         var items = data;
@@ -492,8 +486,7 @@
         showColumnMenu: false,
         showFilter: false,
         data: self.resultItems,
-        enablePaging: true,
-        pagingOptions: self.pagingResultOptions,
+        enablePaging: false,
         filterOptions: self.filterResultOptions,
         columnDefs: [
             {
@@ -533,5 +526,33 @@
 
     this.gridResultOptions = resultOptions;
 
+    var changeInit = {};
+    jQuery("body").on("change", ".mappings-cell", function (el) {
+
+        if (jQuery(".import-confirm-grid2").length) {
+
+            if (jQuery(".col2:contains(" + jQuery(el.target).parents(".col3").siblings(".col2").text() + ")").length > 1) {
+                if (!changeInit[jQuery(el.target).parents(".col3").siblings(".col2").text()]) {
+                    var init = confirm('Set the mapping for all ' + jQuery(el.target).parents(".col3").siblings(".col2").text() + ' items?');
+                    if (init) {
+
+                        jQuery(".col2:contains(" + jQuery(el.target).parents(".col3")
+                                .siblings(".col2").text() + ")").siblings(".col3")
+                            .find("option[value='" + jQuery(el.target).find("option:selected").val() + "']").prop("selected", true);
+
+                        var selectedItems = self.selectedItems();
+                        selectedItems.forEach(function (item, i) {
+                            item.AvailableMappings.SelectedMappingId = jQuery(el.target).find("option:selected").val();
+                        });
+
+                    }
+                    else {
+                        changeInit[jQuery(el.target).parents(".col3").siblings(".col2").text()] = true;
+                    }
+                }
+            }
+        }
+
+    });
 }
 

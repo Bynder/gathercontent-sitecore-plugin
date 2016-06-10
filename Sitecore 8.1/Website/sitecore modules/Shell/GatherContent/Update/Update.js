@@ -55,13 +55,6 @@
         useExternalFilter: true
     };
 
-    self.pagingResultOptions = {
-        pageSizes: ko.observableArray([15, 20, 30]),
-        pageSize: ko.observable(10),
-        totalServerItems: ko.observable(0),
-        currentPage: ko.observable(1)
-    };
-
 
     self.setPagingData = function (data) {
         var items = data;
@@ -519,7 +512,7 @@
         showColumnMenu: false,
         showFilter: false,
         data: self.resultItems,
-        enablePaging: true,
+        enablePaging: false,
         filterOptions: self.filterResultOptions,
         sortInfo: self.sortInfo,
         columnDefs: [

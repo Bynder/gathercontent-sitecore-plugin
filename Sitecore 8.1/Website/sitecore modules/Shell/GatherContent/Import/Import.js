@@ -290,8 +290,12 @@
         var items = [];
 
         selectedItems.forEach(function (item, i) {
+            if (item.AvailableMappings.SelectedMappingId == null)
+                item.AvailableMappings.SelectedMappingId = item.AvailableMappings.Mappings[0].Id;
+
             items.push({ Id: item.Id, SelectedMappingId: item.AvailableMappings.SelectedMappingId });
         });
+
         var lang = self.language();
         var status = self.statusFilter();
         var project = self.project();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
@@ -157,10 +158,20 @@ namespace GatherContent.Connector.WebControllers.Controllers
         /// <param name="items"></param>
         /// <param name="language"></param>
         /// <returns></returns>
-        public ActionResult UpdateItems(string id, string statusId, string language, List<UpdateListIds> items)
+        public ActionResult UpdateItems(string id, string statusId, string language)
         {
             try
             {
+                var items = new List<UpdateListIds>();
+                if (System.Web.HttpContext.Current.Request.InputStream.CanSeek)
+                {
+                    System.Web.HttpContext.Current.Request.InputStream.Seek(0, System.IO.SeekOrigin.Begin);
+                }
+                using (var reader = new StreamReader(System.Web.HttpContext.Current.Request.InputStream))
+                {
+                    var body = reader.ReadToEnd();
+                    items = JsonConvert.DeserializeObject<List<UpdateListIds>>(body);
+                }
                 var model = new List<ImportResultViewModel>();
                 var result = UpdateManager.UpdateItems(id, items, language);
                 foreach (var item in result)

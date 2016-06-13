@@ -329,17 +329,18 @@
         ({
             type: "POST",
             url: '/api/sitecore/Update/UpdateItems?id={' + id + '}&statusId=' + status + '&language=' + lang,
-            dataType: 'json',
-            contentType: "application/json; charset=utf-8",
+            dataType: 'text',
+            contentType: "text; charset=utf-8",
             data: JSON.stringify(items),
             success: function (response) {
                 if (response.status == 'error') {
                     self.postErrorHandle(response.message);
                 }
-                var notUpdatedCount = self.getNotUpdatedItemsCount(response);
-                self.successImportedItemsCount(response.length - notUpdatedCount);
+                var jsonItems = jQuery.parseJSON(response);
+                var notUpdatedCount = self.getNotUpdatedItemsCount(jsonItems);
+                self.successImportedItemsCount(jsonItems.length - notUpdatedCount);
                 self.notUpdaredItemsCount(notUpdatedCount);
-                self.resultItems(response);
+                self.resultItems(jsonItems);
                 self.buttonClick(MODE.ImportResult);
                 jQuery(window).trigger('resize');
             },

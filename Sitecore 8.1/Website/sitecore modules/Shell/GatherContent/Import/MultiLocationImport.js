@@ -329,17 +329,20 @@
         ({
             type: "POST",
             url: '/api/sitecore/Import/ImportItemsWithLocation?projectId=' + project + '&statusId=' + status + '&language=' + lang,
-            dataType: 'json',
-            contentType: "application/json; charset=utf-8",
+            dataType: 'text',
+            contentType: "text; charset=utf-8",
             data: JSON.stringify(importItems),
             success: function (response) {
                 if (response.status == 'error') {
                     self.postErrorHandle(response.message);
                 }
-                var notImportedItemsCount = self.getNotImportedItemsCount(response);
+
+                var jsonItems = jQuery.parseJSON(response);
+
+                var notImportedItemsCount = self.getNotImportedItemsCount(jsonItems);
                 self.notImportedItemsCount(notImportedItemsCount);
-                self.successImportedItemsCount(response.length - notImportedItemsCount);
-                self.resultItems(response);
+                self.successImportedItemsCount(jsonItems.length - notImportedItemsCount);
+                self.resultItems(jsonItems);
                 self.buttonClick(MODE.ImportResult);
 
             },

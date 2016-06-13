@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Web.Mvc;
 using GatherContent.Connector.Managers.Interfaces;
@@ -260,10 +261,20 @@ namespace GatherContent.Connector.WebControllers.Controllers
         /// <param name="items"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult ImportItems(string id, string projectId, string statusId, string language, List<ImportItemModel> items)
+        public ActionResult ImportItems(string id, string projectId, string statusId, string language)
         {
             try
             {
+                var items = new List<ImportItemModel>();
+                if (System.Web.HttpContext.Current.Request.InputStream.CanSeek)
+                {
+                    System.Web.HttpContext.Current.Request.InputStream.Seek(0, System.IO.SeekOrigin.Begin);
+                }
+                using (var reader = new StreamReader(System.Web.HttpContext.Current.Request.InputStream))
+                {
+                    var body = reader.ReadToEnd();
+                    items = JsonConvert.DeserializeObject<List<ImportItemModel>>(body);
+                }
                 var model = new List<ImportResultViewModel>();
                 var result = ImportManager.ImportItems(id, items, projectId, statusId, language);
                 foreach (var item in result)
@@ -306,10 +317,21 @@ namespace GatherContent.Connector.WebControllers.Controllers
         /// <param name="items"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult ImportItemsWithLocation(string projectId, string statusId, string language, List<LocationImportItemModel> items)
+        public ActionResult ImportItemsWithLocation(string projectId, string statusId, string language)
         {
             try
             {
+
+                var items = new List<LocationImportItemModel>();
+                if (System.Web.HttpContext.Current.Request.InputStream.CanSeek)
+                {
+                    System.Web.HttpContext.Current.Request.InputStream.Seek(0, System.IO.SeekOrigin.Begin);
+                }
+                using (var reader = new StreamReader(System.Web.HttpContext.Current.Request.InputStream))
+                {
+                    var body = reader.ReadToEnd();
+                    items = JsonConvert.DeserializeObject<List<LocationImportItemModel>>(body);
+                }
                 var model = new List<ImportResultViewModel>();
                 var result = ImportManager.ImportItemsWithLocation(items, projectId, statusId, language);
                 foreach (var item in result)

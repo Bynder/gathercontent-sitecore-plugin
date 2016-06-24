@@ -870,7 +870,7 @@ namespace GatherContent.Connector.Managers.Managers
                                 {
                                     //if we at the last item in the path - import mapped item
                                     if (ItemsRepository.IfMappedItemExists(parentId, cmsItem, templateMapping.MappingId, gcPath))
-                                    {
+                                    {   
                                         cmsItem.Id = ItemsRepository.AddNewVersion(parentId, cmsItem, templateMapping.MappingId, gcPath);
                                     } 
                                     else

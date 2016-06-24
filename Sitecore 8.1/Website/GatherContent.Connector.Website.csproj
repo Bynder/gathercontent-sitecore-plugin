@@ -198,6 +198,7 @@
   <ItemGroup>
     <None Include="Properties\PublishProfiles\acc.pubxml" />
     <None Include="Properties\PublishProfiles\Local Sitecore 7.pubxml" />
+    <None Include="Properties\PublishProfiles\sc 80 upd 1 - accepatnce.pubxml" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>

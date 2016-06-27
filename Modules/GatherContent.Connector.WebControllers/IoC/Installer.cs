@@ -2,6 +2,7 @@
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using GatherContent.Connector.WebControllers.Controllers;
+using Microsoft.Practices.ServiceLocation;
 
 namespace GatherContent.Connector.WebControllers.IoC
 {
@@ -17,13 +18,17 @@ namespace GatherContent.Connector.WebControllers.IoC
         /// <param name="store"></param>
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
+
+            var wServiceLocator = new WindsorServiceLocator(container);
+            ServiceLocator.SetLocatorProvider(() => wServiceLocator);
+
             container.Register(Classes.FromThisAssembly()
                 .BasedOn<BaseController>()
                 .LifestyleTransient()
                 );
 
-            var controllerFactory = new WindsorControllerFactory(container.Kernel);
-            System.Web.Mvc.ControllerBuilder.Current.SetControllerFactory(controllerFactory);
+            //var controllerFactory = new WindsorControllerFactory(container.Kernel);
+            //System.Web.Mvc.ControllerBuilder.Current.SetControllerFactory(controllerFactory);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using GatherContent.Connector.Managers.Interfaces;
+using Microsoft.Practices.ServiceLocation;
 using Newtonsoft.Json;
 using Sitecore.Diagnostics;
 
@@ -13,13 +14,14 @@ namespace GatherContent.Connector.WebControllers.Controllers
     {
         protected IDropTreeManager DropTreeManager;
 
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="dropTreeManager"></param>
-        public DropTreeController(IDropTreeManager dropTreeManager)
+        public DropTreeController()
         {
-            DropTreeManager = dropTreeManager;
+            DropTreeManager = ServiceLocator.Current.GetInstance<IDropTreeManager>();
         }
 
         /// <summary>

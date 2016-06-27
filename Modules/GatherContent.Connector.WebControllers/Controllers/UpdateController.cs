@@ -8,6 +8,7 @@ using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.UpdateItems;
 using GatherContent.Connector.WebControllers.Models.Import;
 using GatherContent.Connector.WebControllers.Models.Update;
+using Microsoft.Practices.ServiceLocation;
 using Newtonsoft.Json;
 using Sitecore.Diagnostics;
 
@@ -21,15 +22,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
         protected IUpdateManager UpdateManager;
         protected IImportManager ImportManager;
 
-       /// <summary>
-       /// 
-       /// </summary>
-       /// <param name="updateManager"></param>
-       /// <param name="importManager"></param>
-        public UpdateController(IUpdateManager updateManager, IImportManager importManager)
+
+        public UpdateController()
         {
-            ImportManager = importManager;
-            UpdateManager = updateManager;
+            ImportManager = ServiceLocator.Current.GetInstance<IImportManager>(); ;
+            UpdateManager = ServiceLocator.Current.GetInstance<IUpdateManager>(); ;
         }
 
         #region Utilities

@@ -7,6 +7,7 @@ using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.Mapping;
 using GatherContent.Connector.WebControllers.Models.Import;
 using GatherContent.Connector.WebControllers.Models.Mapping;
+using Microsoft.Practices.ServiceLocation;
 using Sitecore.Diagnostics;
 
 
@@ -19,13 +20,10 @@ namespace GatherContent.Connector.WebControllers.Controllers
     {
         protected IMappingManager MappingManager;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="mappingManager"></param>
-        public MappingsController(IMappingManager mappingManager)
+
+        public MappingsController()
         {
-            MappingManager = mappingManager;
+            MappingManager = ServiceLocator.Current.GetInstance<IMappingManager>(); 
         }
 
 

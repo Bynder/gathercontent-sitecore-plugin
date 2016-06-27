@@ -94,6 +94,9 @@
       <HintPath>..\..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation">
+      <HintPath>..\..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Release 8.1'">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\References\Sitecore\Newtonsoft.Json.dll</HintPath>
@@ -208,6 +211,7 @@
     <Compile Include="Controllers\UpdateController.cs" />
     <Compile Include="IoC\Installer.cs" />
     <Compile Include="IoC\WindsorControllerFactory.cs" />
+    <Compile Include="IoC\WindsorServiceLocator.cs" />
     <Compile Include="Models\Import\AvailableMappingsViewModel.cs" />
     <Compile Include="Models\Import\AvailableMappingViewModel.cs" />
     <Compile Include="Models\Import\FiltersViewModel.cs" />
@@ -238,6 +242,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

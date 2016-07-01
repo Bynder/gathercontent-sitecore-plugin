@@ -209,6 +209,7 @@
     <Compile Include="Controllers\ImportController.cs" />
     <Compile Include="Controllers\MappingsController.cs" />
     <Compile Include="Controllers\UpdateController.cs" />
+    <Compile Include="IoC\GCServiceLocator.cs" />
     <Compile Include="IoC\Installer.cs" />
     <Compile Include="IoC\WindsorControllerFactory.cs" />
     <Compile Include="IoC\WindsorServiceLocator.cs" />

@@ -20,7 +20,7 @@ namespace GatherContent.Connector.WebControllers.IoC
         {
 
             var wServiceLocator = new WindsorServiceLocator(container);
-            ServiceLocator.SetLocatorProvider(() => wServiceLocator);
+            GCServiceLocator.SetLocatorProvider(() => wServiceLocator);
 
             container.Register(Classes.FromThisAssembly()
                 .BasedOn<BaseController>()

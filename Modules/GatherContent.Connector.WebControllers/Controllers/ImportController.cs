@@ -5,6 +5,7 @@ using System.Net;
 using System.Web.Mvc;
 using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.ImportItems;
+using GatherContent.Connector.WebControllers.IoC;
 using GatherContent.Connector.WebControllers.Models.Import;
 using Microsoft.Practices.ServiceLocation;
 using Newtonsoft.Json;
@@ -23,8 +24,8 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         public ImportController()
         {
-            ImportManager = ServiceLocator.Current.GetInstance<IImportManager>();
-            DropTreeManager = ServiceLocator.Current.GetInstance<IDropTreeManager>();
+            ImportManager = GCServiceLocator.Current.GetInstance<IImportManager>();
+            DropTreeManager = GCServiceLocator.Current.GetInstance<IDropTreeManager>();
         }
 
 

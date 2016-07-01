@@ -5,6 +5,7 @@ using System.Net;
 using System.Web.Mvc;
 using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.Mapping;
+using GatherContent.Connector.WebControllers.IoC;
 using GatherContent.Connector.WebControllers.Models.Import;
 using GatherContent.Connector.WebControllers.Models.Mapping;
 using Microsoft.Practices.ServiceLocation;
@@ -23,7 +24,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         public MappingsController()
         {
-            MappingManager = ServiceLocator.Current.GetInstance<IMappingManager>(); 
+            MappingManager = GCServiceLocator.Current.GetInstance<IMappingManager>(); 
         }
 
 

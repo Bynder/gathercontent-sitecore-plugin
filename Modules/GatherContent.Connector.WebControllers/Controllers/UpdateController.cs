@@ -6,6 +6,7 @@ using System.Net;
 using System.Web.Mvc;
 using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.UpdateItems;
+using GatherContent.Connector.WebControllers.IoC;
 using GatherContent.Connector.WebControllers.Models.Import;
 using GatherContent.Connector.WebControllers.Models.Update;
 using Microsoft.Practices.ServiceLocation;
@@ -25,8 +26,8 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         public UpdateController()
         {
-            ImportManager = ServiceLocator.Current.GetInstance<IImportManager>(); ;
-            UpdateManager = ServiceLocator.Current.GetInstance<IUpdateManager>(); ;
+            ImportManager = GCServiceLocator.Current.GetInstance<IImportManager>(); ;
+            UpdateManager = GCServiceLocator.Current.GetInstance<IUpdateManager>(); ;
         }
 
         #region Utilities

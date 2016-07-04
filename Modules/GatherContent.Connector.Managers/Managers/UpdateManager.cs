@@ -447,7 +447,7 @@ namespace GatherContent.Connector.Managers.Managers
                                         break;
                                     case "files":
                                         {
-                                            ItemsRepository.MapFile(cmsItem, field.CmsField);
+                                            ItemsRepository.ResolveAttachmentMapping(cmsItem, field.CmsField);
                                         }
                                         break;
                                     default:

@@ -448,6 +448,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
             try
             {
                 var items = LinkManager.GetLinkedItemsIds(2368430);
+                var link = LinkManager.GetLinkedItemUrl(2368430);
 
                 var data = MappingManager.GetAllGcProjects();
                 return Content("OK");

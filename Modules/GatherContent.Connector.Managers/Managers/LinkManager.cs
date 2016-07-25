@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using Interfaces;
+    using Sitecore;
     using Sitecore.ContentSearch;
     using Sitecore.ContentSearch.Linq;
     using Sitecore.ContentSearch.SearchTypes;
@@ -22,7 +23,18 @@
 
         public string GetLinkedItemUrl(int gcId)
         {
-            throw new System.NotImplementedException();
+            IEnumerable<Item> items = GetLinkedSitecoreItems(gcId.ToString());
+
+            Item linkedItem = items
+                .OrderBy(i => i.Paths.FullPath)
+                .FirstOrDefault(i => i.Fields[FieldIDs.LayoutField].HasValue);
+
+            if (linkedItem != null)
+            {
+                return Sitecore.Links.LinkManager.GetItemUrl(linkedItem);
+            }
+
+            return null;
         }
 
         public void ExpandLinksInText(string cmsRootId)

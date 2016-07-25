@@ -20,11 +20,13 @@ namespace GatherContent.Connector.WebControllers.Controllers
     public class MappingsController : BaseController
     {
         protected IMappingManager MappingManager;
+        protected ILinkManager LinkManager;
 
 
         public MappingsController()
         {
-            MappingManager = GCServiceLocator.Current.GetInstance<IMappingManager>(); 
+            MappingManager = GCServiceLocator.Current.GetInstance<IMappingManager>();
+            LinkManager = GCServiceLocator.Current.GetInstance<ILinkManager>(); 
         }
 
 
@@ -445,6 +447,8 @@ namespace GatherContent.Connector.WebControllers.Controllers
         {
             try
             {
+                var items = LinkManager.GetLinkedItemsIds(2368430);
+
                 var data = MappingManager.GetAllGcProjects();
                 return Content("OK");
             }

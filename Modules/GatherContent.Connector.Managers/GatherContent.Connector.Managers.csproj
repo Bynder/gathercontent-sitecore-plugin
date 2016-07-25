@@ -125,6 +125,43 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\References 7.2\Sitecore\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Sitecore.ContentSearch" Condition="'$(Configuration)'=='Release 8.1'">
+      <HintPath>..\..\References\Sitecore\Sitecore.ContentSearch.dll</HintPath>
+    </Reference>
+    <Reference Include="Sitecore.ContentSearch.Linq" Condition="'$(Configuration)'=='Release 8.1'">
+      <HintPath>..\..\References\Sitecore\Sitecore.ContentSearch.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Sitecore.ContentSearch" Condition="'$(Configuration)'=='Debug 8.1'">
+      <HintPath>..\..\References\Sitecore\Sitecore.ContentSearch.dll</HintPath>
+    </Reference>
+    <Reference Include="Sitecore.ContentSearch.Linq" Condition="'$(Configuration)'=='Debug 8.1'">
+      <HintPath>..\..\References\Sitecore\Sitecore.ContentSearch.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Sitecore.ContentSearch" Condition="'$(Configuration)'=='Release 8.0'">
+      <HintPath>..\..\References 8.0\Sitecore\Sitecore.ContentSearch.dll</HintPath>
+    </Reference>
+    <Reference Include="Sitecore.ContentSearch.Linq" Condition="'$(Configuration)'=='Release 8.0'">
+      <HintPath>..\..\References 8.0\Sitecore\Sitecore.ContentSearch.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Sitecore.ContentSearch" Condition="'$(Configuration)'=='Debug 8.0'">
+      <HintPath>..\..\References 8.0\Sitecore\Sitecore.ContentSearch.dll</HintPath>
+    </Reference>
+    <Reference Include="Sitecore.ContentSearch.Linq" Condition="'$(Configuration)'=='Debug 8.0'">
+      <HintPath>..\..\References 8.0\Sitecore\Sitecore.ContentSearch.Linq.dll</HintPath>
+    </Reference>
+    
+    <Reference Include="Sitecore.ContentSearch" Condition="'$(Configuration)'=='Release 7'">
+      <HintPath>..\..\References 7.2\Sitecore\Sitecore.ContentSearch.dll</HintPath>
+    </Reference>
+    <Reference Include="Sitecore.ContentSearch.Linq" Condition="'$(Configuration)'=='Release 7'">
+      <HintPath>..\..\References 7.2\Sitecore\Sitecore.ContentSearch.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Sitecore.ContentSearch" Condition="'$(Configuration)'=='Debug 7'">
+      <HintPath>..\..\References 7.2\Sitecore\Sitecore.ContentSearch.dll</HintPath>
+    </Reference>
+    <Reference Include="Sitecore.ContentSearch.Linq" Condition="'$(Configuration)'=='Debug 7'">
+      <HintPath>..\..\References 7.2\Sitecore\Sitecore.ContentSearch.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="Sitecore.Kernel, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Release 8.1'">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\References\Sitecore\Sitecore.Kernel.dll</HintPath>
@@ -167,9 +204,11 @@
     <Compile Include="Interfaces\ICacheManager.cs" />
     <Compile Include="Interfaces\IDropTreeManager.cs" />
     <Compile Include="Interfaces\IImportManager.cs" />
+    <Compile Include="Interfaces\ILinkManager.cs" />
     <Compile Include="Interfaces\IManager.cs" />
     <Compile Include="Interfaces\IMappingManager.cs" />
     <Compile Include="Interfaces\IUpdateManager.cs" />
+    <Compile Include="Managers\LinkManager.cs" />
     <Compile Include="IoC\Bootstrapper.cs" />
     <Compile Include="IoC\Installer.cs" />
     <Compile Include="Managers\BaseManager.cs" />

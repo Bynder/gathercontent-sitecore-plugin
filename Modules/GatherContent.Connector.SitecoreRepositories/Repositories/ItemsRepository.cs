@@ -699,11 +699,8 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
             if (linkedItem != null)
             {
-                UrlOptions options = LinkManager.GetDefaultUrlOptions();
-                options.AlwaysIncludeServerUrl = true;
-
-                string url = Sitecore.Links.LinkManager.GetItemUrl(linkedItem, options);
-
+                string url = "~/link.aspx?_id=" + linkedItem.ID.Guid.ToString("N").ToUpper() + "&amp;_z=z";
+                
                 if (!string.IsNullOrEmpty(url))
                 {
                     _linkedUrlsCache[gcId] = url;
@@ -747,7 +744,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
                     if (!string.IsNullOrEmpty(url))
                     {
-                        newFieldValue = Regex.Replace(newFieldValue, pattern + gcId, "<a href=\""+ url +"\">"+ url +"</a>");
+                        newFieldValue = Regex.Replace(newFieldValue, pattern + gcId, url);
                     }
                 }
 

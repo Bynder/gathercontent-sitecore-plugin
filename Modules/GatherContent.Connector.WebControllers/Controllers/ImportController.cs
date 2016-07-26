@@ -7,7 +7,6 @@ using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.ImportItems;
 using GatherContent.Connector.WebControllers.IoC;
 using GatherContent.Connector.WebControllers.Models.Import;
-using Microsoft.Practices.ServiceLocation;
 using Newtonsoft.Json;
 using Sitecore.Diagnostics;
 
@@ -20,12 +19,13 @@ namespace GatherContent.Connector.WebControllers.Controllers
     {
         protected IImportManager ImportManager;
         protected IDropTreeManager DropTreeManager;
-
+        protected ILinkManager LinkManager;
 
         public ImportController()
         {
             ImportManager = GCServiceLocator.Current.GetInstance<IImportManager>();
             DropTreeManager = GCServiceLocator.Current.GetInstance<IDropTreeManager>();
+            LinkManager = GCServiceLocator.Current.GetInstance<ILinkManager>();
         }
 
 
@@ -256,10 +256,10 @@ namespace GatherContent.Connector.WebControllers.Controllers
         /// <param name="projectId"></param>
         /// <param name="statusId"></param>
         /// <param name="language"></param>
-        /// <param name="items"></param>
+        /// <param name="expandLinks"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult ImportItems(string id, string projectId, string statusId, string language)
+        public ActionResult ImportItems(string id, string projectId, string statusId, string language, bool expandLinks)
         {
             try
             {
@@ -277,6 +277,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
                 var result = ImportManager.ImportItems(id, items, projectId, statusId, language);
                 foreach (var item in result)
                 {
+                    if (expandLinks && item.IsImportSuccessful)
+                    {
+                        LinkManager.ExpandLinksInText(item.CmsId, false);
+                    }
+
                     model.Add(new ImportResultViewModel
                     {
                         Title = item.GcItem.Title,
@@ -312,14 +317,13 @@ namespace GatherContent.Connector.WebControllers.Controllers
         /// <param name="projectId"></param>
         /// <param name="statusId"></param>
         /// <param name="language"></param>
-        /// <param name="items"></param>
+        /// <param name="expandLinks"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult ImportItemsWithLocation(string projectId, string statusId, string language)
+        public ActionResult ImportItemsWithLocation(string projectId, string statusId, string language, bool expandLinks)
         {
             try
             {
-
                 var items = new List<LocationImportItemModel>();
                 if (System.Web.HttpContext.Current.Request.InputStream.CanSeek)
                 {
@@ -334,6 +338,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
                 var result = ImportManager.ImportItemsWithLocation(items, projectId, statusId, language);
                 foreach (var item in result)
                 {
+                    if (expandLinks && item.IsImportSuccessful)
+                    {
+                        LinkManager.ExpandLinksInText(item.CmsId, false);
+                    }
+
                     model.Add(new ImportResultViewModel
                     {
                         Title = item.GcItem.Title,

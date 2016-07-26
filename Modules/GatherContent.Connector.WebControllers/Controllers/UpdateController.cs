@@ -22,12 +22,14 @@ namespace GatherContent.Connector.WebControllers.Controllers
     {
         protected IUpdateManager UpdateManager;
         protected IImportManager ImportManager;
+        protected ILinkManager LinkManager;
 
 
         public UpdateController()
         {
-            ImportManager = GCServiceLocator.Current.GetInstance<IImportManager>(); ;
-            UpdateManager = GCServiceLocator.Current.GetInstance<IUpdateManager>(); ;
+            ImportManager = GCServiceLocator.Current.GetInstance<IImportManager>();
+            UpdateManager = GCServiceLocator.Current.GetInstance<IUpdateManager>();
+            LinkManager = GCServiceLocator.Current.GetInstance<ILinkManager>();
         }
 
         #region Utilities
@@ -146,17 +148,15 @@ namespace GatherContent.Connector.WebControllers.Controllers
         }
 
 
-
-
         /// <summary>
         /// 
         /// </summary>
         /// <param name="id"></param>
         /// <param name="statusId"></param>
-        /// <param name="items"></param>
         /// <param name="language"></param>
+        /// <param name="expandLinks"></param>
         /// <returns></returns>
-        public ActionResult UpdateItems(string id, string statusId, string language)
+        public ActionResult UpdateItems(string id, string statusId, string language, bool expandLinks)
         {
             try
             {
@@ -174,6 +174,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
                 var result = UpdateManager.UpdateItems(id, items, language);
                 foreach (var item in result)
                 {
+                    if (expandLinks && item.IsImportSuccessful)
+                    {
+                        LinkManager.ExpandLinksInText(item.CmsId, false);
+                    }
+
                     model.Add(new ImportResultViewModel
                     {
                         Title = item.GcItem.Title,

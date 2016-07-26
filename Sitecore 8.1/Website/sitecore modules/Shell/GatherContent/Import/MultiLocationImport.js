@@ -18,20 +18,19 @@
     self.sortInfo = ko.observable();
     self.language = ko.observable(decodeURI(getUrlVars()["l"])),
     self.languages = ko.observableArray([]),
-
     self.projects = ko.observableArray([]),
-        self.items = ko.observableArray([]),
-        self.confirmItems = ko.observableArray([]),
-        self.groupedItems = ko.observableArray([]),
-        self.statuses = ko.observableArray([]),
-        self.templates = ko.observableArray([]),
-        self.statusPostState = ko.observable(false),
-        self.project = ko.observable(),
-        self.statusFilter = ko.observable(),
-        self.templateFilter = ko.observable(),
-
-
+    self.items = ko.observableArray([]),
+    self.confirmItems = ko.observableArray([]),
+    self.groupedItems = ko.observableArray([]),
+    self.statuses = ko.observableArray([]),
+    self.templates = ko.observableArray([]),
+    self.statusPostState = ko.observable(false),
+    self.project = ko.observable(),
+    self.statusFilter = ko.observable(),
+    self.templateFilter = ko.observable(),
+    
     self.query = ko.observable(''),
+    self.expandGatherContentLinks = ko.observable(false),
 
     self.selectedGroupItems = ko.observableArray([]),
     self.selectedItems = ko.observableArray([]);
@@ -41,8 +40,7 @@
         filterText: ko.observable(""),
         useExternalFilter: false
     };
-
-
+    
     self.groupedGridFilterOptions = {
         filterText: ko.observable(""),
         useExternalFilter: true
@@ -58,8 +56,7 @@
         filterText: ko.observable(""),
         useExternalFilter: true
     };
-
-
+    
     self.setPagingData = function (data) {
         var items = data;
         allItems = items.slice(0);
@@ -328,7 +325,7 @@
         jQuery.ajax
         ({
             type: "POST",
-            url: '/api/sitecore/Import/ImportItemsWithLocation?projectId=' + project + '&statusId=' + status + '&language=' + lang,
+            url: '/api/sitecore/Import/ImportItemsWithLocation?projectId=' + project + '&statusId=' + status + '&language=' + lang + '&expandLinks=' + self.expandGatherContentLinks(),
             dataType: 'text',
             contentType: "text; charset=utf-8",
             data: JSON.stringify(importItems),

@@ -378,6 +378,7 @@ namespace GatherContent.Connector.Managers.Managers
                 };
                 string cmsLink = ItemsRepository.GetCmsItemLink(HttpContext.Current.Request.Url.Host, cmsId);
                 itemResponseModel.CmsLink = cmsLink;
+                itemResponseModel.CmsId = cmsId;
 
                 //MappingResultModel cmsItem;
                 //TryMapItem(gcItem, gcTemplate, templates, out cmsItem);

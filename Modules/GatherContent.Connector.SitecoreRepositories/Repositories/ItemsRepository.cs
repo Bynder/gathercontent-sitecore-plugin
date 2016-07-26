@@ -13,6 +13,13 @@ using Sitecore.Diagnostics;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
+    using System.Text.RegularExpressions;
+    using Sitecore.ContentSearch;
+    using Sitecore.ContentSearch.Linq;
+    using Sitecore.ContentSearch.SearchTypes;
+    using Sitecore.Data.Fields;
+    using Sitecore.Links;
+
     /// <summary>
     /// 
     /// </summary>
@@ -22,15 +29,18 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         private const string LAST_SYNC_DATE = "Last Sync Date";
         private const string GC_PATH = "GCPath";
         private const string MAPPING_ID = "MappingId";
+        private const string IndexName = "sitecore_master_index";
 
-        protected IAccountsRepository AccountsRepository;
+        private Dictionary<int, string> _linkedUrlsCache = new Dictionary<int, string>(); 
         private readonly IMediaRepository<Item> _mediaRepository;
 
+        protected IAccountsRepository AccountsRepository;
+
         /// <summary>
-        /// 
+        /// Initializes a new instance of the <see cref="ItemsRepository"/> class.
         /// </summary>
-        /// <param name="accountsRepository"></param>
-        /// <param name="mediaRepository"></param>
+        /// <param name="accountsRepository">The accounts repository.</param>
+        /// <param name="mediaRepository">The media repository.</param>
         public ItemsRepository(IAccountsRepository accountsRepository, IMediaRepository<Item> mediaRepository)
             : base()
         {
@@ -672,6 +682,129 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 }
             }
             return null;
+        }
+
+        public string GetLinkedItemUrl(int gcId)
+        {
+            if (_linkedUrlsCache.ContainsKey(gcId))
+            {
+                return _linkedUrlsCache[gcId];
+            }
+
+            IEnumerable<Item> items = GetLinkedSitecoreItems(gcId.ToString());
+
+            Item linkedItem = items
+                .OrderBy(i => i.Paths.FullPath)
+                .FirstOrDefault(i => i.Fields[FieldIDs.LayoutField].HasValue || i.Fields[FieldIDs.LayoutField].ContainsStandardValue);
+
+            if (linkedItem != null)
+            {
+                UrlOptions options = LinkManager.GetDefaultUrlOptions();
+                options.AlwaysIncludeServerUrl = true;
+
+                string url = Sitecore.Links.LinkManager.GetItemUrl(linkedItem, options);
+
+                if (!string.IsNullOrEmpty(url))
+                {
+                    _linkedUrlsCache[gcId] = url;
+
+                    return url;
+                }
+            }
+
+            return null;
+        }
+
+        public void ExpandLinksInText(string cmsRootId, bool includeDescendants)
+        {
+            Item root = ContextDatabase.GetItem(ID.Parse(cmsRootId));
+
+            if (root == null)
+            {
+                return;
+            }
+
+            var baseUrl = AccountsRepository.GetAccountSettings().GatherContentUrl;
+            string pattern = Sitecore.StringUtil.EnsurePostfix('/', baseUrl.Replace("/", "\\/")) + "item\\/";
+            Regex rgx = new Regex(pattern + "(\\d+)");
+
+            ExpandLinksInTextRecursive(root, rgx, pattern, includeDescendants);
+        }
+
+        private void ExpandLinksInTextRecursive(Item rootItem, Regex rgx, string pattern, bool includeDescendants)
+        {
+            rootItem.Fields.ReadAll();
+
+            foreach (Field field in rootItem.Fields.Where(f => f.HasValue && f.TypeKey == "rich text"))
+            {
+                string fieldValue = field.Value;
+                string newFieldValue = field.Value;
+                foreach (Match match in rgx.Matches(fieldValue))
+                {
+                    string gcId = match.Groups[1].Value;
+
+                    string url = GetLinkedItemUrl(int.Parse(gcId));
+
+                    if (!string.IsNullOrEmpty(url))
+                    {
+                        newFieldValue = Regex.Replace(newFieldValue, pattern + gcId, "<a href=\""+ url +"\">"+ url +"</a>");
+                    }
+                }
+
+                if (newFieldValue != fieldValue)
+                {
+                    using (new SecurityDisabler())
+                    {
+                        rootItem.Editing.BeginEdit();
+                        rootItem.Fields[field.ID].Value = newFieldValue;
+                        rootItem.Editing.EndEdit();
+                    }
+                }
+            }
+
+            if (includeDescendants)
+            {
+                foreach (Item child in rootItem.GetChildren())
+                {
+                    ExpandLinksInTextRecursive(child, rgx, pattern, includeDescendants);
+                }
+            }
+        }
+
+        private List<Item> GetLinkedSitecoreItems(string gcId)
+        {
+            var result = new List<Item>();
+
+            ISearchIndex index = ContentSearchManager.Indexes.SingleOrDefault(i => i.Name.Equals(IndexName));
+
+            if (index == null)
+            {
+                Log.Warn("Index " + IndexName + " not found!", this);
+                return result;
+            }
+
+            using (IProviderSearchContext context = index.CreateSearchContext())
+            {
+                var query = context.GetQueryable<SearchResultItem>()
+                    .Where(i => i.Path.StartsWith("/sitecore/content/") &&
+                                i["gc_content_id"] == gcId
+                                );
+
+                query = query.Filter(i => i.Language == Sitecore.Context.Language.Name);
+
+                var res = query.GetResults();
+                if (res.TotalSearchResults == 0)
+                {
+                    return result;
+                }
+
+                result = res.Hits
+                    .Select(h => h.Document.GetItem())
+                    .Where(i => i != null)
+                    .ToList();
+
+                return result;
+            }
         }
     }
 }

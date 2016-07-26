@@ -89,7 +89,8 @@
             <div style="padding-bottom: 15px">
                 <input type="checkbox" data-bind="checked: statusPostState" />
                 After successful import change status of item to <select data-bind="options: statuses, optionsText: 'Name', optionsValue: 'Id', value: statusFilter"></select> inside your GatherContent account.
-
+                <br />
+                <label><input type="checkbox" data-bind="checked: expandGatherContentLinks" /> Expand GatherContent Links</label>
             </div>
             <input type="button" value="<Back" class="backBtn" data-bind="click: buttonClick.bind($data, 2)" />
             <input type="button" value="Import>" data-bind="click: buttonClick.bind($data, 4)" />

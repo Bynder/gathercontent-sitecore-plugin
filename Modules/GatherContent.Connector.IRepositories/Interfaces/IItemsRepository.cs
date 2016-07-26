@@ -40,5 +40,9 @@ namespace GatherContent.Connector.IRepositories.Interfaces
         string GetCmsItemLink(string host, string itemId);
 
         string GetItemId(string parentId, CmsItem cmsItem);
+
+        string GetLinkedItemUrl(int gcId);
+
+        void ExpandLinksInText(string cmsRootId, bool includeDescendants);
     }
 }

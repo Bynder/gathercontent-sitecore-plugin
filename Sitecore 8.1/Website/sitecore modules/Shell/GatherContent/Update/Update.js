@@ -34,6 +34,7 @@
     self.templateFilter = ko.observable(),
 
     self.query = ko.observable(''),
+    self.expandGatherContentLinks = ko.observable(false),
 
 
     self.selectedItems = ko.observableArray([]);
@@ -328,7 +329,7 @@
         jQuery.ajax
         ({
             type: "POST",
-            url: '/api/sitecore/Update/UpdateItems?id={' + id + '}&statusId=' + status + '&language=' + lang,
+            url: '/api/sitecore/Update/UpdateItems?id={' + id + '}&statusId=' + status + '&language=' + lang + '&expandLinks=' + self.expandGatherContentLinks(),
             dataType: 'text',
             contentType: "text; charset=utf-8",
             data: JSON.stringify(items),

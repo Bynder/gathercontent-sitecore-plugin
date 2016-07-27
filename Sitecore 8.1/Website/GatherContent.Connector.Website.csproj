@@ -234,7 +234,7 @@
     <Content Include="App_Config\Include\Unicorn\Unicorn.CustomSerializationFolder.config.example" />
     <Content Include="App_Config\Include\Unicorn\Unicorn.Configs.NewItemsOnly.example" />
     <Content Include="App_Config\Include\Unicorn\Unicorn.Configs.Dependency.config.example" />
-    <Content Include="App_Config\Include\Unicorn\Unicorn.Configs.Default.example" />
+    <None Include="App_Config\Include\Unicorn\Unicorn.Configs.Default.config" />
     <Content Include="App_Config\Include\Unicorn\Unicorn.config" />
     <None Include="App_Config\Include\Unicorn\Unicorn.AutoPublish.config.disabled" />
     <None Include="Properties\PublishProfiles\acc.pubxml" />

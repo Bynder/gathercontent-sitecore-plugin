@@ -8,7 +8,10 @@ using Sitecore.Web.UI.Sheer;
 
 namespace GatherContent.Connector.Website.Commands
 {
-    public class ImportCommand : Command
+    using Managers.Interfaces;
+    using WebControllers.IoC;
+
+    public class ExpandRichTextLinksCommand : Command
     {
 
         public override CommandState QueryState(CommandContext context)
@@ -44,14 +47,14 @@ namespace GatherContent.Connector.Website.Commands
             catch (Exception ex)
             {
                 Log.Error(ex.Message, ex, typeof(ImportCommand));
-                SheerResponse.Alert("Sync failed. See log for details.");
+                SheerResponse.Alert("Expand links failed. See log for details.");
             }
         }
 
         protected void Run(ClientPipelineArgs args)
         {
             Assert.ArgumentNotNull(args, "args");
-
+            /*
             var id = args.Parameters["id"].Replace("{", "").Replace("}", "");
             var language = Language.Parse(args.Parameters["language"]);
             var version = args.Parameters["version"];
@@ -59,24 +62,12 @@ namespace GatherContent.Connector.Website.Commands
             var title = args.Parameters["title"];
             var uri = "/sitecore modules/shell/gathercontent/import/import.html";
             var path = string.Format("{0}?id={1}&l={2}&v={3}&t={4}&db={5}", uri, id, language, version, title, db);
+            */
+            var linkManager = GCServiceLocator.Current.GetInstance<ILinkManager>();
 
-#if SC72
-            Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(path, "1200", "700", "Import Content from GatherContent", false), "Shell");
-#else
-            var options = new ModalDialogOptions(path)
-            {
-                Width = "1200",
-                Height = "700",
-                MinWidth = "881",
-                MinHeight = "400",
-                Maximizable = false,
-                Header = "Import Content from GatherContent"
-            };
-
-            Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.ShowModalDialog(options), "Shell");
-#endif
-
-
+            linkManager.ExpandLinksInText(args.Parameters["id"], true);
+            
+            Context.ClientPage.ClientResponse.Broadcast(Context.ClientPage.ClientResponse.Alert("Links expanded!"), "Shell");
         }
     }
 }

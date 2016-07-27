@@ -28,7 +28,8 @@ MediaCache/
 
 Sitecore 7.2/Website/Data/
 Sitecore 8.0/Website/Data/
-Sitecore 8.1/Website/Data/
+Sitecore 8.1/Website/Data/*
+!Sitecore 8.1/Website/Data/Unicorn/
 
 Sitecore 7.2/Data/
 Sitecore 8.0/Data/

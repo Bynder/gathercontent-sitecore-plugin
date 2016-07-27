@@ -41,6 +41,11 @@ namespace GatherContent.Connector.IRepositories.Interfaces
 
         string GetItemId(string parentId, CmsItem cmsItem);
 
+        /// <summary>
+        /// Gets the linked item URL in RTE format '~/link.aspx?_id=GUID&amp;_z=z'.
+        /// </summary>
+        /// <param name="gcId">The gc identifier.</param>
+        /// <returns></returns>
         string GetLinkedItemUrl(int gcId);
 
         void ExpandLinksInText(string cmsRootId, bool includeDescendants);

@@ -29,7 +29,7 @@ namespace GatherContent.Connector.Managers.Managers
             AccountsService = accountsService;
             ProjectsService = projectsService;
             TemplatesService = templateService;
-
+            
             CacheManager = cacheManager;
         }
 

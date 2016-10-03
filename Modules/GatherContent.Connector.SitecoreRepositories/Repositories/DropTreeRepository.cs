@@ -2,6 +2,7 @@
 using System.Linq;
 using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.IRepositories.Models.Import;
+using Sitecore.Configuration;
 using Sitecore.Data.Items;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories
@@ -11,15 +12,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
     /// </summary>
     public class DropTreeRepository : BaseSitecoreRepository, IDropTreeRepository
     {
-        protected IAccountsRepository AccountsRepository;
+        private IAccountsRepository _accountsRepository;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="accountsRepository"></param>
-        public DropTreeRepository(IAccountsRepository accountsRepository) : base()
+        public DropTreeRepository()
         {
-            AccountsRepository = accountsRepository;
+            _accountsRepository = Factory.CreateObject("gatherContent.connector/components/accountsRepository", true) as IAccountsRepository;
         }
 
         /// <summary>
@@ -87,7 +84,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         public List<CmsItem> GetHomeNode(string id)
         {
             var model = new List<CmsItem>();
-            var accountSettings = AccountsRepository.GetAccountSettings();
+            var accountSettings = _accountsRepository.GetAccountSettings();
             var dropTreeHomeNode = accountSettings.DropTreeHomeNode;
             if (string.IsNullOrEmpty(dropTreeHomeNode))
             {
@@ -155,7 +152,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         /// <returns></returns>
         public string GetHomeNodeId()
         {
-            var accountSettings = AccountsRepository.GetAccountSettings();
+            var accountSettings = _accountsRepository.GetAccountSettings();
 
             var dropTreeHomeNode = accountSettings.DropTreeHomeNode;
             if (string.IsNullOrEmpty(dropTreeHomeNode))

@@ -28,7 +28,6 @@ namespace GatherContent.Connector.Managers.Managers
 
         protected IItemsService ItemsService;
 
-        protected IMappingManager MappingManager;
         protected GCAccountSettings GcAccountSettings;
 
         /// <summary>
@@ -41,7 +40,6 @@ namespace GatherContent.Connector.Managers.Managers
         /// <param name="projectsService"></param>
         /// <param name="templateService"></param>
         /// <param name="cacheManager"></param>
-        /// <param name="mappingManager"></param>
         /// <param name="gcAccountSettings"></param>
         public ImportManager(
             IItemsRepository itemsRepository,
@@ -51,17 +49,12 @@ namespace GatherContent.Connector.Managers.Managers
             IProjectsService projectsService,
             ITemplatesService templateService,
             ICacheManager cacheManager,
-            IMappingManager mappingManager,
             GCAccountSettings gcAccountSettings)
             : base(accountsService, projectsService, templateService, cacheManager)
         {
             ItemsRepository = itemsRepository;
             MappingRepository = mappingRepository;
-
             ItemsService = itemsService;
-
-            MappingManager = mappingManager;
-
             GcAccountSettings = gcAccountSettings;
         }
 

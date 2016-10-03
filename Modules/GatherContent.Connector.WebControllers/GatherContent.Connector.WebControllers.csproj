@@ -86,17 +86,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Castle.Core.3.3.0\lib\net45\Castle.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Castle.Windsor, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Practices.ServiceLocation">
-      <HintPath>..\..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Release 8.1'">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\References\Sitecore\Newtonsoft.Json.dll</HintPath>
@@ -209,10 +198,7 @@
     <Compile Include="Controllers\ImportController.cs" />
     <Compile Include="Controllers\MappingsController.cs" />
     <Compile Include="Controllers\UpdateController.cs" />
-    <Compile Include="IoC\GCServiceLocator.cs" />
-    <Compile Include="IoC\Installer.cs" />
-    <Compile Include="IoC\WindsorControllerFactory.cs" />
-    <Compile Include="IoC\WindsorServiceLocator.cs" />
+    <Compile Include="IoC\ServiceFactory.cs" />
     <Compile Include="Models\Import\AvailableMappingsViewModel.cs" />
     <Compile Include="Models\Import\AvailableMappingViewModel.cs" />
     <Compile Include="Models\Import\FiltersViewModel.cs" />
@@ -237,6 +223,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GatherContent.Connector.Entities\GatherContent.Connector.Entities.csproj">
+      <Project>{A40787E3-7DF6-41B9-90C0-41704AEA2BE3}</Project>
+      <Name>GatherContent.Connector.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GatherContent.Connector.GatherContentService\GatherContent.Connector.GatherContentService.csproj">
+      <Project>{42B1CCBC-1FC4-4601-9D53-63B69AFAB68D}</Project>
+      <Name>GatherContent.Connector.GatherContentService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GatherContent.Connector.IRepositories\GatherContent.Connector.IRepositories.csproj">
+      <Project>{3DCE6E64-51F1-42B3-86DD-38DAEA4BA416}</Project>
+      <Name>GatherContent.Connector.IRepositories</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GatherContent.Connector.Managers\GatherContent.Connector.Managers.csproj">
       <Project>{06887722-f39a-4f95-81bc-653334bc7636}</Project>
       <Name>GatherContent.Connector.Managers</Name>
@@ -244,7 +242,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

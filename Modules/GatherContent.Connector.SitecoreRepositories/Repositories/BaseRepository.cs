@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GatherContent.Connector.IRepositories.Interfaces;
 using Sitecore;
 using Sitecore.Configuration;
 using Sitecore.Data;
@@ -16,7 +17,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
     {
         protected readonly Database ContextDatabase;
         protected readonly Language ContextLanguage;
-
+        
         /// <summary>
         /// 
         /// </summary>

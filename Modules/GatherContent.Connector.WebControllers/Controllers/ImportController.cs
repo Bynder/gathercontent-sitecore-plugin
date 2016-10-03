@@ -23,9 +23,12 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         public ImportController()
         {
-            ImportManager = GCServiceLocator.Current.GetInstance<IImportManager>();
-            DropTreeManager = GCServiceLocator.Current.GetInstance<IDropTreeManager>();
-            LinkManager = GCServiceLocator.Current.GetInstance<ILinkManager>();
+//            ImportManager = GCServiceLocator.Current.GetInstance<IImportManager>();
+//            DropTreeManager = GCServiceLocator.Current.GetInstance<IDropTreeManager>();
+//            LinkManager = GCServiceLocator.Current.GetInstance<ILinkManager>();
+            ImportManager = ServiceFactory.ImportManager;
+            LinkManager = ServiceFactory.LinkManager;
+            DropTreeManager = ServiceFactory.DropTreeManager;
         }
 
 

@@ -30,10 +30,6 @@ namespace GatherContent.Connector.Managers.Managers
 
         protected IItemsService ItemsService;
 
-        protected IMappingManager MappingManager;
-
-        protected IImportManager ImportManager;
-
         protected GCAccountSettings GcAccountSettings;
 
         /// <summary>
@@ -42,8 +38,6 @@ namespace GatherContent.Connector.Managers.Managers
         /// <param name="itemsRepository"></param>
         /// <param name="mappingRepository"></param>
         /// <param name="itemsService"></param>
-        /// <param name="mappingManager"></param>
-        /// <param name="importManager"></param>
         /// <param name="accountsService"></param>
         /// <param name="projectsService"></param>
         /// <param name="templateService"></param>
@@ -53,8 +47,6 @@ namespace GatherContent.Connector.Managers.Managers
             IItemsRepository itemsRepository,
             IMappingRepository mappingRepository,
             IItemsService itemsService,
-            IMappingManager mappingManager,
-            IImportManager importManager,
             IAccountsService accountsService,
             IProjectsService projectsService,
             ITemplatesService templateService,
@@ -67,10 +59,6 @@ namespace GatherContent.Connector.Managers.Managers
             MappingRepository = mappingRepository;
 
             ItemsService = itemsService;
-
-            MappingManager = mappingManager;
-
-            ImportManager = importManager;
 
             GcAccountSettings = gcAccountSettings;
         }
@@ -107,7 +95,7 @@ namespace GatherContent.Connector.Managers.Managers
                     }
                     catch (WebException exception)
                     {
-                        Log.Error("GatherContent message. Api Server error has happened during getting Item with id = " + idField.Value.ToString(), exception);
+                        Log.Error("GatherContent message. Api Server error has happened during getting Item with id = " + idField.Value, exception);
                         using (var response = exception.Response)
                         {
                             var httpResponse = (HttpWebResponse)response;
@@ -320,7 +308,6 @@ namespace GatherContent.Connector.Managers.Managers
         /// <param name="itemId"></param>
         /// <param name="models"></param>
         /// <param name="language"></param>
-        /// <param name="statusId"></param>
         /// <returns></returns>
         public List<ItemResultModel> UpdateItems(string itemId, List<UpdateListIds> models, string language)
         {

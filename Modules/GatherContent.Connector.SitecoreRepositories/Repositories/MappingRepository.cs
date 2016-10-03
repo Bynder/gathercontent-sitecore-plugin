@@ -5,6 +5,7 @@ using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.IRepositories.Models.Mapping;
 using Sitecore;
+using Sitecore.Configuration;
 using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.Data.Managers;
@@ -18,19 +19,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
     /// </summary>
     public class MappingRepository : BaseSitecoreRepository, IMappingRepository
     {
-        protected IAccountsRepository AccountsRepository;
+        private IAccountsRepository _accountsRepository;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="accountsRepository"></param>
-        public MappingRepository(IAccountsRepository accountsRepository)
-            : base()
+        public MappingRepository()
         {
-            AccountsRepository = accountsRepository;
+            _accountsRepository = Factory.CreateObject("gatherContent.connector/components/accountsRepository", true) as IAccountsRepository;
         }
-
-
 
         #region Utilities
 
@@ -123,7 +117,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
             };
 
-            var accountSettings = AccountsRepository.GetAccountSettings();
+            var accountSettings = _accountsRepository.GetAccountSettings();
             var dateFormat = accountSettings.DateFormat;
             if (string.IsNullOrEmpty(dateFormat))
             {
@@ -270,7 +264,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
             if (projectItem == null)
             {
-                var accountSettings = AccountsRepository.GetAccountSettings();
+                var accountSettings = _accountsRepository.GetAccountSettings();
 
                 var parentItem = GetItem(accountSettings.AccountItemId);
 
@@ -399,7 +393,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             foreach (var project in scProjects)
             {
                 var templates = project.Axes.GetDescendants().Where(i => i.TemplateName == Constants.TemplateMappingName).ToList();
-                if (templates.Count() > 0)
+                if (templates.Any())
                 {
                     model.AddRange(ConvertSitecoreTemplatesToModel(templates, project.Name));
                 }
@@ -509,7 +503,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
         public List<CmsTemplate> GetAvailableCmsTemplates()
         {
-            var accountSettings = AccountsRepository.GetAccountSettings();
+            var accountSettings = _accountsRepository.GetAccountSettings();
 
             var templateFolderId = accountSettings.TemplateFolderId;
             if (string.IsNullOrEmpty(templateFolderId))

@@ -9,6 +9,7 @@ using Sitecore.Resources.Media;
 using Sitecore.SecurityModel;
 using System.Collections.Generic;
 using GatherContent.Connector.IRepositories.Interfaces;
+using Sitecore.Configuration;
 using Sitecore.Diagnostics;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories
@@ -25,28 +26,15 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
     /// </summary>
     public class ItemsRepository : BaseSitecoreRepository, IItemsRepository
     {
-        private const string GC_CONTENT_ID = "GC Content Id";
-        private const string LAST_SYNC_DATE = "Last Sync Date";
-        private const string GC_PATH = "GCPath";
-        private const string MAPPING_ID = "MappingId";
+        private const string GcContentId = "GC Content Id";
+        private const string LastSyncDate = "Last Sync Date";
+        private const string GcPath = "GCPath";
+        private const string MappingId = "MappingId";
         private const string IndexName = "sitecore_master_index";
 
-        private Dictionary<int, string> _linkedUrlsCache = new Dictionary<int, string>(); 
+        private readonly Dictionary<int, string> _linkedUrlsCache = new Dictionary<int, string>(); 
         private readonly IMediaRepository<Item> _mediaRepository;
-
-        protected IAccountsRepository AccountsRepository;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ItemsRepository"/> class.
-        /// </summary>
-        /// <param name="accountsRepository">The accounts repository.</param>
-        /// <param name="mediaRepository">The media repository.</param>
-        public ItemsRepository(IAccountsRepository accountsRepository, IMediaRepository<Item> mediaRepository)
-            : base()
-        {
-            AccountsRepository = accountsRepository;
-            _mediaRepository = mediaRepository;
-        }
+        private readonly IAccountsRepository _accountsRepository;
 
         #region Utilities
 
@@ -121,6 +109,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
         #endregion
 
+        public ItemsRepository()
+        {
+            _mediaRepository = Factory.CreateObject("gatherContent.connector/components/mediaRepository", true) as IMediaRepository<Item>;
+            _accountsRepository = Factory.CreateObject("gatherContent.connector/components/accountsRepository", true) as IAccountsRepository;
+        }
 
         /// <summary>
         /// 
@@ -172,13 +165,13 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 cmsItem.Fields.Add(new CmsField
                 {
                     TemplateField = new CmsTemplateField { FieldName = "GC Content Id" },
-                    Value = item[GC_CONTENT_ID]
+                    Value = item[GcContentId]
                 });
 
                 cmsItem.Fields.Add(new CmsField
                 {
                     TemplateField = new CmsTemplateField { FieldName = "Last Sync Date" },
-                    Value = DateUtil.IsoDateToDateTime(item[LAST_SYNC_DATE])
+                    Value = DateUtil.IsoDateToDateTime(item[LastSyncDate])
                 });
 
                 cmsItem.Fields.Add(new CmsField
@@ -222,15 +215,15 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                             try
                             {
                                 EnsureMetaTemplateInherited(createdItem.Template);
-                                var idField = cmsItem.Fields.FirstOrDefault(f => f.TemplateField.FieldName == GC_CONTENT_ID);
+                                var idField = cmsItem.Fields.FirstOrDefault(f => f.TemplateField.FieldName == GcContentId);
                                 if (idField != null)
                                 {
                                     createdItem.Editing.BeginEdit();
-                                    createdItem.Fields[GC_CONTENT_ID].Value = idField.Value.ToString();
+                                    createdItem.Fields[GcContentId].Value = idField.Value.ToString();
                                     var isoDate = DateUtil.ToIsoDate(DateTime.UtcNow);
-                                    createdItem.Fields[LAST_SYNC_DATE].Value = isoDate;
-                                    createdItem.Fields[MAPPING_ID].Value = mappingId;
-                                    createdItem.Fields[GC_PATH].Value = gcPath;
+                                    createdItem.Fields[LastSyncDate].Value = isoDate;
+                                    createdItem.Fields[MappingId].Value = mappingId;
+                                    createdItem.Fields[GcPath].Value = gcPath;
                                     createdItem.Editing.EndEdit();
                                 }
                                 return createdItem.ID.ToString();
@@ -615,16 +608,16 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                                 try
                                 {
                                     EnsureMetaTemplateInherited(newVersion.Template);
-                                    var idField = cmsItem.Fields.FirstOrDefault(f => f.TemplateField.FieldName == GC_CONTENT_ID);
+                                    var idField = cmsItem.Fields.FirstOrDefault(f => f.TemplateField.FieldName == GcContentId);
                                     if (idField != null)
                                     {
                                         newVersion.Editing.BeginEdit();
 
-                                        newVersion.Fields[GC_CONTENT_ID].Value = idField.Value.ToString();
+                                        newVersion.Fields[GcContentId].Value = idField.Value.ToString();
                                         var isoDate = DateUtil.ToIsoDate(DateTime.UtcNow);
-                                        newVersion.Fields[LAST_SYNC_DATE].Value = isoDate;
-                                        newVersion.Fields[MAPPING_ID].Value = mappingId;
-                                        newVersion.Fields[GC_PATH].Value = gcPath;
+                                        newVersion.Fields[LastSyncDate].Value = isoDate;
+                                        newVersion.Fields[MappingId].Value = mappingId;
+                                        newVersion.Fields[GcPath].Value = gcPath;
 
                                         newVersion.Editing.EndEdit();
                                     }
@@ -721,7 +714,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 return;
             }
 
-            var baseUrl = AccountsRepository.GetAccountSettings().GatherContentUrl;
+            var baseUrl = _accountsRepository.GetAccountSettings().GatherContentUrl;
             string pattern = Sitecore.StringUtil.EnsurePostfix('/', baseUrl.Replace("/", "\\/")) + "item\\/";
             Regex rgx = new Regex(pattern + "(\\d+)");
 

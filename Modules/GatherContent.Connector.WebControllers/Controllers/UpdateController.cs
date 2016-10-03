@@ -9,7 +9,6 @@ using GatherContent.Connector.Managers.Models.UpdateItems;
 using GatherContent.Connector.WebControllers.IoC;
 using GatherContent.Connector.WebControllers.Models.Import;
 using GatherContent.Connector.WebControllers.Models.Update;
-using Microsoft.Practices.ServiceLocation;
 using Newtonsoft.Json;
 using Sitecore.Diagnostics;
 
@@ -27,9 +26,12 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         public UpdateController()
         {
-            ImportManager = GCServiceLocator.Current.GetInstance<IImportManager>();
-            UpdateManager = GCServiceLocator.Current.GetInstance<IUpdateManager>();
-            LinkManager = GCServiceLocator.Current.GetInstance<ILinkManager>();
+//            ImportManager = GCServiceLocator.Current.GetInstance<IImportManager>();
+//            UpdateManager = GCServiceLocator.Current.GetInstance<IUpdateManager>();
+//            LinkManager = GCServiceLocator.Current.GetInstance<ILinkManager>();
+            ImportManager = ServiceFactory.ImportManager;
+            LinkManager = ServiceFactory.LinkManager;
+            UpdateManager = ServiceFactory.UpdateManager;
         }
 
         #region Utilities

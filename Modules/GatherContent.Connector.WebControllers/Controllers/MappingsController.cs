@@ -8,7 +8,6 @@ using GatherContent.Connector.Managers.Models.Mapping;
 using GatherContent.Connector.WebControllers.IoC;
 using GatherContent.Connector.WebControllers.Models.Import;
 using GatherContent.Connector.WebControllers.Models.Mapping;
-using Microsoft.Practices.ServiceLocation;
 using Sitecore.Diagnostics;
 
 
@@ -25,8 +24,38 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         public MappingsController()
         {
-            MappingManager = GCServiceLocator.Current.GetInstance<IMappingManager>();
-            LinkManager = GCServiceLocator.Current.GetInstance<ILinkManager>(); 
+            MappingManager = ServiceFactory.MappingManager;
+            LinkManager = ServiceFactory.LinkManager;
+            /*
+            try
+            {
+                MappingManager = GCServiceLocator.Current.GetInstance<IMappingManager>();
+                LinkManager = GCServiceLocator.Current.GetInstance<ILinkManager>();
+
+                Log.Info("MappingManager =" + (MappingManager == null ? "null" : typeof(MappingManager).FullName), this);
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error("GCServiceLocator error", ex);
+            }
+
+            var accountsRepository = new AccountsRepository();
+            var gcAccountSettings = accountsRepository.GetAccountSettings();
+            MappingManager = new MappingManager(
+                new MappingRepository(accountsRepository), 
+                new AccountsService(gcAccountSettings), 
+                new ProjectsService(gcAccountSettings), 
+                new TemplatesService(gcAccountSettings), 
+                new ItemsService(gcAccountSettings), 
+                new CacheManager(), 
+                gcAccountSettings);
+
+            LinkManager = new LinkManager(
+                new ItemsRepository(
+                    new AccountsRepository(), 
+                    new SimpleMediaRepository()));
+           */
         }
 
 

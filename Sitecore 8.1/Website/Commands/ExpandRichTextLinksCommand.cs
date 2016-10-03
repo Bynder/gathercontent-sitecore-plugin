@@ -63,7 +63,7 @@ namespace GatherContent.Connector.Website.Commands
             var uri = "/sitecore modules/shell/gathercontent/import/import.html";
             var path = string.Format("{0}?id={1}&l={2}&v={3}&t={4}&db={5}", uri, id, language, version, title, db);
             */
-            var linkManager = GCServiceLocator.Current.GetInstance<ILinkManager>();
+            ILinkManager linkManager = ServiceFactory.LinkManager;
 
             linkManager.ExpandLinksInText(args.Parameters["id"], true);
             

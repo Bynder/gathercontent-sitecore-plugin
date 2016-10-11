@@ -239,6 +239,10 @@
       <Project>{06887722-f39a-4f95-81bc-653334bc7636}</Project>
       <Name>GatherContent.Connector.Managers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GatherContent.Connector.SitecoreRepositories\GatherContent.Connector.SitecoreRepositories.csproj">
+      <Project>{4ded3819-e7a3-4726-8f71-a0f417a8019a}</Project>
+      <Name>GatherContent.Connector.SitecoreRepositories</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

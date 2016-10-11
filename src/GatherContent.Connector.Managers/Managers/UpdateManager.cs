@@ -14,8 +14,9 @@ using GatherContent.Connector.Managers.Models.ImportItems.New;
 using GatherContent.Connector.Managers.Models.Mapping;
 using GatherContent.Connector.Managers.Models.UpdateItems;
 using GatherContent.Connector.Managers.Models.UpdateItems.New;
-using GatherContent.Connector.SitecoreRepositories.Repositories;
+using Sitecore;
 using Sitecore.Diagnostics;
+using Constants = GatherContent.Connector.SitecoreRepositories.Repositories.Constants;
 
 namespace GatherContent.Connector.Managers.Managers
 {
@@ -378,8 +379,10 @@ namespace GatherContent.Connector.Managers.Managers
                 if (templateMapping != null) // template found, now map fields here
                 {
                     var gcContentIdField = templateMapping.FieldMappings.FirstOrDefault(fieldMapping => fieldMapping.CmsField.TemplateField.FieldName == "GC Content Id");
-                    if (gcContentIdField!=null) templateMapping.FieldMappings.Remove(gcContentIdField);
-
+                    if (gcContentIdField != null)
+                    {
+                        templateMapping.FieldMappings.Remove(gcContentIdField);
+                    }
 
                     var files = new List<File>();
                     if (gcItem.Config.SelectMany(config => config.Elements).Any(element => element.Type == "files"))
@@ -446,6 +449,14 @@ namespace GatherContent.Connector.Managers.Managers
                                 }
                             }
                         }
+
+                        var cmsSyncDateField =  new CmsField
+                        {
+                            TemplateField = new CmsTemplateField { FieldName = "Last Sync Date" },
+                            Value = DateUtil.ToIsoDate(DateTime.UtcNow)
+                        };
+
+                        ItemsRepository.MapText(cmsItem, cmsSyncDateField);
                     }
 
                 }
@@ -505,11 +516,6 @@ namespace GatherContent.Connector.Managers.Managers
                 }
             }
             return fieldError;
-        }
-
-        private void PostNewItemStatus(string gcItemId, string statusId)
-        {
-            ItemsService.ChooseStatusForItem(gcItemId, statusId);
         }
     }
 }

@@ -299,6 +299,7 @@ namespace GatherContent.Connector.Managers.Managers
                                     //set CMS link after we got out CMS Id
                                     var cmsLink = ItemsRepository.GetCmsItemLink(HttpContext.Current.Request.Url.Host, cmsItem.Id);
                                     itemResponseModel.CmsLink = cmsLink;
+                                    itemResponseModel.CmsId = cmsItem.Id;
                                     
                                     if (!string.IsNullOrEmpty(statusId))
                                     {

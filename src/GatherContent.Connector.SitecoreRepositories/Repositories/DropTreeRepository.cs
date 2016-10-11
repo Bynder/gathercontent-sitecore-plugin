@@ -7,24 +7,15 @@ using Sitecore.Data.Items;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class DropTreeRepository : BaseSitecoreRepository, IDropTreeRepository
     {
-        private IAccountsRepository _accountsRepository;
+        private readonly IAccountsRepository _accountsRepository;
 
         public DropTreeRepository()
         {
             _accountsRepository = Factory.CreateObject("gatherContent.connector/components/accountsRepository", true) as IAccountsRepository;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="items"></param>
-        /// <returns></returns>
         private List<CmsItem> CreateChildrenTree(string id, IEnumerable<Item> items)
         {
             var list = new List<CmsItem>();
@@ -76,11 +67,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return list;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         public List<CmsItem> GetHomeNode(string id)
         {
             var model = new List<CmsItem>();
@@ -118,11 +104,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return model;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         public List<CmsItem> GetChildren(string id)
         {
             var model = new List<CmsItem>();

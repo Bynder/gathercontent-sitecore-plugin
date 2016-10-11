@@ -8,22 +8,12 @@ using GatherContent.Connector.Managers.Interfaces;
 
 namespace GatherContent.Connector.Managers.Managers
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class DropTreeManager : IDropTreeManager
     {
         protected IDropTreeRepository DropTreeRepository;
         protected IAccountsRepository AccountsRepository;
-
         protected GCAccountSettings GcAccountSettings;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="dropTreeRepository"></param>
-        /// <param name="accountsRepository"></param>
-        /// <param name="gcAccountSettings"></param>
         public DropTreeManager(IDropTreeRepository dropTreeRepository, IAccountsRepository accountsRepository, GCAccountSettings gcAccountSettings)
         {
             AccountsRepository = accountsRepository;
@@ -31,12 +21,6 @@ namespace GatherContent.Connector.Managers.Managers
             DropTreeRepository = dropTreeRepository;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="items"></param>
-        /// <returns></returns>
         private List<DropTreeModel> CreateChildrenTree(string id, List<CmsItem> items)
         {
             var list = new List<DropTreeModel>();

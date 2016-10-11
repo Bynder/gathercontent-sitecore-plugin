@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Net;
 using GatherContent.Connector.IRepositories.Interfaces;
@@ -96,7 +94,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     IncludeExtensionInItemName = false,
                     KeepExisting = true,
                     Versioned = false,
-                    Destination = String.Concat(rootPath, "/", validItemName)
+                    Destination = string.Concat(rootPath, "/", validItemName)
                 };
 
                 var previewImgItem = MediaManager.Creator.CreateFromStream(mediaStream, validItemName + "." + extension, mediaOptions);

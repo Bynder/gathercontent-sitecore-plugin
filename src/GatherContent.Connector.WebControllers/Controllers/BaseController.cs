@@ -4,9 +4,6 @@ using Sitecore.Mvc.Controllers;
 
 namespace GatherContent.Connector.WebControllers.Controllers
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class BaseController : SitecoreController
     {
         /// <summary>
@@ -14,7 +11,6 @@ namespace GatherContent.Connector.WebControllers.Controllers
         /// </summary>
         public BaseController()
         {
-
         }
 
         public List<LanguageViewModel> GetLanguages(string databse) 

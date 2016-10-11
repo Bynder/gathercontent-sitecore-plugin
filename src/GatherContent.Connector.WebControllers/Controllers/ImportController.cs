@@ -12,9 +12,6 @@ using Sitecore.Diagnostics;
 
 namespace GatherContent.Connector.WebControllers.Controllers
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class ImportController : BaseController
     {
         protected IImportManager ImportManager;
@@ -23,23 +20,14 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         public ImportController()
         {
-//            ImportManager = GCServiceLocator.Current.GetInstance<IImportManager>();
-//            DropTreeManager = GCServiceLocator.Current.GetInstance<IDropTreeManager>();
-//            LinkManager = GCServiceLocator.Current.GetInstance<ILinkManager>();
             ImportManager = ServiceFactory.ImportManager;
             LinkManager = ServiceFactory.LinkManager;
             DropTreeManager = ServiceFactory.DropTreeManager;
         }
 
-
-        #region Utilities 
-
-
-
         public FiltersViewModel GetFilters(string projectId) 
         {
             var filtersViewModel = new FiltersViewModel();
-
             var filters = ImportManager.GetFilters(projectId);
 
             if (filters.CurrentProject != null)
@@ -50,7 +38,6 @@ namespace GatherContent.Connector.WebControllers.Controllers
                     Name = filters.CurrentProject.Name
                 };
             }
-
 
             filtersViewModel.Projects.Add(new ProjectViewModel
             {
@@ -83,36 +70,18 @@ namespace GatherContent.Connector.WebControllers.Controllers
                     Name = template.Name
                 });
             }
-
-
-
+            
             return filtersViewModel;
         }
-
-
-
-
-
-        #endregion
-
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="projectId"></param>
-        /// <returns></returns>
+        
         public string Get(string id, string projectId, string db)
         {
             try
             {
                 var items = ImportManager.GetImportDialogModel(id, projectId);
                 var importViewModel = new ImportViewModel();
-
                 importViewModel.Languages = GetLanguages(db);
-
-
+                
                 if (items != null)
                 {
                     foreach (var item in items)
@@ -148,13 +117,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
                         }
 
                         importViewModel.Items.Add(importItem);
-
                     }
                 }
 
                 importViewModel.Filters = GetFilters(projectId);
                 
-
                 var model = JsonConvert.SerializeObject(importViewModel);
                 return model;
             }
@@ -167,19 +134,9 @@ namespace GatherContent.Connector.WebControllers.Controllers
             {
                 Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
                 return exception.Message;
-            }
-
+            }    
         }
-
-
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="projectId"></param>
-        /// <returns></returns>
+        
         public string GetMultiLocation(string id, string projectId,string db)
         {
             try
@@ -213,7 +170,6 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
                         };
 
-
                         foreach (var availableMapping in item.AvailableMappings.Mappings)
                         {
                             importItem.AvailableMappings.Mappings.Add(new AvailableMappingViewModel
@@ -228,13 +184,10 @@ namespace GatherContent.Connector.WebControllers.Controllers
                         }
 
                         importViewModel.Items.Add(importItem);
-
                     }
                 }
-
-
+                
                 importViewModel.Filters = GetFilters(projectId);
-
 
                 var model = JsonConvert.SerializeObject(importViewModel);
                 return model;
@@ -252,21 +205,12 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="projectId"></param>
-        /// <param name="statusId"></param>
-        /// <param name="language"></param>
-        /// <param name="expandLinks"></param>
-        /// <returns></returns>
         [HttpPost]
         public ActionResult ImportItems(string id, string projectId, string statusId, string language, bool expandLinks)
         {
             try
             {
-                var items = new List<ImportItemModel>();
+                List<ImportItemModel> items;
                 if (System.Web.HttpContext.Current.Request.InputStream.CanSeek)
                 {
                     System.Web.HttpContext.Current.Request.InputStream.Seek(0, System.IO.SeekOrigin.Begin);
@@ -300,6 +244,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
                         GcTemplateName = item.GcTemplate.Name
                     });
                 }
+
                 return Json(model, JsonRequestBehavior.AllowGet);
             }
             catch (WebException exception)
@@ -314,20 +259,12 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="projectId"></param>
-        /// <param name="statusId"></param>
-        /// <param name="language"></param>
-        /// <param name="expandLinks"></param>
-        /// <returns></returns>
         [HttpPost]
         public ActionResult ImportItemsWithLocation(string projectId, string statusId, string language, bool expandLinks)
         {
             try
             {
-                var items = new List<LocationImportItemModel>();
+                List<LocationImportItemModel> items;
                 if (System.Web.HttpContext.Current.Request.InputStream.CanSeek)
                 {
                     System.Web.HttpContext.Current.Request.InputStream.Seek(0, System.IO.SeekOrigin.Begin);
@@ -361,6 +298,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
                         GcTemplateName = item.GcTemplate.Name
                     });
                 }
+
                 return Json(model, JsonRequestBehavior.AllowGet);
             }
             catch (WebException exception)

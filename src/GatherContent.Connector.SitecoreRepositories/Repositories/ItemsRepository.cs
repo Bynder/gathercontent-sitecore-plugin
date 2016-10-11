@@ -1,29 +1,24 @@
 ﻿using System;
-using GatherContent.Connector.IRepositories.Models.Import;
-using Sitecore;
 using System.Linq;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using Sitecore;
 using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.Globalization;
 using Sitecore.Resources.Media;
 using Sitecore.SecurityModel;
-using System.Collections.Generic;
-using GatherContent.Connector.IRepositories.Interfaces;
 using Sitecore.Configuration;
 using Sitecore.Diagnostics;
+using Sitecore.ContentSearch;
+using Sitecore.ContentSearch.Linq;
+using Sitecore.ContentSearch.SearchTypes;
+using Sitecore.Data.Fields;
+using GatherContent.Connector.IRepositories.Models.Import;
+using GatherContent.Connector.IRepositories.Interfaces;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
-    using System.Text.RegularExpressions;
-    using Sitecore.ContentSearch;
-    using Sitecore.ContentSearch.Linq;
-    using Sitecore.ContentSearch.SearchTypes;
-    using Sitecore.Data.Fields;
-    using Sitecore.Links;
-
-    /// <summary>
-    /// 
-    /// </summary>
     public class ItemsRepository : BaseSitecoreRepository, IItemsRepository
     {
         private const string GcContentId = "GC Content Id";
@@ -31,83 +26,10 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         private const string GcPath = "GCPath";
         private const string MappingId = "MappingId";
         private const string IndexName = "sitecore_master_index";
-
-        private readonly Dictionary<int, string> _linkedUrlsCache = new Dictionary<int, string>(); 
-        private readonly IMediaRepository<Item> _mediaRepository;
         private readonly IAccountsRepository _accountsRepository;
 
-        #region Utilities
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="updatedItem"></param>
-        /// <param name="fieldId"></param>
-        /// <param name="label"></param>
-        /// <returns></returns>
-        private Item GetDatasource(Item updatedItem, string fieldId, string label)
-        {
-            var dataSourcePath = GetDatasourcePath(updatedItem, fieldId);
-            var dataSourceItem = GetItemByPath(dataSourcePath);
-            if (dataSourceItem == null) return null;
-            var children = dataSourceItem.GetChildren().InnerChildren.FirstOrDefault(c => c.Name.ToLower() == label.ToLower());
-            return children;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="updatedItem"></param>
-        /// <param name="fieldId"></param>
-        /// <returns></returns>
-        private string GetDatasourcePath(Item updatedItem, string fieldId)
-        {
-            var scField = updatedItem.Fields[new ID(fieldId)];
-            var dataSourcePath = GetItem(scField.ID.ToString())["Source"];
-            return dataSourcePath;
-        }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="templateId"></param>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        private bool IsItemHasTemplate(ID templateId, Item item)
-        {
-            return item.Template.BaseTemplates.Any(i => i.ID == templateId);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="templateItem"></param>
-        /// <returns></returns>
-        private bool EnsureMetaTemplateInherited(TemplateItem templateItem)
-        {
-            if (templateItem != null)
-            {
-                bool gcLinkTemplate = templateItem.BaseTemplates.Any(bt => bt.Name == Constants.GCLinkItemTemplateName);
-                string baseTemplates = templateItem.InnerItem[FieldIDs.BaseTemplate];
-
-                if (!gcLinkTemplate)
-                {
-                    using (new SecurityDisabler())
-                    {
-                        templateItem.InnerItem.Editing.BeginEdit();
-                        templateItem.InnerItem[FieldIDs.BaseTemplate] = string.Format("{0}|{1}", baseTemplates, Constants.GCLinkItemTemplateID);
-                        templateItem.InnerItem.Editing.EndEdit();
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
-
-
-        #endregion
+        private readonly Dictionary<int, string> _linkedUrlsCache = new Dictionary<int, string>();
+        private readonly IMediaRepository<Item> _mediaRepository;
 
         public ItemsRepository()
         {
@@ -116,7 +38,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="parentId"></param>
         /// <param name="language"></param>
@@ -136,7 +57,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
             foreach (var item in items)
             {
-                var cmsItem = GetItem(item.ID.ToString(), item.Language.ToString(), false);
+                var cmsItem = GetItem(item.ID.ToString(), item.Language.ToString());
                 result.Add(cmsItem);
             }
 
@@ -144,7 +65,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="itemId"></param>
         /// <param name="language"></param>
@@ -164,19 +84,19 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
                 cmsItem.Fields.Add(new CmsField
                 {
-                    TemplateField = new CmsTemplateField { FieldName = "GC Content Id" },
+                    TemplateField = new CmsTemplateField {FieldName = "GC Content Id"},
                     Value = item[GcContentId]
                 });
 
                 cmsItem.Fields.Add(new CmsField
                 {
-                    TemplateField = new CmsTemplateField { FieldName = "Last Sync Date" },
+                    TemplateField = new CmsTemplateField {FieldName = "Last Sync Date"},
                     Value = DateUtil.IsoDateToDateTime(item[LastSyncDate])
                 });
 
                 cmsItem.Fields.Add(new CmsField
                 {
-                    TemplateField = new CmsTemplateField { FieldName = "Template" },
+                    TemplateField = new CmsTemplateField {FieldName = "Template"},
                     Value = item.TemplateName
                 });
 
@@ -191,7 +111,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="parentId"></param>
         /// <param name="cmsItem"></param>
@@ -241,7 +160,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="parentId"></param>
         /// <param name="cmsItem"></param>
@@ -280,7 +198,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="item"></param>
         /// <param name="cmsField"></param>
@@ -304,10 +221,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         }
 
 
-        
-
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="item"></param>
         /// <param name="cmsField"></param>
@@ -344,7 +258,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="item"></param>
         /// <param name="cmsField"></param>
@@ -398,7 +311,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="item"></param>
         /// <param name="cmsField"></param>
@@ -419,7 +331,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                             // var media = UploadFile(path, file);
                             Item media = _mediaRepository.UploadFile(path, file);
 
-                            var mediaUrl = MediaManager.GetMediaUrl(media, new MediaUrlOptions { UseItemPath = false, AbsolutePath = false });
+                            var mediaUrl = MediaManager.GetMediaUrl(media, new MediaUrlOptions {UseItemPath = false, AbsolutePath = false});
                             var value = string.Format("<file mediaid=\"{0}\" src=\"{1}\" />", media.ID, mediaUrl);
 
                             createdItem.Editing.BeginEdit();
@@ -484,7 +396,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="parentId"></param>
         /// <param name="cmsItem"></param>
@@ -516,7 +427,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="parentId"></param>
         /// <param name="cmsItem"></param>
@@ -546,7 +456,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="parentId"></param>
         /// <param name="cmsItem"></param>
@@ -576,7 +485,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="parentId"></param>
         /// <param name="cmsItem"></param>
@@ -584,51 +492,56 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         /// <param name="gcPath"></param>
         public string AddNewVersion(string parentId, CmsItem cmsItem, string mappingId, string gcPath)
         {
-            if (parentId != null)
+            if (parentId == null)
             {
-                using (new SecurityDisabler())
+                return null;
+            }
+
+            using (new SecurityDisabler())
+            {
+                using (new LanguageSwitcher(cmsItem.Language))
                 {
-                    using (new LanguageSwitcher(cmsItem.Language))
+                    var validName = ItemUtil.ProposeValidItemName(cmsItem.Title);
+                    var parent = ContextDatabase.GetItem(new ID(parentId));
+                    if (parent == null)
                     {
-                        var validName = ItemUtil.ProposeValidItemName(cmsItem.Title);
-                        var parent = ContextDatabase.GetItem(new ID(parentId));
-                        if (parent != null)
+                        return null;
+                    }
+
+                    var items = parent.Axes.SelectItems(string.Format("./*[@@name='{0}']", validName));
+                    if (items == null)
+                    {
+                        return null;
+                    }
+
+                    items = items.Where(item => item["GCPath"] == gcPath).ToArray();
+
+                    foreach (var item in items)
+                    {
+                        var newVersion = item.Versions.AddVersion();
+
+                        try
                         {
-                            var items = parent.Axes.SelectItems(string.Format("./*[@@name='{0}']", validName));
-                            if (items != null)
+                            EnsureMetaTemplateInherited(newVersion.Template);
+                            var idField = cmsItem.Fields.FirstOrDefault(f => f.TemplateField.FieldName == GcContentId);
+                            if (idField != null)
                             {
-                                items = items.Where(item => item["GCPath"] == gcPath).ToArray();
+                                newVersion.Editing.BeginEdit();
+
+                                newVersion.Fields[GcContentId].Value = idField.Value.ToString();
+                                var isoDate = DateUtil.ToIsoDate(DateTime.UtcNow);
+                                newVersion.Fields[LastSyncDate].Value = isoDate;
+                                newVersion.Fields[MappingId].Value = mappingId;
+                                newVersion.Fields[GcPath].Value = gcPath;
+
+                                newVersion.Editing.EndEdit();
                             }
-
-                            foreach (var item in items)
-                            {
-                                //TODO: add new method for update and create
-                                var newVersion = item.Versions.AddVersion();
-
-                                try
-                                {
-                                    EnsureMetaTemplateInherited(newVersion.Template);
-                                    var idField = cmsItem.Fields.FirstOrDefault(f => f.TemplateField.FieldName == GcContentId);
-                                    if (idField != null)
-                                    {
-                                        newVersion.Editing.BeginEdit();
-
-                                        newVersion.Fields[GcContentId].Value = idField.Value.ToString();
-                                        var isoDate = DateUtil.ToIsoDate(DateTime.UtcNow);
-                                        newVersion.Fields[LastSyncDate].Value = isoDate;
-                                        newVersion.Fields[MappingId].Value = mappingId;
-                                        newVersion.Fields[GcPath].Value = gcPath;
-
-                                        newVersion.Editing.EndEdit();
-                                    }
-                                    return newVersion.ID.ToString();
-                                }
-                                catch (Exception ex)
-                                {
-                                    Log.Error("cannot update mapped item.", ex, this);
-                                    throw new Exception(string.Format("Your template({0}) is not inherited from the GC Linked Item.", newVersion.TemplateName));
-                                }
-                            }
+                            return newVersion.ID.ToString();
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error("cannot update mapped item.", ex, this);
+                            throw new Exception(string.Format("Your template({0}) is not inherited from the GC Linked Item.", newVersion.TemplateName));
                         }
                     }
                 }
@@ -637,7 +550,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="host"></param>
         /// <param name="itemId"></param>
@@ -648,32 +560,34 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="parentId"></param>
         /// <param name="cmsItem"></param>
         /// <returns></returns>
         public string GetItemId(string parentId, CmsItem cmsItem)
         {
-            if (parentId != null)
+            if (parentId == null)
             {
-                using (new SecurityDisabler())
+                return null;
+            }
+
+            using (new SecurityDisabler())
+            {
+                using (new LanguageSwitcher(cmsItem.Language))
                 {
-                    using (new LanguageSwitcher(cmsItem.Language))
+                    var validName = ItemUtil.ProposeValidItemName(cmsItem.Title);
+                    var parent = ContextDatabase.GetItem(new ID(parentId));
+                    if (parent != null)
                     {
-                        var validName = ItemUtil.ProposeValidItemName(cmsItem.Title);
-                        var parent = ContextDatabase.GetItem(new ID(parentId));
-                        if (parent != null)
+                        var items = parent.Axes.SelectItems(string.Format("./*[@@name='{0}']", validName));
+                        if (items != null && items.Any())
                         {
-                            var items = parent.Axes.SelectItems(string.Format("./*[@@name='{0}']", validName));
-                            if (items != null && items.Any())
-                            {
-                                return items.First().ID.ToString();
-                            }
+                            return items.First().ID.ToString();
                         }
                     }
                 }
             }
+
             return null;
         }
 
@@ -693,7 +607,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             if (linkedItem != null)
             {
                 string url = "~/link.aspx?_id=" + linkedItem.ID.Guid.ToString("N").ToUpper() + "&amp;_z=z";
-                
+
                 if (!string.IsNullOrEmpty(url))
                 {
                     _linkedUrlsCache[gcId] = url;
@@ -715,7 +629,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
 
             var baseUrl = _accountsRepository.GetAccountSettings().GatherContentUrl;
-            string pattern = Sitecore.StringUtil.EnsurePostfix('/', baseUrl.Replace("/", "\\/")) + "item\\/";
+            string pattern = StringUtil.EnsurePostfix('/', baseUrl.Replace("/", "\\/")) + "item\\/";
             Regex rgx = new Regex(pattern + "(\\d+)");
 
             ExpandLinksInTextRecursive(root, rgx, pattern, includeDescendants);
@@ -778,9 +692,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 var query = context.GetQueryable<SearchResultItem>()
                     .Where(i => i.Path.StartsWith("/sitecore/content/") &&
                                 i["gc_content_id"] == gcId
-                                );
+                    );
 
-                query = query.Filter(i => i.Language == Sitecore.Context.Language.Name);
+                query = query.Filter(i => i.Language == Context.Language.Name);
 
                 var res = query.GetResults();
                 if (res.TotalSearchResults == 0)
@@ -795,6 +709,69 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
                 return result;
             }
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="updatedItem"></param>
+        /// <param name="fieldId"></param>
+        /// <param name="label"></param>
+        /// <returns></returns>
+        private Item GetDatasource(Item updatedItem, string fieldId, string label)
+        {
+            var dataSourcePath = GetDatasourcePath(updatedItem, fieldId);
+            var dataSourceItem = GetItemByPath(dataSourcePath);
+            if (dataSourceItem == null) return null;
+            var children = dataSourceItem.GetChildren().InnerChildren.FirstOrDefault(c => c.Name.ToLower() == label.ToLower());
+            return children;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="updatedItem"></param>
+        /// <param name="fieldId"></param>
+        /// <returns></returns>
+        private string GetDatasourcePath(Item updatedItem, string fieldId)
+        {
+            var scField = updatedItem.Fields[new ID(fieldId)];
+            var dataSourcePath = GetItem(scField.ID.ToString())["Source"];
+            return dataSourcePath;
+        }
+
+
+        /// <summary>
+        /// </summary>
+        /// <param name="templateId"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        private bool IsItemHasTemplate(ID templateId, Item item)
+        {
+            return item.Template.BaseTemplates.Any(i => i.ID == templateId);
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="templateItem"></param>
+        /// <returns></returns>
+        private bool EnsureMetaTemplateInherited(TemplateItem templateItem)
+        {
+            if (templateItem != null)
+            {
+                bool gcLinkTemplate = templateItem.BaseTemplates.Any(bt => bt.Name == Constants.GCLinkItemTemplateName);
+                string baseTemplates = templateItem.InnerItem[FieldIDs.BaseTemplate];
+
+                if (!gcLinkTemplate)
+                {
+                    using (new SecurityDisabler())
+                    {
+                        templateItem.InnerItem.Editing.BeginEdit();
+                        templateItem.InnerItem[FieldIDs.BaseTemplate] = string.Format("{0}|{1}", baseTemplates, Constants.GCLinkItemTemplateID);
+                        templateItem.InnerItem.Editing.EndEdit();
+                    }
+                }
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -10,12 +10,8 @@ using GatherContent.Connector.WebControllers.Models.Import;
 using GatherContent.Connector.WebControllers.Models.Mapping;
 using Sitecore.Diagnostics;
 
-
 namespace GatherContent.Connector.WebControllers.Controllers
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class MappingsController : BaseController
     {
         protected IMappingManager MappingManager;
@@ -26,40 +22,8 @@ namespace GatherContent.Connector.WebControllers.Controllers
         {
             MappingManager = ServiceFactory.MappingManager;
             LinkManager = ServiceFactory.LinkManager;
-            /*
-            try
-            {
-                MappingManager = GCServiceLocator.Current.GetInstance<IMappingManager>();
-                LinkManager = GCServiceLocator.Current.GetInstance<ILinkManager>();
-
-                Log.Info("MappingManager =" + (MappingManager == null ? "null" : typeof(MappingManager).FullName), this);
-
-            }
-            catch (Exception ex)
-            {
-                Log.Error("GCServiceLocator error", ex);
-            }
-
-            var accountsRepository = new AccountsRepository();
-            var gcAccountSettings = accountsRepository.GetAccountSettings();
-            MappingManager = new MappingManager(
-                new MappingRepository(accountsRepository), 
-                new AccountsService(gcAccountSettings), 
-                new ProjectsService(gcAccountSettings), 
-                new TemplatesService(gcAccountSettings), 
-                new ItemsService(gcAccountSettings), 
-                new CacheManager(), 
-                gcAccountSettings);
-
-            LinkManager = new LinkManager(
-                new ItemsRepository(
-                    new AccountsRepository(), 
-                    new SimpleMediaRepository()));
-           */
         }
 
-
-        #region Utilities
 
         private Dictionary<string, string> GetMapRules()
         {
@@ -73,11 +37,6 @@ namespace GatherContent.Connector.WebControllers.Controllers
             };
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="tabs"></param>
-        /// <returns></returns>
         private static List<FieldMappingModel> GetFieldMappings(IEnumerable<TemplateTab> tabs)
         {
             var fieldMappings = new List<FieldMappingModel>();
@@ -100,13 +59,6 @@ namespace GatherContent.Connector.WebControllers.Controllers
             return fieldMappings;
         }
 
-
-        #endregion
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         public ActionResult Get()
         {
             try
@@ -142,6 +94,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
                     model.Add(mappingModel);
                 }
+
                 return Json(model, JsonRequestBehavior.AllowGet);
             }
             catch (WebException exception)
@@ -156,12 +109,6 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="gcTemplateId"></param>
-        /// <param name="scMappingId"></param>
-        /// <returns></returns>
         public ActionResult GetMapping(string gcTemplateId, string scMappingId)
         {
             try
@@ -258,15 +205,13 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
 
                 model.Rules = GetMapRules();
-
-                var projects = MappingManager.GetAllGcProjects();
-
                 model.GcProjects.Add(new ProjectViewModel
                 {
                     Id = "0",
                     Name = "Select project *"
                 });
 
+                var projects = MappingManager.GetAllGcProjects();
                 foreach (var project in projects)
                 {
                     model.GcProjects.Add(new ProjectViewModel
@@ -285,7 +230,6 @@ namespace GatherContent.Connector.WebControllers.Controllers
                     model.IsEdit = true;
                 }
 
-
                 return Json(model, JsonRequestBehavior.AllowGet);
             }
             catch (WebException exception)
@@ -296,16 +240,10 @@ namespace GatherContent.Connector.WebControllers.Controllers
             catch (Exception exception)
             {
                 Log.Error("GatherContent message: " + exception.Message + exception.StackTrace, exception);
-
                 return Json(new { status = "error", message = exception.Message }, JsonRequestBehavior.AllowGet);
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="gcProjectId"></param>
-        /// <returns></returns>
         public ActionResult GetTemplatesByProjectId(string gcProjectId)
         {
             try
@@ -332,6 +270,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
                         model.Add(templateModel);
                     }
                 }
+
                 return Json(model, JsonRequestBehavior.AllowGet);
             }
             catch (WebException exception)
@@ -346,11 +285,6 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="gcTemplateId"></param>
-        /// <returns></returns>
         public ActionResult GetFieldsByTemplateId(string gcTemplateId)
         {
             try
@@ -396,11 +330,6 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
         [HttpPost]
         public ActionResult Post(PostMappingViewModel model)
         {
@@ -442,11 +371,6 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="scMappingId"></param>
-        /// <returns></returns>
         [HttpDelete]
         public ActionResult Delete(string scMappingId)
         {

@@ -32,9 +32,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 ? string.Format("{0}/{1}/", dataSourcePath,item.Title)
                 : string.Format("{0}/{1}/{2}/", dataSourcePath, item.Title, cmsField.TemplateField.FieldName);
 
-                //SetDatasourcePath(createdItem, cmsField.TemplateField.FieldId, path);
-            
-            
             return path;
         }
 

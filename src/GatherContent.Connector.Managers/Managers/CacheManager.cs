@@ -4,17 +4,10 @@ using GatherContent.Connector.Managers.Interfaces;
 
 namespace GatherContent.Connector.Managers.Managers
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class CacheManager : ICacheManager
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public CacheManager()
         {
-            
         }
 
         protected ObjectCache Cache
@@ -59,7 +52,7 @@ namespace GatherContent.Connector.Managers.Managers
         /// <returns>Result</returns>
         public bool IsSet(string key)
         {
-            return (Cache.Contains(key));
+            return Cache.Contains(key);
         }
 
         /// <summary>
@@ -78,7 +71,9 @@ namespace GatherContent.Connector.Managers.Managers
         public void Clear()
         {
             foreach (var item in Cache)
+            {
                 Remove(item.Key);
+            }
         }
     }
 }

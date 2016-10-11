@@ -12,35 +12,18 @@ using GatherContent.Connector.SitecoreRepositories.Repositories;
 
 namespace GatherContent.Connector.Managers.Managers
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class MappingManager : BaseManager, IMappingManager
     {
-        #region Constants
         public const string FieldGcContentId = "{955A4DD9-6A01-458E-9791-3C99F5E076A8}";
         public const string FieldLastSyncDate = "{F9D2EA57-86A2-45CF-9C28-8D8CA72A2669}";
         public const string FieldGcPath = "{3C8AB507-583A-47A4-9CAD-5BFB96059933}";
         public const string FieldMappingId = "{1101A6B0-E4A7-402A-B7FD-C4F71E4B036B}";
-        #endregion
 
         protected IMappingRepository MappingRepository;
-
         protected IItemsService ItemService;
-
         protected ITemplatesService TemplateService;
-
         protected GCAccountSettings AccountSettings;
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="mappingRepository"></param>
-        /// <param name="accountsService"></param>
-        /// <param name="projectsService"></param>
-        /// <param name="templateService"></param>
-        /// <param name="itemService"></param>
-        /// <param name="cacheManager"></param>
-        /// <param name="accountSettings"></param>
+
         public MappingManager(
             IMappingRepository mappingRepository,
             IAccountsService accountsService,
@@ -52,140 +35,11 @@ namespace GatherContent.Connector.Managers.Managers
             : base(accountsService, projectsService, templateService, cacheManager)
         {
             AccountSettings = accountSettings;
-
             MappingRepository = mappingRepository;
-
             ItemService = itemService;
-
             TemplateService = templateService;
         }
 
-        #region Utilities
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="date"></param>
-        /// <returns></returns>
-        private DateTime ConvertMsecToDate(double date)
-        {
-            var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
-            var gcUpdateDate =
-                posixTime.AddMilliseconds(date * 1000);
-            return gcUpdateDate;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="scTemplates"></param>
-        /// <returns></returns>
-        private IEnumerable<CmsTemplateModel> MapCmsTemplates(IEnumerable<CmsTemplate> scTemplates)
-        {
-            var templates = new List<CmsTemplateModel>();
-
-            foreach (var cmsTemplate in scTemplates)
-            {
-                var templateModel = new CmsTemplateModel
-                {
-                    Name = cmsTemplate.TemplateName,
-                    Id = cmsTemplate.TemplateId
-                };
-
-                foreach (var field in cmsTemplate.TemplateFields)
-                {
-                    if (field.FieldId != FieldGcContentId &&
-                        field.FieldId != FieldLastSyncDate &&
-                        field.FieldId != FieldGcPath &&
-                        field.FieldId != FieldMappingId)
-                    {
-                        var scField = new CmsTemplateFieldModel
-                        {
-                            Name = field.FieldName,
-                            Id = field.FieldId,
-                            Type = field.FieldType
-
-                        };
-                        templateModel.Fields.Add(scField);
-                    }
-                }
-                templates.Add(templateModel);
-            }
-            return templates;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="templateMapping"></param>
-        /// <returns></returns>
-        private MappingModel MapAddMappingModel(TemplateMapping templateMapping)
-        {
-            var addCmsMappingModel = new MappingModel
-            {
-                GcTemplate = new GcTemplateModel
-                {
-                     Id = templateMapping.GcTemplate.GcTemplateId,
-                },
-                CmsTemplate = new CmsTemplateModel
-                {
-                    Id = templateMapping.CmsTemplate.TemplateId,
-                },
-                MappingTitle = templateMapping.MappingTitle,
-                DefaultLocationId = templateMapping.DefaultLocationId,
-                DefaultLocationTitle = templateMapping.DefaultLocationTitle
-            };
-
-            foreach (var fieldMapping in templateMapping.FieldMappings)
-            {
-                addCmsMappingModel.FieldMappings.Add(new FieldMappingModel
-                {
-                    CmsTemplateId = fieldMapping.CmsField.TemplateField.FieldId,
-                    GcFieldId = fieldMapping.GcField.Id,
-                    GcFieldName = fieldMapping.GcField.Name
-                });
-            }
-
-            return addCmsMappingModel;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="list"></param>
-        /// <returns></returns>
-        private static List<FieldMapping> ConvertToFieldMappings(IEnumerable<FieldMappingModel> list)
-        {
-            var fieldMappings = new List<FieldMapping>();
-            foreach (var item in list)
-            {
-                var fieldMapping = new FieldMapping
-                {
-                    CmsField = new CmsField
-                    {
-                        TemplateField = new CmsTemplateField
-                        {
-                            FieldId = item.CmsTemplateId
-                        }
-                    },
-                    GcField = new GcField
-                    {
-                        Id = item.GcFieldId,
-                        Name = item.GcFieldName
-                    }
-                };
-                fieldMappings.Add(fieldMapping);
-
-            }
-            return fieldMappings;
-        }
-
-        #endregion
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         public List<MappingModel> GetMappingModel()
         {
             var mappings = MappingRepository.GetMappings();
@@ -241,18 +95,11 @@ namespace GatherContent.Connector.Managers.Managers
                 {
                     mapping.LastUpdatedDate = "Removed from GatherContent";
                 }
-
             }
 
             return model;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="gcTemplateId"></param>
-        /// <param name="cmsMappingId"></param>
-        /// <returns></returns>
         public MappingModel GetSingleMappingModel(string gcTemplateId, string cmsMappingId)
         {
             if (!string.IsNullOrEmpty(gcTemplateId) && !string.IsNullOrEmpty(cmsMappingId))
@@ -278,10 +125,6 @@ namespace GatherContent.Connector.Managers.Managers
             return new MappingModel();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         public List<CmsTemplateModel> GetAvailableTemplates()
         {
             var availableTemplates = MappingRepository.GetAvailableCmsTemplates();
@@ -294,10 +137,6 @@ namespace GatherContent.Connector.Managers.Managers
             return templates;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         public List<GcProjectModel> GetAllGcProjects()
         {
             var account = GetAccount();
@@ -316,11 +155,6 @@ namespace GatherContent.Connector.Managers.Managers
             return model;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="gcProjectId"></param>
-        /// <returns></returns>
         public List<GcTemplateModel> GetTemplatesByProjectId(string gcProjectId)
         {
             var model = new List<GcTemplateModel>();
@@ -336,11 +170,6 @@ namespace GatherContent.Connector.Managers.Managers
             return model;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="gcTemplateId"></param>
-        /// <returns></returns>
         public List<GcTabModel> GetFieldsByTemplateId(string gcTemplateId)
         {
             var model = new List<GcTabModel>();
@@ -365,10 +194,6 @@ namespace GatherContent.Connector.Managers.Managers
             return model;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="model"></param>
         public void CreateMapping(MappingModel model)
         {
             var template = TemplateService.GetSingleTemplate(model.GcTemplate.Id);
@@ -399,10 +224,6 @@ namespace GatherContent.Connector.Managers.Managers
             MappingRepository.CreateMapping(templateMapping);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="model"></param>
         public void UpdateMapping(MappingModel model)
         {
             var template = TemplateService.GetSingleTemplate(model.GcTemplate.Id);
@@ -438,6 +259,103 @@ namespace GatherContent.Connector.Managers.Managers
         public void DeleteMapping(string scMappingId)
         {
             MappingRepository.DeleteMapping(scMappingId);
+        }
+
+        private DateTime ConvertMsecToDate(double date)
+        {
+            var posixTime = DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc);
+            var gcUpdateDate = posixTime.AddMilliseconds(date * 1000);
+            return gcUpdateDate;
+        }
+
+        private IEnumerable<CmsTemplateModel> MapCmsTemplates(IEnumerable<CmsTemplate> scTemplates)
+        {
+            var templates = new List<CmsTemplateModel>();
+
+            foreach (var cmsTemplate in scTemplates)
+            {
+                var templateModel = new CmsTemplateModel
+                {
+                    Name = cmsTemplate.TemplateName,
+                    Id = cmsTemplate.TemplateId
+                };
+
+                foreach (var field in cmsTemplate.TemplateFields)
+                {
+                    if (field.FieldId != FieldGcContentId &&
+                        field.FieldId != FieldLastSyncDate &&
+                        field.FieldId != FieldGcPath &&
+                        field.FieldId != FieldMappingId)
+                    {
+                        var scField = new CmsTemplateFieldModel
+                        {
+                            Name = field.FieldName,
+                            Id = field.FieldId,
+                            Type = field.FieldType
+
+                        };
+                        templateModel.Fields.Add(scField);
+                    }
+                }
+                templates.Add(templateModel);
+            }
+            return templates;
+        }
+
+        private MappingModel MapAddMappingModel(TemplateMapping templateMapping)
+        {
+            var addCmsMappingModel = new MappingModel
+            {
+                GcTemplate = new GcTemplateModel
+                {
+                    Id = templateMapping.GcTemplate.GcTemplateId,
+                },
+                CmsTemplate = new CmsTemplateModel
+                {
+                    Id = templateMapping.CmsTemplate.TemplateId,
+                },
+                MappingTitle = templateMapping.MappingTitle,
+                DefaultLocationId = templateMapping.DefaultLocationId,
+                DefaultLocationTitle = templateMapping.DefaultLocationTitle
+            };
+
+            foreach (var fieldMapping in templateMapping.FieldMappings)
+            {
+                addCmsMappingModel.FieldMappings.Add(new FieldMappingModel
+                {
+                    CmsTemplateId = fieldMapping.CmsField.TemplateField.FieldId,
+                    GcFieldId = fieldMapping.GcField.Id,
+                    GcFieldName = fieldMapping.GcField.Name
+                });
+            }
+
+            return addCmsMappingModel;
+        }
+
+        private static List<FieldMapping> ConvertToFieldMappings(IEnumerable<FieldMappingModel> list)
+        {
+            var fieldMappings = new List<FieldMapping>();
+            foreach (var item in list)
+            {
+                var fieldMapping = new FieldMapping
+                {
+                    CmsField = new CmsField
+                    {
+                        TemplateField = new CmsTemplateField
+                        {
+                            FieldId = item.CmsTemplateId
+                        }
+                    },
+                    GcField = new GcField
+                    {
+                        Id = item.GcFieldId,
+                        Name = item.GcFieldName
+                    }
+                };
+                fieldMappings.Add(fieldMapping);
+
+            }
+            return fieldMappings;
         }
     }
 }

@@ -7,29 +7,15 @@ using Sitecore.Diagnostics;
 
 namespace GatherContent.Connector.WebControllers.Controllers
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class DropTreeController : BaseController
     {
         protected IDropTreeManager DropTreeManager;
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="dropTreeManager"></param>
         public DropTreeController()
         {
-            //DropTreeManager = GCServiceLocator.Current.GetInstance<IDropTreeManager>();
             DropTreeManager = ServiceFactory.DropTreeManager;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         public string GetTopLevelNode(string id)
         {
             try
@@ -51,11 +37,6 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         public string GetChildren(string id)
         {
             try

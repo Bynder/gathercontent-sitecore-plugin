@@ -26,16 +26,10 @@ namespace GatherContent.Connector.WebControllers.Controllers
 
         public UpdateController()
         {
-//            ImportManager = GCServiceLocator.Current.GetInstance<IImportManager>();
-//            UpdateManager = GCServiceLocator.Current.GetInstance<IUpdateManager>();
-//            LinkManager = GCServiceLocator.Current.GetInstance<ILinkManager>();
             ImportManager = ServiceFactory.ImportManager;
             LinkManager = ServiceFactory.LinkManager;
             UpdateManager = ServiceFactory.UpdateManager;
         }
-
-        #region Utilities
-
 
         private FiltersViewModel GetFilters(UpdateFiltersModel filters)
         {
@@ -78,16 +72,6 @@ namespace GatherContent.Connector.WebControllers.Controllers
             return filtersViewModel;
         }
 
-
- 
-
-        #endregion
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         public string Get(string id, string db)
         {
             try
@@ -149,20 +133,11 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
         }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="statusId"></param>
-        /// <param name="language"></param>
-        /// <param name="expandLinks"></param>
-        /// <returns></returns>
         public ActionResult UpdateItems(string id, string statusId, string language, bool expandLinks)
         {
             try
             {
-                var items = new List<UpdateListIds>();
+                List<UpdateListIds> items;
                 if (System.Web.HttpContext.Current.Request.InputStream.CanSeek)
                 {
                     System.Web.HttpContext.Current.Request.InputStream.Seek(0, System.IO.SeekOrigin.Begin);

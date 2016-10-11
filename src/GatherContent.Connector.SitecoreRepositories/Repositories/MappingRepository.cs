@@ -14,19 +14,168 @@ using Sitecore.SecurityModel;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class MappingRepository : BaseSitecoreRepository, IMappingRepository
     {
-        private IAccountsRepository _accountsRepository;
+        private readonly IAccountsRepository _accountsRepository;
 
         public MappingRepository()
         {
             _accountsRepository = Factory.CreateObject("gatherContent.connector/components/accountsRepository", true) as IAccountsRepository;
         }
 
-        #region Utilities
+        public List<TemplateMapping> GetMappings()
+        {
+            var model = new List<TemplateMapping>();
+            var scProjects = GetAllProjects();
+
+            foreach (var project in scProjects)
+            {
+                var templates = project.Axes.GetDescendants().Where(i => i.TemplateName == Constants.TemplateMappingName).ToList();
+                if (templates.Any())
+                {
+                    model.AddRange(ConvertSitecoreTemplatesToModel(templates, project.Name));
+                }
+            }
+
+            return model;
+        }
+
+        public TemplateMapping GetMappingByItemId(string itemId, string language)
+        {
+            TemplateMapping templateMapping = null;
+
+            var item = GetItem(itemId, Sitecore.Data.Managers.LanguageManager.GetLanguage(language));
+
+            if (item != null)
+            {
+                var mappingId = item["MappingId"];
+
+                var mappingItem = GetItem(mappingId);
+
+                if (mappingItem != null)
+                {
+                    templateMapping = ConvertSitecoreTemplateToModel(mappingItem);
+                }
+            }
+
+            return templateMapping;
+        }
+
+        public List<TemplateMapping> GetMappingsByGcProjectId(string projectId)
+        {
+            var projectFolder = GetProject(projectId);
+            if (projectFolder == null) return null;
+            var mappingFolder = GetMappingFolder(projectFolder);
+            var mappings = GetTemplateMappings(mappingFolder);
+            var result = ConvertSitecoreTemplatesToModel(mappings);
+
+            return result.ToList();
+        }
+
+        public List<TemplateMapping> GetMappingsByGcTemplateId(string gcTemplateId)
+        {
+            var mappings = GetTemplateMappingsByGcTemplateId(gcTemplateId);
+            var result = ConvertSitecoreTemplatesToModel(mappings);
+            return result.ToList();
+        }
+
+        public TemplateMapping GetMappingById(string id)
+        {
+            var mapping = GetItem(id);
+            if (mapping == null)
+            {
+                return null;
+            }
+
+            var result = ConvertSitecoreTemplateToModel(mapping);
+            return result;
+        }
+
+        public void CreateMapping(TemplateMapping templateMapping)
+        {
+            var templateMappingItem = CreateTemplateMapping(templateMapping);
+
+            foreach (var templateField in templateMapping.FieldMappings)
+            {
+                CreateFieldMapping(templateMappingItem, templateField);
+            }
+        }
+
+        public void UpdateMapping(TemplateMapping templateMapping)
+        {
+            var templateMappingItem = GetItem(templateMapping.MappingId);
+
+            if (templateMappingItem != null)
+            {
+                UpdateTemplateMapping(templateMappingItem, templateMapping);
+
+                var fields = GetFieldMappingItems(templateMapping.MappingId);
+
+                foreach (var field in fields)
+                {
+                    if (!templateMapping.FieldMappings.Select(tm => tm.GcField.Id).Contains(field["GC Field Id"]))
+                    {
+                        DeleteItem(field);
+                    }
+                }
+
+                foreach (var templateField in templateMapping.FieldMappings)
+                {
+                    var field = fields.FirstOrDefault(fm => fm["GC Field Id"] == templateField.GcField.Id);
+                    if (field != null)
+                    {
+                        UpdateFieldMapping(field, templateField.CmsField.TemplateField.FieldId);
+                    }
+                    else
+                    {
+                        CreateFieldMapping(templateMappingItem, templateField);
+                    }
+                }
+            }
+        }
+
+        public void DeleteMapping(string mappingId)
+        {
+            var templateMapping = GetItem(mappingId);
+            if (templateMapping != null)
+            {
+                DeleteItem(templateMapping);
+            }
+        }
+
+        public List<CmsTemplate> GetAvailableCmsTemplates()
+        {
+            var accountSettings = _accountsRepository.GetAccountSettings();
+
+            var templateFolderId = accountSettings.TemplateFolderId;
+            if (string.IsNullOrEmpty(templateFolderId))
+            {
+                templateFolderId = Constants.TemplateFolderId;
+            }
+            var model = new List<CmsTemplate>();
+            var cmsTemplates = GetTemplates(templateFolderId);
+            foreach (var template in cmsTemplates)
+            {
+                var cmsTemplate = new CmsTemplate
+                {
+                    TemplateName = template.Name,
+                    TemplateId = template.ID.ToString()
+                };
+
+                var fields = GetFields(template);
+                cmsTemplate.TemplateFields.AddRange(
+                    fields.Where(f => !f.Name.StartsWith("__")).Select(f => new CmsTemplateField
+                    {
+                        FieldName = f.Name,
+                        FieldId = f.ID.ToString(),
+                        FieldType = f.Type
+                    }));
+
+                model.Add(cmsTemplate);
+            }
+            return model;
+        }
+
 
         private Item GetMappingFolder(Item projectFolder)
         {
@@ -45,21 +194,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return item != null ? item.Axes.GetDescendants().Where(t => t.TemplateName == "Template").ToList() : Enumerable.Empty<Item>();
         }
 
-        private IEnumerable<Item> GetTemplateMappings(string gcProjectId, string gcTemplateId)
-        {
-            var project = GetProject(gcProjectId);
-
-            if (project != null)
-            {
-                return project.Axes.GetDescendants()
-                    .Where(item => item["GC Template"] == gcTemplateId &
-                                            item.TemplateID ==
-                                            new ID(Constants.GcTemplateMapping)).ToList();
-
-            }
-            return null;
-        }
-
         private IEnumerable<Item> GetTemplateMappingsByGcTemplateId(string gcTemplateId)
         {
             var homeItem = GetItem(Constants.AccountItemId, ContextLanguage);
@@ -67,9 +201,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             {
                 return homeItem.Axes.GetDescendants()
                     .Where(item => item["GC Template"] == gcTemplateId &
-                                            item.TemplateID ==
-                                            new ID(Constants.GcTemplateMapping)).ToList();
-
+                                   item.TemplateID == new ID(Constants.GcTemplateMapping)).ToList();
             }
             return null;
         }
@@ -78,11 +210,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         {
             var parentItem = GetItem(templateMappingId);
             return parentItem.Axes.GetDescendants().ToList();
-        }
-
-        private IEnumerable<TemplateMapping> ConvertSitecoreTemplatesToModel(IEnumerable<Item> templates)
-        {
-            return ConvertSitecoreTemplatesToModel(templates, null);
         }
 
         private IEnumerable<TemplateMapping> ConvertSitecoreTemplatesToModel(IEnumerable<Item> templates, string projectName = null)
@@ -95,11 +222,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
 
             return result;
-        }
-
-        private TemplateMapping ConvertSitecoreTemplateToModel(Item templateMapping)
-        {
-            return ConvertSitecoreTemplateToModel(templateMapping, null);
         }
 
         private TemplateMapping ConvertSitecoreTemplateToModel(Item templateMapping, string projectName = null)
@@ -216,10 +338,10 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     }
                 },
                 GcField = new GcField
-               {
-                   Id = fieldMapping["GC Field Id"],
-                   Name = fieldMapping["GC Field"]
-               }
+                {
+                    Id = fieldMapping["GC Field Id"],
+                    Name = fieldMapping["GC Field"]
+                }
             };
             return result;
         }
@@ -236,8 +358,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 using (new SecurityDisabler())
                 {
                     sitecoreTemplate.Editing.BeginEdit();
-                    sitecoreTemplate[Sitecore.FieldIDs.BaseTemplate] = string.Format("{0}|{1}", baseTemplates,
-                        linkedGcTemplate.ID);
+                    sitecoreTemplate[Sitecore.FieldIDs.BaseTemplate] = string.Format("{0}|{1}", baseTemplates, linkedGcTemplate.ID);
                     sitecoreTemplate.Editing.EndEdit();
                 }
             }
@@ -262,27 +383,30 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         {
             var projectItem = GetProject(gcProjectId);
 
-            if (projectItem == null)
+            if (projectItem != null)
             {
-                var accountSettings = _accountsRepository.GetAccountSettings();
+                return projectItem;
+            }
 
-                var parentItem = GetItem(accountSettings.AccountItemId);
+            var accountSettings = _accountsRepository.GetAccountSettings();
 
+            var parentItem = GetItem(accountSettings.AccountItemId);
+
+            using (new SecurityDisabler())
+            {
+                var template = ContextDatabase.GetTemplate(new ID(Constants.GcProject));
+                var validFolderName = ItemUtil.ProposeValidItemName(gcProjectName);
+                projectItem = parentItem.Add(validFolderName, template);
                 using (new SecurityDisabler())
                 {
-                    var template = ContextDatabase.GetTemplate(new ID(Constants.GcProject));
-                    var validFolderName = ItemUtil.ProposeValidItemName(gcProjectName);
-                    projectItem = parentItem.Add(validFolderName, template);
-                    using (new SecurityDisabler())
-                    {
-                        projectItem.Editing.BeginEdit();
-                        projectItem.Fields["Id"].Value = gcProjectId;
-                        projectItem.Fields["Name"].Value = gcProjectName;
-                        projectItem.Editing.EndEdit();
-                    }
-                    CreateProjectFolders(projectItem.ID.ToString());
+                    projectItem.Editing.BeginEdit();
+                    projectItem.Fields["Id"].Value = gcProjectId;
+                    projectItem.Fields["Name"].Value = gcProjectName;
+                    projectItem.Editing.EndEdit();
                 }
+                CreateProjectFolders(projectItem.ID.ToString());
             }
+
             return projectItem;
         }
 
@@ -290,40 +414,42 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         {
             var scProject = CreateOrGetProject(templateMapping.GcProjectId, templateMapping.GcProjectName);
 
-            if (scProject != null)
+            if (scProject == null)
             {
-                var mappingsFolder = GetMappingFolder(scProject);
-                if (mappingsFolder != null)
-                {
-                    using (new SecurityDisabler())
-                    {
-                        var mapping = ContextDatabase.GetTemplate(new ID(Constants.GcTemplateMapping));
-
-                        SetupLinkedGcTemplate(templateMapping);
-
-                        var validFolderName = ItemUtil.ProposeValidItemName(templateMapping.GcTemplate.GcTemplateName);
-                        var createdItem = mappingsFolder.Add(validFolderName, mapping);
-                        using (new SecurityDisabler())
-                        {
-                            createdItem.Editing.BeginEdit();
-                            createdItem.Fields["Sitecore Template"].Value = templateMapping.CmsTemplate.TemplateId;
-                            createdItem.Fields["Default Location"].Value = templateMapping.DefaultLocationId;
-                            if (!string.IsNullOrEmpty(templateMapping.MappingTitle))
-                            {
-                                createdItem.Fields["Template mapping title"].Value = templateMapping.MappingTitle;
-                            }
-                            createdItem.Fields["GC Template"].Value = templateMapping.GcTemplate.GcTemplateId;
-                            createdItem.Fields["Last Mapped Date"].Value = DateUtil.ToIsoDate(DateTime.Now);
-                            createdItem.Fields["Last Updated in GC"].Value = templateMapping.LastUpdatedDate;
-                            createdItem.Editing.EndEdit();
-                        }
-
-                        return createdItem;
-                    }
-                }
                 return null;
             }
-            return null;
+
+            var mappingsFolder = GetMappingFolder(scProject);
+            if (mappingsFolder == null)
+            {
+                return null;
+            }
+
+            using (new SecurityDisabler())
+            {
+                var mapping = ContextDatabase.GetTemplate(new ID(Constants.GcTemplateMapping));
+
+                SetupLinkedGcTemplate(templateMapping);
+
+                var validFolderName = ItemUtil.ProposeValidItemName(templateMapping.GcTemplate.GcTemplateName);
+                var createdItem = mappingsFolder.Add(validFolderName, mapping);
+                using (new SecurityDisabler())
+                {
+                    createdItem.Editing.BeginEdit();
+                    createdItem.Fields["Sitecore Template"].Value = templateMapping.CmsTemplate.TemplateId;
+                    createdItem.Fields["Default Location"].Value = templateMapping.DefaultLocationId;
+                    if (!string.IsNullOrEmpty(templateMapping.MappingTitle))
+                    {
+                        createdItem.Fields["Template mapping title"].Value = templateMapping.MappingTitle;
+                    }
+                    createdItem.Fields["GC Template"].Value = templateMapping.GcTemplate.GcTemplateId;
+                    createdItem.Fields["Last Mapped Date"].Value = DateUtil.ToIsoDate(DateTime.Now);
+                    createdItem.Fields["Last Updated in GC"].Value = templateMapping.LastUpdatedDate;
+                    createdItem.Editing.EndEdit();
+                }
+
+                return createdItem;
+            }
         }
 
         private void CreateFieldMapping(Item templateMappingItem, FieldMapping fieldMapping)
@@ -380,158 +506,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             {
                 template.Delete();
             }
-        }
-
-        #endregion
-
-
-        public List<TemplateMapping> GetMappings()
-        {
-            var model = new List<TemplateMapping>();
-            var scProjects = GetAllProjects();
-
-            foreach (var project in scProjects)
-            {
-                var templates = project.Axes.GetDescendants().Where(i => i.TemplateName == Constants.TemplateMappingName).ToList();
-                if (templates.Any())
-                {
-                    model.AddRange(ConvertSitecoreTemplatesToModel(templates, project.Name));
-                }
-            }
-
-            return model;
-        }
-
-        public TemplateMapping GetMappingByItemId(string itemId, string language)
-        {
-            TemplateMapping templateMapping = null;
-
-            var item = GetItem(itemId, Sitecore.Data.Managers.LanguageManager.GetLanguage(language));
-
-            if (item != null)
-            {
-                var mappingId = item["MappingId"];
-
-                var mappingItem = GetItem(mappingId);
-
-                if (mappingItem != null)
-                {
-                    templateMapping = ConvertSitecoreTemplateToModel(mappingItem);
-                }
-            }
-
-            return templateMapping;
-        }
-
-        public List<TemplateMapping> GetMappingsByGcProjectId(string projectId)
-        {
-            var projectFolder = GetProject(projectId);
-            if (projectFolder == null) return null;
-            var mappingFolder = GetMappingFolder(projectFolder);
-            var mappings = GetTemplateMappings(mappingFolder);
-            var result = ConvertSitecoreTemplatesToModel(mappings);
-
-            return result.ToList();
-        }
-
-        public List<TemplateMapping> GetMappingsByGcTemplateId(string gcTemplateId)
-        {
-            var mappings = GetTemplateMappingsByGcTemplateId(gcTemplateId);
-            var result = ConvertSitecoreTemplatesToModel(mappings);
-            return result.ToList();
-        }
-
-        public TemplateMapping GetMappingById(string id)
-        {
-            var mapping = GetItem(id);
-            if (mapping == null) return null;
-            var result = ConvertSitecoreTemplateToModel(mapping);
-            return result;
-        }
-
-        public void CreateMapping(TemplateMapping templateMapping)
-        {
-            var templateMappingItem = CreateTemplateMapping(templateMapping);
-
-            foreach (var templateField in templateMapping.FieldMappings)
-            {
-                CreateFieldMapping(templateMappingItem, templateField);
-            }
-        }
-
-        public void UpdateMapping(TemplateMapping templateMapping)
-        {
-            var templateMappingItem = GetItem(templateMapping.MappingId);
-
-            if (templateMappingItem != null)
-            {
-                UpdateTemplateMapping(templateMappingItem, templateMapping);
-
-                var fields = GetFieldMappingItems(templateMapping.MappingId);
-
-                foreach (var field in fields)
-                {
-                    if (!templateMapping.FieldMappings.Select(tm => tm.GcField.Id).Contains(field["GC Field Id"]))
-                    {
-                        DeleteItem(field);
-                    }
-                }
-
-                foreach (var templateField in templateMapping.FieldMappings)
-                {
-                    var field = fields.FirstOrDefault(fm => fm["GC Field Id"] == templateField.GcField.Id);
-                    if (field != null)
-                    {
-                        UpdateFieldMapping(field, templateField.CmsField.TemplateField.FieldId);
-                    }
-                    else
-                    {
-                        CreateFieldMapping(templateMappingItem, templateField);
-                    }
-                }
-            }
-        }
-
-        public void DeleteMapping(string mappingId)
-        {
-            var templateMapping = GetItem(mappingId);
-            if (templateMapping != null)
-            {
-                DeleteItem(templateMapping);
-            }
-        }
-
-        public List<CmsTemplate> GetAvailableCmsTemplates()
-        {
-            var accountSettings = _accountsRepository.GetAccountSettings();
-
-            var templateFolderId = accountSettings.TemplateFolderId;
-            if (string.IsNullOrEmpty(templateFolderId))
-            {
-                templateFolderId = Constants.TemplateFolderId;
-            }
-            var model = new List<CmsTemplate>();
-            var cmsTemplates = GetTemplates(templateFolderId);
-            foreach (var template in cmsTemplates)
-            {
-                var cmsTemplate = new CmsTemplate
-                {
-                    TemplateName = template.Name,
-                    TemplateId = template.ID.ToString()
-                };
-
-                var fields = GetFields(template);
-                cmsTemplate.TemplateFields.AddRange(
-                    fields.Where(f => !f.Name.StartsWith("__")).Select(f => new CmsTemplateField
-                    {
-                        FieldName = f.Name,
-                        FieldId = f.ID.ToString(),
-                        FieldType = f.Type
-                    }));
-
-                model.Add(cmsTemplate);
-            }
-            return model;
         }
     }
 }

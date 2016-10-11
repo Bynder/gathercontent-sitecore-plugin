@@ -10,24 +10,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{2E8006
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.Entities", "Modules\GatherContent.Connector.Entities\GatherContent.Connector.Entities.csproj", "{A40787E3-7DF6-41B9-90C0-41704AEA2BE3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.Entities", "src\GatherContent.Connector.Entities\GatherContent.Connector.Entities.csproj", "{A40787E3-7DF6-41B9-90C0-41704AEA2BE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.GatherContentService", "Modules\GatherContent.Connector.GatherContentService\GatherContent.Connector.GatherContentService.csproj", "{42B1CCBC-1FC4-4601-9D53-63B69AFAB68D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.GatherContentService", "src\GatherContent.Connector.GatherContentService\GatherContent.Connector.GatherContentService.csproj", "{42B1CCBC-1FC4-4601-9D53-63B69AFAB68D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.IRepositories", "Modules\GatherContent.Connector.IRepositories\GatherContent.Connector.IRepositories.csproj", "{3DCE6E64-51F1-42B3-86DD-38DAEA4BA416}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.IRepositories", "src\GatherContent.Connector.IRepositories\GatherContent.Connector.IRepositories.csproj", "{3DCE6E64-51F1-42B3-86DD-38DAEA4BA416}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.Managers", "Modules\GatherContent.Connector.Managers\GatherContent.Connector.Managers.csproj", "{06887722-F39A-4F95-81BC-653334BC7636}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.Managers", "src\GatherContent.Connector.Managers\GatherContent.Connector.Managers.csproj", "{06887722-F39A-4F95-81BC-653334BC7636}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.SitecoreRepositories", "Modules\GatherContent.Connector.SitecoreRepositories\GatherContent.Connector.SitecoreRepositories.csproj", "{4DED3819-E7A3-4726-8F71-A0F417A8019A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.SitecoreRepositories", "src\GatherContent.Connector.SitecoreRepositories\GatherContent.Connector.SitecoreRepositories.csproj", "{4DED3819-E7A3-4726-8F71-A0F417A8019A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.Website", "Sitecore 8.1\Website\GatherContent.Connector.Website.csproj", "{0B99B2EC-225D-4373-A383-DD762684EDE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.Website", "src\GatherContent.Connector.Website\GatherContent.Connector.Website.csproj", "{0B99B2EC-225D-4373-A383-DD762684EDE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.WebControllers", "Modules\GatherContent.Connector.WebControllers\GatherContent.Connector.WebControllers.csproj", "{59E5F602-4A8D-484C-8009-C6B01DAD10CD}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deploy", "Deploy", "{4EE353B5-9811-4057-837A-BD6908CE0C76}"
-	ProjectSection(SolutionItems) = preProject
-		Copy to Sitecore 8 Website.ps1 = Copy to Sitecore 8 Website.ps1
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.WebControllers", "src\GatherContent.Connector.WebControllers\GatherContent.Connector.WebControllers.csproj", "{59E5F602-4A8D-484C-8009-C6B01DAD10CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

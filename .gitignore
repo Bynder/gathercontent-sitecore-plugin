@@ -26,18 +26,9 @@ bld/
 #temp/
 MediaCache/
 
-Sitecore 7.2/Website/Data/
-Sitecore 8.0/Website/Data/
-Sitecore 8.1/Website/Data/*
-!Sitecore 8.1/Website/Data/Unicorn/
 
-Sitecore 7.2/Data/
-Sitecore 8.0/Data/
-Sitecore 8.1/Data/
 
-Sitecore 8.1/Website/temp/
-Sitecore 7.2/Website/temp/
-Sitecore 8.0/Website/temp/
+Sitecore 8.1
 
 # MSTest test Results
 [Tt]est[Rr]esult*/

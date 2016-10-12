@@ -378,22 +378,22 @@ input[type="button"] {
 .import-grid {
     border: 1px solid rgb(212,212,212);
     width: 100%;
-    height: 515px;
+    height: 480px;
 }
 
 .import-result-grid {
     border: 1px solid rgb(212,212,212);
     width: 100%;
-    height: 505px;
+    height: 470px;
     border-left: none;
     border-right: none;
     border-bottom: none;
 }
 .info_footer .import-result-grid{
-    height: 440px;
+    height: 410px;
 }
 .multiimport-result-grid{
-    height: 500px;
+    height: 470px;
 }
 .info_footer .multiimport-result-grid{
     height: 65%;
@@ -403,10 +403,10 @@ input[type="button"] {
     display: none;
 }
 .multimport-confirm-grid{
-    height: 510px;
+    height: 480px;
 }
 .multimport-confirm-grid2{
-    height: 580px;
+    height: 550px;
 }
 .import-confirm-grid {
     border: 1px solid rgb(212,212,212);

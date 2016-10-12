@@ -9,6 +9,7 @@ using GatherContent.Connector.IRepositories.Models.Mapping;
 using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.Mapping;
 using GatherContent.Connector.SitecoreRepositories.Repositories;
+using Sitecore.Diagnostics;
 
 namespace GatherContent.Connector.Managers.Managers
 {
@@ -130,7 +131,8 @@ namespace GatherContent.Connector.Managers.Managers
             var availableTemplates = MappingRepository.GetAvailableCmsTemplates();
             if (availableTemplates.Count == 0)
             {
-                throw new Exception("Template folder is empty");
+                Log.Warn("Template folder is empty", this);
+                return new List<CmsTemplateModel>();
             }
             var templates = MapCmsTemplates(availableTemplates).ToList();
 

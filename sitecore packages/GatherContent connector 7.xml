@@ -2,11 +2,11 @@
   <Metadata>
     <metadata>
       <PackageName>GatherContent Connector</PackageName>
-      <Author>brimit</Author>
-      <Version>1.13</Version>
+      <Author>Brimit</Author>
+      <Version>2.07</Version>
       <Revision />
       <License />
-      <Comment />
+      <Comment>https://marketplace.sitecore.net/en/Modules/G/GatherContent_Integration.aspx</Comment>
       <Attributes />
       <Readme />
       <Publisher />
@@ -19,6 +19,7 @@
     <xitems>
       <Entries>
         <x-item>/core/sitecore/content/Applications/Content Editor/Ribbons/Chunks/GatherContent Manage/{57156882-3E97-46AC-85B6-2BD2FD4EAE7F}/invariant/0</x-item>
+		<x-item>/core/sitecore/content/Applications/Content Editor/Ribbons/Chunks/GatherContent Manage/Expand links/{CD3B6DE7-42FE-49E1-92E1-E03C75A2F00B}/invariant/0</x-item>
         <x-item>/core/sitecore/content/Applications/Content Editor/Ribbons/Chunks/GatherContent Manage/Import/{D0EB1B8A-79F7-4999-9FCE-BEBDB5D97940}/invariant/0</x-item>
         <x-item>/core/sitecore/content/Applications/Content Editor/Ribbons/Chunks/GatherContent Manage/Mappings/{37F25CBC-9AFE-46FE-9E8E-7A1F0BE05156}/invariant/0</x-item>
         <x-item>/core/sitecore/content/Applications/Content Editor/Ribbons/Chunks/GatherContent Manage/ML Import/{DE8DE56C-A36C-4768-914A-CECD22137212}/invariant/0</x-item>
@@ -90,10 +91,8 @@
     </xitems>
     <xfiles>
       <Entries>
-        <x-item>/App_Config/GatherContent.Connector.Repositories.config</x-item>
+        <x-item>/App_Config/Include/GatherContent.Connector.Repositories.config</x-item>
         <x-item>/App_Config/Include/GatherContent.Connector.config</x-item>
-        <x-item>/bin/Castle.Core.dll</x-item>
-        <x-item>/bin/Castle.Windsor.dll</x-item>
         <x-item>/bin/GatherContent.Connector.Entities.dll</x-item>
         <x-item>/bin/GatherContent.Connector.GatherContentService.dll</x-item>
         <x-item>/bin/GatherContent.Connector.IRepositories.dll</x-item>
@@ -101,7 +100,6 @@
         <x-item>/bin/GatherContent.Connector.SitecoreRepositories.dll</x-item>
         <x-item>/bin/GatherContent.Connector.WebControllers.dll</x-item>
         <x-item>/bin/GatherContent.Connector.Website.dll</x-item>
-        <x-item>/bin/WebActivatorEx.dll</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/AddTemplate/AddTemplate.html</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/AddTemplate/AddTemplate.js</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/css/bootstrap.min.css</x-item>
@@ -152,6 +150,10 @@
         <x-item>/sitecore modules/Shell/GatherContent/Update/Update.css</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Update/Update.html</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/Update/Update.js</x-item>
+		<x-item>/sitecore modules/Shell/GatherContent/icons/delete.png</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/icons/Right.png</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/icons/sc-spinner32.gif</x-item>
+        <x-item>/sitecore modules/Shell/GatherContent/icons/Warning (1).png</x-item>
       </Entries>
       <Converter>
         <FileToEntryConverter>

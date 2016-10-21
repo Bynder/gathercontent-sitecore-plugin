@@ -3,7 +3,7 @@
     <metadata>
       <PackageName>GatherContent Connector</PackageName>
       <Author>Brimit</Author>
-      <Version>2.05</Version>
+      <Version>2.07</Version>
       <Revision />
       <License />
       <Comment>https://marketplace.sitecore.net/en/Modules/G/GatherContent_Integration.aspx</Comment>
@@ -95,10 +95,8 @@
     </xitems>
     <xfiles>
       <Entries>
-        <x-item>/App_Config/GatherContent.Connector.Repositories.config</x-item>
+        <x-item>/App_Config/Include/GatherContent.Connector.Repositories.config</x-item>
         <x-item>/App_Config/Include/GatherContent.Connector.config</x-item>
-        <x-item>/bin/Castle.Core.dll</x-item>
-        <x-item>/bin/Castle.Windsor.dll</x-item>
         <x-item>/bin/GatherContent.Connector.Entities.dll</x-item>
         <x-item>/bin/GatherContent.Connector.GatherContentService.dll</x-item>
         <x-item>/bin/GatherContent.Connector.IRepositories.dll</x-item>
@@ -106,8 +104,6 @@
         <x-item>/bin/GatherContent.Connector.SitecoreRepositories.dll</x-item>
         <x-item>/bin/GatherContent.Connector.WebControllers.dll</x-item>
         <x-item>/bin/GatherContent.Connector.Website.dll</x-item>
-        <x-item>/bin/Microsoft.Practices.ServiceLocation.dll</x-item>
-        <x-item>/bin/WebActivatorEx.dll</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/AddTemplate/AddTemplate.html</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/AddTemplate/AddTemplate.js</x-item>
         <x-item>/sitecore modules/Shell/GatherContent/css/bootstrap/css/bootstrap.min.css</x-item>

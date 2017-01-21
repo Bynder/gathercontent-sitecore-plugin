@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{2E80067B-A8EF-4EF2-BB43-B48E3EA15D9F}"
 	ProjectSection(SolutionItems) = preProject
@@ -23,6 +23,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.Website", "src\GatherContent.Connector.Website\GatherContent.Connector.Website.csproj", "{0B99B2EC-225D-4373-A383-DD762684EDE4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatherContent.Connector.WebControllers", "src\GatherContent.Connector.WebControllers\GatherContent.Connector.WebControllers.csproj", "{59E5F602-4A8D-484C-8009-C6B01DAD10CD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{86710B3E-B926-414B-8BEA-BE65773200EA}"
+	ProjectSection(SolutionItems) = preProject
+		src\SharedAssemblyInfo.cs = src\SharedAssemblyInfo.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

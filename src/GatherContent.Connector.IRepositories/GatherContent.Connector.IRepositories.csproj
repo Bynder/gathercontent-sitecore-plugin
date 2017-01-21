@@ -98,6 +98,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Interfaces\IAccountsRepository.cs" />
     <Compile Include="Interfaces\IDropTreeRepository.cs" />
     <Compile Include="Interfaces\IMediaRepository.cs" />

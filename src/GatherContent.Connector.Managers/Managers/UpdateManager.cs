@@ -14,8 +14,6 @@ using GatherContent.Connector.Managers.Models.ImportItems.New;
 using GatherContent.Connector.Managers.Models.Mapping;
 using GatherContent.Connector.Managers.Models.UpdateItems;
 using GatherContent.Connector.Managers.Models.UpdateItems.New;
-using Sitecore;
-using Sitecore.Diagnostics;
 using Constants = GatherContent.Connector.SitecoreRepositories.Repositories.Constants;
 
 namespace GatherContent.Connector.Managers.Managers
@@ -30,6 +28,7 @@ namespace GatherContent.Connector.Managers.Managers
         protected IMappingRepository MappingRepository;
 
         protected IItemsService ItemsService;
+        protected readonly ILogger Log;
 
         protected GCAccountSettings GcAccountSettings;
 
@@ -43,6 +42,7 @@ namespace GatherContent.Connector.Managers.Managers
         /// <param name="projectsService"></param>
         /// <param name="templateService"></param>
         /// <param name="cacheManager"></param>
+        /// <param name="logger"></param>
         /// <param name="gcAccountSettings"></param>
         public UpdateManager(
             IItemsRepository itemsRepository,
@@ -52,6 +52,7 @@ namespace GatherContent.Connector.Managers.Managers
             IProjectsService projectsService,
             ITemplatesService templateService,
             ICacheManager cacheManager,
+            ILogger logger,
             GCAccountSettings gcAccountSettings)
             : base(accountsService, projectsService, templateService, cacheManager)
         {
@@ -60,6 +61,7 @@ namespace GatherContent.Connector.Managers.Managers
             MappingRepository = mappingRepository;
 
             ItemsService = itemsService;
+            Log = logger ?? new NullLogger();
 
             GcAccountSettings = gcAccountSettings;
         }
@@ -461,7 +463,7 @@ namespace GatherContent.Connector.Managers.Managers
                         var cmsSyncDateField =  new CmsField
                         {
                             TemplateField = new CmsTemplateField { FieldName = "Last Sync Date" },
-                            Value = DateUtil.ToIsoDate(DateTime.UtcNow)
+                            Value = DateTime.UtcNow.ToString("yyyyMMddTHHmmss")
                         };
 
                         ItemsRepository.MapText(cmsItem, cmsSyncDateField);

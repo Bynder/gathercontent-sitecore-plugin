@@ -9,7 +9,7 @@ using GatherContent.Connector.IRepositories.Models.Mapping;
 using GatherContent.Connector.Managers.Interfaces;
 using GatherContent.Connector.Managers.Models.Mapping;
 using GatherContent.Connector.SitecoreRepositories.Repositories;
-using Sitecore.Diagnostics;
+//using Sitecore.Diagnostics;
 
 namespace GatherContent.Connector.Managers.Managers
 {
@@ -22,6 +22,7 @@ namespace GatherContent.Connector.Managers.Managers
 
         protected IMappingRepository MappingRepository;
         protected IItemsService ItemService;
+        protected readonly ILogger Log;
         protected ITemplatesService TemplateService;
         protected GCAccountSettings AccountSettings;
 
@@ -32,12 +33,14 @@ namespace GatherContent.Connector.Managers.Managers
             ITemplatesService templateService,
             IItemsService itemService,
             ICacheManager cacheManager,
+            ILogger logger,
             GCAccountSettings accountSettings)
             : base(accountsService, projectsService, templateService, cacheManager)
         {
             AccountSettings = accountSettings;
             MappingRepository = mappingRepository;
             ItemService = itemService;
+            Log = logger ?? new NullLogger();
             TemplateService = templateService;
         }
 

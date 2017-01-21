@@ -113,30 +113,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\References 7.2\Sitecore\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Sitecore.Kernel, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Release 8.1'">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\References\Sitecore\Sitecore.Kernel.dll</HintPath>
-    </Reference>
-    <Reference Include="Sitecore.Kernel, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Release 8.0'">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\References 8.0\Sitecore\Sitecore.Kernel.dll</HintPath>
-    </Reference>
-    <Reference Include="Sitecore.Kernel, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Release 7'">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\References 7.2\Sitecore\Sitecore.Kernel.dll</HintPath>
-    </Reference>
-    <Reference Include="Sitecore.Kernel, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Debug 8.1'">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\References\Sitecore\Sitecore.Kernel.dll</HintPath>
-    </Reference>
-    <Reference Include="Sitecore.Kernel, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Debug 8.0'">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\References 8.0\Sitecore\Sitecore.Kernel.dll</HintPath>
-    </Reference>
-    <Reference Include="Sitecore.Kernel, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL" Condition="'$(Configuration)'=='Debug 7'">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\References 7.2\Sitecore\Sitecore.Kernel.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Caching" />
@@ -148,11 +124,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Enums\TryMapItemState.cs" />
     <Compile Include="Interfaces\ICacheManager.cs" />
     <Compile Include="Interfaces\IDropTreeManager.cs" />
     <Compile Include="Interfaces\IImportManager.cs" />
     <Compile Include="Interfaces\ILinkManager.cs" />
+    <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\IManager.cs" />
     <Compile Include="Interfaces\IMappingManager.cs" />
     <Compile Include="Interfaces\IUpdateManager.cs" />

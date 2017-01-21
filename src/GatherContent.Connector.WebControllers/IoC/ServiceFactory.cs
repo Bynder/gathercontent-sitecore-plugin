@@ -1,4 +1,5 @@
-﻿using GatherContent.Connector.Entities;
+﻿using System;
+using GatherContent.Connector.Entities;
 using GatherContent.Connector.GatherContentService.Services;
 using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.Managers.Interfaces;
@@ -65,6 +66,7 @@ namespace GatherContent.Connector.WebControllers.IoC
                     new TemplatesService(Settings),
                     new ItemsService(Settings),
                     new CacheManager(), 
+                    new ScLogger(), 
                     Settings
                     );
             }
@@ -117,8 +119,22 @@ namespace GatherContent.Connector.WebControllers.IoC
                     new ProjectsService(Settings),
                     new TemplatesService(Settings),
                     new CacheManager(), 
+                    new ScLogger(), 
                     Settings);
             }
+        }
+    }
+
+    public class ScLogger : ILogger
+    {
+        public void Warn(string message, object sender)
+        {
+            Sitecore.Diagnostics.Log.Warn(message, sender);
+        }
+
+        public void Error(string message, Exception exception)
+        {
+            Sitecore.Diagnostics.Log.Error(message, exception, this);
         }
     }
 }

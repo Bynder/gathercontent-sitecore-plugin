@@ -156,6 +156,9 @@
     <Content Include="sitecore modules\Shell\GatherContent\Import\Import.js" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Commands\ExpandRichTextLinksCommand.cs" />
     <Compile Include="Commands\MultipleLocationsImportCommand.cs" />
     <Compile Include="Commands\ImportCommand.cs" />
@@ -175,7 +178,7 @@
     <Content Include="App_Config\Include\GatherContent.Connector.config">
       <SubType>Designer</SubType>
     </Content>
-	<Content Include="App_Config\Include\GatherContent.Connector.Repositories.config" />
+    <Content Include="App_Config\Include\GatherContent.Connector.Repositories.config" />
     <Content Include="App_Config\Include\Unicorn.Configs.GatherContent.Connector.config" />
   </ItemGroup>
   <ItemGroup>

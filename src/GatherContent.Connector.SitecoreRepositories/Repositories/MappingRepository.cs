@@ -95,9 +95,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         {
             var templateMappingItem = CreateTemplateMapping(templateMapping);
 
+            int sortOrder = 1;
             foreach (var templateField in templateMapping.FieldMappings)
             {
-                CreateFieldMapping(templateMappingItem, templateField);
+                CreateFieldMapping(templateMappingItem, templateField, sortOrder);
+                sortOrder++;
             }
         }
 
@@ -119,17 +121,20 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     }
                 }
 
+                int sortOrder = 1;
                 foreach (var templateField in templateMapping.FieldMappings)
                 {
                     var field = fields.FirstOrDefault(fm => fm["GC Field Id"] == templateField.GcField.Id);
                     if (field != null)
                     {
-                        UpdateFieldMapping(field, templateField.CmsField.TemplateField.FieldId);
+                        UpdateFieldMapping(field, templateField.CmsField.TemplateField.FieldId, sortOrder);
                     }
                     else
                     {
-                        CreateFieldMapping(templateMappingItem, templateField);
+                        CreateFieldMapping(templateMappingItem, templateField, sortOrder);
                     }
+
+                    sortOrder++;
                 }
             }
         }
@@ -452,7 +457,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-        private void CreateFieldMapping(Item templateMappingItem, FieldMapping fieldMapping)
+        private void CreateFieldMapping(Item templateMappingItem, FieldMapping fieldMapping, int sortOrder)
         {
             var validName = ItemUtil.ProposeValidItemName(fieldMapping.GcField.Name + " " + fieldMapping.GcField.Id);
             using (new SecurityDisabler())
@@ -466,6 +471,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     createdItem.Fields["GC Field"].Value = fieldMapping.GcField.Name;
                     createdItem.Fields["GC Field Id"].Value = fieldMapping.GcField.Id;
                     createdItem.Fields["Sitecore Field"].Value = fieldMapping.CmsField.TemplateField.FieldId;
+                    createdItem.Fields[FieldIDs.Sortorder].Value = sortOrder.ToString();
                     createdItem.Editing.EndEdit();
                 }
             }
@@ -490,13 +496,14 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-        private void UpdateFieldMapping(Item field, string sitecoreFieldId)
+        private void UpdateFieldMapping(Item item, string sitecoreFieldId, int sortOrder)
         {
             using (new SecurityDisabler())
             {
-                field.Editing.BeginEdit();
-                field.Fields["Sitecore Field"].Value = sitecoreFieldId;
-                field.Editing.EndEdit();
+                item.Editing.BeginEdit();
+                item.Fields["Sitecore Field"].Value = sitecoreFieldId;
+                item.Fields[FieldIDs.Sortorder].Value = sortOrder.ToString();
+                item.Editing.EndEdit();
             }
         }
 

@@ -19,29 +19,16 @@
 
         #endregion
 
-
-        #region Names
-
         public const string MappingFolderName = "Mappings";
         public const string StatusFolderName = "GC Statuses";
         public const string ProjectsFolderName = "GC Projects";
         public const string ProjectFolderName = "GC Project";
 
-        #endregion
-
-
-        #region Template names
-                
         public const string ProjectTemplateName = "GC Project";
         public const string TemplateMappingName = "GC Template Mapping";
         public const string ProjectFolderTemplateName = "GC Projects Folder";
         public const string MappingFolderTemplateName = "GC Mapping Folder";
         public const string GCLinkItemTemplateName = "GC Linked Item";
         public const string GCNotMappedItemTemplateName = "Not Mapped Item";
-
-
-        #endregion
-
-        
     }
 }

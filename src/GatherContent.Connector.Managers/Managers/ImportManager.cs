@@ -269,10 +269,13 @@ namespace GatherContent.Connector.Managers.Managers
                                     }
                                     parentId = cmsItem.Id;
                                     
-                                    var fields = templateMapping.FieldMappings;
+                                    var fieldMappings = templateMapping.FieldMappings;
 
-                                    foreach (var field in fields)
+                                    // one CMS text field can be mapped to several GC fields
+                                    // in this case we concatenate their texts and put into one CMS field
+                                    foreach (IGrouping<string, FieldMapping> fields in fieldMappings.GroupBy(f => f.CmsField.TemplateField.FieldName))
                                     {
+                                        FieldMapping field = fields.First();
                                         if (field.GcField != null)
                                         {
                                             switch (field.GcField.Type)
@@ -290,6 +293,11 @@ namespace GatherContent.Connector.Managers.Managers
                                                     break;
                                                 default:
                                                 {
+                                                    if (fields.Count() > 1)
+                                                    {
+                                                        field.CmsField.Value = string.Join("\r\n", fields.Select(f => f.CmsField.Value.ToString()));
+                                                    }
+
                                                     ItemsRepository.MapText(cmsItem, field.CmsField);
                                                 }
                                                     break;

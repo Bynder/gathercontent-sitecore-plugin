@@ -8,7 +8,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("GatherContent.Connector.SitecoreRepositories")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("GatherContent.Connector.SitecoreRepositories")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

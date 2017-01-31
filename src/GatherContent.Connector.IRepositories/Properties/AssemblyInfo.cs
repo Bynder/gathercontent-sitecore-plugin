@@ -8,7 +8,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("GatherContent.Connector.IRepositories")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("GatherContent.Connector.IRepositories")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

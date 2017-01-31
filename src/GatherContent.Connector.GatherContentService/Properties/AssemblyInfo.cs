@@ -8,7 +8,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("GatherContent.Connector.GatherContentService")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("GatherContent.Connector.GatherContentService")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

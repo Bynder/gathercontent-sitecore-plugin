@@ -12,7 +12,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         {
             Field scField = createdItem.Fields[new ID(cmsField.TemplateField.FieldId)];
             string dataSourcePath = GetItem(scField.ID.ToString())["Source"];
-            if (string.IsNullOrEmpty(dataSourcePath))
+            if (string.IsNullOrEmpty(dataSourcePath) || GetItem(dataSourcePath) == null)
             {
                 dataSourcePath = "/sitecore/media library/GatherContent";
             }

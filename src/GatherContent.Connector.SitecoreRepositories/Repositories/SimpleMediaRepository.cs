@@ -53,17 +53,17 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             Field scField = createdItem.Fields[new ID(cmsField.TemplateField.FieldId)];
             string dataSourcePath = GetItem(scField.ID.ToString())["Source"];
             string path;
-            if (string.IsNullOrEmpty(dataSourcePath))
+            if (!string.IsNullOrEmpty(dataSourcePath) && GetItem(dataSourcePath) != null)
+            {
+                path = dataSourcePath;
+            }
+            else
             {
                 path = string.IsNullOrEmpty(cmsField.TemplateField.FieldName)
                     ? string.Format("/sitecore/media library/GatherContent/{0}/", item.Title)
                     : string.Format("/sitecore/media library/GatherContent/{0}/{1}/", item.Title, cmsField.TemplateField.FieldName);
-                
+
                 SetDatasourcePath(createdItem, cmsField.TemplateField.FieldId, path);
-            }
-            else
-            {
-                path = dataSourcePath;
             }
             return path;
         }

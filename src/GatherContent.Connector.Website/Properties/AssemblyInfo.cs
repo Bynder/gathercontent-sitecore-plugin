@@ -8,7 +8,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("GatherContent.Connector.Website")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("GatherContent.Connector.Website")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -106,11 +106,15 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         {
             var scField = updatedItem.Fields[new ID(fieldId)];
             var scItem = GetItem(scField.ID.ToString());
-            using (new SecurityDisabler())
+
+            if (string.IsNullOrEmpty(scItem["Source"]))
             {
-                scItem.Editing.BeginEdit();
-                scItem["Source"] = path;
-                scItem.Editing.EndEdit();
+                using (new SecurityDisabler())
+                {
+                    scItem.Editing.BeginEdit();
+                    scItem["Source"] = path;
+                    scItem.Editing.EndEdit();
+                }
             }
         }
     }

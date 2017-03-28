@@ -16,6 +16,7 @@ using Sitecore.ContentSearch.SearchTypes;
 using Sitecore.Data.Fields;
 using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.IRepositories.Interfaces;
+using Sitecore.Web.UI.HtmlControls.Data;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
@@ -264,7 +265,6 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         public void MapChoice(CmsItem item, CmsField cmsField)
         {
             Item createdItem = GetItem(item.Id, Sitecore.Data.Managers.LanguageManager.GetLanguage(item.Language));
-            var path = _mediaRepository.ResolveMediaPath(item, createdItem, cmsField);
 
             using (new SecurityDisabler())
             {
@@ -279,6 +279,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                             if (file != null)
                             {
                                 // var media = UploadFile(path, file);
+                                var path = _mediaRepository.ResolveMediaPath(item, createdItem, cmsField);
                                 Item media = _mediaRepository.UploadFile(path, file);
                                 if (media != null)
                                 {
@@ -299,10 +300,16 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                         {
                             var children = GetDatasource(createdItem, cmsField.TemplateField.FieldId, option);
                             //option = GC option.Label
-                            if (children != null) value += children.ID + "|";
+                            if (children != null)
+                            {
+                                value += children.ID + "|";
+                            }
                         }
                         value = value.TrimEnd('|');
-                        if (!string.IsNullOrEmpty(value)) createdItem[cmsField.TemplateField.FieldName] = value;
+                        if (!string.IsNullOrEmpty(value))
+                        {
+                            createdItem[cmsField.TemplateField.FieldName] = value;
+                        }
                     }
 
                     createdItem.Editing.EndEdit();
@@ -317,8 +324,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         public void MapFile(CmsItem item, CmsField cmsField)
         {
             Item createdItem = GetItem(item.Id, Sitecore.Data.Managers.LanguageManager.GetLanguage(item.Language));
-            var path = _mediaRepository.ResolveMediaPath(item, createdItem, cmsField);
-
+            
             using (new SecurityDisabler())
             {
                 using (new LanguageSwitcher(item.Language))
@@ -329,6 +335,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                         if (file != null)
                         {
                             // var media = UploadFile(path, file);
+                            var path = _mediaRepository.ResolveMediaPath(item, createdItem, cmsField);
                             Item media = _mediaRepository.UploadFile(path, file);
 
                             var mediaUrl = MediaManager.GetMediaUrl(media, new MediaUrlOptions {UseItemPath = false, AbsolutePath = false});
@@ -346,8 +353,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         public void MapImage(CmsItem item, CmsField cmsField)
         {
             Item createdItem = GetItem(item.Id, Sitecore.Data.Managers.LanguageManager.GetLanguage(item.Language));
-            var path = _mediaRepository.ResolveMediaPath(item, createdItem, cmsField);
-
+            
             using (new SecurityDisabler())
             {
                 using (new LanguageSwitcher(item.Language))
@@ -357,6 +363,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                         var file = cmsField.Files.FirstOrDefault();
                         if (file != null)
                         {
+                            var path = _mediaRepository.ResolveMediaPath(item, createdItem, cmsField);
                             Item media = _mediaRepository.UploadFile(path, file);
 
                             var value = string.Format("<image mediaid=\"{0}\"  />", media.ID);
@@ -729,10 +736,15 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         private Item GetDatasource(Item updatedItem, string fieldId, string label)
         {
             var dataSourcePath = GetDatasourcePath(updatedItem, fieldId);
-            var dataSourceItem = GetItemByPath(dataSourcePath);
-            if (dataSourceItem == null) return null;
-            var children = dataSourceItem.GetChildren().InnerChildren.FirstOrDefault(c => c.Name.ToLower() == label.ToLower());
-            return children;
+
+            Item[] datasourceItems = LookupSources.GetItems(updatedItem, dataSourcePath);
+
+            if (datasourceItems == null)
+            {
+                return null;
+            }
+
+            return datasourceItems.FirstOrDefault(c => c.Name.ToLower() == label.ToLower());
         }
 
         /// <summary>

@@ -744,7 +744,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 return null;
             }
 
-            return datasourceItems.FirstOrDefault(c => c.Name.ToLower() == label.ToLower());
+            return datasourceItems.FirstOrDefault(c =>
+                label.Equals(c.Name, StringComparison.InvariantCultureIgnoreCase) || 
+                label.Equals(c.DisplayName, StringComparison.InvariantCultureIgnoreCase));
         }
 
         /// <summary>

@@ -744,6 +744,13 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 return null;
             }
 
+            label = label.Trim();
+
+            if (label.Contains('&'))
+            {
+                label = System.Web.HttpUtility.HtmlDecode(label);
+            }
+
             return datasourceItems.FirstOrDefault(c =>
                 label.Equals(c.Name, StringComparison.InvariantCultureIgnoreCase) || 
                 label.Equals(c.DisplayName, StringComparison.InvariantCultureIgnoreCase));

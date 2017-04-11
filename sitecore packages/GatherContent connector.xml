@@ -3,7 +3,7 @@
     <metadata>
       <PackageName>GatherContent Connector</PackageName>
       <Author>Brimit</Author>
-      <Version>2.07</Version>
+      <Version>2.08</Version>
       <Revision />
       <License />
       <Comment>https://marketplace.sitecore.net/en/Modules/G/GatherContent_Integration.aspx</Comment>
@@ -45,6 +45,7 @@
         <x-item>/master/sitecore/templates/GatherContent/GC Account/Credentials/Platform URL/{387209AA-9F43-433C-BEAD-7E04BE1883B8}/invariant/0</x-item>
         <x-item>/master/sitecore/templates/GatherContent/GC Account/Settings/{4E8FBC36-9E5B-4288-BEAF-B991A1DD1566}/invariant/0</x-item>
         <x-item>/master/sitecore/templates/GatherContent/GC Account/Settings/Date Format/{07F2CDB0-B603-45A4-A309-145C96128D59}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/GatherContent/GC Account/Settings/DateTime Field Format/{CCC41BD5-AD9A-41E2-9DF6-F15B8194DE9B}/invariant/0</x-item>
         <x-item>/master/sitecore/templates/GatherContent/GC Account/Settings/DropTree Home Node/{D8AAB2E6-567F-4FFA-81FD-7141252C1704}/invariant/0</x-item>
         <x-item>/master/sitecore/templates/GatherContent/GC Account/Settings/Templates Root Folder/{F5EDAE38-0843-42FC-BA33-DC19D481953B}/invariant/0</x-item>
         <x-item>/master/sitecore/templates/GatherContent/GC Field Mapping/{24FE0F34-5B16-44ED-A845-D6C502F08AA9}/invariant/0</x-item>

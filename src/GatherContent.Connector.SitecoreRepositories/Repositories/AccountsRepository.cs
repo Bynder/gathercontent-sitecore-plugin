@@ -19,6 +19,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     ApiKey = accountSettingItem["API Key"],
                     TemplateFolderId = accountSettingItem["Templates Root Folder"],
                     DateFormat = accountSettingItem["Date Format"],
+                    DateTimeParseFormat = accountSettingItem["DateTime Field Format"],
                     GatherContentUrl = accountSettingItem["Platform Url"],
                     DropTreeHomeNode = accountSettingItem["DropTree Home Node"],
                     AccountItemId = accountSettingItem.ID.ToString()

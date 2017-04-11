@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Sitecore;
 using Sitecore.Data;
@@ -407,6 +408,39 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                             createdItem.Editing.EndEdit();
                         }
                     }
+                }
+            }
+        }
+
+        public void MapDateTime(CmsItem item, CmsField cmsField)
+        {
+            Item createdItem = GetItem(item.Id, Sitecore.Data.Managers.LanguageManager.GetLanguage(item.Language));
+            if (createdItem == null)
+            {
+                return;
+            }
+
+            string stringValue = cmsField.Value.ToString();
+            string format = _accountsRepository.GetAccountSettings().DateTimeParseFormat;
+
+            if (string.IsNullOrWhiteSpace(format))
+            {
+                format = Constants.DateParseFormat;
+            }
+
+            DateTime dateTimeValue;
+
+            DateTime.TryParseExact(stringValue, format, CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces, out dateTimeValue);
+
+            using (new SecurityDisabler())
+            {
+                using (new LanguageSwitcher(item.Language))
+                {
+                    createdItem.Editing.BeginEdit();
+
+                    createdItem[cmsField.TemplateField.FieldName] = DateUtil.ToIsoDate(dateTimeValue);
+
+                    createdItem.Editing.EndEdit();
                 }
             }
         }

@@ -10,7 +10,15 @@
 
         public string TemplateFolderId { get; set; }
 
+        /// <summary>
+        /// Date format used for datetime output on application's dialogs and forms
+        /// </summary>
         public string DateFormat { get; set; }
+
+        /// <summary>
+        /// Format used to parse datetime fields
+        /// </summary>
+        public string DateTimeParseFormat { get; set; }
 
         public string AccountItemId { get; set; }
 

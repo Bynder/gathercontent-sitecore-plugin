@@ -3,6 +3,7 @@
     public class Constants
     {
         public const string DateFormat = "dd/MM/yyyy hh:mm tt";
+        public const string DateParseFormat = "dd/MM/yyyy HH:mm";
 
         #region Ids
 

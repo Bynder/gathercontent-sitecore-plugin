@@ -293,12 +293,19 @@ namespace GatherContent.Connector.Managers.Managers
                                                     break;
                                                 default:
                                                 {
-                                                    if (fields.Count() > 1)
+                                                    if (field.CmsField.TemplateField.FieldType == "Datetime" || field.CmsField.TemplateField.FieldType == "Date")
                                                     {
-                                                        field.CmsField.Value = string.Join("\r\n", fields.Select(f => f.CmsField.Value.ToString()));
+                                                        ItemsRepository.MapDateTime(cmsItem, field.CmsField);
                                                     }
+                                                    else
+                                                    {
+                                                        if (fields.Count() > 1)
+                                                        {
+                                                            field.CmsField.Value = string.Join("\r\n", fields.Select(f => f.CmsField.Value.ToString()));
+                                                        }
 
-                                                    ItemsRepository.MapText(cmsItem, field.CmsField);
+                                                        ItemsRepository.MapText(cmsItem, field.CmsField);
+                                                    }
                                                 }
                                                     break;
                                             }

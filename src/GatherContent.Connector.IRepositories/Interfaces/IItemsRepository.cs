@@ -29,6 +29,8 @@ namespace GatherContent.Connector.IRepositories.Interfaces
 
         void MapDropTree(CmsItem item, CmsField field);
 
+        void MapDateTime(CmsItem item, CmsField field);
+
         bool IfMappedItemExists(string itemId, CmsItem cmsItem, string mappingId, string gcPath);
 
         bool IfMappedItemExists(string parentId, CmsItem cmsItem);

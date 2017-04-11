@@ -18,5 +18,5 @@ using System.Runtime.InteropServices;
 #endif
 #endif
 #endif
-[assembly: AssemblyVersion("1.17.3.28")]
-[assembly: AssemblyFileVersion("1.17.3.28")]
+[assembly: AssemblyVersion("1.17.4.11")]
+[assembly: AssemblyFileVersion("1.17.4.11")]

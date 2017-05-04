@@ -430,7 +430,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
             DateTime dateTimeValue;
 
-            DateTime.TryParseExact(stringValue, format, CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces, out dateTimeValue);
+            bool parseSuccessfull = DateTime.TryParseExact(stringValue, format, CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces, out dateTimeValue);
+
+            if (!parseSuccessfull)
+            {
+                return;
+            }
 
             using (new SecurityDisabler())
             {

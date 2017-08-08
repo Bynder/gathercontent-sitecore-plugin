@@ -60,11 +60,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             else
             {
                 path = string.IsNullOrEmpty(cmsField.TemplateField.FieldName)
-                    ? string.Format("/sitecore/media library/GatherContent/{0}/", item.Title)
-                    : string.Format("/sitecore/media library/GatherContent/{0}/{1}/", item.Title, cmsField.TemplateField.FieldName);
+                    ? string.Format("/sitecore/media library/GatherContent/{0}/", ItemUtil.ProposeValidItemName(item.Title))
+                    : string.Format("/sitecore/media library/GatherContent/{0}/{1}/", ItemUtil.ProposeValidItemName(item.Title), ItemUtil.ProposeValidItemName(cmsField.TemplateField.FieldName));
 
                 SetDatasourcePath(createdItem, cmsField.TemplateField.FieldId, path);
             }
+
             return path;
         }
 

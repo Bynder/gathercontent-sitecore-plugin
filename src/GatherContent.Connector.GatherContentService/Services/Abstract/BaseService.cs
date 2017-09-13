@@ -7,6 +7,8 @@ using Newtonsoft.Json;
 
 namespace GatherContent.Connector.GatherContentService.Services.Abstract
 {
+    using System.Reflection;
+
     public abstract class BaseService
     {
         protected virtual string ServiceUrl
@@ -21,14 +23,32 @@ namespace GatherContent.Connector.GatherContentService.Services.Abstract
         private static string _userName;
         private static string _apiKey;
 
+#if SC81
+            private static string _cmsVersion = "8.1"
+#else
+#if SC80
+            private static string _cmsVersion = "8.0"
+#else
+#if SC72
+            private static string _cmsVersion = "7.2"
+#else
+        private static string _cmsVersion = "8";
+#endif
+#endif
+#endif
+
+        private static readonly string _integrationVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
         protected BaseService(GCAccountSettings accountSettings)
         {
             _apiUrl = accountSettings.ApiUrl;
             _apiKey = accountSettings.ApiKey;
             _userName = accountSettings.Username;
+
+
         }
 
-        protected static WebRequest CreateRequest(string url)
+    protected static WebRequest CreateRequest(string url)
         {
             if (!_apiUrl.EndsWith("/"))
             {
@@ -41,6 +61,8 @@ namespace GatherContent.Connector.GatherContentService.Services.Abstract
                 string token = GetBasicAuthToken(_userName, _apiKey);
                 webrequest.Accept = "application/vnd.gathercontent.v0.5+json";
                 webrequest.Headers.Add("Authorization", "Basic " + token);
+
+                webrequest.UserAgent = $"Integration-Sitecore-{_cmsVersion}/{_integrationVersion}";
 
                 return webrequest;
             }

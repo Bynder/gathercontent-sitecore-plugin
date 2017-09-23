@@ -6,17 +6,17 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © 2017")]
 
 #if SC81
-[assembly: AssemblyProduct("GatherContent.Connector 2.08 SC8.1")]
+[assembly: AssemblyProduct("GatherContent.Connector 2.09 SC8.1+")]
 #else
 #if SC80
-[assembly: AssemblyProduct("GatherContent.Connector 2.08 SC80")]
+[assembly: AssemblyProduct("GatherContent.Connector 2.09 SC80")]
 #else
 #if SC72
- [assembly: AssemblyProduct("GatherContent.Connector 2.08 SC7.2")]
+ [assembly: AssemblyProduct("GatherContent.Connector 2.09 SC7.2")]
 #else
-[assembly: AssemblyProduct("GatherContent.Connector 2.08")]
+[assembly: AssemblyProduct("GatherContent.Connector 2.09")]
 #endif
 #endif
 #endif
-[assembly: AssemblyVersion("1.17.9.13")]
-[assembly: AssemblyFileVersion("1.17.9.13")]
+[assembly: AssemblyVersion("1.17.9.23")]
+[assembly: AssemblyFileVersion("1.17.9.23")]

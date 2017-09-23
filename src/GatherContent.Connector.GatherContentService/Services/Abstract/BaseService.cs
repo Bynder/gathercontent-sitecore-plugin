@@ -24,13 +24,13 @@ namespace GatherContent.Connector.GatherContentService.Services.Abstract
         private static string _apiKey;
 
 #if SC81
-            private static string _cmsVersion = "8.1"
+        private static string _cmsVersion = "8.1";
 #else
 #if SC80
-            private static string _cmsVersion = "8.0"
+            private static string _cmsVersion = "8.0";
 #else
 #if SC72
-            private static string _cmsVersion = "7.2"
+            private static string _cmsVersion = "7.2";
 #else
         private static string _cmsVersion = "8";
 #endif

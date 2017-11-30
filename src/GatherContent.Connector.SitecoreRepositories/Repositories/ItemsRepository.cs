@@ -745,9 +745,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             using (IProviderSearchContext context = index.CreateSearchContext())
             {
                 var query = context.GetQueryable<SearchResultItem>()
-                    .Where(i => i.Path.StartsWith("/sitecore/content/") &&
-                                i["gc_content_id"] == gcId
-                    );
+                    .Where(i => i["gc_content_id"] == gcId);
 
                 query = query.Filter(i => i.Language == Context.Language.Name);
 

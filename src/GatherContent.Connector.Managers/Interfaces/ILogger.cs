@@ -4,6 +4,8 @@ namespace GatherContent.Connector.Managers.Interfaces
 {
     public interface ILogger
     {
+        void Info(string message, object sender);
+
         void Warn(string message, object sender);
 
         void Error(string message, Exception exception);
@@ -11,6 +13,11 @@ namespace GatherContent.Connector.Managers.Interfaces
 
     internal class NullLogger : ILogger
     {
+        public void Info(string message, object sender)
+        {
+            Console.WriteLine("INFO: " + sender.GetType().FullName + " : " + message);
+        }
+
         public void Warn(string message, object sender)
         {
             Console.WriteLine("WARN: " + sender.GetType().FullName + " : " + message);

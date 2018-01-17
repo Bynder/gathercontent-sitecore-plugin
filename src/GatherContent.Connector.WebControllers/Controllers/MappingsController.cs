@@ -405,6 +405,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
             }
             catch (Exception ex)
             {
+                Log.Error("GatherContent message: " + ex.Message + ex.StackTrace, ex);
                 return new HttpStatusCodeResult(204, ex.Message);
             }
         }

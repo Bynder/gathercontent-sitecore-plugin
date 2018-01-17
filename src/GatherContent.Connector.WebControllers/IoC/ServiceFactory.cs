@@ -136,5 +136,10 @@ namespace GatherContent.Connector.WebControllers.IoC
         {
             Sitecore.Diagnostics.Log.Error(message, exception, this);
         }
+
+        public void Info(string message, object sender)
+        {
+            Sitecore.Diagnostics.Log.Info(message, sender);
+        }
     }
 }

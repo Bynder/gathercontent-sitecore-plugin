@@ -366,7 +366,7 @@ namespace GatherContent.Connector.Managers.Managers
                     Id = gcTemplate.Id.ToString(),
                     Name = gcTemplate.Name
                 };
-                string cmsLink = ItemsRepository.GetCmsItemLink(HttpContext.Current.Request.Url.Host, cmsId);
+                string cmsLink = ItemsRepository.GetCmsItemLink(HttpContext.Current.Request.Url.Scheme, HttpContext.Current.Request.Url.Host, cmsId);
                 itemResponseModel.CmsLink = cmsLink;
                 itemResponseModel.CmsId = cmsId;
 
@@ -467,7 +467,7 @@ namespace GatherContent.Connector.Managers.Managers
                             }
                         }
 
-                        var cmsSyncDateField =  new CmsField
+                        var cmsSyncDateField = new CmsField
                         {
                             TemplateField = new CmsTemplateField { FieldName = "Last Sync Date" },
                             Value = DateTime.UtcNow.ToString("yyyyMMddTHHmmss")

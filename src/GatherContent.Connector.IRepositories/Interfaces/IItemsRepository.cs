@@ -39,7 +39,7 @@ namespace GatherContent.Connector.IRepositories.Interfaces
 
         string AddNewVersion(string itemId, CmsItem cmsItem, string mappingId, string gcPath);
 
-        string GetCmsItemLink(string host, string itemId);
+        string GetCmsItemLink(string scheme, string host, string itemId);
 
         string GetItemId(string parentId, CmsItem cmsItem);
 

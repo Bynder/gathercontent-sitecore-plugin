@@ -86,19 +86,19 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
                 cmsItem.Fields.Add(new CmsField
                 {
-                    TemplateField = new CmsTemplateField {FieldName = "GC Content Id"},
+                    TemplateField = new CmsTemplateField { FieldName = "GC Content Id" },
                     Value = item[GcContentId]
                 });
 
                 cmsItem.Fields.Add(new CmsField
                 {
-                    TemplateField = new CmsTemplateField {FieldName = "Last Sync Date"},
+                    TemplateField = new CmsTemplateField { FieldName = "Last Sync Date" },
                     Value = DateUtil.IsoDateToDateTime(item[LastSyncDate])
                 });
 
                 cmsItem.Fields.Add(new CmsField
                 {
-                    TemplateField = new CmsTemplateField {FieldName = "Template"},
+                    TemplateField = new CmsTemplateField { FieldName = "Template" },
                     Value = item.TemplateName
                 });
 
@@ -325,7 +325,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         public void MapFile(CmsItem item, CmsField cmsField)
         {
             Item createdItem = GetItem(item.Id, Sitecore.Data.Managers.LanguageManager.GetLanguage(item.Language));
-            
+
             using (new SecurityDisabler())
             {
                 using (new LanguageSwitcher(item.Language))
@@ -339,7 +339,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                             var path = _mediaRepository.ResolveMediaPath(item, createdItem, cmsField);
                             Item media = _mediaRepository.UploadFile(path, file);
 
-                            var mediaUrl = MediaManager.GetMediaUrl(media, new MediaUrlOptions {UseItemPath = false, AbsolutePath = false});
+                            var mediaUrl = MediaManager.GetMediaUrl(media, new MediaUrlOptions { UseItemPath = false, AbsolutePath = false });
                             var value = string.Format("<file mediaid=\"{0}\" src=\"{1}\" />", media.ID, mediaUrl);
 
                             createdItem.Editing.BeginEdit();
@@ -354,7 +354,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
         public void MapImage(CmsItem item, CmsField cmsField)
         {
             Item createdItem = GetItem(item.Id, Sitecore.Data.Managers.LanguageManager.GetLanguage(item.Language));
-            
+
             using (new SecurityDisabler())
             {
                 using (new LanguageSwitcher(item.Language))
@@ -606,12 +606,13 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
         /// <summary>
         /// </summary>
+        /// <param name="scheme"></param>
         /// <param name="host"></param>
         /// <param name="itemId"></param>
         /// <returns></returns>
-        public string GetCmsItemLink(string host, string itemId)
+        public string GetCmsItemLink(string scheme, string host, string itemId)
         {
-            return string.Format("http://{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master&sc_bw=1", host, itemId);
+            return string.Format("{2}://{0}/sitecore/shell/Applications/Content Editor?fo={1}&sc_content=master&sc_bw=1", host, itemId, scheme);
         }
 
         /// <summary>
@@ -789,7 +790,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
 
             return datasourceItems.FirstOrDefault(c =>
-                label.Equals(c.Name, StringComparison.InvariantCultureIgnoreCase) || 
+                label.Equals(c.Name, StringComparison.InvariantCultureIgnoreCase) ||
                 label.Equals(c.DisplayName, StringComparison.InvariantCultureIgnoreCase));
         }
 

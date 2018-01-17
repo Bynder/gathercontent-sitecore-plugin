@@ -56,7 +56,7 @@ namespace GatherContent.Connector.Managers.Managers
                 List<GCItem> items = GetItems(project.Data.Id);
                 items = items.OrderBy(item => item.Status.Data.Name).ToList();
                 model = MapImportItems(items, templates);
-                
+
                 // do not show items without mappings
                 model = model.Where(item => item.AvailableMappings.Mappings.Any()).ToList();
                 return model;
@@ -70,7 +70,7 @@ namespace GatherContent.Connector.Managers.Managers
             Account account = GetAccount();
 
             List<Project> gcProjects = GetProjectsWithData(account.Id);
-            
+
             var projects = new List<GcProjectModel>();
             foreach (var gcProject in gcProjects)
             {
@@ -108,7 +108,7 @@ namespace GatherContent.Connector.Managers.Managers
                         Color = gcStatus.Color
                     });
                 }
-                
+
                 return new Models.ImportItems.New.FiltersModel
                 {
                     CurrentProject = new GcProjectModel
@@ -260,15 +260,15 @@ namespace GatherContent.Connector.Managers.Managers
                                 {
                                     //if we at the last item in the path - import mapped item
                                     if (ItemsRepository.IfMappedItemExists(parentId, cmsItem, templateMapping.MappingId, gcPath))
-                                    {   
+                                    {
                                         cmsItem.Id = ItemsRepository.AddNewVersion(parentId, cmsItem, templateMapping.MappingId, gcPath);
-                                    } 
+                                    }
                                     else
                                     {
                                         cmsItem.Id = ItemsRepository.CreateMappedItem(parentId, cmsItem, templateMapping.MappingId, gcPath);
                                     }
                                     parentId = cmsItem.Id;
-                                    
+
                                     var fieldMappings = templateMapping.FieldMappings;
 
                                     // one CMS text field can be mapped to several GC fields
@@ -282,40 +282,40 @@ namespace GatherContent.Connector.Managers.Managers
                                             {
                                                 case "choice_radio":
                                                 case "choice_checkbox":
-                                                {
-                                                    ItemsRepository.MapChoice(cmsItem, field.CmsField);
-                                                }
+                                                    {
+                                                        ItemsRepository.MapChoice(cmsItem, field.CmsField);
+                                                    }
                                                     break;
                                                 case "files":
-                                                {
-                                                    ItemsRepository.ResolveAttachmentMapping(cmsItem, field.CmsField);
-                                                }
+                                                    {
+                                                        ItemsRepository.ResolveAttachmentMapping(cmsItem, field.CmsField);
+                                                    }
                                                     break;
                                                 default:
-                                                {
-                                                    if (field.CmsField.TemplateField.FieldType == "Datetime" || field.CmsField.TemplateField.FieldType == "Date")
                                                     {
-                                                        ItemsRepository.MapDateTime(cmsItem, field.CmsField);
-                                                    }
-                                                    else
-                                                    {
-                                                        if (fields.Count() > 1)
+                                                        if (field.CmsField.TemplateField.FieldType == "Datetime" || field.CmsField.TemplateField.FieldType == "Date")
                                                         {
-                                                            field.CmsField.Value = string.Join("\r\n", fields.Select(f => f.CmsField.Value.ToString()));
+                                                            ItemsRepository.MapDateTime(cmsItem, field.CmsField);
                                                         }
+                                                        else
+                                                        {
+                                                            if (fields.Count() > 1)
+                                                            {
+                                                                field.CmsField.Value = string.Join("\r\n", fields.Select(f => f.CmsField.Value.ToString()));
+                                                            }
 
-                                                        ItemsRepository.MapText(cmsItem, field.CmsField);
+                                                            ItemsRepository.MapText(cmsItem, field.CmsField);
+                                                        }
                                                     }
-                                                }
                                                     break;
                                             }
                                         }
                                     }
                                     //set CMS link after we got out CMS Id
-                                    var cmsLink = ItemsRepository.GetCmsItemLink(HttpContext.Current.Request.Url.Host, cmsItem.Id);
+                                    var cmsLink = ItemsRepository.GetCmsItemLink(HttpContext.Current.Request.Url.Scheme, HttpContext.Current.Request.Url.Host, cmsItem.Id);
                                     itemResponseModel.CmsLink = cmsLink;
                                     itemResponseModel.CmsId = cmsItem.Id;
-                                    
+
                                     if (!string.IsNullOrEmpty(statusId))
                                     {
                                         var status = PostNewItemStatus(gcItem.Data.Id.ToString(), statusId, projectId);
@@ -460,7 +460,7 @@ namespace GatherContent.Connector.Managers.Managers
                             {
                                 item = items.First(x => x.Data.Id.ToString() == itemInPathId);
                             }
-                            
+
                             if (item != null)
                             {
                                 path.Add(item);
@@ -638,7 +638,7 @@ namespace GatherContent.Connector.Managers.Managers
                     });
                 }
             }
-            
+
             TryMapItemState mapState = TryMapFields(gcFields, groupedFields, files, out fields);
             if (mapState == TryMapItemState.FieldError)
             {
@@ -692,7 +692,7 @@ namespace GatherContent.Connector.Managers.Managers
 
                 }
             }
-            
+
             TryMapItemState mapState = TryMapFields(gcFields, groupedFields, files, out fields);
             if (mapState == TryMapItemState.FieldError)
             {

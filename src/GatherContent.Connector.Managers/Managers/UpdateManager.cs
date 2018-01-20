@@ -281,7 +281,9 @@ namespace GatherContent.Connector.Managers.Managers
             foreach (Element field in fields)
             {
                 if (field.Options != null)
+                {
                     result.AddRange(field.Options.Where(x => x.Selected).Select(x => x.Label));
+                }
             }
             return result;
         }

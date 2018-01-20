@@ -312,6 +312,10 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                             createdItem[cmsField.TemplateField.FieldName] = value;
                         }
                     }
+                    else
+                    {
+                        createdItem[cmsField.TemplateField.FieldName] = string.Empty;
+                    }
 
                     createdItem.Editing.EndEdit();
                 }

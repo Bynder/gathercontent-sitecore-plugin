@@ -3,18 +3,22 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyCompany("Brimit LLC")]
-[assembly: AssemblyCopyright("Copyright © 2017")]
+[assembly: AssemblyCopyright("Copyright © 2018")]
 
+#if SC90
+[assembly: AssemblyProduct("GatherContent.Connector 2.11 SC9.0+")]
+#else
 #if SC81
-[assembly: AssemblyProduct("GatherContent.Connector 2.09 SC8.1+")]
+[assembly: AssemblyProduct("GatherContent.Connector 2.11 SC8.1-SC8.2")]
 #else
 #if SC80
-[assembly: AssemblyProduct("GatherContent.Connector 2.09 SC80")]
+[assembly: AssemblyProduct("GatherContent.Connector 2.11 SC80")]
 #else
 #if SC72
- [assembly: AssemblyProduct("GatherContent.Connector 2.09 SC7.2")]
+ [assembly: AssemblyProduct("GatherContent.Connector 2.11 SC7.2")]
 #else
-[assembly: AssemblyProduct("GatherContent.Connector 2.09")]
+[assembly: AssemblyProduct("GatherContent.Connector 2.11")]
+#endif
 #endif
 #endif
 #endif

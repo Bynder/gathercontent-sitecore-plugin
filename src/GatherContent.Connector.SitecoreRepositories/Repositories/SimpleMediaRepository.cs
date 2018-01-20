@@ -93,8 +93,11 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     Database = ContextDatabase,
                     FileBased = false,
                     IncludeExtensionInItemName = false,
-                    //KeepExisting = true, //till sc8.2, in 9.0 removed
-                    //OverwriteExisting = false, //from sc8.2
+#if SC72 || SC80 || SC81
+                     KeepExisting = true, //till sc8.2, in 9.0 removed
+#else
+                    OverwriteExisting = false, //from sc8.2
+#endif
                     Versioned = false,
                     Destination = string.Concat(rootPath, "/", validItemName)
                 };

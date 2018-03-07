@@ -769,41 +769,79 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="updatedItem"></param>
-        /// <param name="fieldId"></param>
-        /// <param name="label"></param>
-        /// <returns></returns>
-        private Item GetDatasource(Item updatedItem, string fieldId, string label)
-        {
-            var dataSourcePath = GetDatasourcePath(updatedItem, fieldId);
+		/// <summary>
+		/// </summary>
+		/// <param name="updatedItem"></param>
+		/// <param name="fieldId"></param>
+		/// <param name="label"></param>
+		/// <returns></returns>
+		private Item GetDatasource(Item updatedItem, string fieldId, string label)
+		{
+			var dataSourcePath = GetDatasourcePath(updatedItem, fieldId);
 
-            Item[] datasourceItems = LookupSources.GetItems(updatedItem, dataSourcePath);
+			Item[] datasourceItems = null;
+			if (updatedItem.Fields[new ID(fieldId)].TypeKey == "treelist" && dataSourcePath.IndexOf("IncludeTemplatesForSelection", StringComparison.InvariantCultureIgnoreCase) > 0)
+			{
+				var templatesStr = dataSourcePath.Substring(dataSourcePath.IndexOf("IncludeTemplatesForSelection",
+					StringComparison.InvariantCultureIgnoreCase));
+				templatesStr = templatesStr.Substring(templatesStr.IndexOf("=", StringComparison.Ordinal) + 1).Trim();
+				if (templatesStr.IndexOf("&", StringComparison.Ordinal) != -1)
+				{
+					templatesStr = templatesStr.Substring(0, templatesStr.IndexOf("&", StringComparison.Ordinal));
+				}
+				if (!string.IsNullOrWhiteSpace(templatesStr))
+				{
+					var startPath = dataSourcePath.Trim();
+					startPath = startPath.Substring(startPath.IndexOf("=", StringComparison.InvariantCultureIgnoreCase) + 1).Trim();
+					startPath = startPath.Substring(0, startPath.IndexOf("&", StringComparison.InvariantCultureIgnoreCase));
+					if (!string.IsNullOrWhiteSpace(startPath))
+					{
+						var startItem = updatedItem.Database.SelectSingleItem(startPath);
+						if (startItem != null)
+						{
+							var templates = templatesStr.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+							datasourceItems = GetDescendantsByTemplateNamesWithFallback(startItem, templates).ToArray();
+						}
+					}
+				}
+			}
+			else
+			{
+				datasourceItems = LookupSources.GetItems(updatedItem, dataSourcePath);
+			}
 
-            if (datasourceItems == null)
-            {
-                return null;
-            }
+			if (datasourceItems == null)
+			{
+				return null;
+			}
 
-            label = label.Trim();
+			label = label.Trim();
+			if (label.Contains('&'))
+			{
+				label = System.Web.HttpUtility.HtmlDecode(label);
+			}
 
-            if (label.Contains('&'))
-            {
-                label = System.Web.HttpUtility.HtmlDecode(label);
-            }
+			return datasourceItems.FirstOrDefault(c =>
+				label.Equals(c.Name, StringComparison.InvariantCultureIgnoreCase) ||
+				label.Equals(c.DisplayName, StringComparison.InvariantCultureIgnoreCase));
+		}
 
-            return datasourceItems.FirstOrDefault(c =>
-                label.Equals(c.Name, StringComparison.InvariantCultureIgnoreCase) ||
-                label.Equals(c.DisplayName, StringComparison.InvariantCultureIgnoreCase));
-        }
+		private static IEnumerable<Item> GetDescendantsByTemplateNamesWithFallback(Item rootItem, List<string> templateNames)
+		{
+			if (rootItem == null || !templateNames.Any())
+			{
+				return Enumerable.Empty<Item>();
+			}
+			return rootItem.EnsureFallbackVersion().Axes.GetDescendants().Where(i =>
+				templateNames.Any(tn => tn.Equals(i.TemplateName, StringComparison.InvariantCultureIgnoreCase)));
+		}
 
-        /// <summary>
-        /// </summary>
-        /// <param name="updatedItem"></param>
-        /// <param name="fieldId"></param>
-        /// <returns></returns>
-        private string GetDatasourcePath(Item updatedItem, string fieldId)
+		/// <summary>
+		/// </summary>
+		/// <param name="updatedItem"></param>
+		/// <param name="fieldId"></param>
+		/// <returns></returns>
+		private string GetDatasourcePath(Item updatedItem, string fieldId)
         {
             var scField = updatedItem.Fields[new ID(fieldId)];
             var dataSourcePath = GetItem(scField.ID.ToString())["Source"];

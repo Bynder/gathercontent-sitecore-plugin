@@ -29,7 +29,7 @@ namespace GatherContent.Connector.WebControllers.Controllers
         {
             return new Dictionary<string, string>
             {
-                {"text", "Single-Line Text, Multi-Line Text, Rich Text, Datetime, Date"},
+                {"text", "Single-Line Text, Multi-Line Text, Rich Text, Datetime, Date, General Link"},
                 {"section", "Single-Line Text, Multi-Line Text, Rich Text"},
                 {"choice_radio", "Droptree, Checklist, Multilist, Multilist with Search, Treelist, TreelistEx"},
                 {"choice_checkbox", "Checklist, Multilist, Multilist with Search, Treelist, TreelistEx"},

@@ -17,6 +17,7 @@ using Sitecore.ContentSearch.SearchTypes;
 using Sitecore.Data.Fields;
 using GatherContent.Connector.IRepositories.Models.Import;
 using GatherContent.Connector.IRepositories.Interfaces;
+using Sitecore.ContentSearch.Utilities;
 using Sitecore.Web.UI.HtmlControls.Data;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories

@@ -248,7 +248,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                         case "Rich Text":
                             value = cmsField.Value.ToString();
                             break;
-                        default:
+	                    case "General Link":
+	                    {
+		                    value = GeneralLinkExternal(StringUtil.RemoveTags(cmsField.Value.ToString()).Trim());
+	                    }
+		                    break;
+	                    default:
                             value = StringUtil.RemoveTags(cmsField.Value.ToString()).Trim();
                             break;
                     }
@@ -260,11 +265,30 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="cmsField"></param>
-        public void MapChoice(CmsItem item, CmsField cmsField)
+	    private static string GeneralLinkExternal(string url, string description = "")
+	    {
+		    return string.Format("<link text=\"{0}\" linktype=\"external\" url=\"{1}\" anchor=\"\" target=\"\" />",
+			    description, url);
+	    }
+
+	    private static string GeneralLinkInternal(ID contentId, string description = "")
+	    {
+		    return string.Format("<link text=\"{0}\" linktype=\"internal\" class=\"\" title=\"\" target='Active Browser' querystring=\"\" id=\"{1}\" />",
+			    description, contentId);
+	    }
+
+	    private static string GeneralLinkMedia(ID mediaId, string description = "")
+	    {
+		    return string.Format("<link text=\"{0}\" linktype=\"media\" target=\"\" id=\"{1}\" />",
+			    description, mediaId);
+	    }
+
+
+		/// <summary>
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="cmsField"></param>
+		public void MapChoice(CmsItem item, CmsField cmsField)
         {
             Item createdItem = GetItem(item.Id, Sitecore.Data.Managers.LanguageManager.GetLanguage(item.Language));
 

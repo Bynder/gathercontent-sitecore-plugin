@@ -310,10 +310,10 @@
             contentType: "text; charset=utf-8",
             data: JSON.stringify(items),
             success: function (response) {
-                if (response.status == 'error') {
-                    self.postErrorHandle(response.message);
-                }
                 var jsonItems = jQuery.parseJSON(response);
+                if (jsonItems.status == 'error') {
+                    self.postErrorHandle(jsonItems.message);
+                }
                 var notImportedItemsCount = self.getNotImportedItemsCount(jsonItems);
                 self.notImportedItemsCount(notImportedItemsCount);
                 self.successImportedItemsCount(jsonItems.length - notImportedItemsCount);

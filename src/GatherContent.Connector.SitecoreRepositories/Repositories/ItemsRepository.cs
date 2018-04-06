@@ -448,9 +448,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             {
                 return;
             }
-
-            string stringValue = cmsField.Value.ToString();
-            string format = _accountsRepository.GetAccountSettings().DateTimeParseFormat;
+			
+	        string stringValue = StringUtil.RemoveTags(cmsField.Value.ToString()).Trim();
+			string format = _accountsRepository.GetAccountSettings().DateTimeParseFormat;
 
             if (string.IsNullOrWhiteSpace(format))
             {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using GatherContent.Connector.Entities;
 using GatherContent.Connector.Entities.Entities;
 using GatherContent.Connector.GatherContentService.Interfaces;
 using GatherContent.Connector.Managers.Interfaces;
@@ -14,8 +15,9 @@ namespace GatherContent.Connector.Managers.Managers
         protected IAccountsService AccountsService;
         protected IProjectsService ProjectsService;
         protected ITemplatesService TemplatesService;
+	    protected GCAccountSettings GcAccountSettings;
 
-        protected ICacheManager CacheManager;
+		protected ICacheManager CacheManager;
 
         /// <summary>
         /// 
@@ -24,32 +26,33 @@ namespace GatherContent.Connector.Managers.Managers
         /// <param name="projectsService"></param>
         /// <param name="templateService"></param>
         /// <param name="cacheManager"></param>
-        public BaseManager(IAccountsService accountsService, IProjectsService projectsService, ITemplatesService templateService, ICacheManager cacheManager)
+        public BaseManager(IAccountsService accountsService, IProjectsService projectsService, ITemplatesService templateService, ICacheManager cacheManager, GCAccountSettings gcAccountSettings)
         {
             AccountsService = accountsService;
             ProjectsService = projectsService;
             TemplatesService = templateService;
-            
-            CacheManager = cacheManager;
+			GcAccountSettings = gcAccountSettings;
+			CacheManager = cacheManager;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        protected Account GetAccount()
-        {
-            var accounts = AccountsService.GetAccounts();
-            return accounts.Data.FirstOrDefault();
-           
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		public Account GetAccount()
+		{
+			{
+				var accounts = AccountsService.GetAccounts();
+				return accounts.Data.FirstOrDefault(acc => acc.Slug.ToLower() == GcAccountSettings.TenantName);
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="accountId"></param>
-        /// <returns></returns>
-        protected List<Project> GetProjects(int accountId)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="accountId"></param>
+		/// <returns></returns>
+		protected List<Project> GetProjects(int accountId)
         {
             var projects = ProjectsService.GetProjects(accountId);
             var activeProjects = projects.Data.Where(p => p.Active).ToList();

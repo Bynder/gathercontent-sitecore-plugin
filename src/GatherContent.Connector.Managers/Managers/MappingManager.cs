@@ -24,7 +24,6 @@ namespace GatherContent.Connector.Managers.Managers
         protected IItemsService ItemService;
         protected readonly ILogger Log;
         protected ITemplatesService TemplateService;
-        protected GCAccountSettings AccountSettings;
 
         public MappingManager(
             IMappingRepository mappingRepository,
@@ -35,9 +34,8 @@ namespace GatherContent.Connector.Managers.Managers
             ICacheManager cacheManager,
             ILogger logger,
             GCAccountSettings accountSettings)
-            : base(accountsService, projectsService, templateService, cacheManager)
+            : base(accountsService, projectsService, templateService, cacheManager, accountSettings)
         {
-            AccountSettings = accountSettings;
             MappingRepository = mappingRepository;
             ItemService = itemService;
             Log = logger ?? new NullLogger();
@@ -86,8 +84,8 @@ namespace GatherContent.Connector.Managers.Managers
                     }
                     else
                     {
-                        var gcUpdateDate = ConvertMsecToDate((double)template.Data.Updated);
-                        var dateFormat = AccountSettings.DateFormat;
+                        var gcUpdateDate = ConvertMsecToDate(template.Data.Updated);
+                        var dateFormat = GcAccountSettings.DateFormat;
                         if (string.IsNullOrEmpty(dateFormat))
                         {
                             dateFormat = Constants.DateFormat;

@@ -24,6 +24,8 @@
 
         public string GatherContentUrl { get; set; }
 
-        public string DropTreeHomeNode { get; set; }
+	    public string TenantName { get; set; }
+
+		public string DropTreeHomeNode { get; set; }
     }
 }

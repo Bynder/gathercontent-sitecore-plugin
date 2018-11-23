@@ -5,8 +5,9 @@ namespace GatherContent.Connector.IRepositories.Interfaces
 {
     public interface IDropTreeRepository : IRepository
     {
-        List<CmsItem> GetHomeNode(string id);
+        CmsItem GetHomeNode(string id);
         List<CmsItem> GetChildren(string id);
         string GetHomeNodeId();
+        List<string> GetIdPath(string parent, string decendant);
     }
 }

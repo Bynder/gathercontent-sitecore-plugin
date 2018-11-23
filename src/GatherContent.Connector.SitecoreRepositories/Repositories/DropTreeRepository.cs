@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GatherContent.Connector.IRepositories.Interfaces;
 using GatherContent.Connector.IRepositories.Models.Import;
@@ -67,9 +68,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             return list;
         }
 
-        public List<CmsItem> GetHomeNode(string id)
+        public CmsItem GetHomeNode(string id)
         {
-            var model = new List<CmsItem>();
+            CmsItem model = null;
             var accountSettings = _accountsRepository.GetAccountSettings();
             var dropTreeHomeNode = accountSettings.DropTreeHomeNode;
             if (string.IsNullOrEmpty(dropTreeHomeNode))
@@ -81,24 +82,22 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
 
             if (string.IsNullOrEmpty(id) || id == "null")
             {
-                model.Add(new CmsItem
+                model  = new CmsItem
                 {
                     Title = home.Name,
                     Id = home.ID.ToString(),
                     Icon = template != null ? template.Icon : "",
-                });
+                };
             }
             else
             {
-                var homeNode = new CmsItem
+                model = new CmsItem
                 {
                     Title = home.Name,
                     Id = home.ID.ToString(),
                     Icon = template != null ? template.Icon : "",
                     Children = CreateChildrenTree(id, home.Children),
                 };
-
-                model.Add(homeNode);
             }
 
             return model;
@@ -142,6 +141,32 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
 
             return dropTreeHomeNode;
+        }
+
+        public List<string> GetIdPath(string parentId, string decendantId)
+        {
+            List<string> results = new List<string>();
+
+
+            if (!String.IsNullOrEmpty(parentId) && !String.IsNullOrEmpty(decendantId))
+            {
+
+                var parentItem = GetItem(parentId);
+                var decendantItem = GetItem(decendantId);
+
+                if (parentItem != null && decendantItem != null & decendantItem.Paths.FullPath.Contains(parentItem.Paths.FullPath))
+                {
+                    Item i = decendantItem;
+                    while(i.ID != parentItem.ID){
+                        results.Add(i.ID.ToString());
+                        i = i.Parent;
+                    }
+                    results.Reverse();
+                }
+            }
+
+            return results;
+        
         }
     }
 }

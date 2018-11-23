@@ -127,33 +127,36 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 {
                     using (new LanguageSwitcher(cmsItem.Language))
                     {
-                        var template = ContextDatabase.GetTemplate(new ID(cmsItem.Template.TemplateId));
-                        var validName = ItemUtil.ProposeValidItemName(cmsItem.Title);
-                        var parent = ContextDatabase.GetItem(new ID(parentId));
-                        if (parent != null)
+                        using (new EnforceVersionPresenceDisabler())
                         {
-                            var createdItem = parent.Add(validName, template);
-
-                            try
+                            var template = ContextDatabase.GetTemplate(new ID(cmsItem.Template.TemplateId));
+                            var validName = ItemUtil.ProposeValidItemName(cmsItem.Title);
+                            var parent = ContextDatabase.GetItem(new ID(parentId));
+                            if (parent != null)
                             {
-                                EnsureMetaTemplateInherited(createdItem.Template);
-                                var idField = cmsItem.Fields.FirstOrDefault(f => f.TemplateField.FieldName == GcContentId);
-                                if (idField != null)
+                                var createdItem = parent.Add(validName, template);
+                                Log.Error("createdItem is null:" + (createdItem == null), this);
+                                try
                                 {
-                                    createdItem.Editing.BeginEdit();
-                                    createdItem.Fields[GcContentId].Value = idField.Value.ToString();
-                                    var isoDate = DateUtil.ToIsoDate(DateTime.UtcNow);
-                                    createdItem.Fields[LastSyncDate].Value = isoDate;
-                                    createdItem.Fields[MappingId].Value = mappingId;
-                                    createdItem.Fields[GcPath].Value = gcPath;
-                                    createdItem.Editing.EndEdit();
+                                    EnsureMetaTemplateInherited(createdItem.Template);
+                                    var idField = cmsItem.Fields.FirstOrDefault(f => f.TemplateField.FieldName == GcContentId);
+                                    if (idField != null)
+                                    {
+                                        createdItem.Editing.BeginEdit();
+                                        createdItem.Fields[GcContentId].Value = idField.Value.ToString();
+                                        var isoDate = DateUtil.ToIsoDate(DateTime.UtcNow);
+                                        createdItem.Fields[LastSyncDate].Value = isoDate;
+                                        createdItem.Fields[MappingId].Value = mappingId;
+                                        createdItem.Fields[GcPath].Value = gcPath;
+                                        createdItem.Editing.EndEdit();
+                                    }
+                                    return createdItem.ID.ToString();
                                 }
-                                return createdItem.ID.ToString();
-                            }
-                            catch (Exception ex)
-                            {
-                                Log.Error("cannot create mapped item.", ex, this);
-                                throw new Exception(string.Format("Your template({0}) is not inherited from the GC Linked Item.", createdItem.TemplateName));
+                                catch (Exception ex)
+                                {
+                                    Log.Error("cannot create mapped item.", ex, this);
+                                    throw new Exception(string.Format("Your template({0}) is not inherited from the GC Linked Item.", createdItem.TemplateName));
+                                }
                             }
                         }
                     }
@@ -248,12 +251,12 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                         case "Rich Text":
                             value = cmsField.Value.ToString();
                             break;
-	                    case "General Link":
-	                    {
-		                    value = GeneralLinkExternal(StringUtil.RemoveTags(cmsField.Value.ToString()).Trim());
-	                    }
-		                    break;
-	                    default:
+                        case "General Link":
+                            {
+                                value = GeneralLinkExternal(StringUtil.RemoveTags(cmsField.Value.ToString()).Trim());
+                            }
+                            break;
+                        default:
                             value = StringUtil.RemoveTags(cmsField.Value.ToString()).Trim();
                             break;
                     }
@@ -265,30 +268,30 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-	    private static string GeneralLinkExternal(string url, string description = "")
-	    {
-		    return string.Format("<link text=\"{0}\" linktype=\"external\" url=\"{1}\" anchor=\"\" target=\"\" />",
-			    description, url);
-	    }
+        private static string GeneralLinkExternal(string url, string description = "")
+        {
+            return string.Format("<link text=\"{0}\" linktype=\"external\" url=\"{1}\" anchor=\"\" target=\"\" />",
+                description, url);
+        }
 
-	    private static string GeneralLinkInternal(ID contentId, string description = "")
-	    {
-		    return string.Format("<link text=\"{0}\" linktype=\"internal\" class=\"\" title=\"\" target='Active Browser' querystring=\"\" id=\"{1}\" />",
-			    description, contentId);
-	    }
+        private static string GeneralLinkInternal(ID contentId, string description = "")
+        {
+            return string.Format("<link text=\"{0}\" linktype=\"internal\" class=\"\" title=\"\" target='Active Browser' querystring=\"\" id=\"{1}\" />",
+                description, contentId);
+        }
 
-	    private static string GeneralLinkMedia(ID mediaId, string description = "")
-	    {
-		    return string.Format("<link text=\"{0}\" linktype=\"media\" target=\"\" id=\"{1}\" />",
-			    description, mediaId);
-	    }
+        private static string GeneralLinkMedia(ID mediaId, string description = "")
+        {
+            return string.Format("<link text=\"{0}\" linktype=\"media\" target=\"\" id=\"{1}\" />",
+                description, mediaId);
+        }
 
 
-		/// <summary>
-		/// </summary>
-		/// <param name="item"></param>
-		/// <param name="cmsField"></param>
-		public void MapChoice(CmsItem item, CmsField cmsField)
+        /// <summary>
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="cmsField"></param>
+        public void MapChoice(CmsItem item, CmsField cmsField)
         {
             Item createdItem = GetItem(item.Id, Sitecore.Data.Managers.LanguageManager.GetLanguage(item.Language));
 
@@ -448,9 +451,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             {
                 return;
             }
-			
-	        string stringValue = StringUtil.RemoveTags(cmsField.Value.ToString()).Trim();
-			string format = _accountsRepository.GetAccountSettings().DateTimeParseFormat;
+
+            string stringValue = StringUtil.RemoveTags(cmsField.Value.ToString()).Trim();
+            string format = _accountsRepository.GetAccountSettings().DateTimeParseFormat;
 
             if (string.IsNullOrWhiteSpace(format))
             {
@@ -794,79 +797,79 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
             }
         }
 
-		/// <summary>
-		/// </summary>
-		/// <param name="updatedItem"></param>
-		/// <param name="fieldId"></param>
-		/// <param name="label"></param>
-		/// <returns></returns>
-		private Item GetDatasource(Item updatedItem, string fieldId, string label)
-		{
-			var dataSourcePath = GetDatasourcePath(updatedItem, fieldId);
+        /// <summary>
+        /// </summary>
+        /// <param name="updatedItem"></param>
+        /// <param name="fieldId"></param>
+        /// <param name="label"></param>
+        /// <returns></returns>
+        private Item GetDatasource(Item updatedItem, string fieldId, string label)
+        {
+            var dataSourcePath = GetDatasourcePath(updatedItem, fieldId);
 
-			Item[] datasourceItems = null;
-			if (updatedItem.Fields[new ID(fieldId)].TypeKey == "treelist" && dataSourcePath.IndexOf("IncludeTemplatesForSelection", StringComparison.InvariantCultureIgnoreCase) > 0)
-			{
-				var templatesStr = dataSourcePath.Substring(dataSourcePath.IndexOf("IncludeTemplatesForSelection",
-					StringComparison.InvariantCultureIgnoreCase));
-				templatesStr = templatesStr.Substring(templatesStr.IndexOf("=", StringComparison.Ordinal) + 1).Trim();
-				if (templatesStr.IndexOf("&", StringComparison.Ordinal) != -1)
-				{
-					templatesStr = templatesStr.Substring(0, templatesStr.IndexOf("&", StringComparison.Ordinal));
-				}
-				if (!string.IsNullOrWhiteSpace(templatesStr))
-				{
-					var startPath = dataSourcePath.Trim();
-					startPath = startPath.Substring(startPath.IndexOf("=", StringComparison.InvariantCultureIgnoreCase) + 1).Trim();
-					startPath = startPath.Substring(0, startPath.IndexOf("&", StringComparison.InvariantCultureIgnoreCase));
-					if (!string.IsNullOrWhiteSpace(startPath))
-					{
-						var startItem = updatedItem.Database.SelectSingleItem(startPath);
-						if (startItem != null)
-						{
-							var templates = templatesStr.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-							datasourceItems = GetDescendantsByTemplateNamesWithFallback(startItem, templates).ToArray();
-						}
-					}
-				}
-			}
-			else
-			{
-				datasourceItems = LookupSources.GetItems(updatedItem, dataSourcePath);
-			}
+            Item[] datasourceItems = null;
+            if (updatedItem.Fields[new ID(fieldId)].TypeKey == "treelist" && dataSourcePath.IndexOf("IncludeTemplatesForSelection", StringComparison.InvariantCultureIgnoreCase) > 0)
+            {
+                var templatesStr = dataSourcePath.Substring(dataSourcePath.IndexOf("IncludeTemplatesForSelection",
+                    StringComparison.InvariantCultureIgnoreCase));
+                templatesStr = templatesStr.Substring(templatesStr.IndexOf("=", StringComparison.Ordinal) + 1).Trim();
+                if (templatesStr.IndexOf("&", StringComparison.Ordinal) != -1)
+                {
+                    templatesStr = templatesStr.Substring(0, templatesStr.IndexOf("&", StringComparison.Ordinal));
+                }
+                if (!string.IsNullOrWhiteSpace(templatesStr))
+                {
+                    var startPath = dataSourcePath.Trim();
+                    startPath = startPath.Substring(startPath.IndexOf("=", StringComparison.InvariantCultureIgnoreCase) + 1).Trim();
+                    startPath = startPath.Substring(0, startPath.IndexOf("&", StringComparison.InvariantCultureIgnoreCase));
+                    if (!string.IsNullOrWhiteSpace(startPath))
+                    {
+                        var startItem = updatedItem.Database.SelectSingleItem(startPath);
+                        if (startItem != null)
+                        {
+                            var templates = templatesStr.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                            datasourceItems = GetDescendantsByTemplateNamesWithFallback(startItem, templates).ToArray();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                datasourceItems = LookupSources.GetItems(updatedItem, dataSourcePath);
+            }
 
-			if (datasourceItems == null)
-			{
-				return null;
-			}
+            if (datasourceItems == null)
+            {
+                return null;
+            }
 
-			label = label.Trim();
-			if (label.Contains('&'))
-			{
-				label = System.Web.HttpUtility.HtmlDecode(label);
-			}
+            label = label.Trim();
+            if (label.Contains('&'))
+            {
+                label = System.Web.HttpUtility.HtmlDecode(label);
+            }
 
-			return datasourceItems.FirstOrDefault(c =>
-				label.Equals(c.Name, StringComparison.InvariantCultureIgnoreCase) ||
-				label.Equals(c.DisplayName, StringComparison.InvariantCultureIgnoreCase));
-		}
+            return datasourceItems.FirstOrDefault(c =>
+                label.Equals(c.Name, StringComparison.InvariantCultureIgnoreCase) ||
+                label.Equals(c.DisplayName, StringComparison.InvariantCultureIgnoreCase));
+        }
 
-		private static IEnumerable<Item> GetDescendantsByTemplateNamesWithFallback(Item rootItem, List<string> templateNames)
-		{
-			if (rootItem == null || !templateNames.Any())
-			{
-				return Enumerable.Empty<Item>();
-			}
-			return rootItem.EnsureFallbackVersion().Axes.GetDescendants().Where(i =>
-				templateNames.Any(tn => tn.Equals(i.TemplateName, StringComparison.InvariantCultureIgnoreCase)));
-		}
+        private static IEnumerable<Item> GetDescendantsByTemplateNamesWithFallback(Item rootItem, List<string> templateNames)
+        {
+            if (rootItem == null || !templateNames.Any())
+            {
+                return Enumerable.Empty<Item>();
+            }
+            return rootItem.EnsureFallbackVersion().Axes.GetDescendants().Where(i =>
+                templateNames.Any(tn => tn.Equals(i.TemplateName, StringComparison.InvariantCultureIgnoreCase)));
+        }
 
-		/// <summary>
-		/// </summary>
-		/// <param name="updatedItem"></param>
-		/// <param name="fieldId"></param>
-		/// <returns></returns>
-		private string GetDatasourcePath(Item updatedItem, string fieldId)
+        /// <summary>
+        /// </summary>
+        /// <param name="updatedItem"></param>
+        /// <param name="fieldId"></param>
+        /// <returns></returns>
+        private string GetDatasourcePath(Item updatedItem, string fieldId)
         {
             var scField = updatedItem.Fields[new ID(fieldId)];
             var dataSourcePath = GetItem(scField.ID.ToString())["Source"];

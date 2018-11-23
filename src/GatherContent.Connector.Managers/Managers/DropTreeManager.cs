@@ -21,43 +21,26 @@ namespace GatherContent.Connector.Managers.Managers
             DropTreeRepository = dropTreeRepository;
         }
 
-        private List<DropTreeModel> CreateChildrenTree(string id, List<CmsItem> items)
+        private List<DropTreeModel> CreateChildrenTree(List<string> idPath, int level, List<CmsItem> items)
         {
             var list = new List<DropTreeModel>();
 
-            if (items.Select(i => i.Id.ToString()).Contains(id))
+            foreach (var item in items)
             {
-                foreach (var item in items)
+
+                if (item.Id != idPath[level] || idPath.Count - 1 == level)
                 {
-                    if (id == item.Id)
+                    var node = new DropTreeModel
                     {
-                        var node = new DropTreeModel
-                        {
-                            Title = item.Title,
-                            Key = item.Id,
-                            IsLazy = true,
-                            Icon = item.Icon,
-                            Selected = true
-                        };
-                        list.Add(node);
-                    }
-                    else
-                    {
-                        var node = new DropTreeModel
-                        {
-                            Title = item.Title,
-                            Key = item.Id,
-                            IsLazy = true,
-                            Icon = item.Icon,
-                            Selected = false
-                        };
-                        list.Add(node);
-                    }
+                        Title = item.Title,
+                        Key = item.Id,
+                        IsLazy = true,
+                        Icon = item.Icon,
+                        Selected = idPath[level] == item.Id
+                    };
+                    list.Add(node);
                 }
-            }
-            else
-            {
-                foreach (var item in items)
+                else
                 {
                     var node = new DropTreeModel
                     {
@@ -66,7 +49,7 @@ namespace GatherContent.Connector.Managers.Managers
                         IsLazy = false,
                         Icon = item.Icon,
                         Selected = false,
-                        Children = CreateChildrenTree(id, item.Children),
+                        Children = CreateChildrenTree(idPath, ++level, item.Children),
                         Expanded = true
                     };
                     list.Add(node);
@@ -83,39 +66,33 @@ namespace GatherContent.Connector.Managers.Managers
         public List<DropTreeModel> GetTopLevelNode(string id)
         {
             var model = new List<DropTreeModel>();
-            var items = DropTreeRepository.GetHomeNode(id);
+            var homeItem = DropTreeRepository.GetHomeNode(id);
 
             if (string.IsNullOrEmpty(id) || id == "null")
             {
-                foreach (var cmsItem in items)
+                model.Add(new DropTreeModel
                 {
-                    model.Add(new DropTreeModel
-                    {
-                        Title = cmsItem.Title,
-                        Key = cmsItem.Id,
-                        Icon = cmsItem.Icon,
-                        IsLazy = true
-                    });
-                }
+                    Title = homeItem.Title,
+                    Key = homeItem.Id,
+                    Icon = homeItem.Icon,
+                    IsLazy = true
+                });
             }
             else
             {
-             
-               var dropTreeHomeNode = DropTreeRepository.GetHomeNodeId();
 
-                foreach (var cmsItem in items)
+                var idPath = DropTreeRepository.GetIdPath(homeItem.Id, id);
+
+                model.Add(new DropTreeModel
                 {
-                    model.Add(new DropTreeModel
-                    {
-                        Title = cmsItem.Title,
-                        Key = cmsItem.Id,
-                        Icon = cmsItem.Icon,
-                        IsLazy = false,
-                        Selected = id == dropTreeHomeNode,
-                        Expanded = true,
-                        Children = CreateChildrenTree(id, cmsItem.Children),
-                    });
-                }
+                    Title = homeItem.Title,
+                    Key = homeItem.Id,
+                    Icon = homeItem.Icon,
+                    IsLazy = false,
+                    Selected = id == homeItem.Id,
+                    Expanded = true,
+                    Children = CreateChildrenTree(idPath, 0, homeItem.Children),
+                });
             }
 
             return model;

@@ -45,10 +45,12 @@ namespace GatherContent.Connector.GatherContentService.Services.Abstract
             _apiKey = accountSettings.ApiKey;
             _userName = accountSettings.Username;
 
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+
 
         }
 
-    protected static WebRequest CreateRequest(string url)
+        protected static WebRequest CreateRequest(string url)
         {
             if (!_apiUrl.EndsWith("/"))
             {

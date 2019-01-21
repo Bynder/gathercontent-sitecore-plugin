@@ -205,6 +205,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\PublishProfiles\Local 8.1-8.2.pubxml" />
+    <None Include="Properties\PublishProfiles\Local 9.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

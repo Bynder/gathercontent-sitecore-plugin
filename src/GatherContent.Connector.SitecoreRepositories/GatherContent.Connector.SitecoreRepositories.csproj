@@ -216,6 +216,10 @@
       <Project>{a40787e3-7df6-41b9-90c0-41704aea2be3}</Project>
       <Name>GatherContent.Connector.Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GatherContent.Connector.GatherContentService\GatherContent.Connector.GatherContentService.csproj">
+      <Project>{42b1ccbc-1fc4-4601-9d53-63b69afab68d}</Project>
+      <Name>GatherContent.Connector.GatherContentService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GatherContent.Connector.IRepositories\GatherContent.Connector.IRepositories.csproj">
       <Project>{3dce6e64-51f1-42b3-86dd-38daea4ba416}</Project>
       <Name>GatherContent.Connector.IRepositories</Name>

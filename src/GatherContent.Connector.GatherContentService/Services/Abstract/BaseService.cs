@@ -100,6 +100,21 @@ namespace GatherContent.Connector.GatherContentService.Services.Abstract
             return null;
         }
 
+        protected static Stream ReadBinaryResponse(WebRequest webrequest)
+        {
+            using (Stream responseStream = webrequest.GetResponse().GetResponseStream())
+            {
+                if (responseStream != null)
+                {
+                    var memoryStream = new MemoryStream();
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+                    responseStream.CopyTo(memoryStream);
+                    return memoryStream;
+                }
+            }
+            return null;
+        }
+
 
         protected static T ReadResponse<T>(WebRequest webrequest) where T : class
         {
@@ -118,6 +133,7 @@ namespace GatherContent.Connector.GatherContentService.Services.Abstract
             return result;
         }
 
+        
 
         protected static void AddPostData(string data, WebRequest webrequest)
         {

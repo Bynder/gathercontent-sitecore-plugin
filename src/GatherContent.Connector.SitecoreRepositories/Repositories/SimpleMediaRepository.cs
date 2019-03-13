@@ -10,6 +10,7 @@ using Sitecore.Data.Items;
 using Sitecore.Resources.Media;
 using Sitecore.SecurityModel;
 using File = GatherContent.Connector.IRepositories.Models.Import.File;
+using GatherContent.Connector.GatherContentService.Services;
 
 namespace GatherContent.Connector.SitecoreRepositories.Repositories
 {
@@ -17,7 +18,9 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
     {
         public Item UploadFile(string targetPath, File fileInfo)
         {
-            string uri = fileInfo.Url.StartsWith("http") ? fileInfo.Url : "https://gathercontent.s3.amazonaws.com/" + fileInfo.Url;
+
+            var gcsettings = new AccountsRepository().GetAccountSettings();
+            var itemService = new ItemsService(gcsettings);
 
             string extension = string.Empty;
             if (fileInfo.FileName.Contains("."))
@@ -25,24 +28,18 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                 extension = fileInfo.FileName.Substring(fileInfo.FileName.LastIndexOf('.') + 1);
             }
 
-            var request = (HttpWebRequest)WebRequest.Create(uri);
-            var resp = (HttpWebResponse)request.GetResponse();
-            var stream = resp.GetResponseStream();
-
-            using (var memoryStream = new MemoryStream())
+            var memoryStream = itemService.DownloadFile(fileInfo.FileId) as MemoryStream;
+            try
             {
-                memoryStream.Seek(0, SeekOrigin.Begin);
-                if (stream != null)
-                {
-                    stream.CopyTo(memoryStream);
-                }
-
                 if (memoryStream.Length > 0)
                 {
                     var media = CreateMedia(targetPath, fileInfo, extension, memoryStream);
                     return media;
                 }
-
+            }
+            finally
+            {
+                memoryStream.Close();
             }
 
             return null;
@@ -94,7 +91,7 @@ namespace GatherContent.Connector.SitecoreRepositories.Repositories
                     FileBased = false,
                     IncludeExtensionInItemName = false,
 #if SC72 || SC80 || SC81
-                     KeepExisting = true, //till sc8.2, in 9.0 removed
+                    KeepExisting = true, //till sc8.2, in 9.0 removed
 #else
                     OverwriteExisting = false, //from sc8.2
 #endif

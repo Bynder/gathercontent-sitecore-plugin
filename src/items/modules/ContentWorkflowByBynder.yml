@@ -1,0 +1,58 @@
+﻿---
+ID: "b99d89bd-56ab-4f41-bb02-121d116e5145"
+Parent: "08477468-d438-43d4-9d6a-6d84a611971c"
+Template: "f8b571ee-59a4-4ea5-9b32-9c57720f87ed"
+Path: /sitecore/system/Modules/ContentWorkflowByBynder
+SharedFields:
+- ID: "07f2cdb0-b603-45a4-a309-145c96128d59"
+  Hint: Date Format
+  Value: MM/dd/yyyy
+- ID: "0c894aab-962b-4a84-b923-cb24b05e60d2"
+  Hint: __Ribbon
+  Value: "{E9690D91-E157-4AB0-8BBD-0AF2098A6CE5}"
+- ID: "387209aa-9f43-433c-bead-7e04be1883b8"
+  Hint: Platform URL
+  Value: 
+- ID: "4ead4238-9eed-4dc8-a321-4090dd041cad"
+  Hint: Options Content Folder
+  Value: 
+- ID: "95c822ae-dcd6-4895-b3e8-6ad89c90ba5b"
+  Hint: Account Owner Email Address
+  Value: 
+- ID: "c23db185-c22a-475c-92ac-fff33804a8e4"
+  Hint: API Key
+  Value: 
+- ID: "ccc41bd5-ad9a-41e2-9df6-f15b8194de9b"
+  Hint: DateTime Field Format
+  Value: MM/dd/yyyy
+- ID: "d6689b9d-5d73-4b71-ab0a-3b9786db2db0"
+  Hint: Options Template
+  Value: 
+- ID: "d8aab2e6-567f-4ffa-81fd-7141252c1704"
+  Hint: DropTree Home Node
+  Value: "{110D559F-DEA5-42EA-9C1C-8A5DF7E70EF9}"
+- ID: "f5edae38-0843-42fc-ba33-dc19d481953b"
+  Hint: Templates Root Folder
+  Value: 
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20151111T115737Z
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\admin
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "db3b0b1c-3b43-40c1-a12b-177f8f009bfa"
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\Admin
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20240304T062325Z

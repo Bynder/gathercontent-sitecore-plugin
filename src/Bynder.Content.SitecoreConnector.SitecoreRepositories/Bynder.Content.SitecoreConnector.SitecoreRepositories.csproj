@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4DED3819-E7A3-4726-8F71-A0F417A8019A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Bynder.Content.SitecoreConnector.SitecoreRepositories</RootNamespace>
+    <AssemblyName>Bynder.Content.SitecoreConnector.SitecoreRepositories</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Sitecore.Kernel" />
+    <PackageReference Include="Sitecore.ContentSearch" />
+    <PackageReference Include="Sitecore.ContentSearch.Linq" />
+    <PackageReference Include="Sitecore.Assemblies.Platform" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Configuration\MappingSettings.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Repositories\AccountsRepository.cs" />
+    <Compile Include="Repositories\BaseRepository.cs" />
+    <Compile Include="Repositories\Constants.cs" />
+    <Compile Include="Repositories\DropTreeRepository.cs" />
+    <Compile Include="Repositories\DynamicFoldersMediaRepository.cs" />
+    <Compile Include="Repositories\SimpleMediaRepository.cs" />
+    <Compile Include="Repositories\ItemsRepository.cs" />
+    <Compile Include="Repositories\MappingRepository.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Bynder.Content.SitecoreConnector.Core\Bynder.Content.SitecoreConnector.Core.csproj">
+      <Project>{a40787e3-7df6-41b9-90c0-41704aea2be3}</Project>
+      <Name>Bynder.Content.SitecoreConnector.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bynder.Content.SitecoreConnector.GatherContentService\Bynder.Content.SitecoreConnector.GatherContentService.csproj">
+      <Project>{42b1ccbc-1fc4-4601-9d53-63b69afab68d}</Project>
+      <Name>Bynder.Content.SitecoreConnector.GatherContentService</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

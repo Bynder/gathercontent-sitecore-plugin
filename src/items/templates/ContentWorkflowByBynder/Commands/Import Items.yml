@@ -1,0 +1,34 @@
+﻿---
+ID: "9d08bc0c-6499-49c0-9030-0299d45c56bb"
+Parent: "24c25ca2-e462-4fae-b0fb-9c8d2e614ceb"
+Template: "b2613cc1-a748-46a3-a0db-3774574bd339"
+Path: /sitecore/templates/ContentWorkflowByBynder/Commands/Import Items
+SharedFields:
+- ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
+  Hint: __Icon
+  Value: office/32x32/cloud_download.png
+- ID: "854cc8f6-94ad-4521-a4b6-44ed8f794c98"
+  Hint: Command
+  Value: "cwb:import"
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20151203T152035Z
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\admin
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "6daa6086-8bb5-4f75-8998-470cb0bf1bdb"
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\Admin
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20240104T122149Z

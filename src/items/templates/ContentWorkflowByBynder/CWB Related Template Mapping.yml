@@ -1,0 +1,35 @@
+﻿---
+ID: "2640b093-f5fa-4650-8bb3-84a48671b389"
+Parent: "6e9920d6-b60e-4518-822e-4d57cd426148"
+Template: "ab86861a-6030-46c5-b394-e8f99e8b87db"
+Path: /sitecore/templates/ContentWorkflowByBynder/CWB Related Template Mapping
+SharedFields:
+- ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
+  Hint: __Icon
+  Value: office/32x32/arrow_fork.png
+- ID: "12c33f3f-86c5-43a5-aeb4-5598cec45116"
+  Hint: __Base template
+  Value: |
+    {F47BB0E8-B2BB-4415-9D34-77D99D85BF2A}
+    {8F38ACEB-3587-4089-9713-EA2980227A8C}
+- ID: "f7d48a55-2158-4f02-9356-756654404f73"
+  Hint: __Standard values
+  Value: "{A1C7ED4A-6010-4832-9F86-D549F5A58327}"
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20191205T130809Z
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "77347836-f203-40a5-84b6-501cdd196b43"
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\Admin
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20240104T115026Z

@@ -1,0 +1,40 @@
+﻿---
+ID: "ccc41bd5-ad9a-41e2-9df6-f15b8194de9b"
+Parent: "4e8fbc36-9e5b-4288-beaf-b991a1dd1566"
+Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
+Path: /sitecore/templates/ContentWorkflowByBynder/CWB Account/Settings/DateTime Field Format
+SharedFields:
+- ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"
+  Hint: Type
+  Value: "Single-Line Text"
+- ID: "b118496a-0f78-4a27-b55f-0a6c4b0b0fe1"
+  Hint: Default value
+  Value: "dd/MM/yyyy HH:mm"
+- ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"
+  Hint: __Sortorder
+  Value: 250
+- ID: "be351a73-fcb0-4213-93fa-c302d8ab4f51"
+  Hint: Shared
+  Value: 1
+Languages:
+- Language: en
+  Fields:
+  - ID: "577f1689-7de4-4ad2-a15f-7fdc1759285f"
+    Hint: __Long description
+    Value: "Please select date time format for mapping date time fields (e.g. dd/MM/yyyy HH:mm). The chosen date format will be used in the connector while parsing DateTime fields. Default format is 'dd/MM/yyyy HH:mm'. Date time stored in GatherContent must be in this format (e.g. 27/03/2016 19:30)."
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20170410T145540Z
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "b15b3600-2135-497a-80c2-225601b26984"
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\Admin
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20240104T122605Z

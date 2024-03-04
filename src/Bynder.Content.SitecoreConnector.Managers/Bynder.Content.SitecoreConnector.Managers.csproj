@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{06887722-F39A-4F95-81BC-653334BC7636}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Bynder.Content.SitecoreConnector.Managers</RootNamespace>
+    <AssemblyName>Bynder.Content.SitecoreConnector.Managers</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Sitecore.Kernel" />
+    <PackageReference Include="Sitecore.Assemblies.Platform" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Enums\TryMapItemState.cs" />
+    <Compile Include="Extensions\MappingExtensions.cs" />
+    <Compile Include="Interfaces\ICacheManager.cs" />
+    <Compile Include="Interfaces\IDropTreeManager.cs" />
+    <Compile Include="Interfaces\IImportManager.cs" />
+    <Compile Include="Interfaces\ILinkManager.cs" />
+    <Compile Include="Interfaces\ILogger.cs" />
+    <Compile Include="Interfaces\IManager.cs" />
+    <Compile Include="Interfaces\IMappingManager.cs" />
+    <Compile Include="Interfaces\IUpdateManager.cs" />
+    <Compile Include="Managers\LinkManager.cs" />
+    <Compile Include="Managers\BaseManager.cs" />
+    <Compile Include="Managers\CacheManager.cs" />
+    <Compile Include="Managers\DropTreeManager.cs" />
+    <Compile Include="Managers\ImportManager.cs" />
+    <Compile Include="Managers\MappingManager.cs" />
+    <Compile Include="Managers\TestConnectionManager.cs" />
+    <Compile Include="Models\ImportItems\AvailableMapping.cs" />
+    <Compile Include="Models\ImportItems\AvailableMultiLocationsMappings.cs" />
+    <Compile Include="Models\ImportItems\DropTreeModel.cs" />
+    <Compile Include="Models\ImportItems\ImportCMSFiled.cs" />
+    <Compile Include="Models\ImportItems\LocationImportItemModel.cs" />
+    <Compile Include="Models\ImportItems\ImportItemModel.cs" />
+    <Compile Include="Models\ImportItems\ImportItembyLocation.cs" />
+    <Compile Include="Models\ImportItems\MappingResultModel.cs" />
+    <Compile Include="Models\ImportItems\New\AvailableMapping.cs" />
+    <Compile Include="Models\ImportItems\New\FiltersModel.cs" />
+    <Compile Include="Models\ImportItems\New\CwbItemModel.cs" />
+    <Compile Include="Models\ImportItems\New\ItemModel.cs" />
+    <Compile Include="Models\ImportItems\New\ItemResultModel.cs" />
+    <Compile Include="Models\Mapping\CwbStatusModel.cs" />
+    <Compile Include="Models\ImportItems\SelectItemsForImportWithLocation.cs" />
+    <Compile Include="Models\ImportItems\ItemWithLocationDataModel.cs" />
+    <Compile Include="Models\Mapping\CmsTemplateFieldModel.cs" />
+    <Compile Include="Models\Mapping\CmsTemplateModel.cs" />
+    <Compile Include="Models\Mapping\FieldMappingModel.cs" />
+    <Compile Include="Models\Mapping\CwbFieldModel.cs" />
+    <Compile Include="Models\Mapping\MappingModel.cs" />
+    <Compile Include="Models\Mapping\CwbProjectModel.cs" />
+    <Compile Include="Models\Mapping\CwbTemplateModel.cs" />
+    <Compile Include="Models\Mapping\CwbTabModel.cs" />
+    <Compile Include="Models\Mapping\RelatedMappingModel.cs" />
+    <Compile Include="Models\UpdateItems\New\UpdateItemModel.cs" />
+    <Compile Include="Models\UpdateItems\New\UpdateModel.cs" />
+    <Compile Include="Models\UpdateItems\UpdateListIds.cs" />
+    <Compile Include="Managers\UpdateManager.cs" />
+    <Compile Include="Models\ImportItems\FiltersModel.cs" />
+    <Compile Include="Models\ImportItems\ImportListItem.cs" />
+    <Compile Include="Models\ImportItems\ImportResultItemModel.cs" />
+    <Compile Include="Models\ImportItems\ImportResultModel.cs" />
+    <Compile Include="Models\ImportItems\SelectItemsForImportModel.cs" />
+    <Compile Include="Models\ImportItems\TableDataModel.cs" />
+    <Compile Include="Models\UpdateItems\UpdateFiltersModel.cs" />
+    <Compile Include="Models\UpdateItems\UpdateCWBItem.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Bynder.Content.SitecoreConnector.Core\Bynder.Content.SitecoreConnector.Core.csproj">
+      <Project>{a40787e3-7df6-41b9-90c0-41704aea2be3}</Project>
+      <Name>Bynder.Content.SitecoreConnector.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bynder.Content.SitecoreConnector.GatherContentService\Bynder.Content.SitecoreConnector.GatherContentService.csproj">
+      <Project>{42b1ccbc-1fc4-4601-9d53-63b69afab68d}</Project>
+      <Name>Bynder.Content.SitecoreConnector.GatherContentService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bynder.Content.SitecoreConnector.SitecoreRepositories\Bynder.Content.SitecoreConnector.SitecoreRepositories.csproj">
+      <Project>{4ded3819-e7a3-4726-8f71-a0f417a8019a}</Project>
+      <Name>Bynder.Content.SitecoreConnector.SitecoreRepositories</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -1,0 +1,42 @@
+{
+  "namespace": "ContentWorkflowByBynder",
+  "items": {
+    "includes": [
+      {
+        "name": "templates",
+        "path": "/sitecore/templates/ContentWorkflowByBynder",
+        "database": "master"
+      },
+      {
+        "name": "modules",
+        "path": "/sitecore/system/Modules/ContentWorkflowByBynder",
+        "database": "master"
+      },
+      {
+        "name": "RibbonsChunks",
+        "path": "/sitecore/content/Applications/Content Editor/Ribbons/Chunks/ContentWorkflowByBynder Manage",
+        "database": "core"
+      },
+      {
+        "name": "RibbonsContextualRibbons",
+        "path": "/sitecore/content/Applications/Content Editor/Ribbons/Contextual Ribbons/ContentWorkflowByBynder",
+        "database": "core"
+      },
+      {
+        "name": "RibbonsDefault",
+        "path": "/sitecore/content/Applications/Content Editor/Ribbons/Ribbons/Default/ContentWorkflowByBynder",
+        "database": "core"
+      },
+      {
+        "name": "RibbonsStrips",
+        "path": "/sitecore/content/Applications/Content Editor/Ribbons/Strips/ContentWorkflowByBynder",
+        "database": "core"
+      },
+      {
+        "name": "RibbonsWebEdit",
+        "path": "/sitecore/content/Applications/WebEdit/Ribbons/WebEdit/ContentWorkflowByBynder",
+        "database": "core"
+      }
+    ]
+  }
+}

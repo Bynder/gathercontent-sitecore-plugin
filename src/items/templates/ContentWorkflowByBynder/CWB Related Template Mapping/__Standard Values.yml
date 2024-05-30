@@ -1,0 +1,27 @@
+﻿---
+ID: "a1c7ed4a-6010-4832-9f86-d549f5a58327"
+Parent: "2640b093-f5fa-4650-8bb3-84a48671b389"
+Template: "2640b093-f5fa-4650-8bb3-84a48671b389"
+Path: /sitecore/templates/ContentWorkflowByBynder/CWB Related Template Mapping/__Standard Values
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20191205T131503Z
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\Admin
+    - ID: "8cdc337e-a112-42fb-bbb4-4143751e123f"
+      Hint: __Revision
+      Value: "7f0904d8-e9e6-4404-ac62-f309ae1bc169"
+    - ID: "badd9cf9-53e0-4d0c-bcc0-2d784c282f6a"
+      Hint: __Updated by
+      Value: |
+        sitecore\unicorn
+    - ID: "d9cf14b1-fa16-4ba6-9288-e8a174d4d522"
+      Hint: __Updated
+      Value: 20191219T121306Z

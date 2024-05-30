@@ -1,0 +1,167 @@
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: none;
+  padding: 10px 20px;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  font-weight: 700;
+  border-radius: 3px;
+  cursor: pointer;
+  background-color: #e4e3e3;
+  color: black;
+
+  &:disabled {
+    opacity: 0.8;
+    cursor: initial;
+    color: rgba(black, 0.3);
+    pointer-events: none;
+  }
+
+  &:hover {
+    background-color: #f0eeee;
+  }
+}
+
+.content-workflow-input {
+  border-radius: 3px;
+  font-size: 0.9em;
+  padding: 10px 20px 10px 10px;
+  border: 1px solid #e4e3e3;
+  background-color: white;
+}
+
+img {
+  max-width: 100%;
+  margin: 0;
+}
+
+/* modal container */
+.content-workflow-dialog {
+  position: relative;
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+
+  &__note {
+    & > * {
+      margin: 0;
+
+      &:only-child {
+        margin: 0;
+      }
+
+      &:not(:last-child) {
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  &__footer {
+    margin-top: auto;
+    padding: 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    .help-link {
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+  }
+}
+
+.footer-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  p {
+    margin: 0;
+  }
+}
+
+.custom-scrollbar {
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+  }
+  &::-webkit-scrollbar:vertical {
+    width: 11px;
+  }
+
+  &::-webkit-scrollbar:horizontal {
+    height: 11px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white; /* should match background, can't be transparent */
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #fff;
+    border-radius: 8px;
+  }
+}
+
+/* utils */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.select-none {
+  user-select: none;
+}
+
+.block {
+  width: 100%;
+}
+
+.notvalid {
+  border: 1px solid red !important;
+}
+
+.d-block {
+  display: block !important;
+}
+
+.d-none {
+  display: none !important;
+}
+
+.warning-message {
+  color: red !important;
+}
+
+select {
+  cursor: pointer;
+}
+
+input,
+select {
+  margin: 0;
+
+  &:disabled {
+    cursor: not-allowed;
+    color: #808080;
+    pointer-events: none;
+    opacity: 0.65;
+  }
+}
+
+.checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  user-select: none;
+  gap: 5px;
+
+  & + & {
+    margin-top: 5px;
+  }
+}

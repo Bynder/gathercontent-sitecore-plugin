@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A40787E3-7DF6-41B9-90C0-41704AEA2BE3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Bynder.Content.SitecoreConnector.Core</RootNamespace>
+    <AssemblyName>Bynder.Content.SitecoreConnector.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Sitecore.Kernel" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="DependencyInjection\Lifetime.cs" />
+    <Compile Include="DependencyInjection\ServiceAttribute.cs" />
+    <Compile Include="Entities\Account.cs" />
+    <Compile Include="Entities\AccountEntity.cs" />
+    <Compile Include="Entities\Config.cs" />
+    <Compile Include="Entities\DueDates.cs" />
+    <Compile Include="Entities\Element.cs" />
+    <Compile Include="Entities\FileEntity.cs" />
+    <Compile Include="Entities\CWBItem.cs" />
+    <Compile Include="Entities\CWBStatus.cs" />
+    <Compile Include="Entities\CWBTemplate.cs" />
+    <Compile Include="Entities\ItemDate.cs" />
+    <Compile Include="Entities\ItemEntity.cs" />
+    <Compile Include="Entities\ItemFiles.cs" />
+    <Compile Include="Entities\ItemsEntity.cs" />
+    <Compile Include="Entities\Meta.cs" />
+    <Compile Include="Entities\Option.cs" />
+    <Compile Include="Entities\Project.cs" />
+    <Compile Include="Entities\ProjectEntity.cs" />
+    <Compile Include="Entities\ProjectsEntity.cs" />
+    <Compile Include="Entities\StatusEntity.cs" />
+    <Compile Include="Entities\StatusesEntity.cs" />
+    <Compile Include="Entities\TemplateEntity.cs" />
+    <Compile Include="Entities\TemplatesEntity.cs" />
+    <Compile Include="Entities\Usage.cs" />
+    <Compile Include="CWBAccountSettings.cs" />
+    <Compile Include="Interfaces\IAccountsRepository.cs" />
+    <Compile Include="Interfaces\IDropTreeRepository.cs" />
+    <Compile Include="Interfaces\IItemsRepository.cs" />
+    <Compile Include="Interfaces\IMappingRepository.cs" />
+    <Compile Include="Interfaces\IMediaRepository.cs" />
+    <Compile Include="Interfaces\IRepository.cs" />
+    <Compile Include="Models\Import\CmsField.cs" />
+    <Compile Include="Models\Import\CmsItem.cs" />
+    <Compile Include="Models\Import\CmsTemplateField.cs" />
+    <Compile Include="Models\Import\FieldValueFiles.cs" />
+    <Compile Include="Models\Import\FieldValueOptions.cs" />
+    <Compile Include="Models\Import\File.cs" />
+    <Compile Include="Models\Import\CwbField.cs" />
+    <Compile Include="Models\Import\CwbItem.cs" />
+    <Compile Include="Models\Import\CwbPathItem.cs" />
+    <Compile Include="Models\Mapping\CmsTemplate.cs" />
+    <Compile Include="Models\Mapping\FieldMapping.cs" />
+    <Compile Include="Models\Mapping\CwbTemplate.cs" />
+    <Compile Include="Models\Mapping\RelatedTemplateMapping.cs" />
+    <Compile Include="Models\Mapping\TemplateMapping.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

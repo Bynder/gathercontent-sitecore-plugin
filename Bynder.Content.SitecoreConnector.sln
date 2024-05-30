@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32804.467
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bynder.Content.SitecoreConnector.Core", "src\Bynder.Content.SitecoreConnector.Core\Bynder.Content.SitecoreConnector.Core.csproj", "{A40787E3-7DF6-41B9-90C0-41704AEA2BE3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bynder.Content.SitecoreConnector.GatherContentService", "src\Bynder.Content.SitecoreConnector.GatherContentService\Bynder.Content.SitecoreConnector.GatherContentService.csproj", "{42B1CCBC-1FC4-4601-9D53-63B69AFAB68D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bynder.Content.SitecoreConnector.Managers", "src\Bynder.Content.SitecoreConnector.Managers\Bynder.Content.SitecoreConnector.Managers.csproj", "{06887722-F39A-4F95-81BC-653334BC7636}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bynder.Content.SitecoreConnector.SitecoreRepositories", "src\Bynder.Content.SitecoreConnector.SitecoreRepositories\Bynder.Content.SitecoreConnector.SitecoreRepositories.csproj", "{4DED3819-E7A3-4726-8F71-A0F417A8019A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bynder.Content.SitecoreConnector.Web", "src\Bynder.Content.SitecoreConnector.Web\Bynder.Content.SitecoreConnector.Web.csproj", "{0B99B2EC-225D-4373-A383-DD762684EDE4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{86710B3E-B926-414B-8BEA-BE65773200EA}"
+	ProjectSection(SolutionItems) = preProject
+		src\SharedAssemblyInfo.cs = src\SharedAssemblyInfo.cs
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A40787E3-7DF6-41B9-90C0-41704AEA2BE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A40787E3-7DF6-41B9-90C0-41704AEA2BE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A40787E3-7DF6-41B9-90C0-41704AEA2BE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A40787E3-7DF6-41B9-90C0-41704AEA2BE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42B1CCBC-1FC4-4601-9D53-63B69AFAB68D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42B1CCBC-1FC4-4601-9D53-63B69AFAB68D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42B1CCBC-1FC4-4601-9D53-63B69AFAB68D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42B1CCBC-1FC4-4601-9D53-63B69AFAB68D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06887722-F39A-4F95-81BC-653334BC7636}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06887722-F39A-4F95-81BC-653334BC7636}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06887722-F39A-4F95-81BC-653334BC7636}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06887722-F39A-4F95-81BC-653334BC7636}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DED3819-E7A3-4726-8F71-A0F417A8019A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DED3819-E7A3-4726-8F71-A0F417A8019A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DED3819-E7A3-4726-8F71-A0F417A8019A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DED3819-E7A3-4726-8F71-A0F417A8019A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B99B2EC-225D-4373-A383-DD762684EDE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B99B2EC-225D-4373-A383-DD762684EDE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B99B2EC-225D-4373-A383-DD762684EDE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B99B2EC-225D-4373-A383-DD762684EDE4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FC0FB43A-1998-4A7A-B823-BAA4AE361E19}
+	EndGlobalSection
+EndGlobal

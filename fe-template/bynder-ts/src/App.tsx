@@ -1,28 +1,11 @@
 import { lazy, Suspense } from "react";
 import "./App.scss";
 
-const Mappings = lazy(
-  () =>
-    import(/*webpackChunkName: "Mappings" */ "./components/Mappings/Mappings")
-);
-const AddOrUpdateMapping = lazy(
-  () =>
-    import(
-      /*webpackChunkName: "AddOrUpdateMapping" */ "./components/Mappings/AddOrUpdateMapping"
-    )
-);
-const Import = lazy(
-  () => import(/*webpackChunkName: "Import" */ "./components/Import/Import")
-);
-const MultiLocationImport = lazy(
-  () =>
-    import(
-      /*webpackChunkName: "MultiLocationImport" */ "./components/Import/MultiLocationImport"
-    )
-);
-const Update = lazy(
-  () => import(/*webpackChunkName: "Update" */ "./components/Update/Update")
-);
+const Mappings = lazy(() => import("./components/Mappings/Mappings"));
+const AddOrUpdateMapping = lazy(() => import("./components/Mappings/AddOrUpdateMapping"));
+const Import = lazy(() => import("./components/Import/Import"));
+const MultiLocationImport = lazy(() => import("./components/Import/MultiLocationImport"));
+const Update = lazy(() => import("./components/Update/Update"));
 
 function App(props: { modalType: string | null }) {
   const { modalType } = props;
